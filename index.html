@@ -1388,16 +1388,21 @@ button.mp-row:active,label.mp-pick:active{background:var(--surface2)}
 .mp-me .mp-box .me-tx b{font-size:16px;max-width:8em}
 .mp-me{justify-content:space-between}
 .mp-volrow{gap:14px;padding-top:14px;padding-bottom:14px}
-.mp-volic{flex:none;width:28px;height:28px;fill:none;stroke:#3b7cf6;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.mp-volic{flex:none;width:28px;height:28px;fill:none;stroke:var(--hero-txt);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .mp-volic .w1{opacity:.75}.mp-volic .w2{opacity:.45}
 .mp-vol{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:28px;margin:0;background:transparent;cursor:pointer}
-.mp-vol::-webkit-slider-runnable-track{height:16px;border-radius:99px;background:linear-gradient(90deg,#3b7cf6 var(--v,55%),#e6e7eb var(--v,55%))}
+.mp-vol::-webkit-slider-runnable-track{height:16px;border-radius:99px;background:linear-gradient(90deg,var(--hero) var(--v,55%),#e6e7eb var(--v,55%))}
 .mp-vol::-moz-range-track{height:16px;border-radius:99px;background:#e6e7eb}
-.mp-vol::-moz-range-progress{height:16px;border-radius:99px;background:#3b7cf6}
-.mp-vol::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-5px;border-radius:50%;background:#fff;border:3px solid #3b7cf6;box-shadow:0 1px 3px rgb(0 0 0/.18)}
-.mp-vol::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #3b7cf6;box-shadow:0 1px 3px rgb(0 0 0/.18)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .mp-vol::-webkit-slider-runnable-track{background:linear-gradient(90deg,#3b7cf6 var(--v,55%),#2a3445 var(--v,55%))}:root:not([data-theme="light"]) .mp-vol::-moz-range-track{background:#2a3445}}
-:root[data-theme="dark"] .mp-vol::-webkit-slider-runnable-track{background:linear-gradient(90deg,#3b7cf6 var(--v,55%),#2a3445 var(--v,55%))}
+.mp-vol::-moz-range-progress{height:16px;border-radius:99px;background:var(--hero)}
+.mp-vol::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-5px;border-radius:50%;background:#fff;border:3px solid var(--hero);box-shadow:0 1px 3px rgb(0 0 0/.18)}
+.mp-vol::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--hero);box-shadow:0 1px 3px rgb(0 0 0/.18)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .mp-vol::-webkit-slider-runnable-track{background:linear-gradient(90deg,var(--hero) var(--v,55%),#2a3445 var(--v,55%))}:root:not([data-theme="light"]) .mp-vol::-moz-range-track{background:#2a3445}}
+:root[data-theme="dark"] .mp-vol::-webkit-slider-runnable-track{background:linear-gradient(90deg,var(--hero) var(--v,55%),#2a3445 var(--v,55%))}
+
+/* 공지 아이콘 = 인사이트 아이콘 크기(36px, 그림 20px), 왼쪽 여백도 같게 */
+.nt-band{gap:12px;padding:10px 14px}
+.nt-ib{width:36px;height:36px;border-radius:10px}
+.nt-ib svg{width:20px;height:20px}
 </style>
 
 <div class="wrap">
@@ -1600,6 +1605,8 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(autoFit);
 /* ---------- 공지사항: GitHub 저장소의 notice.txt를 읽어 홈 화면 한 줄 띠로 ---------- */
 const NOTICE_URL = 'https://zelong2-star.github.io/jwadongclub/notice.txt';
 const NTK = 'mgl.notice', NTSEEN = 'mgl.noticeSeen';
+// claude.ai 안에서는 GitHub 파일을 못 읽어서, 앱을 만들 때의 공지를 대신 보여요 (GitHub 앱은 늘 최신 파일이 우선)
+const NOTICE_BUILTIN = "제목: 11월 1일(일) 해운대구협회장기 대회\n날짜: 2026-10-25\n11월 1일(일)에 해운대구협회장기 배드민턴 대회가 열려요.\n참가하시는 회원님들 모두 좌동클럽 화이팅!\n";
 let notices = [];
 function parseNotice(txt) {
   return String(txt || '').replace(/\r/g, '').split(/^\s*-{3,}\s*$/m).map(part => {
@@ -1637,11 +1644,13 @@ async function loadNotice() {
   renderNotice();
   try {
     const r = await fetch(NOTICE_URL + '?t=' + Date.now(), { cache: 'no-store' });
-    if (!r.ok) { if (r.status === 404) { notices = []; try { localStorage.removeItem(NTK); } catch (e) {} renderNotice(); } return; }
+    if (!r.ok) { if (r.status === 404) { notices = []; try { localStorage.removeItem(NTK); } catch (e) {} } else if (!notices.length) notices = parseNotice(NOTICE_BUILTIN); renderNotice(); return; }
     notices = parseNotice(await r.text());
     try { localStorage.setItem(NTK, JSON.stringify(notices)); } catch (e) {}
     renderNotice();
-  } catch (e) {}   // 인터넷이 안 되거나 막혀 있으면 마지막에 받은 공지를 그대로 보여요
+  } catch (e) {   // 인터넷이 안 되거나 막혀 있으면 마지막에 받은 공지, 그것도 없으면 앱에 들어 있는 공지
+    if (!notices.length) { notices = parseNotice(NOTICE_BUILTIN); renderNotice(); }
+  }
 }
 document.addEventListener('click', e => { if (e.target.closest('#ntBand')) openNotices(); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden) loadNotice(); });
@@ -2332,7 +2341,7 @@ function openMe(first) {
   const mainHtml = first ? '' : `
     <div class="mp-me">
       <div class="mepill mebox mp-box"><span class="me-av${badgeOf(mi).length > 3 ? ' sm' : ''}" id="mpAv" aria-hidden="true">${esc(badgeOf(mi))}</span><span class="me-tx"><b>${esc(me || '이름 없음')}</b></span></div>
-      <button type="button" class="mp-chg" id="meSlot">${me ? '이름 바꾸기' : '이름 선택'}</button>
+      <button type="button" class="mp-chg" id="meSlot">${me ? '이름 변경' : '이름 선택'}</button>
     </div>
     ${me ? `<h5 class="mp-tag">내 정보</h5>
     <div class="mp-grp">
@@ -2365,8 +2374,8 @@ function openMe(first) {
     <div class="mp-grp fxbox ${fx.snd ? '' : 'snd-off'}">
       ${sw('snd', fx.snd, '효과음')}
       ${sw('hap', fx.hap, '진동')}
-      <label class="mp-row mp-pick mp-dim"><div class="mp-t"><b>사운드 선택</b></div><span class="mp-val" id="mpThV">${thName[fx.th] || '셔틀콕'}</span>${chev}
-        <select id="mpTh" aria-label="사운드 선택">${Object.entries(thName).map(([k, l]) => `<option value="${k}" ${(fx.th || 'court') === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+      <label class="mp-row mp-pick mp-dim"><div class="mp-t"><b>소리 선택</b></div><span class="mp-val" id="mpThV">${thName[fx.th] || '셔틀콕'}</span>${chev}
+        <select id="mpTh" aria-label="소리 선택">${Object.entries(thName).map(([k, l]) => `<option value="${k}" ${(fx.th || 'court') === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
       <div class="mp-row mp-dim mp-volrow"><svg class="mp-volic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.5" cy="17.5" r="2.5"/><path d="M9 17.5V5l5 2"/><path class="w1" d="M16 9.5a4 4 0 0 1 0 5"/><path class="w2" d="M18.6 7a7.5 7.5 0 0 1 0 10"/></svg><input type="range" class="mp-vol" id="fxVol" min="0" max="100" step="5" value="${fx.vol}" style="--v:${fx.vol}%" aria-label="효과음 볼륨"><b class="mp-volv" id="fxVolV" hidden>${fx.vol}</b></div>
     </div>
     <p class="mp-hint">경기를 저장하면 라켓을 맞대는 소리 뒤에, 이겼을 때와 졌을 때 다른 소리가 나요.</p>
@@ -3614,7 +3623,7 @@ boot();
 })();
 </script>
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610251736)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610251744)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

@@ -975,7 +975,8 @@ button.clr:active{background:var(--icbg)}
 .tblwrap td:nth-child(3){white-space:nowrap}
 
 /* ===== 마이페이지 (시안 C) ===== */
-.sbody.mp{gap:0;padding-top:6px;background:var(--bg)}
+.sbody.mp{display:block;padding-top:6px;background:var(--bg)}
+.sbody.mp>*{flex-shrink:0}
 .mp-me{display:flex;align-items:center;gap:14px;padding:8px 4px 4px}
 .mp-av{flex:none;width:56px;height:56px;border-radius:50%;background:var(--hero);color:#fff;display:grid;place-items:center;font:800 19px/1 var(--body);letter-spacing:-.04em}
 .mp-who{min-width:0;flex:1}.mp-who h4{margin:0;font:800 22px/1.2 var(--body);letter-spacing:-.03em;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1339,9 +1340,9 @@ button.mp-row:active,label.mp-pick:active{background:var(--surface2)}
 
 /* ===== 홈 오른쪽 위 이름 박스 (나이·급수 이름표 + 화살표) ===== */
 .mast h1{font-size:clamp(20px,6.4vw,28px)}
-.mepill.mebox{max-width:none;gap:8px;min-height:46px;padding:5px 8px 5px 5px;border-radius:16px;color:var(--ink)}
-.me-av{flex:none;width:36px;height:36px;border-radius:50%;background:var(--hero);color:#fff;display:grid;place-items:center;font:800 italic 15px/1 var(--disp);letter-spacing:.01em}
-.me-av.sm{font-size:12px}
+.mepill.mebox{max-width:none;gap:7px;height:40px;min-height:40px;padding:4px 7px 4px 4px;border-radius:12px;color:var(--ink)}
+.me-av{flex:none;width:32px;height:32px;border-radius:50%;background:var(--hero);color:#fff;display:grid;place-items:center;font:800 italic 14px/1 var(--disp);letter-spacing:.01em}
+.me-av.sm{font-size:11px}
 .me-tx{display:grid;text-align:left;line-height:1.15;min-width:0}
 .me-tx b{font:800 15px var(--body);color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:5.5em}
 .me-tx small{font:700 11px var(--body);color:var(--muted);margin-top:3px;white-space:nowrap}
@@ -1380,6 +1381,23 @@ button.mp-row:active,label.mp-pick:active{background:var(--surface2)}
 .mascot[data-a=hello] .eh{animation:ehCh 2.6s steps(1,end)}
 .mascot[data-a=hello] .mc-hi{animation:hiPop 2.6s ease-out}
 @keyframes hiPop{0%{opacity:0;transform:scale(.4)}8%{opacity:1;transform:scale(1.12)}14%,84%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.92)}}
+
+/* ===== 마이페이지 머리 이름표 = 홈 이름 박스 / 볼륨 막대 ===== */
+.mp-me .mp-box{margin:0;cursor:default;height:44px;min-height:44px;padding:5px 12px 5px 5px}
+.mp-me .mp-box .me-av{width:34px;height:34px;font-size:15px}
+.mp-me .mp-box .me-tx b{font-size:16px;max-width:8em}
+.mp-me{justify-content:space-between}
+.mp-volrow{gap:14px;padding-top:14px;padding-bottom:14px}
+.mp-volic{flex:none;width:28px;height:28px;fill:none;stroke:#3b7cf6;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.mp-volic .w1{opacity:.75}.mp-volic .w2{opacity:.45}
+.mp-vol{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:28px;margin:0;background:transparent;cursor:pointer}
+.mp-vol::-webkit-slider-runnable-track{height:16px;border-radius:99px;background:linear-gradient(90deg,#3b7cf6 var(--v,55%),#e6e7eb var(--v,55%))}
+.mp-vol::-moz-range-track{height:16px;border-radius:99px;background:#e6e7eb}
+.mp-vol::-moz-range-progress{height:16px;border-radius:99px;background:#3b7cf6}
+.mp-vol::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-5px;border-radius:50%;background:#fff;border:3px solid #3b7cf6;box-shadow:0 1px 3px rgb(0 0 0/.18)}
+.mp-vol::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #3b7cf6;box-shadow:0 1px 3px rgb(0 0 0/.18)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .mp-vol::-webkit-slider-runnable-track{background:linear-gradient(90deg,#3b7cf6 var(--v,55%),#2a3445 var(--v,55%))}:root:not([data-theme="light"]) .mp-vol::-moz-range-track{background:#2a3445}}
+:root[data-theme="dark"] .mp-vol::-webkit-slider-runnable-track{background:linear-gradient(90deg,#3b7cf6 var(--v,55%),#2a3445 var(--v,55%))}
 </style>
 
 <div class="wrap">
@@ -2305,7 +2323,7 @@ function openMe(first) {
   const chev = '<svg class="mp-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
   const mi = me ? infoOf(me) : {};
   const seg = (k, vals) => `<div class="mp-seg" role="group">${vals.map(v => `<button type="button" data-mk="${k}" data-v="${v}" aria-pressed="${String(mi[k] ?? '') === String(v)}">${v}</button>`).join('')}</div>`;
-  const avTxt = me ? (me.length >= 3 ? me.slice(1, 3) : me.slice(0, 2)) : '?';
+  const badgeOf = o => { const gr = o.gr === '초심' ? '초' : (o.gr || ''); return me ? ((o.a || '') + gr || me.slice(-2)) : '?'; };
   const metaOf = o => [o.g || '', o.gr ? (o.gr === '초심' ? '초심' : o.gr + '급') : '', o.a ? o.a + '대' : ''].filter(Boolean).join(' · ') || '내 정보를 넣어 주세요';
   const sw = (k, on, label) => `<div class="mp-row"><div class="mp-t"><b>${label}</b></div><button type="button" class="mp-sw" role="switch" data-fx="${k}" aria-checked="${on}" aria-label="${label}"></button></div>`;
   const thName = { court: '셔틀콕', soft: '부드럽게', retro: '게임기' };
@@ -2313,16 +2331,15 @@ function openMe(first) {
   const logoSrc = (document.querySelector('img.logo') || {}).src || '';
   const mainHtml = first ? '' : `
     <div class="mp-me">
-      <div class="mp-av" aria-hidden="true">${esc(avTxt)}</div>
-      <div class="mp-who"><h4>${esc(me || '이름 없음')}</h4><p id="mpMeta">${esc(me ? metaOf(mi) : '')}</p></div>
+      <div class="mepill mebox mp-box"><span class="me-av${badgeOf(mi).length > 3 ? ' sm' : ''}" id="mpAv" aria-hidden="true">${esc(badgeOf(mi))}</span><span class="me-tx"><b>${esc(me || '이름 없음')}</b></span></div>
       <button type="button" class="mp-chg" id="meSlot">${me ? '이름 바꾸기' : '이름 선택'}</button>
     </div>
     ${me ? `<h5 class="mp-tag">내 정보</h5>
     <div class="mp-grp">
       <div class="mp-row"><div class="mp-t"><b>성별</b></div>${seg('g', ['남', '여'])}</div>
+      <label class="mp-row mp-pick"><div class="mp-t"><b>연령</b></div><span class="mp-val" id="mpAgeV">${mi.a ? mi.a + '대' : '선택'}</span>${chev}
+        <select id="mpAge" aria-label="연령">${mi.a ? '' : '<option value="" selected disabled>선택</option>'}${[20, 30, 40, 50, 60, 70].map(v => `<option value="${v}" ${+mi.a === v ? 'selected' : ''}>${v}대</option>`).join('')}</select></label>
       <div class="mp-row"><div class="mp-t"><b>급수</b></div>${seg('gr', ['A', 'B', 'C', 'D', '초심'])}</div>
-      <label class="mp-row mp-pick"><div class="mp-t"><b>나이대</b></div><span class="mp-val" id="mpAgeV">${mi.a ? mi.a + '대' : '고르기'}</span>${chev}
-        <select id="mpAge" aria-label="나이대">${mi.a ? '' : '<option value="" selected disabled>고르기</option>'}${[20, 30, 40, 50, 60, 70].map(v => `<option value="${v}" ${+mi.a === v ? 'selected' : ''}>${v}대</option>`).join('')}</select></label>
     </div>` : ''}
     <h5 class="mp-tag">기록 지키기</h5>
     ${local ? `
@@ -2344,13 +2361,13 @@ function openMe(first) {
     </div>`}
     <div class="mp-more" id="mpBkBox" hidden>${backupBlock}</div>
     ${pasteBlock}
-    <h5 class="mp-tag">소리와 진동</h5>
+    <h5 class="mp-tag">소리 및 진동</h5>
     <div class="mp-grp fxbox ${fx.snd ? '' : 'snd-off'}">
       ${sw('snd', fx.snd, '효과음')}
       ${sw('hap', fx.hap, '진동')}
-      <label class="mp-row mp-pick mp-dim"><div class="mp-t"><b>소리 종류</b></div><span class="mp-val" id="mpThV">${thName[fx.th] || '셔틀콕'}</span>${chev}
-        <select id="mpTh" aria-label="소리 종류">${Object.entries(thName).map(([k, l]) => `<option value="${k}" ${(fx.th || 'court') === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
-      <div class="mp-row mp-dim"><span class="mp-lb">볼륨</span><input type="range" id="fxVol" min="0" max="100" step="5" value="${fx.vol}" aria-label="효과음 볼륨"><b class="mp-volv" id="fxVolV">${fx.vol}</b></div>
+      <label class="mp-row mp-pick mp-dim"><div class="mp-t"><b>사운드 선택</b></div><span class="mp-val" id="mpThV">${thName[fx.th] || '셔틀콕'}</span>${chev}
+        <select id="mpTh" aria-label="사운드 선택">${Object.entries(thName).map(([k, l]) => `<option value="${k}" ${(fx.th || 'court') === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+      <div class="mp-row mp-dim mp-volrow"><svg class="mp-volic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.5" cy="17.5" r="2.5"/><path d="M9 17.5V5l5 2"/><path class="w1" d="M16 9.5a4 4 0 0 1 0 5"/><path class="w2" d="M18.6 7a7.5 7.5 0 0 1 0 10"/></svg><input type="range" class="mp-vol" id="fxVol" min="0" max="100" step="5" value="${fx.vol}" style="--v:${fx.vol}%" aria-label="효과음 볼륨"><b class="mp-volv" id="fxVolV" hidden>${fx.vol}</b></div>
     </div>
     <p class="mp-hint">경기를 저장하면 라켓을 맞대는 소리 뒤에, 이겼을 때와 졌을 때 다른 소리가 나요.</p>
     <div class="mp-ver">${logoSrc ? `<img src="${esc(logoSrc)}" alt="">` : ''}<b>PLAY. LOG. PLAY.</b><span>2026.10.25 · 제작 김재용</span></div>`;
@@ -2381,15 +2398,15 @@ function openMe(first) {
     </div>`);
   let volT = 0;
   sh.addEventListener('change', e => {
-    if (e.target.id === 'mpAge') { const v = +e.target.value; edits[me] = { ...infoOf(me), ...(edits[me] || {}), a: v }; sh.querySelector('#mpAgeV').textContent = v + '대'; const mm = sh.querySelector('#mpMeta'); if (mm) mm.textContent = metaOf(infoOf(me)); saveProfile().then(() => toast('내 정보를 고쳤어요'), () => {}); }
+    if (e.target.id === 'mpAge') { const v = +e.target.value; edits[me] = { ...infoOf(me), ...(edits[me] || {}), a: v }; sh.querySelector('#mpAgeV').textContent = v + '대'; const mv = sh.querySelector('#mpAv'); if (mv) { const t = badgeOf(infoOf(me)); mv.textContent = t; mv.classList.toggle('sm', t.length > 3); } render(); saveProfile().then(() => toast('내 정보를 고쳤어요'), () => {}); }
     if (e.target.id === 'mpTh') { fx.th = e.target.value; saveFx(); sh.querySelector('#mpThV').textContent = thName[fx.th]; setTimeout(() => SFX.hit(), 60); }
   });
-  sh.addEventListener('input', e => { if (e.target.id !== 'fxVol') return; const v = +e.target.value; setFxVol(v); sh.querySelector('#fxVolV').textContent = v; const n = Date.now(); if (n - volT > 120) { volT = n; SFX.tap(); } });
+  sh.addEventListener('input', e => { if (e.target.id !== 'fxVol') return; const v = +e.target.value; setFxVol(v); sh.querySelector('#fxVolV').textContent = v; e.target.style.setProperty('--v', v + '%'); const n = Date.now(); if (n - volT > 120) { volT = n; SFX.tap(); } });
   sh.addEventListener('click', async e => {
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.fx) { const k = b.dataset.fx; fx[k] = !fx[k]; saveFx(); if (b.classList.contains('mp-sw')) b.setAttribute('aria-checked', fx[k]); else { b.setAttribute('aria-pressed', fx[k]); b.textContent = (k === 'snd' ? '소리 ' : '진동 ') + (fx[k] ? '켜짐' : '꺼짐'); } if (k === 'snd') sh.querySelector('.fxbox')?.classList.toggle('snd-off', !fx.snd); if (fx[k]) { k === 'snd' ? SFX.tick() : buzz(20); } return; }
     if (b.dataset.th) { fx.th = b.dataset.th; saveFx(); b.parentElement.querySelectorAll('.opt').forEach(x => x.setAttribute('aria-pressed', x === b)); setTimeout(() => SFX.hit(), 60); return; }
-    if (b.dataset.mk) { const k = b.dataset.mk, v = k === 'a' ? +b.dataset.v : b.dataset.v; edits[me] = { ...infoOf(me), ...(edits[me] || {}), [k]: v }; b.parentElement.querySelectorAll('[data-mk]').forEach(x => x.setAttribute('aria-pressed', x === b)); const mm = sh.querySelector('#mpMeta'); if (mm) mm.textContent = metaOf(infoOf(me)); saveProfile().then(() => toast('내 정보를 고쳤어요'), () => {}); return; }
+    if (b.dataset.mk) { const k = b.dataset.mk, v = k === 'a' ? +b.dataset.v : b.dataset.v; edits[me] = { ...infoOf(me), ...(edits[me] || {}), [k]: v }; b.parentElement.querySelectorAll('[data-mk]').forEach(x => x.setAttribute('aria-pressed', x === b)); const mv = sh.querySelector('#mpAv'); if (mv) { const t = badgeOf(infoOf(me)); mv.textContent = t; mv.classList.toggle('sm', t.length > 3); } render(); saveProfile().then(() => toast('내 정보를 고쳤어요'), () => {}); return; }
     if (b.id === 'mpBk') { const bx = sh.querySelector('#mpBkBox'); bx.hidden = !bx.hidden; b.setAttribute('aria-expanded', !bx.hidden); if (!bx.hidden) bx.scrollIntoView({ block: 'nearest' }); return; }
     if (b.id === 'meSlot') openMePicker(first);
     else if (b.id === 'bkSave') { try { await dl.save({ filename: 'PLAYLOGPLAY_백업_' + today() + '.json', data: backupText() }); toast('백업 파일을 저장했어요'); } catch (er) { if (er && er.code !== 'declined') toast('파일로 저장하지 못했어요. 백업 코드 복사를 써 주세요.'); } }
@@ -3597,7 +3614,7 @@ boot();
 })();
 </script>
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610251707)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610251736)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

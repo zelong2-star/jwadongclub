@@ -636,8 +636,9 @@ tr.sum td:first-child{font-weight:800}
 .qnames{margin:8px 0 0 36px;font-size:12.5px;color:var(--muted)}
 
 /* % 기호: 숫자와 같은 스포츠 글꼴, 작게, 위로 */
-.pct{display:inline-block;font-family:var(--disp)!important;font-style:italic;font-weight:800;font-size:.68em!important;line-height:1;vertical-align:.42em;margin-left:.04em;letter-spacing:0}
-.ring .in b .pct{font-size:.66em!important;vertical-align:.4em}
+.pct{display:inline-block;font-family:var(--disp)!important;font-style:italic;font-weight:800;font-size:.68em!important;line-height:1;vertical-align:baseline;margin-left:.04em;letter-spacing:0}
+.ring .in b .pct{font-size:.66em!important;vertical-align:baseline}
+.appver{margin:22px 0 4px;text-align:center;font-size:12px;color:var(--muted,#7a8696);line-height:1.6}
 
 .chart .pt{fill:var(--surface);stroke:var(--hero);stroke-width:2}
 .chart .ax.dx{font:700 10.5px var(--body);fill:var(--muted)}
@@ -1843,6 +1844,7 @@ function openMe(first) {
         <div class="btnrow"><button class="btn" type="button" id="bkPasteBtn">백업 코드 붙여넣기</button></div>${pasteBlock}</details>
       ${isOwner ? '' : `<div class="fl"><span class="lb">클럽 통계</span><button class="btn" type="button" id="sendMe">${esc(OWNER_SHORT)}님께 내 기록 보내기</button></div>`}`}
       ${first ? '' : `<div class="fl"><span class="lb">효과</span><div class="optrow"><button type="button" class="opt" data-fx="snd" aria-pressed="${fx.snd}">소리 ${fx.snd ? '켜짐' : '꺼짐'}</button><button type="button" class="opt" data-fx="hap" aria-pressed="${fx.hap}">진동 ${fx.hap ? '켜짐' : '꺼짐'}</button></div><p class="hint">버튼 소리와 진동이에요. 경기를 저장하면 이겼을 때와 졌을 때 소리가 달라요.</p></div>`}
+      <p class="appver">업데이트 2026.10.25 · 만든 사람 김재용</p>
     </div>`);
   sh.addEventListener('click', async e => {
     const b = e.target.closest('button'); if (!b) return;
@@ -3006,7 +3008,7 @@ boot();
 </script>
 
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610251359)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610251418)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

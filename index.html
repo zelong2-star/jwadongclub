@@ -1426,6 +1426,11 @@ button.mp-row:active,label.mp-pick:active{background:var(--surface2)}
 
 .mp-okic{flex:none;width:36px;height:36px;border-radius:10px;background:var(--court-soft);display:grid;place-items:center}
 .mp-okic svg{width:20px;height:20px;fill:none;stroke:var(--court-txt);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* 클럽 요약 숫자 오른쪽 정렬 */
+.ch3>*{align-items:stretch}
+.ch3 b{text-align:right;padding-right:2px}
+.ch3>*:last-child{padding-right:0}
 </style>
 
 <div class="wrap">
@@ -1757,7 +1762,7 @@ function render() {
   document.querySelectorAll('.view').forEach(v => v.hidden = v.id !== 'v-' + tab);
   document.querySelectorAll('.tab').forEach(b => { if (b.dataset.t === tab) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   $('#clubTab').hidden = !((isOwner && mode === 'db') || MEMBER_APP);   // 회원 앱은 늘 클럽기록실 탭 (마이페이지는 이름 박스로)
-  { const col = document.querySelector('#v-club .collect'); if (col) col.hidden = !!CLUB_VIEW || MEMBER_APP; }
+  { const col = document.querySelector('#v-club .collect'); if (col) col.hidden = MEMBER_APP; }
   if (tab === 'club' && $('#clubTab').hidden) tab = 'log';
   $('#meTab').hidden = !$('#clubTab').hidden;
   $('#rosterBtn').hidden = !(isOwner && mode === 'db');   // 회원 명단 관리는 운영자만
@@ -2591,7 +2596,11 @@ async function importCodes(text) {
   if (done.length) { const ta = $('#clubIn'); if (ta) ta.value = ''; toast('받았어요: ' + done.join(', ')); renderClub(); }
 }
 function clubRecords() {
-  if (CLUB_VIEW) return CLUB_VIEW.recs;
+  if (MEMBER_APP) {   // 회원 앱: 재용님이 올린 기록실 자료 + 내가 입력한 최신 기록
+    const out = CLUB_VIEW ? CLUB_VIEW.recs.filter(r => r.name !== me) : [];
+    if (me) out.push({ name: me, g: games.filter(x => !String(x.id || '').startsWith('demo')).map(x => [x.date, x.mode, x.partner || '', (x.opp || [])[0] || '', (x.opp || [])[1] || '', +x.my || 0, +x.their || 0, x.res || '']) });
+    return out;
+  }
   const out = members.map(m => ({ name: m.name, g: m.g || [] }));
   if (me) out.push({ name: me, g: games.map(x => [x.date, x.mode, x.partner || '', (x.opp || [])[0] || '', (x.opp || [])[1] || '', +x.my || 0, +x.their || 0, x.res || '']) });
   return out;
@@ -2678,12 +2687,8 @@ function lgCmp(x, y) {   // >0 이면 x가 위 (경기당 포인트 기준)
 const fmtPt = n => (Math.round((n || 0) * 10) / 10).toFixed(1);
 function renderClub() {
   const body = $('#clubBody'); if (!body) return;
-  { const cp = $('#clubPeriod'); if (cp) cp.hidden = MEMBER_APP && !CLUB_VIEW; }
-  if (MEMBER_APP && !CLUB_VIEW) {
-    document.querySelectorAll('#clubPeriod .fchip').forEach(b => b.setAttribute('aria-pressed', b.dataset.p === clubPeriod));
-    body.innerHTML = `<div class="empty"><h2>클럽기록실을 준비하고 있어요</h2><p>회원들이 "${esc(OWNER_SHORT)}님께 보내기"로 보낸 기록을 ${esc(OWNER_SHORT)}님이 모아 올리면, 여기에 클럽 순위와 레이팅, 명콤비, 천적 관계가 나와요. 마이페이지에서 내 기록도 보내 주세요!</p></div>`;
-    return;
-  }
+  { const cp = $('#clubPeriod'); if (cp) cp.hidden = false; }
+
   document.querySelectorAll('#clubPeriod .fchip').forEach(b => b.setAttribute('aria-pressed', b.dataset.p === clubPeriod));
   const { list: all, raw } = mergedGames();
   const list = all.filter(g => inClubPeriod(g.date));
@@ -2692,7 +2697,7 @@ function renderClub() {
     ${memList.length ? `<div class="plist">${memList.map(m => `<div class="prow" style="cursor:default"><b>${esc(m.name)}</b><span class="rec"><button type="button" class="btn ghost" style="min-height:36px;padding:4px 10px" data-backmem="${esc(m.id)}">돌려주기</button><button type="button" class="btn ghost" style="min-height:36px;padding:4px 10px;color:var(--danger)" data-delmem="${esc(m.id)}">빼기</button></span><span class="meta">${(m.g || []).length}경기 · ${esc(m.at || '')} 기준 · ${esc(m.rcv || '')} 받음</span></div>`).join('')}</div>`
       : '<p class="note">아직 받은 기록이 없어요. 회원이 보낸 글을 위 칸에 붙여넣으세요.</p>'}`;
   if (!list.length) {
-    body.innerHTML = `<div class="empty"><h2>${all.length ? '이 기간에는 경기가 없어요' : '아직 모인 경기가 없어요'}</h2><p>회원들이 전적 탭의 "${esc(OWNER_SHORT)}님께 내 기록 보내기"로 보낸 글을 위 칸에 붙여넣으면, 클럽 전체 순위와 콤비, 상대 전적이 여기에 정리돼요.</p></div>` + memHtml;
+    body.innerHTML = `<div class="empty"><h2>${all.length ? '이 기간에는 경기가 없어요' : '아직 모인 경기가 없어요'}</h2><p>${MEMBER_APP ? '경기를 기록하면 함께한 사람들의 순위, 레이팅, 명콤비, 천적 관계가 여기에 정리돼요.' : `회원들이 전적 탭의 "${esc(OWNER_SHORT)}님께 내 기록 보내기"로 보낸 글을 위 칸에 붙여넣으면, 클럽 전체 순위와 콤비, 상대 전적이 여기에 정리돼요.`}</p></div>` + memHtml;
     $('#collectMem').innerHTML = memHtml;
     return;
   }
@@ -2728,9 +2733,9 @@ function renderClub() {
       <div class="ch3">
         <div><small>경기</small><b>${nf(list.length)}</b></div>
         <button type="button" data-club="players"><small>참여 선수 ›</small><b>${nf(P.size)}</b></button>
-        <button type="button" data-club="senders"><small>기록 보낸 사람 ›</small><b>${nf(CLUB_VIEW ? CLUB_VIEW.recs.length : members.length + 1)}</b></button>
+        <button type="button" data-club="senders"><small>기록 보낸 사람 ›</small><b>${nf(MEMBER_APP ? clubRecords().length : members.length + 1)}</b></button>
       </div>
-      ${CLUB_VIEW ? `<p class="chnote">${esc(CLUB_VIEW.at ? dateLabel(CLUB_VIEW.at) + ' 기준 · ' : '')}회원들이 ${esc(OWNER_SHORT)}님께 보낸 기록을 모았어요</p>` : ''}
+      ${MEMBER_APP ? `<p class="chnote">${CLUB_VIEW ? `${esc(CLUB_VIEW.at ? dateLabel(CLUB_VIEW.at) + ' 기준 ' : '')}회원 기록 + 내 최신 기록이에요` : `내가 입력한 경기로 만든 기록실이에요. ${esc(OWNER_SHORT)}님이 회원 기록을 모아 올리면 클럽 전체 순위가 돼요`}</p>` : ''}
       ${dup ? `<p class="chnote">여러 명이 같이 기록한 ${nf(dup)}건은 한 경기로 합쳤어요</p>` : ''}
     </div>
 
@@ -2768,7 +2773,7 @@ function medalSvg(rank, uid) {
 }
 function openSenders() {
   const myN = games.filter(g => inClubPeriod(g.date)).length;
-  const rows = CLUB_VIEW ? CLUB_VIEW.recs.map(r => ({ name: r.name, n: r.g.length, pn: r.g.filter(x => inClubPeriod(x[0])).length, at: '', self: false })).sort((a, b) => b.n - a.n || collator.compare(a.name, b.name)) : [{ name: me || OWNER_NAME, n: games.length, pn: myN, at: '', self: true },
+  const rows = MEMBER_APP ? clubRecords().map(r => ({ name: r.name, n: r.g.length, pn: r.g.filter(x => inClubPeriod(x[0])).length, at: '', self: r.name === me })).sort((a, b) => (b.self - a.self) || b.n - a.n || collator.compare(a.name, b.name)) : [{ name: me || OWNER_NAME, n: games.length, pn: myN, at: '', self: true },
     ...members.map(m => ({ name: m.name, n: (m.g || []).length, pn: (m.g || []).filter(x => inClubPeriod(x[0])).length, at: m.rcv || m.at || '' }))]
     .sort((a, b) => (b.self - a.self) || b.n - a.n || collator.compare(a.name, b.name));
   const dl2 = d => { if (!d) return ''; const s = String(d).slice(0, 10); return /^\d{4}-\d{2}-\d{2}$/.test(s) ? dateLabel(s) : ''; };
@@ -3681,7 +3686,7 @@ boot();
 })();
 </script>
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610251824)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610251845)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

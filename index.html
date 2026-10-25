@@ -2651,11 +2651,34 @@ async function openPeriodCard() {
 async function openResultCard(g) {
   try { await Promise.all(['italic 800 40px "Barlow Condensed"', '800 30px "Noto Sans KR"', '500 30px "Noto Sans KR"'].map(f => document.fonts.load(f))); } catch (e) {}
   const N = '"Barlow Condensed","Noto Sans KR",sans-serif', B = '"Noto Sans KR",sans-serif';
-  const W = 1080, H = 1350, P = 72, r = resOf(g), win = r === 'w';
+  const W = 1080, P = 72, r = resOf(g), win = r === 'w';
+  // 상대 전적 계산 (이 경기까지)
+  const seqAll = sorted(), upto = seqAll.slice(0, seqAll.indexOf(g) + 1 || seqAll.length);
+  const oppN = (g.opp || []).filter(Boolean), oKey = gg => (gg.opp || []).filter(Boolean).slice().sort().join('|');
+  const recOf = f => { const l = upto.filter(f); let w = 0, lo = 0; l.forEach(x => { const rr2 = resOf(x); if (rr2 === 'w') w++; else if (rr2 === 'l') lo++; }); return { l, w, lo, n: l.length, rate: w + lo ? Math.round(w / (w + lo) * 100) : null }; };
+  const rows = [];
+  if (oppN.length > 1) rows.push({ nm: oppN.join(' · ') + ' 팀', main: true, ...recOf(x => oKey(x) === oKey(g)) });
+  oppN.forEach(n => rows.push({ nm: 'vs ' + n, ...recOf(x => (x.opp || []).includes(n)) }));
+  const notes = [], firsts = [];
+  oppN.forEach(n => {
+    const rs = recOf(x => (x.opp || []).includes(n)).l.map(resOf).filter(v => v !== 'd'); const cur = rs[rs.length - 1];
+    if (recOf(x => (x.opp || []).includes(n)).n === 1) { firsts.push(n); return; }
+    if (!cur) return;
+    let k = 0; for (let i = rs.length - 1; i >= 0 && rs[i] === cur; i--) k++;
+    const wins = rs.filter(v => v === 'w').length;
+    if (cur === 'w' && wins === 1) notes.push(n + ' 님 상대 첫 승이에요');
+    else if (k >= 2) notes.push(n + ' 님 상대 ' + k + (cur === 'w' ? '연승 중' : '연패 중'));
+    else if (cur === 'w' && rs[rs.length - 2] === 'l') notes.push(n + ' 님께 지난번 진 걸 설욕했어요');
+  });
+  if (firsts.length) notes.unshift(firsts.join(' · ') + ' 님과 첫 대결');
+  const nts = notes.slice(0, 2);
+  const BH = 80 + rows.length * 74 + (nts.length ? nts.length * 50 + 44 : 0) + 30;
+  try { await document.fonts.load('700 30px "Noto Sans KR"', rows.map(x => x.nm).join('') + nts.join('') + '상대 전적승패첫대결팀'); } catch (e) {}
+  const H = Math.max(1350, 940 + BH), BT = H - BH;
   const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const c = cv.getContext('2d');
   c.fillStyle = '#0c50a1'; c.fillRect(0, 0, W, H);
   c.fillStyle = 'rgba(255,255,255,.06)'; for (let i = 0; i < 6; i++) { c.fillRect(0, 300 + i * 160, W, 2); }
-  c.fillStyle = win ? '#1d9533' : '#3a4f73'; c.fillRect(0, H - 220, W, 220);
+    c.fillStyle = win ? '#1d9533' : '#3a4f73'; c.fillRect(0, BT, W, BH);
   c.textBaseline = 'alphabetic';
   c.font = 'italic 800 54px ' + N; let tx = P; [['PLAY. ', '#7fe08f'], ['LOG. ', '#ffffff'], ['PLAY.', '#7fe08f']].forEach(([s, col]) => { c.fillStyle = col; c.fillText(s, tx, P + 40); tx += c.measureText(s).width; });
   const [Y, M, D] = g.date.split('-').map(Number);
@@ -2669,9 +2692,26 @@ async function openResultCard(g) {
   const us = [me || '나', g.mode === 'd' ? g.partner : ''].filter(Boolean), them = (g.opp || []).filter(Boolean);
   us.forEach((n, i) => c.fillText(n, P, 810 + i * 70)); them.forEach((n, i) => c.fillText(n, W / 2 + 20, 810 + i * 70));
   c.fillStyle = 'rgba(255,255,255,.25)'; c.fillRect(W / 2 - 10, 700, 2, 200);
-  const t = tally(games); c.fillStyle = '#fff'; c.font = '800 34px ' + B; c.fillText('통산', P, H - 130);
-  c.font = 'italic 800 64px ' + N; c.fillText(`${t.w}승 ${t.l}패 · 승률 ${t.rate ?? 0}%`, P, H - 60);
-  try { const bd = document.querySelector('.mc-bd'), rk = document.querySelector('.mc-rk'), sh = document.querySelector('.mc-sh'); const mh = 300, mw = 150, mx = W - P - mw, my = H - 230 - mh + 40; [bd, rk].forEach(im => c.drawImage(im, mx, my, mw, mh)); c.save(); c.translate(mx - 10, my - 20); c.rotate(-0.6); c.drawImage(sh, -40, -40, 80, 80); c.restore(); } catch (e) {}
+  { const sub = win ? '#d9f5df' : '#c9d6ea', box = win ? '#167a29' : '#2e4060';
+    c.textAlign = 'left'; c.fillStyle = sub; c.font = '700 30px ' + B; c.fillText('상대 전적', P, BT + 62);
+    const xPct = W - P, xRec = W - P - 190;
+    const rec = (x, y, w, l, big, col) => { c.textAlign = 'right'; const nf2 = `italic 800 ${big}px ${N}`, uf = `800 ${Math.round(big * .5)}px ${B}`; let xx = x;
+      [[ '패', uf], [String(l), nf2], ['승 ', uf], [String(w), nf2]].forEach(([s3, f]) => { c.font = f; c.fillStyle = col; c.fillText(s3, xx, y); xx -= c.measureText(s3).width; }); c.textAlign = 'left'; return x - xx; };
+    rows.forEach((rw2, i) => {
+      const y = BT + 140 + i * 74, big = rw2.main ? 76 : 64, col = rw2.main ? '#fff' : sub;
+      let recW;
+      if (rw2.main && rw2.n === 1) { c.textAlign = 'right'; c.font = '800 40px ' + B; c.fillStyle = '#fff'; c.fillText('첫 대결', xRec, y); recW = c.measureText('첫 대결').width; c.textAlign = 'left'; }
+      else recW = rec(xRec, y, rw2.w, rw2.lo, big, rw2.main ? '#fff' : '#fff');
+      c.textAlign = 'right';
+      if (rw2.rate !== null && !(rw2.main && rw2.n === 1)) { c.font = `italic 800 ${Math.round(big * .55)}px ${N}`; c.fillStyle = sub; c.fillText('%', xPct, y); const pw2 = c.measureText('%').width; c.font = `italic 800 ${rw2.main ? 70 : 60}px ${N}`; c.fillStyle = rw2.main ? '#fff' : sub; c.fillText(String(rw2.rate), xPct - pw2 - 2, y); }
+      else if (!(rw2.main && rw2.n === 1)) { c.font = `italic 800 56px ${N}`; c.fillStyle = sub; c.fillText('-', xPct, y); }
+      c.textAlign = 'left';
+      fitDraw(c, rw2.nm, P, y, xRec - recW - P - 30, rw2.main ? 44 : 40, 26, rw2.main ? 800 : 700, B, col);
+    });
+    if (nts.length) { const by = BT + 140 + rows.length * 74 - 30; c.fillStyle = box; rr(c, P - 8, by, W - 2 * P + 16, nts.length * 50 + 34, 30); c.fill();
+      nts.forEach((t2, i) => fitDraw(c, '· ' + t2, P + 22, by + 58 + i * 50, W - 2 * P - 40, 38, 26, 700, B, '#fff')); }
+  }
+  try { const bd = document.querySelector('.mc-bd'), rk = document.querySelector('.mc-rk'), sh = document.querySelector('.mc-sh'); const mh = 240, mw = 120, mx = W - P - mw, my = BT - mh + 24; [bd, rk].forEach(im => c.drawImage(im, mx, my, mw, mh)); c.save(); c.translate(mx - 10, my - 20); c.rotate(-0.6); c.drawImage(sh, -40, -40, 80, 80); c.restore(); } catch (e) {}
   const url = cv.toDataURL('image/png');
   const s2 = openSheet(`<div class="shd"><h3>결과 카드</h3><p>길게 눌러 사진에 저장하거나 카톡으로 보내세요.</p><button class="shx" type="button" aria-label="닫기">×</button></div>
     <div class="sbody"><img src="${url}" alt="경기 결과 카드" style="width:100%;border-radius:14px;-webkit-touch-callout:default;user-select:auto"></div>
@@ -2966,7 +3006,7 @@ boot();
 </script>
 
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610242211)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610251359)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

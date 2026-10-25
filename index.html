@@ -1403,6 +1403,19 @@ button.mp-row:active,label.mp-pick:active{background:var(--surface2)}
 .nt-band{gap:12px;padding:10px 14px}
 .nt-ib{width:36px;height:36px;border-radius:10px}
 .nt-ib svg{width:20px;height:20px}
+
+/* 홈 이름 박스: 양끝이 둥근 알약 모양 */
+.mepill.mebox{border-radius:99px;padding-right:11px}
+.mp-name{color:var(--ink);font-weight:800;font-size:15px}
+.sbody.mp{padding-top:2px}
+.sbody.mp>.mp-tag:first-child{margin-top:10px}
+
+/* 경기 기록 검색칸: 섹션 제목과 간격 조금 더, 높이 슬림하게 */
+.logq{margin:10px 0 2px}
+.logq input{min-height:38px;height:38px;padding:6px 12px;font-size:14px}
+
+.mp-okic{flex:none;width:36px;height:36px;border-radius:10px;background:var(--court-soft);display:grid;place-items:center}
+.mp-okic svg{width:20px;height:20px;fill:none;stroke:var(--court-txt);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 </style>
 
 <div class="wrap">
@@ -1425,7 +1438,7 @@ button.mp-row:active,label.mp-pick:active{background:var(--surface2)}
     <div id="insight"></div>
     <div id="nudge"></div>
     <div class="sechead"><h2><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"/><path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"/><path d="M9 12l.01 0"/><path d="M13 12l2 0"/><path d="M9 16l.01 0"/><path d="M13 16l2 0"/></svg></span>경기 기록</h2><span class="label" id="logCount"></span></div>
-    <div class="logq" id="logQWrap" hidden><span class="qi" aria-hidden="true"></span><input type="search" id="logQ" placeholder="이름, 초성, 날짜로 찾기 (예: ㅇㅎㄱ, 10.24)" autocomplete="off"></div>
+    <div class="logq" id="logQWrap" hidden><span class="qi" aria-hidden="true"></span><input type="search" id="logQ" placeholder="이름, 초성, 날짜로 찾기 (예: ㄱㅈㅇ, 10.25)" autocomplete="off"></div>
     <div id="dayList"></div>
   </section>
 
@@ -1471,6 +1484,11 @@ button.mp-row:active,label.mp-pick:active{background:var(--surface2)}
         <button class="btn primary" type="button" id="clubImport">불러오기</button>
         <p class="hint">같은 사람이 다시 보내면 새 기록으로 바뀌어요. 받은 기록은 재용님 계정에만 저장돼요.</p>
       </div>
+      <div class="ccard" style="margin-top:10px">
+        <label>회원 앱 클럽기록실에 올리기</label>
+        <button class="btn primary" type="button" id="clubExport">기록실 내보내기 (club.json)</button>
+        <p class="hint">받은 파일을 GitHub 저장소에 올리면 회원 설치 앱의 클럽기록실이 지금 화면과 같아져요. 공개 저장소라 누구나 볼 수 있어요.</p>
+      </div>
       <div id="collectMem"></div>
     </section>
   </section>
@@ -1483,7 +1501,7 @@ button.mp-row:active,label.mp-pick:active{background:var(--surface2)}
   <button class="tab" type="button" data-t="stats"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>통계</button>
   <button class="fab" id="addBtn" type="button" aria-label="경기 기록하기"><svg viewBox="0 0 64 64" aria-hidden="true"><g transform="rotate(45 32 32)"><path d="M24 21H40L53 52Q50 59 44.6 54Q41 60 36.2 55Q32 61 27.8 55Q23 60 19.4 54Q14 58 11 52Z" fill="#fff"/><path d="M32 21H40L53 52Q50 59 44.6 54Q41 60 36.2 55Q33.5 58.5 32 56.5Z" fill="#e7e3f6"/><path d="M28 21 19.8 54.5M32 21V56M36 21l8.4 33.5" stroke="#cdc6ea" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M18.6 35H45.4M16.6 40H47.4" stroke="#b5abdf" stroke-width="1.8" stroke-linecap="round" fill="none"/><path d="M24 16a8 8 0 0 1 16 0z" fill="#fff"/><path d="M32 8a8 8 0 0 1 8 8h-8z" fill="#ece9f8"/><rect x="23" y="15.5" width="18" height="6" rx="2" fill="#0c50a1"/></g></svg></button>
   <button class="tab" type="button" data-t="people"><svg viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.3"/><path d="M3 20c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4"/><circle cx="17" cy="9.5" r="2.6"/><path d="M16.2 14.7c2.5.1 4.2 1.8 4.8 4.8"/></svg>매치업</button>
-  <button class="tab" type="button" data-t="club" id="clubTab" hidden><svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3M12 13v4M8.5 20h7M10 17h4"/></svg>클럽</button>
+  <button class="tab" type="button" data-t="club" id="clubTab" hidden><svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3M12 13v4M8.5 20h7M10 17h4"/></svg>클럽기록실</button>
   <button class="tab" type="button" data-t="me" id="meTab"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="3.5"/><path d="M5.5 19.5c1-3.2 3.5-5 6.5-5s5.5 1.8 6.5 5"/><circle cx="12" cy="12" r="9.5"/></svg>마이페이지</button>
 </nav>
 
@@ -1653,10 +1671,11 @@ async function loadNotice() {
   }
 }
 document.addEventListener('click', e => { if (e.target.closest('#ntBand')) openNotices(); });
-document.addEventListener('visibilitychange', () => { if (!document.hidden) loadNotice(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { loadNotice(); loadClubView(); } });
 
 async function boot() {
   loadNotice();
+  loadClubView();
   lsLoad(); render(); autoFit();
   try {
     if (MEMBER_APP || !window.claude?.use) throw 0;
@@ -1727,7 +1746,8 @@ function recentPeople() {
 function render() {
   document.querySelectorAll('.view').forEach(v => v.hidden = v.id !== 'v-' + tab);
   document.querySelectorAll('.tab').forEach(b => { if (b.dataset.t === tab) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
-  $('#clubTab').hidden = !(isOwner && mode === 'db');
+  $('#clubTab').hidden = !((isOwner && mode === 'db') || (MEMBER_APP && CLUB_VIEW));
+  { const col = document.querySelector('#v-club .collect'); if (col) col.hidden = !!CLUB_VIEW; }
   if (tab === 'club' && $('#clubTab').hidden) tab = 'log';
   $('#meTab').hidden = !$('#clubTab').hidden;
   $('#rosterBtn').hidden = !(isOwner && mode === 'db');   // 회원 명단 관리는 운영자만
@@ -2339,17 +2359,14 @@ function openMe(first) {
   const okIc = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   const logoSrc = (document.querySelector('img.logo') || {}).src || '';
   const mainHtml = first ? '' : `
-    <div class="mp-me">
-      <div class="mepill mebox mp-box"><span class="me-av${badgeOf(mi).length > 3 ? ' sm' : ''}" id="mpAv" aria-hidden="true">${esc(badgeOf(mi))}</span><span class="me-tx"><b>${esc(me || '이름 없음')}</b></span></div>
-      <button type="button" class="mp-chg" id="meSlot">${me ? '이름 변경' : '이름 선택'}</button>
-    </div>
-    ${me ? `<h5 class="mp-tag">내 정보</h5>
+    <h5 class="mp-tag">내 정보</h5>
     <div class="mp-grp">
+      <button type="button" class="mp-row" id="meSlot"><div class="mp-t"><b>이름</b></div><span class="mp-val mp-name">${esc(me || '선택')}</span>${chev}</button>${me ? `
       <div class="mp-row"><div class="mp-t"><b>성별</b></div>${seg('g', ['남', '여'])}</div>
       <label class="mp-row mp-pick"><div class="mp-t"><b>연령</b></div><span class="mp-val" id="mpAgeV">${mi.a ? mi.a + '대' : '선택'}</span>${chev}
         <select id="mpAge" aria-label="연령">${mi.a ? '' : '<option value="" selected disabled>선택</option>'}${[20, 30, 40, 50, 60, 70].map(v => `<option value="${v}" ${+mi.a === v ? 'selected' : ''}>${v}대</option>`).join('')}</select></label>
-      <div class="mp-row"><div class="mp-t"><b>급수</b></div>${seg('gr', ['A', 'B', 'C', 'D', '초심'])}</div>
-    </div>` : ''}
+      <div class="mp-row"><div class="mp-t"><b>급수</b></div>${seg('gr', ['A', 'B', 'C', 'D', '초심'])}</div>` : ''}
+    </div>
     <h5 class="mp-tag">기록 지키기</h5>
     ${local ? `
     <div class="mp-keep">
@@ -2361,9 +2378,8 @@ function openMe(first) {
       <button type="button" class="mp-row" id="bkPasteBtn"><div class="mp-t"><b>받은 기록 넣기</b><small>${esc(OWNER_SHORT)}님이 돌려준 글을 붙여넣어요</small></div>${chev}</button>
       <button type="button" class="mp-row" id="mpBk" aria-expanded="false"><div class="mp-t"><b>직접 백업하기</b><small>파일·코드로 저장하거나 불러오기</small></div>${chev}</button>
     </div>` : `
-    <div class="mp-keep"><div class="mp-stat ok"><span class="mp-n">${okIc}</span>
-      <div class="mp-t"><b>계정에 자동 저장돼요</b><small>다른 기기에서 같은 계정으로 열어도 그대로 보여요</small></div></div>
-      ${isOwner ? '' : `<button class="btn primary mp-cta" type="button" id="sendMe">${esc(OWNER_SHORT)}님께 내 기록 보내기</button>`}</div>
+    <div class="mp-grp"><div class="mp-row"><span class="mp-okic">${okIc}</span><div class="mp-t"><b>계정에 자동 저장돼요</b><small>다른 기기에서 같은 계정으로 열어도 그대로 보여요</small></div></div></div>
+    ${isOwner ? '' : `<button class="btn primary mp-cta" type="button" id="sendMe" style="margin-top:8px">${esc(OWNER_SHORT)}님께 내 기록 보내기</button>`}
     <div class="mp-grp mp-gap">
       <button type="button" class="mp-row" id="mpBk" aria-expanded="false"><div class="mp-t"><b>직접 백업하기</b><small>따로 보관하고 싶을 때</small></div>${chev}</button>
       <button type="button" class="mp-row" id="bkPasteBtn"><div class="mp-t"><b>백업 코드 붙여넣기</b></div>${chev}</button>
@@ -2522,6 +2538,25 @@ async function sendToOwner() {
 
 /* ---------- 회원 기록 모으기 (재용님 화면) ---------- */
 let members = [];   // {id, name, at, rcv, g}
+// 회원용 설치 앱: 재용님이 GitHub에 올린 club.json을 읽어 클럽기록실을 보여요 (보기 전용)
+const CLUB_URL = 'https://zelong2-star.github.io/jwadongclub/club.json';
+let CLUB_VIEW = null;   // {a:'mgl-club', v, at, by, recs:[{name, g}]}
+function setClubView(o) {
+  if (!o || o.a !== 'mgl-club' || !Array.isArray(o.recs)) return false;
+  CLUB_VIEW = { at: String(o.at || ''), by: String(o.by || ''), recs: o.recs.filter(r => r && r.name && Array.isArray(r.g)).map(r => ({ name: String(r.name).slice(0, 20), g: r.g })) };
+  return true;
+}
+async function loadClubView() {
+  if (!MEMBER_APP) return;
+  try { const c = JSON.parse(localStorage.getItem('mgl.club') || 'null'); if (setClubView(c)) { try { render(); } catch (e2) {} } } catch (e) {}
+  try {
+    const r = await fetch(CLUB_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return;
+    const t = await r.text(), o = JSON.parse(t);
+    if (setClubView(o)) { try { localStorage.setItem('mgl.club', t); } catch (e) {} try { render(); } catch (e2) {} }
+  } catch (e) {}
+}
+function clubExportText() { return JSON.stringify({ a: 'mgl-club', v: 1, at: today(), by: me || OWNER_NAME, recs: clubRecords() }); }
 let clubPeriod = 'all', rankPeriod = 'all';
 function memId(name) { let h = 2166136261; for (const ch of name) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return 'mem_' + h.toString(36); }
 async function importCodes(text) {
@@ -2546,6 +2581,7 @@ async function importCodes(text) {
   if (done.length) { const ta = $('#clubIn'); if (ta) ta.value = ''; toast('받았어요: ' + done.join(', ')); renderClub(); }
 }
 function clubRecords() {
+  if (CLUB_VIEW) return CLUB_VIEW.recs;
   const out = members.map(m => ({ name: m.name, g: m.g || [] }));
   if (me) out.push({ name: me, g: games.map(x => [x.date, x.mode, x.partner || '', (x.opp || [])[0] || '', (x.opp || [])[1] || '', +x.my || 0, +x.their || 0, x.res || '']) });
   return out;
@@ -2676,8 +2712,9 @@ function renderClub() {
       <div class="ch3">
         <div><small>경기</small><b>${nf(list.length)}</b></div>
         <button type="button" data-club="players"><small>참여 선수 ›</small><b>${nf(P.size)}</b></button>
-        <button type="button" data-club="senders"><small>기록 보낸 사람 ›</small><b>${nf(members.length + 1)}</b></button>
+        <button type="button" data-club="senders"><small>기록 보낸 사람 ›</small><b>${nf(CLUB_VIEW ? CLUB_VIEW.recs.length : members.length + 1)}</b></button>
       </div>
+      ${CLUB_VIEW ? `<p class="chnote">${esc(CLUB_VIEW.at ? dateLabel(CLUB_VIEW.at) + ' 기준 · ' : '')}회원들이 ${esc(OWNER_SHORT)}님께 보낸 기록을 모았어요</p>` : ''}
       ${dup ? `<p class="chnote">여러 명이 같이 기록한 ${nf(dup)}건은 한 경기로 합쳤어요</p>` : ''}
     </div>
 
@@ -2715,7 +2752,7 @@ function medalSvg(rank, uid) {
 }
 function openSenders() {
   const myN = games.filter(g => inClubPeriod(g.date)).length;
-  const rows = [{ name: me || OWNER_NAME, n: games.length, pn: myN, at: '', self: true },
+  const rows = CLUB_VIEW ? CLUB_VIEW.recs.map(r => ({ name: r.name, n: r.g.length, pn: r.g.filter(x => inClubPeriod(x[0])).length, at: '', self: false })).sort((a, b) => b.n - a.n || collator.compare(a.name, b.name)) : [{ name: me || OWNER_NAME, n: games.length, pn: myN, at: '', self: true },
     ...members.map(m => ({ name: m.name, n: (m.g || []).length, pn: (m.g || []).filter(x => inClubPeriod(x[0])).length, at: m.rcv || m.at || '' }))]
     .sort((a, b) => (b.self - a.self) || b.n - a.n || collator.compare(a.name, b.name));
   const dl2 = d => { if (!d) return ''; const s = String(d).slice(0, 10); return /^\d{4}-\d{2}-\d{2}$/.test(s) ? dateLabel(s) : ''; };
@@ -3593,6 +3630,11 @@ $('#dayList').addEventListener('click', e => { if (e.target.closest('#qClear')) 
 $('#period').addEventListener('click', e => { const b = e.target.closest('.fchip'); if (b) { period = b.dataset.p; periodOff = 0; renderStats(); } });
 $('#statsBody').addEventListener('click', e => { const nv = e.target.closest('[data-nav]'); if (nv) { periodOff = Math.min(0, periodOff + +nv.dataset.nav); renderStats(); return; } if (e.target.closest('#imgBtn')) saveImage(); if (e.target.closest('#pcBtn')) openPeriodCard(); if (e.target.closest('#sendBtn')) sendToOwner(); const pp = e.target.closest('[data-person]'); if (pp) openPerson(pp.dataset.person); });
 $('#clubImport').addEventListener('click', () => importCodes($('#clubIn').value));
+$('#clubExport').addEventListener('click', async () => {
+  const t = clubExportText();
+  if (dl) { try { await dl.save({ filename: 'club.json', data: t }); toast('club.json을 저장했어요. GitHub 저장소에 올려 주세요'); return; } catch (er) { if (er && er.code === 'declined') return; } }
+  try { await navigator.clipboard.writeText(t); toast('내용을 복사했어요. GitHub에서 club.json 파일에 붙여넣어 주세요'); } catch (er) { toast('저장하지 못했어요. 다시 시도해 주세요'); }
+});
 $('#clubPeriod').addEventListener('click', e => { const b = e.target.closest('.fchip'); if (b) { clubPeriod = b.dataset.p; rankPeriod = clubPeriod; renderClub(); } });
 $('#clubBody').addEventListener('click', async e => {
   const d = e.target.closest('[data-delmem]');
@@ -3623,7 +3665,7 @@ boot();
 })();
 </script>
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610251744)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610251801)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

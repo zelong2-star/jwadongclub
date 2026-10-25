@@ -4,18 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0c50a1">
-<meta name="description" content="좌동배드민턴클럽 개인 경기 기록장">
+<meta name="description" content="좌동배드민턴클럽 회원 경기 기록 · 승률 · 상대 전적 · 클럽 순위">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="좌동클럽">
+<meta property="og:title" content="좌동클럽 경기기록앱">
+<meta property="og:description" content="내 경기 기록 · 승률 · 상대 전적 · 클럽 순위 (로그인·회원가입 없음)">
+<meta property="og:url" content="https://zelong2-star.github.io/jwadongclub/">
+<meta property="og:image" content="https://zelong2-star.github.io/jwadongclub/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="PLAY LOG">
+<meta name="apple-mobile-web-app-title" content="좌동클럽">
+<meta name="application-name" content="좌동클럽">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>:root{box-sizing:border-box}body{margin:0;padding:0;background:#eef3f9}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
-<title>PLAY. LOG. PLAY.</title>
+<title>좌동클럽</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,700;1,800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
 <style>
@@ -1746,8 +1756,8 @@ function recentPeople() {
 function render() {
   document.querySelectorAll('.view').forEach(v => v.hidden = v.id !== 'v-' + tab);
   document.querySelectorAll('.tab').forEach(b => { if (b.dataset.t === tab) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
-  $('#clubTab').hidden = !((isOwner && mode === 'db') || (MEMBER_APP && CLUB_VIEW));
-  { const col = document.querySelector('#v-club .collect'); if (col) col.hidden = !!CLUB_VIEW; }
+  $('#clubTab').hidden = !((isOwner && mode === 'db') || MEMBER_APP);   // 회원 앱은 늘 클럽기록실 탭 (마이페이지는 이름 박스로)
+  { const col = document.querySelector('#v-club .collect'); if (col) col.hidden = !!CLUB_VIEW || MEMBER_APP; }
   if (tab === 'club' && $('#clubTab').hidden) tab = 'log';
   $('#meTab').hidden = !$('#clubTab').hidden;
   $('#rosterBtn').hidden = !(isOwner && mode === 'db');   // 회원 명단 관리는 운영자만
@@ -2668,6 +2678,12 @@ function lgCmp(x, y) {   // >0 이면 x가 위 (경기당 포인트 기준)
 const fmtPt = n => (Math.round((n || 0) * 10) / 10).toFixed(1);
 function renderClub() {
   const body = $('#clubBody'); if (!body) return;
+  { const cp = $('#clubPeriod'); if (cp) cp.hidden = MEMBER_APP && !CLUB_VIEW; }
+  if (MEMBER_APP && !CLUB_VIEW) {
+    document.querySelectorAll('#clubPeriod .fchip').forEach(b => b.setAttribute('aria-pressed', b.dataset.p === clubPeriod));
+    body.innerHTML = `<div class="empty"><h2>클럽기록실을 준비하고 있어요</h2><p>회원들이 "${esc(OWNER_SHORT)}님께 보내기"로 보낸 기록을 ${esc(OWNER_SHORT)}님이 모아 올리면, 여기에 클럽 순위와 레이팅, 명콤비, 천적 관계가 나와요. 마이페이지에서 내 기록도 보내 주세요!</p></div>`;
+    return;
+  }
   document.querySelectorAll('#clubPeriod .fchip').forEach(b => b.setAttribute('aria-pressed', b.dataset.p === clubPeriod));
   const { list: all, raw } = mergedGames();
   const list = all.filter(g => inClubPeriod(g.date));
@@ -3665,7 +3681,7 @@ boot();
 })();
 </script>
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610251801)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610251824)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

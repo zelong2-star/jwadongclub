@@ -1,6 +1,6 @@
 {
-  "name": "PLAY. LOG. PLAY.",
-  "short_name": "PLAY LOG",
+  "name": "좌동클럽",
+  "short_name": "좌동클럽",
   "description": "좌동배드민턴클럽 개인 경기 기록장",
   "lang": "ko",
   "start_url": "./",

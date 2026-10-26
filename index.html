@@ -2408,8 +2408,6 @@ function openMe(first) {
     </div>`}
     <div class="mp-more" id="mpBkBox" hidden>${backupBlock}</div>
     ${pasteBlock}
-    ${MEMBER_APP ? `<h5 class="mp-tag">사용 기록</h5>
-    <div class="mp-grp"><div class="mp-row"><div class="mp-t"><b>이름과 함께 사용 기록 공유</b><small>누른 기능과 횟수만, 경기 내용은 빼고 ${esc(OWNER_SHORT)}님께 보여요</small></div><button type="button" class="mp-sw" role="switch" id="mpShare" aria-checked="${shareOk()}" aria-label="이름과 함께 사용 기록 공유"></button></div></div>` : ''}
     <h5 class="mp-tag">소리 및 진동</h5>
     <div class="mp-grp fxbox ${fx.snd ? '' : 'snd-off'}">
       ${sw('snd', fx.snd, '효과음')}
@@ -2419,7 +2417,7 @@ function openMe(first) {
       <div class="mp-row mp-dim mp-volrow"><svg class="mp-volic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.5" cy="17.5" r="2.5"/><path d="M9 17.5V5l5 2"/><path class="w1" d="M16 9.5a4 4 0 0 1 0 5"/><path class="w2" d="M18.6 7a7.5 7.5 0 0 1 0 10"/></svg><input type="range" class="mp-vol" id="fxVol" min="0" max="100" step="5" value="${fx.vol}" style="--v:${fx.vol}%" aria-label="효과음 볼륨"><b class="mp-volv" id="fxVolV" hidden>${fx.vol}</b></div>
     </div>
     <p class="mp-hint">경기를 저장하면 라켓을 맞대는 소리 뒤에, 이겼을 때와 졌을 때 다른 소리가 나요.</p>
-    <div class="mp-ver">${logoSrc ? `<img src="${esc(logoSrc)}" alt="">` : ''}<b>PLAY. LOG. PLAY.</b><span>2026.10.26 · 제작 김재용</span></div>`;
+    <div class="mp-ver">${logoSrc ? `<img src="${esc(logoSrc)}" alt="">` : ''}<b>PLAY. LOG. PLAY.</b><span>2026.10.27 · 제작 김재용</span></div>`;
   const sh = openSheet(`
     <div class="shd"><h3>${first ? '반가워요! 누구세요?' : '마이페이지'}</h3>${first ? '<p>내 이름을 고르면 바로 경기를 기록할 수 있어요.</p>' : ''}<button class="shx" type="button" aria-label="닫기">×</button></div>
     <div class="sbody${first ? '' : ' mp'}">${first ? `
@@ -2443,7 +2441,7 @@ function openMe(first) {
         <div class="fxvol"><span>볼륨</span><input type="range" id="fxVol" min="0" max="100" step="5" value="${fx.vol}" aria-label="효과음 볼륨"><b id="fxVolV">${fx.vol}</b></div>
         <div class="fxth"><span>효과음</span><div class="optrow">${[['court', '셔틀콕'], ['soft', '부드럽게'], ['retro', '게임기']].map(([k, l]) => `<button type="button" class="opt" data-th="${k}" aria-pressed="${fx.th === k}">${l}</button>`).join('')}</div></div>
         <p class="hint">누르면 미리 들어볼 수 있어요. 경기를 저장하면 종료 휘슬이 울리고, 이겼을 때와 졌을 때 소리가 달라요.</p></div>`}
-      <div class="appver"><b>PLAY. LOG. PLAY.</b><span>업데이트 2026.10.26<i></i>제작 김재용</span></div>` : mainHtml}
+      <div class="appver"><b>PLAY. LOG. PLAY.</b><span>업데이트 2026.10.27<i></i>제작 김재용</span></div>` : mainHtml}
     </div>`);
   let volT = 0;
   sh.addEventListener('change', e => {
@@ -2457,7 +2455,6 @@ function openMe(first) {
     if (b.dataset.th) { fx.th = b.dataset.th; saveFx(); b.parentElement.querySelectorAll('.opt').forEach(x => x.setAttribute('aria-pressed', x === b)); setTimeout(() => SFX.hit(), 60); return; }
     if (b.dataset.mk) { const k = b.dataset.mk, v = k === 'a' ? +b.dataset.v : b.dataset.v; edits[me] = { ...infoOf(me), ...(edits[me] || {}), [k]: v }; b.parentElement.querySelectorAll('[data-mk]').forEach(x => x.setAttribute('aria-pressed', x === b)); const mv = sh.querySelector('#mpAv'); if (mv) { const t = badgeOf(infoOf(me)); mv.textContent = t; mv.classList.toggle('sm', t.length > 3); } render(); saveProfile().then(() => toast('내 정보를 고쳤어요'), () => {}); return; }
     if (b.id === 'mpBk') { const bx = sh.querySelector('#mpBkBox'); bx.hidden = !bx.hidden; b.setAttribute('aria-expanded', !bx.hidden); if (!bx.hidden) bx.scrollIntoView({ block: 'nearest' }); return; }
-    if (b.id === 'mpShare') { const on = !shareOk(); try { localStorage.setItem('mgl.share', on ? '1' : '0'); } catch (e) {} b.setAttribute('aria-checked', on); toast(on ? '이름과 함께 공유해요' : '이제 이름 없이 집계해요'); return; }
     if (b.id === 'meSlot') openMePicker(first);
     else if (b.id === 'bkSave') { try { await dl.save({ filename: 'PLAYLOGPLAY_백업_' + today() + '.json', data: backupText() }); toast('백업 파일을 저장했어요'); } catch (er) { if (er && er.code !== 'declined') toast('파일로 저장하지 못했어요. 백업 코드 복사를 써 주세요.'); } }
     else if (b.id === 'bkCopy') {
@@ -3728,7 +3725,7 @@ boot();
 })();
 </script>
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610262348)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610270829)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

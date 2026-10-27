@@ -30,6 +30,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;1,700;1,800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
 <style>
+
 /* Layout concept: 좌동클럽 리그전 앱과 같은 체육관 스코어보드. 초록 티켓이 오늘을 요약하고, 아래로 날짜별 경기 카드가 쌓인다. */
 :root{
   --bg:#f3f5f3; --surface:#ffffff; --ink:#0f1411; --muted:#58645d; --line:#d9dfdb;
@@ -686,6 +687,60 @@ tr.sum td:first-child{font-weight:800}
 .tstat b.up{color:var(--court-txt)}.tstat b.dn{color:#c23d30}
 .tstat b em{font:800 12px/1 var(--body);font-style:normal;color:var(--muted);margin:0 1px}
 
+/* 통계 요약 3칸 */
+.sg3 .st-wide{grid-column:1/-1;flex-direction:column;align-items:stretch;gap:8px}
+.sg3 .st-wide small{flex-direction:row;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.sg3 .st-main{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.sg3 .st-main b{text-align:left;font-size:32px}
+.sg3 .st-rate{flex:none;font:700 13.5px var(--body);color:var(--muted)}
+.sg3 .st-rate strong{font:italic 800 30px/1 var(--disp);margin-left:4px;color:var(--ink)}
+.sg3 .st-rate strong.up{color:var(--court-txt)}.sg3 .st-rate strong.dn{color:#c23d30}
+.sg3 .st2{flex-direction:column;align-items:stretch;gap:8px;padding:12px 14px}
+.sg3 .st2 .r{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0}
+.sg3 .st2 .r+.r{padding-top:8px;border-top:1px solid var(--line)}
+.sg3 .st2 b{font-size:26px}
+.tz2 .sg3 .st2,.tz .sg3 .st2{flex-direction:column}
+/* 콕 소비 박스 */
+.cokbox{display:flex;align-items:center;gap:12px;margin-top:8px;padding:12px 14px;border-radius:14px;background:var(--surface);box-shadow:0 1px 2px rgb(1 2 60 / .05)}
+.cokbox .ci{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--icbg);color:var(--navy)}
+.cokbox .ci svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cokbox p{margin:0;font:700 15px/1.3 var(--body);color:var(--ink)}
+.cokbox p strong{font-weight:800;color:var(--hero-txt)}
+.cokbox small{display:block;margin-top:2px;font-size:13px;color:var(--muted)}
+.cokbox b.up{color:var(--court-txt)}.cokbox b.dn{color:#c23d30}
+.sg3 .st-wide{flex-direction:row;align-items:center;justify-content:space-between}
+.sg3 .st-l,.sg3 .st-r{display:grid;gap:6px;min-width:0}
+.sg3 .st-r{justify-items:end;text-align:right}
+.sg3 .st-pct{font:italic 800 34px/1 var(--disp);color:var(--ink)}
+.sg3 .st-pct span{font-size:.62em;margin-left:1px}
+.sg3 .st-pct.up{color:var(--court-txt)}.sg3 .st-pct.dn{color:#c23d30}
+.sg3 .st-r b{margin:0}
+.cokbox.cmp{align-items:flex-start}
+.cokbox .ca{flex:1;min-width:0}
+.ca-rows{margin-top:10px;border-top:1px solid var(--line)}
+.ca-r{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font:600 13.5px var(--body);color:var(--muted)}
+.ca-r b{font-weight:800;color:var(--ink);white-space:nowrap}.ca-r b.up{color:var(--court-txt)}.ca-r b.dn{color:#c23d30}
+.cokbox small.ca-note{margin-top:8px;font-size:11.5px}
+.cokbox .ccs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:9px}
+.cokbox .ccs .cl{font:700 12px var(--body);color:var(--muted);margin-right:2px}
+.cokbox .cc{font:700 12.5px/1 var(--body);color:var(--muted);background:var(--bg,#f1f3f6);border-radius:99px;padding:6px 9px}
+.cokbox .cc b{font-weight:800;color:var(--ink)}
+.cokbox .cc.up b{color:var(--court-txt)}.cokbox .cc.dn b{color:#c23d30}
+.sg3 .st-l .st-d .dl{font-size:11px}
+.sg3 .st-l>b{text-align:left;margin:0}
+.sg3 .st-wide{flex-wrap:nowrap;gap:10px}.sg3 .st-r{flex:0 1 auto}
+.tz .sg3 .st-wide,.tz2 .sg3 .st-wide{flex-direction:row;align-items:center}
+@media (max-width:370px){.sg3 .st-l b{font-size:26px}.sg3 .st-pct{font-size:30px}}
+/* 셔틀콕 */
+.cok-top{display:flex;align-items:center;gap:16px}
+.cok-top>b{flex:none;font:italic 800 46px/1 var(--disp);color:var(--ink);letter-spacing:-.01em}
+.cok-top>b .u{font:800 18px var(--body);margin-left:3px;font-style:normal;color:var(--muted)}
+.cok-top p{margin:0;display:grid;gap:3px;font:800 15.5px/1.3 var(--body);color:var(--ink)}
+.cok-top p .dl{margin:0;justify-self:start}
+.cok-top small{font:500 12.5px var(--body);color:var(--muted)}
+.cok-row{display:flex;justify-content:space-between;gap:10px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+.cok-row b{color:var(--ink);font-weight:800}
+.cok-sub{margin:12px 2px 8px;font:700 13px var(--body);color:var(--muted)}
 /* 득점률 */
 .prc .prtop{display:flex;align-items:center;gap:12px;padding:4px 4px 10px}
 .prc .prtop b{font:italic 800 40px/1 var(--disp);color:var(--navy);white-space:nowrap}
@@ -875,6 +930,8 @@ td em,.rec strong em,.prow .rec strong em{font:800 .62em/1 var(--body);font-styl
 
 /* ===== 클럽 화면 ===== */
 #v-club .fchips{margin:4px 0 12px}
+#period,#pPeriod,#clubPeriod{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+#period .fchip,#pPeriod .fchip,#clubPeriod .fchip{padding:6px 0;text-align:center;white-space:nowrap}
 .chero{border-radius:24px;padding:16px 16px 14px;color:#fff;background:radial-gradient(120% 140% at 0% 0%,var(--hero2) 0%,var(--hero) 60%);box-shadow:0 10px 30px -14px rgb(12 80 161 / .6)}
 .chtop{display:flex;justify-content:space-between;align-items:baseline;font:700 13px var(--body);opacity:.85}
 .chtop b{font:800 14px var(--body);opacity:1}
@@ -1461,20 +1518,30 @@ button.mp-row:active,label.mp-pick:active{background:var(--surface2)}
 
   <section id="v-stats" class="view" hidden>
     <div class="fchips" id="period" role="group" aria-label="기간">
-      <button class="fchip" type="button" data-p="all" aria-pressed="true">전체</button>
+      <button class="fchip" type="button" data-p="day" aria-pressed="false">오늘</button>
       <button class="fchip" type="button" data-p="week" aria-pressed="false">주간</button>
       <button class="fchip" type="button" data-p="month" aria-pressed="false">월간</button>
       <button class="fchip" type="button" data-p="year" aria-pressed="false">연간</button>
+      <button class="fchip" type="button" data-p="all" aria-pressed="true">누적</button>
     </div>
     <div id="statsBody"></div>
   </section>
 
   <section id="v-people" class="view" hidden>
     <button type="button" class="rosterbtn" id="rosterBtn" hidden><svg viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.3"/><path d="M3 20c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4"/><path d="M18 8v6M15 11h6"/></svg><span><b>회원 명단 관리</b><small id="rosterCount">새 회원 추가, 성별·급수·연령대 고치기</small></span><span class="go">›</span></button>
+    <div class="fchips" id="pPeriod" role="group" aria-label="기간">
+      <button class="fchip" type="button" data-p="day" aria-pressed="false">오늘</button>
+      <button class="fchip" type="button" data-p="week" aria-pressed="false">주간</button>
+      <button class="fchip" type="button" data-p="month" aria-pressed="false">월간</button>
+      <button class="fchip" type="button" data-p="year" aria-pressed="false">연간</button>
+      <button class="fchip" type="button" data-p="all" aria-pressed="true">누적</button>
+    </div>
+    <div id="pNav"></div>
     <div class="seg" id="roleSeg" role="group" aria-label="구분">
       <button type="button" data-r="opp" aria-pressed="true">OPPONENTS</button>
       <button type="button" data-r="partner" aria-pressed="false">PARTNERS</button>
     </div>
+    <div id="peopleTop"></div>
     <div class="psort" id="pSort" role="group" aria-label="정렬">
       <button type="button" class="fchip" data-s="hi" aria-pressed="true">승률 높은 순</button>
       <button type="button" class="fchip" data-s="lo" aria-pressed="false">승률 낮은 순</button>
@@ -1487,10 +1554,11 @@ button.mp-row:active,label.mp-pick:active{background:var(--surface2)}
 
   <section id="v-club" class="view" hidden>
     <div class="fchips" id="clubPeriod" role="group" aria-label="기간">
-      <button class="fchip" type="button" data-p="all" aria-pressed="true">전체</button>
+      <button class="fchip" type="button" data-p="day" aria-pressed="false">오늘</button>
       <button class="fchip" type="button" data-p="week" aria-pressed="false">주간</button>
       <button class="fchip" type="button" data-p="month" aria-pressed="false">월간</button>
       <button class="fchip" type="button" data-p="year" aria-pressed="false">연간</button>
+      <button class="fchip" type="button" data-p="all" aria-pressed="true">누적</button>
     </div>
     <div id="clubBody"></div>
     <section class="collect">
@@ -1876,6 +1944,7 @@ let periodOff = 0;   // 0 = 이번 주/달/해, -1 = 그 전
 function periodRange(off) {
   if (off === undefined) off = periodOff;
   const now = new Date();
+  if (period === 'day') { const d = ymd(new Date(now.getFullYear(), now.getMonth(), now.getDate() + off)); return [d, d]; }
   if (period === 'week') { const s = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (now.getDay() + 6) % 7 + off * 7); const e = new Date(s.getFullYear(), s.getMonth(), s.getDate() + 6); return [ymd(s), ymd(e)]; }
   if (period === 'month') { const s = new Date(now.getFullYear(), now.getMonth() + off, 1); const e = new Date(s.getFullYear(), s.getMonth() + 1, 0); return [ymd(s), ymd(e)]; }
   if (period === 'year') { const y = now.getFullYear() + off; return [y + '-01-01', y + '-12-31']; }
@@ -1884,6 +1953,7 @@ function periodRange(off) {
 function periodLabel() {
   const r = periodRange(); if (!r) return '전체 기간';
   const [Y, M, D] = r[0].split('-').map(Number), [, M2, D2] = r[1].split('-').map(Number);
+  if (period === 'day') return (periodOff === 0 ? '오늘 · ' : periodOff === -1 ? '어제 · ' : '') + `${M}월 ${D}일 (${WD[new Date(Y, M - 1, D).getDay()]})`;
   if (period === 'week') return (periodOff === 0 ? '이번 주 · ' : periodOff === -1 ? '지난주 · ' : '') + `${M}월 ${D}일 ~ ${M2 !== M ? M2 + '월 ' : ''}${D2}일`;
   if (period === 'month') return `${Y}년 ${M}월`;
   return `${Y}년`;
@@ -1910,10 +1980,12 @@ function renderStats() {
   }
   const t = tally(list);
   const diff = t.pf - t.pa;
-  let dRate = '', dN = '';
+  let dRate = '', dN = '', prevL = null, pname = '', prevT = null;
   if (period !== 'all') {
-    const pr = periodRange(periodOff - 1), pt = tally(sorted().filter(g => g.date >= pr[0] && g.date <= pr[1]));
-    const pname = { week: '지난주', month: '지난달', year: '작년' }[period];
+    let pr = periodRange(periodOff - 1);
+    if (period === 'day') { const r0 = periodRange(); const prevD = sorted().map(g => g.date).filter(d => d < r0[0]).pop(); pr = prevD ? [prevD, prevD] : ['0', '0']; }
+    const pt = tally(sorted().filter(g => g.date >= pr[0] && g.date <= pr[1]));
+    pname = { day: '지난 경기일', week: '지난주', month: '지난달', year: '작년' }[period]; if (pt.n) { prevL = pt.l; prevT = pt; }
     if (pt.n && t.rate !== null && pt.rate !== null) { const d = t.rate - pt.rate; dRate = `<em class="dl ${d > 0 ? 'up' : d < 0 ? 'dn' : ''}">${pname} 대비 ${d > 0 ? '▲' : d < 0 ? '▼' : ''}${Math.abs(d)}%p</em>`; }
     if (pt.n) { const d = t.n - pt.n; dN = `<em class="dl ${d > 0 ? 'up' : d < 0 ? 'dn' : ''}">${pname} 대비 ${d > 0 ? '+' : ''}${d}</em>`; }
   }
@@ -1921,34 +1993,22 @@ function renderStats() {
   let sk = 0, sr = null;
   for (let i = list.length - 1; i >= 0; i--) { const r = resOf(list[i]); if (r === 'd') break; if (sr === null) sr = r; if (r !== sr) break; sk++; }
   // 월별
-  const byDay = period === 'week' || period === 'month';
+  const byDay = period === 'day' || period === 'week' || period === 'month';
   const months = [...groupBy(list, g => byDay ? g.date : g.date.slice(0, 7)).entries()].sort((a, b) => a[0] < b[0] ? 1 : -1);
   const rowLabel = k => { const [Y, M, D] = k.split('-').map(Number); return byDay ? `${M}월 ${D}일 (${WD[new Date(Y, M - 1, D).getDay()]})` : `${String(Y).slice(2)}년 ${M}월`; };
-  // 파트너, 상대
-  const partners = rankPeople(list, 'partner').filter(p => p.n >= 2 && p.rate !== null);
-  const opps = rankPeople(list, 'opp').filter(p => p.n >= 2 && p.rate !== null);
-  const bests = partners.sort((a, b) => b.rate - a.rate || b.n - a.n).slice(0, 3);
-  const hards = opps.filter(p => p.l > p.w).sort((a, b) => a.rate - b.rate || b.n - a.n).slice(0, 3);   // 내가 더 많이 진 상대만
-  const top3 = (arr, empty, kind) => arr.length ? `<div class="plist rank3">${arr.map((p, i) => `<button type="button" class="prow" data-person="${esc(p.nm)}"><b><span class="rk">${i + 1}</span>${esc(p.nm)}</b><span class="rec rec2"><strong>${p.w}<em>승</em> ${p.l}<em>패</em></strong><span>승률 <i class="${p.rate >= 50 ? 'up' : 'dn'}">${p.rate}%</i></span></span><span class="meta">${kind === 'p' ? '같은 편으로' : '맞대결'} ${nf(p.n)}경기 · 내 기준</span></button>`).join('')}</div>` : `<p class="note" style="margin-top:0">${empty}</p>`;
 
-  const pcBtn = period === 'all' ? '' : `<button type="button" class="daycard" id="pcBtn" style="margin:0 0 12px"><span class="ic" aria-hidden="true">${tsvg('trophy')}</span>${{ week: '이 주', month: '이 달', year: '이 해' }[period]} 기록 카드 만들기</button>`;
+  const pcBtn = period === 'all' ? '' : `<button type="button" class="daycard" id="pcBtn" style="margin:0 0 12px"><span class="ic" aria-hidden="true">${tsvg('trophy')}</span>${{ day: '이 날', week: '이 주', month: '이 달', year: '이 해' }[period]} 기록 카드 만들기</button>`;
   body.innerHTML = nav + pcBtn + `
-    <div class="statgrid">
-      <div class="st"><small>승률${dRate}</small><b>${t.rate ?? '-'}<span class="pct">%</span></b></div>
-      <div class="st"><small>경기${dN}</small><b>${nf(t.n)}</b></div>
-      <div class="st"><small>전적</small><b>${t.w}<em>승</em> ${t.l}<em>패</em></b></div>
-      <div class="st"><small>득점</small><b>${nf(t.pf)}</b></div>
-      <div class="st"><small>실점</small><b>${nf(t.pa)}</b></div>
-      <div class="st"><small>득실</small><b>${diff > 0 ? '+' : ''}${nf(diff)}</b></div>
+    <div class="statgrid sg3">
+      <div class="st st-wide"><div class="st-l"><small>전적</small><b>${nf(t.n)}<em>전</em> ${t.w}<em>승</em> ${t.l}<em>패</em></b></div><div class="st-r"><small>승률</small><strong class="st-pct ${t.rate === null ? '' : t.rate >= 50 ? 'up' : 'dn'}">${t.rate ?? '-'}<span>%</span></strong></div></div>
+      <div class="st st2"><div class="r"><small>득점</small><b>${nf(t.pf)}</b></div><div class="r"><small>실점</small><b>${nf(t.pa)}</b></div></div>
+      <div class="st st2"><div class="r"><small>득실</small><b>${diff > 0 ? '+' : ''}${nf(diff)}</b></div><div class="r"><small>셔틀콕</small><b>${t.l ? '-' : ''}${nf(t.l)}<em>개</em></b></div></div>
     </div>
+    ${cokAna(t, prevT, pname)}
     ${sk ? `<div class="streak"><span class="sb ${sr}">${sk}${sr === 'w' ? '연승' : '연패'}</span><p>${sr === 'w' ? '지금 기세 좋아요. 마지막 경기까지 연속으로 이겼어요.' : '최근 경기를 연속으로 졌어요. 다음 판에 끊어 봐요.'}</p></div>` : ''}
     <h2 class="h2"><span class="ic" aria-hidden="true">${tsvg('chart-line')}</span>승률 변화</h2>
     ${trendSvg(list)}
     ${analysisHtml(list, t)}
-    <h2 class="h2">${IC.heart}베스트 파트너</h2>
-    ${top3(bests, '같은 파트너와 2경기 이상 뛰면 나타나요.', 'p')}
-    <h2 class="h2">${IC.swords}어려운 상대</h2>
-    ${top3(hards, '2경기 이상 만나서 내가 더 많이 진 상대가 아직 없어요.', 'o')}
     <h2 class="h2">${IC.chart}${byDay ? '날짜별' : '월별'}</h2>
     <div class="tblwrap" tabindex="0"><table><thead><tr><th style="text-align:left;padding-left:14px">${byDay ? '날짜' : '달'}</th><th>경기</th><th>전적</th><th>승률</th><th>득실</th></tr></thead><tbody>
       ${months.map(([m, gs]) => { const k = tally(gs); const df = k.pf - k.pa; return `<tr><td>${rowLabel(m)}</td><td>${nf(k.n)}</td><td>${k.w}<em>승</em> ${k.l}<em>패</em></td><td>${k.rate ?? '-'}%<span class="bar"><i style="width:${k.rate ?? 0}%"></i></span></td><td>${df > 0 ? '+' : ''}${nf(df)}</td></tr>`; }).join('')}
@@ -1961,7 +2021,11 @@ function renderStats() {
     <p class="note">베스트 파트너와 어려운 상대는 2경기 이상 함께한 사람만 계산해요.</p>`;
 }
 
+function top3Html(arr, empty, kind) { return arr.length ? `<div class="plist rank3">${arr.map((p, i) => `<button type="button" class="prow" data-person="${esc(p.nm)}"><b><span class="rk">${i + 1}</span>${esc(p.nm)}</b><span class="rec rec2"><strong>${p.w}<em>승</em> ${p.l}<em>패</em></strong><span>승률 <i class="${p.rate >= 50 ? 'up' : 'dn'}">${p.rate}%</i></span></span><span class="meta">${kind === 'p' ? '같은 편으로' : '맞대결'} ${nf(p.n)}경기 · 내 기준</span></button>`).join('')}</div>` : `<p class="note" style="margin-top:0">${empty}</p>`; }
 function renderPeople() {
+  document.querySelectorAll('#pPeriod .fchip').forEach(b => b.setAttribute('aria-pressed', b.dataset.p === period));
+  $('#pNav').innerHTML = period === 'all' ? '' : `<div class="pnav"><button type="button" data-nav="-1" aria-label="이전">‹</button><b>${esc(periodLabel())}</b><button type="button" data-nav="1" aria-label="다음" ${periodOff >= 0 ? 'disabled' : ''}>›</button></div>`;
+  const plist = sorted().filter(inPeriod);
   document.querySelectorAll('#roleSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.r === role));
   $('#rosterCount').textContent = `${rosterNames(false).length}명 · 새 회원 추가, 성별·급수·연령대 고치기`;
   document.querySelectorAll('#pSort .fchip').forEach(b => b.setAttribute('aria-pressed', b.dataset.s === pSort));
@@ -1976,10 +2040,13 @@ function renderPeople() {
     new: (a, b) => byLast(a, b) || b.n - a.n,
     old: (a, b) => -byLast(a, b) || b.n - a.n
   }[pSort];
-  const rows = rankPeople(games, role).sort(cmp);
+  const rows = rankPeople(plist, role).sort(cmp);
+  { const two = rankPeople(plist, role).filter(p => p.n >= 2 && p.rate !== null);
+    const top = role === 'partner' ? two.sort((a, b) => ((b.n >= MINR) - (a.n >= MINR)) || b.rate - a.rate || b.n - a.n).slice(0, 3) : two.filter(p => p.l > p.w).sort((a, b) => ((b.n >= MINR) - (a.n >= MINR)) || a.rate - b.rate || b.n - a.n).slice(0, 3);
+    $('#peopleTop').innerHTML = rows.length ? `<h2 class="h2">${role === 'partner' ? IC.heart + '베스트 파트너' : IC.swords + '어려운 상대'}</h2>${top3Html(top, role === 'partner' ? '같은 파트너와 2경기 이상 뛰면 나타나요.' : '2경기 이상 만나서 내가 더 많이 진 상대가 아직 없어요.', role === 'partner' ? 'p' : 'o')}<h2 class="h2">${IC.users}${role === 'partner' ? '파트너' : '상대'} 전체</h2>` : ''; }
   const body = $('#peopleBody');
   if (!rows.length) {
-    body.innerHTML = `<div class="empty"><h2>${role === 'opp' ? '아직 만난 상대가 없어요' : '아직 함께한 파트너가 없어요'}</h2><p>경기를 기록하면 사람별로 몇 번 붙었고 몇 번 이겼는지 모여요.</p></div>`;
+    body.innerHTML = period !== 'all' && games.length ? `<div class="empty"><h2>이 기간에는 경기가 없어요</h2><p>위에서 다른 기간을 골라 보세요.</p></div>` : `<div class="empty"><h2>${role === 'opp' ? '아직 만난 상대가 없어요' : '아직 함께한 파트너가 없어요'}</h2><p>경기를 기록하면 사람별로 몇 번 붙었고 몇 번 이겼는지 모여요.</p></div>`;
     return;
   }
   const recLabel = role === 'opp' ? '상대 전적' : '함께한 전적';
@@ -2417,7 +2484,7 @@ function openMe(first) {
       <div class="mp-row mp-dim mp-volrow"><svg class="mp-volic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.5" cy="17.5" r="2.5"/><path d="M9 17.5V5l5 2"/><path class="w1" d="M16 9.5a4 4 0 0 1 0 5"/><path class="w2" d="M18.6 7a7.5 7.5 0 0 1 0 10"/></svg><input type="range" class="mp-vol" id="fxVol" min="0" max="100" step="5" value="${fx.vol}" style="--v:${fx.vol}%" aria-label="효과음 볼륨"><b class="mp-volv" id="fxVolV" hidden>${fx.vol}</b></div>
     </div>
     <p class="mp-hint">경기를 저장하면 라켓을 맞대는 소리 뒤에, 이겼을 때와 졌을 때 다른 소리가 나요.</p>
-    <div class="mp-ver">${logoSrc ? `<img src="${esc(logoSrc)}" alt="">` : ''}<b>PLAY. LOG. PLAY.</b><span>2026.10.27 · 제작 김재용</span></div>`;
+    <div class="mp-ver">${logoSrc ? `<img src="${esc(logoSrc)}" alt="">` : ''}<b>PLAY. LOG. PLAY.</b><span>2026.10.28 · 제작 김재용</span></div>`;
   const sh = openSheet(`
     <div class="shd"><h3>${first ? '반가워요! 누구세요?' : '마이페이지'}</h3>${first ? '<p>내 이름을 고르면 바로 경기를 기록할 수 있어요.</p>' : ''}<button class="shx" type="button" aria-label="닫기">×</button></div>
     <div class="sbody${first ? '' : ' mp'}">${first ? `
@@ -2441,7 +2508,7 @@ function openMe(first) {
         <div class="fxvol"><span>볼륨</span><input type="range" id="fxVol" min="0" max="100" step="5" value="${fx.vol}" aria-label="효과음 볼륨"><b id="fxVolV">${fx.vol}</b></div>
         <div class="fxth"><span>효과음</span><div class="optrow">${[['court', '셔틀콕'], ['soft', '부드럽게'], ['retro', '게임기']].map(([k, l]) => `<button type="button" class="opt" data-th="${k}" aria-pressed="${fx.th === k}">${l}</button>`).join('')}</div></div>
         <p class="hint">누르면 미리 들어볼 수 있어요. 경기를 저장하면 종료 휘슬이 울리고, 이겼을 때와 졌을 때 소리가 달라요.</p></div>`}
-      <div class="appver"><b>PLAY. LOG. PLAY.</b><span>업데이트 2026.10.27<i></i>제작 김재용</span></div>` : mainHtml}
+      <div class="appver"><b>PLAY. LOG. PLAY.</b><span>업데이트 2026.10.28<i></i>제작 김재용</span></div>` : mainHtml}
     </div>`);
   let volT = 0;
   sh.addEventListener('change', e => {
@@ -2642,6 +2709,7 @@ function mergedGames() {
 }
 function inClubPeriod(date, per) {
   const t = today(), cp = per || clubPeriod;
+  if (cp === 'day') return date === t;
   if (cp === 'year') return date.slice(0, 4) === t.slice(0, 4);
   if (cp === 'month') return date.slice(0, 7) === t.slice(0, 7);
   if (cp === 'week') { const n = new Date(), s = new Date(n.getFullYear(), n.getMonth(), n.getDate() - (n.getDay() + 6) % 7), e = new Date(s.getFullYear(), s.getMonth(), s.getDate() + 6); return date >= ymd(s) && date <= ymd(e); }
@@ -2727,11 +2795,11 @@ function renderClub() {
   const ppl = [...P.entries()].map(([nm, o]) => ({ nm, ...o, rate: rate(o) }));
   const rankList = all.filter(g => inClubPeriod(g.date, rankPeriod));
   const rs = clubStats(rankList);
-  const RMIN = { week: 2, month: 3, year: 5, all: 5 }[rankPeriod] || 5;
+  const RMIN = { day: 2, week: 2, month: 3, year: 5, all: 5 }[rankPeriod] || 5;
   const rAll = [...rs.P.entries()].map(([nm, o]) => ({ nm, ...o }));
   const ranked = rAll.filter(p => p.n >= RMIN).sort((a, b) => lgCmp(b, a));
   const rShort = rAll.length - ranked.length;
-  const rseg = `<div class="seg rseg" id="rankSeg" role="group" aria-label="순위 기간">${[['week', '주간'], ['month', '월간'], ['year', '연간'], ['all', '누적']].map(([k, t]) => `<button type="button" data-rp="${k}" aria-pressed="${rankPeriod === k}">${t}</button>`).join('')}</div>`;
+  const rseg = `<div class="seg rseg" id="rankSeg" role="group" aria-label="순위 기간">${[['day', '오늘'], ['week', '주간'], ['month', '월간'], ['year', '연간'], ['all', '누적']].map(([k, t]) => `<button type="button" data-rp="${k}" aria-pressed="${rankPeriod === k}">${t}</button>`).join('')}</div>`;
   const combos = [...pairs.entries()].map(([nm, o]) => ({ nm, ...o, rate: rate(o) })).filter(p => p.n >= 3 && p.rate !== null).sort((a, b) => b.rate - a.rate || b.n - a.n).slice(0, 5);
   const rivals = [...h2h.values()].map(o => ({ ...o, rate: rate(o) })).filter(o => o.n >= 3 && o.w > o.l).sort((a, b) => b.rate - a.rate || b.n - a.n).slice(0, 5);
   const busiest = ppl.slice().sort((a, b) => b.n - a.n).slice(0, 5);
@@ -2742,7 +2810,7 @@ function renderClub() {
   const TOPN = 10;
   const prow = (p, i) => `<tr data-player="${esc(p.nm)}" class="tap${i < 3 ? ' top' : ''}${p.nm === me ? ' is-me' : ''}${i >= TOPN ? ' more' : ''}"><td class="rk">${rkCell(i)}</td><td class="nm">${esc(pn(p.nm))}${infoOf(p.nm).gr ? ` <span class="grd">${esc(infoOf(p.nm).gr)}</span>` : ''}</td><td class="num">${nf(p.n)}</td><td class="num w">${p.w}</td><td class="num l">${p.l}</td><td class="num">${(p.d || 0) > 0 ? '+' : ''}${nf(p.d || 0)}</td><td class="num pt">${fmtPt(avgPt(p))}</td></tr>`;
   const podium = ranked.length >= 3 ? `<div class="pod"><div class="podt">TOP 3</div>${[1, 0, 2].map(i => `<button type="button" class="pp3${i === 0 ? ' fst' : ''}" data-player="${esc(ranked[i].nm)}"><div class="rk3">${rkCell(i)}</div><b>${esc(ranked[i].nm)}</b><small>경기당 ${fmtPt(avgPt(ranked[i]))}점</small></button>`).join('')}</div>` : '';
-  const pLabel = (() => { const n = new Date(); if (clubPeriod === 'week') { const s = new Date(n.getFullYear(), n.getMonth(), n.getDate() - (n.getDay() + 6) % 7), e = new Date(s.getFullYear(), s.getMonth(), s.getDate() + 6); return `이번 주 · ${s.getMonth() + 1}.${s.getDate()} – ${e.getMonth() + 1}.${e.getDate()}`; } return { all: '전체 기간', year: n.getFullYear() + '년', month: n.getFullYear() + '년 ' + (n.getMonth() + 1) + '월' }[clubPeriod]; })();
+  const pLabel = (() => { const n = new Date(); if (clubPeriod === 'week') { const s = new Date(n.getFullYear(), n.getMonth(), n.getDate() - (n.getDay() + 6) % 7), e = new Date(s.getFullYear(), s.getMonth(), s.getDate() + 6); return `이번 주 · ${s.getMonth() + 1}.${s.getDate()} – ${e.getMonth() + 1}.${e.getDate()}`; } return { all: '누적', day: `오늘 · ${n.getMonth() + 1}.${n.getDate()}`, year: n.getFullYear() + '년', month: n.getFullYear() + '년 ' + (n.getMonth() + 1) + '월' }[clubPeriod]; })();
   const wl = o => `<strong>${o.w}<em>승</em> ${o.l}<em>패</em></strong>`;
   const rbar = r => `<span class="rbar"><i style="width:${r}%"></i></span><span class="rp">${r}<small>%</small></span>`;
   const sec = (ic, t, sub) => `<h2 class="h2">${ic}${t}${sub ? ` <small class="hsub">${sub}</small>` : ''}</h2>`;
@@ -2887,7 +2955,7 @@ function openPublishRoster() {
 }
 
 /* ---------- 프로 기능 묶음: 인사이트, 배지, 그래프, 결과 카드, 레이팅 ---------- */
-const TI = {"chart-donut-3": "<path d=\"M12 3v5m4 4h5\"/><path d=\"M8.929 14.582l-3.429 2.918\"/><path d=\"M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0\"/><path d=\"M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\"/>", "scale": "<path d=\"M7 20l10 0\"/><path d=\"M6 6l6 -1l6 1\"/><path d=\"M12 3l0 17\"/><path d=\"M9 12l-3 -6l-3 6a3 3 0 0 0 6 0\"/><path d=\"M21 12l-3 -6l-3 6a3 3 0 0 0 6 0\"/>", "stairs-up": "<path d=\"M22 6h-5v5h-5v5h-5v5h-5\"/><path d=\"M6 10v-7\"/><path d=\"M3 6l3 -3l3 3\"/>", "podium": "<path d=\"M5 8h14l-.621 2.485a2 2 0 0 1 -1.94 1.515h-8.878a2 2 0 0 1 -1.94 -1.515l-.621 -2.485z\"/><path d=\"M7 8v-2a3 3 0 0 1 3 -3\"/><path d=\"M8 12l1 9\"/><path d=\"M16 12l-1 9\"/><path d=\"M7 21h10\"/>", "trending-up": "<path d=\"M3 17l6 -6l4 4l8 -8\"/><path d=\"M14 7l7 0l0 7\"/>", "calendar-event": "<path d=\"M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z\"/><path d=\"M16 3l0 4\"/><path d=\"M8 3l0 4\"/><path d=\"M4 11l16 0\"/><path d=\"M8 15h2v2h-2z\"/>", "medal": "<path d=\"M12 4v3m-4 -3v6m8 -6v6\"/><path d=\"M12 18.5l-3 1.5l.5 -3.5l-2 -2l3 -.5l1.5 -3l1.5 3l3 .5l-2 2l.5 3.5z\"/>", "flame": "<path d=\"M12 12c2 -2.96 0 -7 -1 -8c0 3.038 -1.773 4.741 -3 6c-1.226 1.26 -2 3.24 -2 5a6 6 0 1 0 12 0c0 -1.532 -1.056 -3.94 -2 -5c-1.786 3 -2.791 3 -4 2z\"/>", "trophy": "<path d=\"M8 21l8 0\"/><path d=\"M12 17l0 4\"/><path d=\"M7 4l10 0\"/><path d=\"M17 4v8a5 5 0 0 1 -10 0v-8\"/><path d=\"M5 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\"/><path d=\"M19 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\"/>", "calendar-check": "<path d=\"M11.5 21h-5.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v6\"/><path d=\"M16 3v4\"/><path d=\"M8 3v4\"/><path d=\"M4 11h16\"/><path d=\"M15 19l2 2l4 -4\"/>", "swords": "<path d=\"M21 3v5l-11 9l-4 4l-3 -3l4 -4l9 -11z\"/><path d=\"M5 13l6 6\"/><path d=\"M14.32 17.32l3.68 3.68l3 -3l-3.365 -3.365\"/><path d=\"M10 5.5l-2 -2.5h-5v5l3 2.5\"/>", "bolt": "<path d=\"M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11\"/>", "heart-handshake": "<path d=\"M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572\"/><path d=\"M12 6l-3.293 3.293a1 1 0 0 0 0 1.414l.543 .543c.69 .69 1.81 .69 2.5 0l1 -1a3.182 3.182 0 0 1 4.5 0l2.25 2.25\"/><path d=\"M12.5 15.5l2 2\"/><path d=\"M15 13l2 2\"/>", "star": "<path d=\"M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z\"/>", "target-arrow": "<path d=\"M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\"/><path d=\"M12 7a5 5 0 1 0 5 5\"/><path d=\"M13 3.055a9 9 0 1 0 7.941 7.945\"/><path d=\"M15 6v3h3l3 -3h-3v-3z\"/><path d=\"M15 9l-3 3\"/>", "ball-tennis": "<path d=\"M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\"/><path d=\"M6 5.3a9 9 0 0 1 0 13.4\"/><path d=\"M18 5.3a9 9 0 0 0 0 13.4\"/>", "chart-line": "<path d=\"M4 19l16 0\"/><path d=\"M4 15l4 -6l4 2l4 -5l4 4\"/>", "calendar-stats": "<path d=\"M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4\"/><path d=\"M18 14v4h4\"/><path d=\"M18 18m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0\"/><path d=\"M15 3v4\"/><path d=\"M7 3v4\"/><path d=\"M3 11h16\"/>", "search": "<path d=\"M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0\"/><path d=\"M21 21l-6 -6\"/>", "bulb": "<path d=\"M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7\"/><path d=\"M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3\"/><path d=\"M9.7 17l4.6 0\"/>", "arrow-down": "<path d=\"M12 5l0 14\"/><path d=\"M18 13l-6 6\"/><path d=\"M6 13l6 6\"/>", "award": "<path d=\"M12 9m-6 0a6 6 0 1 0 12 0a6 6 0 1 0 -12 0\"/><path d=\"M12 15l3.4 5.89l1.598 -3.233l3.598 .232l-3.4 -5.889\"/><path d=\"M6.802 12l-3.4 5.89l3.598 -.233l1.598 3.232l3.4 -5.889\"/>", "crown": "<path d=\"M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z\"/>", "sparkles": "<path d=\"M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm-7 12a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z\"/>", "player-play": "<path d=\"M7 4v16l13 -8z\"/>"};
+const TI = {"shuttle": "<path d=\"M8.5 15.5l-3.5 -11.5h14l-3.5 11.5z\"/><path d=\"M10 4l1.2 11.5m2.8 -11.5l-1.2 11.5\"/><path d=\"M8.5 15.5h7v1.5a3.5 3.5 0 0 1 -7 0z\"/>", "chart-donut-3": "<path d=\"M12 3v5m4 4h5\"/><path d=\"M8.929 14.582l-3.429 2.918\"/><path d=\"M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0\"/><path d=\"M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\"/>", "scale": "<path d=\"M7 20l10 0\"/><path d=\"M6 6l6 -1l6 1\"/><path d=\"M12 3l0 17\"/><path d=\"M9 12l-3 -6l-3 6a3 3 0 0 0 6 0\"/><path d=\"M21 12l-3 -6l-3 6a3 3 0 0 0 6 0\"/>", "stairs-up": "<path d=\"M22 6h-5v5h-5v5h-5v5h-5\"/><path d=\"M6 10v-7\"/><path d=\"M3 6l3 -3l3 3\"/>", "podium": "<path d=\"M5 8h14l-.621 2.485a2 2 0 0 1 -1.94 1.515h-8.878a2 2 0 0 1 -1.94 -1.515l-.621 -2.485z\"/><path d=\"M7 8v-2a3 3 0 0 1 3 -3\"/><path d=\"M8 12l1 9\"/><path d=\"M16 12l-1 9\"/><path d=\"M7 21h10\"/>", "trending-up": "<path d=\"M3 17l6 -6l4 4l8 -8\"/><path d=\"M14 7l7 0l0 7\"/>", "calendar-event": "<path d=\"M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z\"/><path d=\"M16 3l0 4\"/><path d=\"M8 3l0 4\"/><path d=\"M4 11l16 0\"/><path d=\"M8 15h2v2h-2z\"/>", "medal": "<path d=\"M12 4v3m-4 -3v6m8 -6v6\"/><path d=\"M12 18.5l-3 1.5l.5 -3.5l-2 -2l3 -.5l1.5 -3l1.5 3l3 .5l-2 2l.5 3.5z\"/>", "flame": "<path d=\"M12 12c2 -2.96 0 -7 -1 -8c0 3.038 -1.773 4.741 -3 6c-1.226 1.26 -2 3.24 -2 5a6 6 0 1 0 12 0c0 -1.532 -1.056 -3.94 -2 -5c-1.786 3 -2.791 3 -4 2z\"/>", "trophy": "<path d=\"M8 21l8 0\"/><path d=\"M12 17l0 4\"/><path d=\"M7 4l10 0\"/><path d=\"M17 4v8a5 5 0 0 1 -10 0v-8\"/><path d=\"M5 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\"/><path d=\"M19 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\"/>", "calendar-check": "<path d=\"M11.5 21h-5.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v6\"/><path d=\"M16 3v4\"/><path d=\"M8 3v4\"/><path d=\"M4 11h16\"/><path d=\"M15 19l2 2l4 -4\"/>", "swords": "<path d=\"M21 3v5l-11 9l-4 4l-3 -3l4 -4l9 -11z\"/><path d=\"M5 13l6 6\"/><path d=\"M14.32 17.32l3.68 3.68l3 -3l-3.365 -3.365\"/><path d=\"M10 5.5l-2 -2.5h-5v5l3 2.5\"/>", "bolt": "<path d=\"M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11\"/>", "heart-handshake": "<path d=\"M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572\"/><path d=\"M12 6l-3.293 3.293a1 1 0 0 0 0 1.414l.543 .543c.69 .69 1.81 .69 2.5 0l1 -1a3.182 3.182 0 0 1 4.5 0l2.25 2.25\"/><path d=\"M12.5 15.5l2 2\"/><path d=\"M15 13l2 2\"/>", "star": "<path d=\"M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z\"/>", "target-arrow": "<path d=\"M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\"/><path d=\"M12 7a5 5 0 1 0 5 5\"/><path d=\"M13 3.055a9 9 0 1 0 7.941 7.945\"/><path d=\"M15 6v3h3l3 -3h-3v-3z\"/><path d=\"M15 9l-3 3\"/>", "ball-tennis": "<path d=\"M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\"/><path d=\"M6 5.3a9 9 0 0 1 0 13.4\"/><path d=\"M18 5.3a9 9 0 0 0 0 13.4\"/>", "chart-line": "<path d=\"M4 19l16 0\"/><path d=\"M4 15l4 -6l4 2l4 -5l4 4\"/>", "calendar-stats": "<path d=\"M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4\"/><path d=\"M18 14v4h4\"/><path d=\"M18 18m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0\"/><path d=\"M15 3v4\"/><path d=\"M7 3v4\"/><path d=\"M3 11h16\"/>", "search": "<path d=\"M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0\"/><path d=\"M21 21l-6 -6\"/>", "bulb": "<path d=\"M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7\"/><path d=\"M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3\"/><path d=\"M9.7 17l4.6 0\"/>", "arrow-down": "<path d=\"M12 5l0 14\"/><path d=\"M18 13l-6 6\"/><path d=\"M6 13l6 6\"/>", "award": "<path d=\"M12 9m-6 0a6 6 0 1 0 12 0a6 6 0 1 0 -12 0\"/><path d=\"M12 15l3.4 5.89l1.598 -3.233l3.598 .232l-3.4 -5.889\"/><path d=\"M6.802 12l-3.4 5.89l3.598 -.233l1.598 3.232l3.4 -5.889\"/>", "crown": "<path d=\"M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z\"/>", "sparkles": "<path d=\"M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm-7 12a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z\"/>", "player-play": "<path d=\"M7 4v16l13 -8z\"/>"};
 const tsvg = (k, cls) => `<svg class="${cls || ''}" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${TI[k] || ''}</svg>`;
 
 // 홈 한 줄 인사이트: 지금 가장 의미 있는 이야기 하나
@@ -2914,6 +2982,66 @@ function insight() {
   return { ic: 'bulb', t: `통산 ${seq.length}경기를 기록했어요`, s: '이번 주 첫 경기를 기록해 보세요.' };
 }
 
+
+function cokAna(t, p, pname) {
+  const when = { all: '지금까지', day: '이 날', week: '이번 주', month: '이번 달', year: '올해' }[period];
+  const unit = { all: '월', day: '경기일', week: '주', month: '월', year: '연' }[period];
+  const keyOf = { all: g => g.date.slice(0, 7), day: g => g.date, week: g => weekNo(g.date), month: g => g.date.slice(0, 7), year: g => g.date.slice(0, 4) }[period];
+  const r = periodRange(), all = sorted().filter(g => resOf(g) !== 'd');
+  const past = period === 'all' ? all : all.filter(g => g.date < r[0]);
+  const grp = groupBy(past, keyOf), ks = [...grp.keys()];
+  const avg = ks.length ? ks.reduce((a, k) => a + grp.get(k).filter(g => resOf(g) === 'l').length, 0) / ks.length : null;
+  const pg = past.length ? past.filter(g => resOf(g) === 'l').length / past.length : null;
+  const n = t.w + t.l, mine = n ? t.l / n : null;
+  const f1 = v => (Math.round(v * 10) / 10).toString();
+  const row = (lb, val, good) => `<div class="ca-r"><span>${lb}</span><b class="${good === null || good === undefined ? '' : good ? 'up' : 'dn'}">${val}</b></div>`;
+  const rows = [];
+  if (period !== 'all') {
+    if (p) { const d = t.l - p.l; rows.push(row(`${pname} (${nf(p.l)}개)`, d ? `${Math.abs(d)}개 ${d < 0 ? '덜' : '더'} 썼어요` : '똑같이 썼어요', d ? d < 0 : null)); }
+    if (avg !== null && ks.length >= 2) { const d = t.l - avg; rows.push(row(`${unit} 평균 (${f1(avg)}개)`, Math.abs(d) < 0.5 ? '평균과 비슷해요' : `${f1(Math.abs(d))}개 ${d < 0 ? '덜' : '더'} 썼어요`, Math.abs(d) < 0.5 ? null : d < 0)); }
+  } else if (avg !== null) rows.push(row(`${unit} 평균`, `${f1(avg)}개`, null));
+  const good = rows.filter(x => x.includes('class="up"')).length, bad = rows.filter(x => x.includes('class="dn"')).length;
+  const msg = period === 'all' ? `이긴 ${nf(t.w)}경기는 콕을 지켰어요.` : !rows.length ? '기록이 더 쌓이면 비교해 드릴게요.' : good > bad ? '평소보다 콕을 아꼈어요. 콕값 굳었네요!' : bad > good ? '평소보다 콕이 많이 나갔어요. 다음엔 지켜 봐요.' : '평소와 비슷하게 썼어요.';
+  return `<div class="cokbox cmp"><span class="ci" aria-hidden="true">${tsvg('shuttle')}</span><div class="ca"><p>${when} 셔틀콕 <strong>${nf(t.l)}개</strong> 썼어요</p><small>${msg}</small>${rows.length ? `<div class="ca-rows">${rows.join('')}</div>` : ''}</div></div>`;
+}
+function cmpBox(t, p, pname) {
+  const when = { all: '지금까지', day: '이 날', week: '이번 주', month: '이번 달', year: '올해' }[period];
+  const head = `${when} 셔틀콕 <strong>${nf(t.l)}개</strong> 썼어요`;
+  if (!p) return `<div class="cokbox"><span class="ci" aria-hidden="true">${tsvg('shuttle')}</span><div><p>${head}</p><small>${period === 'all' ? `이긴 ${nf(t.w)}경기는 콕을 지켰어요.` : `${pname}에는 경기가 없어서 비교할 수 없어요.`}</small></div></div>`;
+  const dr = t.rate !== null && p.rate !== null ? t.rate - p.rate : null, dc = t.l - p.l, dn = t.n - p.n;
+  const up = dr !== null && dr > 0, down = dr !== null && dr < 0;
+  const msg = up && dc < 0 ? '더 이기고 콕은 아꼈어요. 아주 좋아요!'
+    : up ? '승률이 올랐어요. 이 흐름 그대로 가요!'
+    : down && dc < 0 ? '승률은 조금 내려갔지만 콕은 아꼈어요.'
+    : down ? '조금 주춤했어요. 다음엔 콕을 지켜 봐요.'
+    : dc < 0 ? '승률은 그대로, 콕은 아꼈어요.' : '지난번과 비슷한 흐름이에요.';
+  const chip = (lb, v, good) => `<span class="cc ${good === null ? '' : good ? 'up' : 'dn'}">${lb} <b>${v}</b></span>`;
+  const chips = [
+    dr === null ? '' : chip('승률', dr ? `${dr > 0 ? '▲' : '▼'}${Math.abs(dr)}%p` : '그대로', dr ? dr > 0 : null),
+    chip('셔틀콕', dc ? `${Math.abs(dc)}개 ${dc < 0 ? '덜' : '더'}` : '똑같이', dc ? dc < 0 : null),
+    chip('경기', dn ? `${Math.abs(dn)}경기 ${dn > 0 ? '더' : '덜'}` : '똑같이', null)].join('');
+  return `<div class="cokbox cmp"><span class="ci" aria-hidden="true">${tsvg('shuttle')}</span><div><p>${head}</p><small>${msg}</small><div class="ccs"><span class="cl">${pname} 대비</span>${chips}</div></div></div>`;
+}
+function cokBox(t, prevL, pname) {
+  const used = t.l, when = { all: '지금까지', day: '이 날', week: '이번 주에', month: '이번 달에', year: '올해' }[period];
+  let msg;
+  if (prevL === null) msg = used ? `이긴 ${nf(t.w)}경기는 콕을 지켰어요.` : '아직 콕을 하나도 안 썼어요.';
+  else { const d = used - prevL; msg = d < 0 ? `${pname}보다 <b class="up">${-d}개 덜</b> 썼어요. 콕값 아꼈네요!` : d > 0 ? `${pname}보다 <b class="dn">${d}개 더</b> 썼어요.` : `${pname}과 똑같이 썼어요.`; }
+  return `<div class="cokbox"><span class="ci" aria-hidden="true">${tsvg('shuttle')}</span><div><p>${when} 셔틀콕 <strong>${nf(used)}개</strong> 썼어요</p><small>${msg}</small></div></div>`;
+}
+// ---------- 셔틀콕: 진 경기 1번 = 셔틀콕 1개 (이긴 팀이 콕을 가져가요) ----------
+function cokHtml(list, t, prevL, pname) {
+  const used = t.l, n = t.w + t.l;
+  const when = { all: '지금까지', day: '이 날', week: '이 주에', month: '이 달에', year: '이 해에' }[period];
+  let dl = '';
+  if (prevL !== null) { const d = used - prevL; dl = `<em class="dl ${d < 0 ? 'up' : d > 0 ? 'dn' : ''}">${pname}보다 ${d ? Math.abs(d) + '개 ' + (d < 0 ? '덜' : '더') : '똑같이'} 썼어요</em>`; }
+  const takers = rankPeople(list, 'opp').filter(p => p.l > 0).sort((a, b) => b.l - a.l || b.n - a.n).slice(0, 3);
+  const tk = takers.length ? `<p class="cok-sub">내 콕을 많이 가져간 상대</p><div class="plist rank3">${takers.map((p, i) => `<button type="button" class="prow" data-person="${esc(p.nm)}"><b><span class="rk">${i + 1}</span>${esc(p.nm)}</b><span class="rec rec2"><strong>${p.l}<em>개</em></strong><span>맞대결 ${nf(p.n)}경기</span></span></button>`).join('')}</div>` : '';
+  return `<h2 class="h2"><span class="ic" aria-hidden="true">${tsvg('shuttle')}</span>셔틀콕</h2>
+    <div class="chart cok"><div class="cok-top"><b>${nf(used)}<span class="u">개</span></b><p>${when} 쓴 셔틀콕${dl}<small>진 경기 1번 = 셔틀콕 1개로 세요</small></p></div>
+      <div class="cok-row"><span>이겨서 지킨 콕 <b>${nf(t.w)}개</b></span><span>경기당 <b>${n ? (used / n).toFixed(1) : '0'}개</b></span></div></div>
+    ${tk}`;
+}
 // ---------- 경기 분석: 급수별 승률, 접전 승률, 득점률 ----------
 const GRV = { A: 5, B: 4, C: 3, D: 2, E: 1, '초심': 0 };
 function grOf(n) { const v = GRV[infoOf(n).gr]; return v === undefined ? null : v; }
@@ -3687,8 +3815,11 @@ $('#addBtn').addEventListener('click', () => { if (!me) openMe(true); else openG
 ['input', 'keyup', 'compositionupdate', 'compositionend'].forEach(ev => $('#logQ').addEventListener(ev, () => setTimeout(renderLog, 0)));
 $('#logQ').addEventListener('change', () => { if ($('#logQ').value.trim()) gcEvent('경기-검색'); });
 $('#dayList').addEventListener('click', e => { if (e.target.closest('#qClear')) { $('#logQ').value = ''; renderLog(); return; } if (e.target.closest('#moreDays')) { logLimit += 14; renderLog(); return; } const dc = e.target.closest('[data-daycard]'); if (dc) { openDayCard(dc.dataset.daycard); return; } const g = e.target.closest('[data-edit]'); if (g) openGame(g.dataset.edit); });
+$('#pPeriod').addEventListener('click', e => { const b = e.target.closest('.fchip'); if (b) { period = b.dataset.p; periodOff = 0; renderPeople(); } });
+$('#pNav').addEventListener('click', e => { const nv = e.target.closest('[data-nav]'); if (nv) { periodOff = Math.min(0, periodOff + +nv.dataset.nav); renderPeople(); } });
+$('#peopleTop').addEventListener('click', e => { const p = e.target.closest('[data-person]'); if (p) openPerson(p.dataset.person); });
 $('#period').addEventListener('click', e => { const b = e.target.closest('.fchip'); if (b) { period = b.dataset.p; periodOff = 0; renderStats(); } });
-$('#statsBody').addEventListener('click', e => { const nv = e.target.closest('[data-nav]'); if (nv) { periodOff = Math.min(0, periodOff + +nv.dataset.nav); renderStats(); return; } if (e.target.closest('#imgBtn')) saveImage(); if (e.target.closest('#pcBtn')) openPeriodCard(); if (e.target.closest('#sendBtn')) sendToOwner(); const pp = e.target.closest('[data-person]'); if (pp) openPerson(pp.dataset.person); });
+$('#statsBody').addEventListener('click', e => { const nv = e.target.closest('[data-nav]'); if (nv) { periodOff = Math.min(0, periodOff + +nv.dataset.nav); renderStats(); return; } if (e.target.closest('#imgBtn')) saveImage(); if (e.target.closest('#pcBtn')) { if (period === 'day') openDayCard(periodRange()[0]); else openPeriodCard(); } if (e.target.closest('#sendBtn')) sendToOwner(); const pp = e.target.closest('[data-person]'); if (pp) openPerson(pp.dataset.person); });
 $('#clubImport').addEventListener('click', () => importCodes($('#clubIn').value));
 $('#clubExport').addEventListener('click', async () => {
   const t = clubExportText();
@@ -3725,7 +3856,7 @@ boot();
 })();
 </script>
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610270936)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610280303)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

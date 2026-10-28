@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0C50A1">
+<title>게임현황판 사용 가이드 · 좌동배드민턴클럽</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#F3F7FC;color:#14213D;font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;-webkit-text-size-adjust:100%}
+.app{height:100dvh;display:flex;flex-direction:column;max-width:560px;margin:0 auto}
+.top{flex:none;display:flex;align-items:center;gap:12px;padding:calc(12px + env(safe-area-inset-top)) 18px 8px}
+.dots{flex:1;display:flex;gap:5px}
+.dots button{flex:1;height:8px;border:0;border-radius:4px;background:#C2D0E6;padding:0;transition:flex .2s}
+.dots button.on{background:#0C50A1;flex:2.4}
+.cnt{font-size:15px;font-weight:800;color:#3B475C}
+.track{flex:1;min-height:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.track::-webkit-scrollbar{display:none}
+.sl{flex:none;width:100%;scroll-snap-align:start;overflow-y:auto;padding:6px 18px 18px;display:flex;flex-direction:column;gap:14px}
+.eb{font-size:14px;font-weight:800;letter-spacing:.12em;color:#0C50A1}
+h2{margin:0;font-size:30px;line-height:1.25;font-weight:800;letter-spacing:-.01em}
+p{margin:0}
+.card{background:#fff;border:1.5px solid #D5DEEC;border-radius:18px;padding:16px 18px}
+.card b{font-size:21px;display:block;margin-bottom:2px}
+.card p{font-size:17.5px;line-height:1.55;color:#2A3650}
+.ic{flex:none;width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-family:'Do Hyeon',sans-serif;font-size:26px}
+.row{display:flex;gap:14px;align-items:center}
+.num{flex:none;font-family:'Do Hyeon',sans-serif;font-size:42px;line-height:1;color:#0C50A1;width:34px;text-align:center}
+.pill{display:inline-flex;align-items:center;height:30px;padding:0 13px;border-radius:15px;font-size:15px;font-weight:800}
+.hero{flex:1;background:#0C50A1;color:#fff;border-radius:28px;padding:32px 24px;display:flex;flex-direction:column;justify-content:space-between;gap:20px}
+.hero h1{margin:0;font-family:'Do Hyeon',sans-serif;font-weight:400;font-size:50px;line-height:1.12}
+.bar{flex:none;display:flex;gap:10px;padding:10px 18px calc(16px + env(safe-area-inset-bottom));background:#F3F7FC;border-top:1.5px solid #E1E8F3}
+.bar button{height:56px;border-radius:15px;font:800 19px/1 inherit;font-family:inherit;cursor:pointer}
+.prev{width:100px;border:1.5px solid #C2D0E6;background:#fff;color:#14213D}
+.next{flex:1;border:0;background:#0C50A1;color:#fff}
+.prev:disabled{opacity:.4}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top"><div class="dots" id="dots"></div><div class="cnt" id="cnt"></div></div>
+
+<div class="track" id="track">
+
+<section class="sl" style="padding:0 12px 12px">
+<div class="hero">
+<div style="display:flex;flex-direction:column;gap:18px">
+<div style="font-size:14px;font-weight:800;letter-spacing:.14em;color:#FEE500">좌동배드민턴클럽 · 사용 가이드</div>
+<h1>게임 잡느라<br>몰리던 시간,<br>이제 화면이<br>정리해요</h1>
+<p style="font-size:19px;color:#DCE8F8">누가 쉬고, 누가 다음 차례인지 <b style="color:#fff">게임현황판</b> 하나로 한눈에.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<span class="pill" style="background:#FEE500;color:#191919">로그인·가입 없음</span>
+<span class="pill" style="background:#1D4F94;color:#fff;border:1.5px solid #5C8AC9">폰·태블릿 OK</span>
+</div>
+<div style="font-size:16px;color:#DCE8F8">옆으로 밀어 넘겨 보세요 →</div>
+</div>
+</div>
+</section>
+
+<section class="sl">
+<div><div class="eb">WHY</div><h2>이래서 좋아요</h2></div>
+<div class="card row"><span class="ic" style="background:#E3ECF8;color:#0C50A1">1</span><div><b>한눈에 보여요</b><p>코트·대기 순서 한 화면에</p></div></div>
+<div class="card row"><span class="ic" style="background:#FFF3A8;color:#191919">2</span><div><b>자동으로 짜요</b><p>버튼 한 번에 대기 줄 완성</p></div></div>
+<div class="card row"><span class="ic" style="background:#DDF3E1;color:#17692B">3</span><div><b>음성으로 불러요</b><p>차례가 되면 이름을 불러줘요</p></div></div>
+<div class="card row"><span class="ic" style="background:#FBE4EC;color:#B02A58">4</span><div><b>기록이 쌓여요</b><p>출석·게임 수 주간/월간 통계</p></div></div>
+</section>
+
+<section class="sl">
+<div><div class="eb">SCREEN</div><h2>화면은 세 칸</h2></div>
+<div class="card"><b>① 코트</b><p>지금 치는 4명과 경과 시간. 빈 코트는 <b style="display:inline;font-size:inherit">입장</b> 버튼.</p></div>
+<div class="card"><b>② 대기</b><p>다음에 칠 팀을 줄 세우는 곳. 4명이 차면 초록 <b style="display:inline;font-size:inherit">입장 가능</b>.</p></div>
+<div class="card"><b>③ 쉬는 선수</b><p>출석했지만 지금 안 치는 사람들. 이름·초성 검색, 손님은 <b style="display:inline;font-size:inherit">게스트</b> 칸.</p></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill" style="background:#E3ECF8;color:#0C50A1">남성부</span><span class="pill" style="background:#FBE4EC;color:#8E1F47">여성부</span><span class="pill" style="background:#FFF3C4;color:#5B4300">게스트</span></div>
+</section>
+
+<section class="sl">
+<div><div class="eb">FLOW</div><h2>하루 흐름</h2></div>
+<div class="card row"><span class="num">1</span><div><b>출석</b><p>쉬는 선수 칸 <b style="display:inline;font-size:inherit">출석</b> → 이름 선택</p></div></div>
+<div class="card row"><span class="num">2</span><div><b>대기 만들기</b><p><b style="display:inline;font-size:inherit">+</b>로 4명씩. 많으면 자동 편성</p></div></div>
+<div class="card row"><span class="num">3</span><div><b>입장</b><p><b style="display:inline;font-size:inherit">입장</b> 누르면 코트 배정</p></div></div>
+<div class="card row"><span class="num">4</span><div><b>게임 종료</b><p>코트의 <b style="display:inline;font-size:inherit">✕</b>를 눌러요</p></div></div>
+<div class="card row" style="background:#191919;border-color:#191919"><span class="num" style="color:#FEE500">5</span><div><b style="color:#fff">오늘 게임 종료</b><p style="color:#E6E9EF">끝나면 맨 위 검은 버튼</p></div></div>
+</section>
+
+<section class="sl">
+<div><div class="eb">MENU</div><h2>위쪽 메뉴</h2></div>
+<div class="card"><b>오늘 게임 종료</b><p>하루 마무리. 한 번 더 물어봐요.</p></div>
+<div class="card"><b>공지</b><p>모두에게 보일 글을 적어 둬요.</p></div>
+<div class="card"><b>뒤로 · 앞으로</b><p>잘못 눌렀을 때 되돌리고 되살려요.</p></div>
+<div class="card"><b>비우기</b><p>코트·대기를 처음으로 비워요.</p></div>
+<div class="card"><b>기록</b><p>오늘·주간·월간·연간 출석과 게임 수.</p></div>
+<div class="card"><b>설정</b><p>소리·테마·명부·백업. 다음 쪽 참고.</p></div>
+</section>
+
+<section class="sl">
+<div><div class="eb">SMART</div><h2>사람 많은 날 특히 좋아요</h2></div>
+<div style="background:#FEE500;border-radius:22px;padding:22px 20px;display:flex;flex-direction:column;gap:10px">
+<span style="font-size:14px;font-weight:800;letter-spacing:.1em;color:#5B4300">월례회처럼 붐비는 날</span>
+<div style="font-family:'Do Hyeon',sans-serif;font-size:34px;line-height:1.2;color:#191919">자동 편성 한 번이면<br>줄이 쭉</div>
+<p style="font-size:18px;line-height:1.5;color:#2B2400">같은 성별·비슷한 급수끼리 4명씩. 게임 적게 한 사람이 먼저예요. 마음에 안 들면 <b>뒤로</b> 한 번!</p>
+</div>
+<div class="card"><b>입장명부도 알아서</b><p>좌동/게스트 입장료와 납입을 자동 정리. 이미지 저장·글 복사도 돼요.</p></div>
+</section>
+
+<section class="sl">
+<div><div class="eb">SETTINGS</div><h2>설정에서 바꿔요</h2></div>
+<div class="card"><b>소리·음성</b><p>효과음, 음량, 이름 호출 켜고 끄기</p></div>
+<div class="card"><b>코트 테마</b><p>좌동·네이버·카카오·토스, 매주 자동 교체</p></div>
+<div class="card"><b>회원명부</b><p>추가·삭제, 성별·급수·연령대</p></div>
+<div class="card"><b>단골 불러오기</b><p>자주 오는 분들을 한 번에 출석</p></div>
+<div class="card"><b>샘플 연습</b><p>처음엔 연습 모드로 마음껏 눌러 봐요</p></div>
+<div class="card"><b>데이터 백업</b><p>기록은 <u>이 기기에만</u> 저장. 내보내기로 파일 보관</p></div>
+</section>
+
+<section class="sl">
+<div><div class="eb">FAQ</div><h2>자주 묻는 질문</h2></div>
+<div class="card"><b>손님은요?</b><p>출석의 <b style="display:inline;font-size:inherit">손님</b> 필터에서 선택해요.</p></div>
+<div class="card"><b>선수를 바꾸려면?</b><p>코트의 이름을 누르면 교체 창이 열려요.</p></div>
+<div class="card"><b>폰에서도 되나요?</b><p>네. 세로는 아래 탭, 가로는 전체 화면.</p></div>
+<div class="card"><b>앱처럼 설치?</b><p>브라우저 메뉴의 <b style="display:inline;font-size:inherit">홈 화면에 추가</b>.</p></div>
+<div style="background:#0C50A1;color:#fff;border-radius:22px;padding:20px">
+<div style="font-family:'Do Hyeon',sans-serif;font-size:30px">이제 눌러 보세요!</div>
+<p style="font-size:17px;color:#DCE8F8;margin-top:4px">먼저 <b style="color:#fff">샘플 연습</b>으로 가볍게 시작해요.</p>
+</div>
+</section>
+
+</div>
+
+<div class="bar"><button class="prev" id="prev">이전</button><button class="next" id="next">시작하기</button></div>
+</div>
+<script>
+(function(){
+var t=document.getElementById('track'),s=t.children,n=s.length,p=0;
+var d=document.getElementById('dots'),c=document.getElementById('cnt'),pv=document.getElementById('prev'),nx=document.getElementById('next');
+for(var i=0;i<n;i++){(function(i){var b=document.createElement('button');b.setAttribute('aria-label',(i+1)+'쪽');b.onclick=function(){go(i)};d.appendChild(b)})(i)}
+function ui(){
+for(var i=0;i<n;i++)d.children[i].className=i===p?'on':'';
+c.textContent=(p+1)+' / '+n;pv.disabled=p===0;
+nx.textContent=p===0?'시작하기':(p===n-1?'처음으로':'다음');
+}
+function go(i){p=Math.max(0,Math.min(n-1,i));t.scrollTo({left:p*t.clientWidth,behavior:'smooth'});ui()}
+t.addEventListener('scroll',function(){var q=Math.round(t.scrollLeft/t.clientWidth);if(q!==p){p=q;ui()}});
+pv.onclick=function(){go(p-1)};
+nx.onclick=function(){go(p===n-1?0:p+1)};
+ui();
+})();
+</script>
+</body>
+</html>

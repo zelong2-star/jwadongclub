@@ -6,6 +6,8 @@ self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Pr
 self.addEventListener('fetch', e => {
   const req = e.request; if (req.method !== 'GET') return;
   const url = new URL(req.url);
+  // 게임현황판(/board/)은 이 앱의 캐시와 섞이지 않게 건드리지 않아요
+  if (url.pathname.includes('/board/')) return;
   // 공지 파일은 저장해 둔 옛것을 쓰지 않고 항상 새로 받아요
   if (url.pathname.endsWith('/notice.txt') || url.pathname.endsWith('/club.json')) return;
   // 사용 집계는 저장해 두지 않고 그대로 보내요

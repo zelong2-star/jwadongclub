@@ -1024,6 +1024,10 @@ html body .pn.rop .rogr .roc .fe{font-size:clamp(13px,calc(var(--rh,36px)*.38),1
 html body .pn.rop .rogr .roc .no{font-size:clamp(11px,calc(var(--rh,36px)*.3),14px)}
 html body .pn.rop .rogr .roc .rog,html body .pn.rop .rogr .roc .ropy button{height:clamp(22px,calc(var(--rh,36px)*.55),30px);font-size:clamp(11px,calc(var(--rh,36px)*.24),13px);white-space:nowrap;padding:0 4px}
 html body .pn.rop .rogr .roc .rodu{font-size:clamp(11px,calc(var(--rh,36px)*.3),15px)}
+html body .lf>.h,html body .mn .lf>.h{justify-content:flex-start!important}html body .lf>.h .ecb.pl{margin-left:8px!important}
+html body .rt>.h button.ecb.pl{border:0;font:inherit;font-size:13px;font-weight:800;cursor:pointer;margin-left:8px!important}
+html body[data-ct="1"][data-lay="r"] .rvs[data-sc]{overflow-y:scroll!important;overflow-x:hidden!important;padding-right:4px!important}
+html body[data-ct="1"][data-lay="r"] .rvs[data-sc]::-webkit-scrollbar{width:8px}html body[data-ct="1"][data-lay="r"] .rvs[data-sc]::-webkit-scrollbar-thumb{background:var(--gx,var(--g));border-radius:4px}html body[data-ct="1"][data-lay="r"] .rvs[data-sc]::-webkit-scrollbar-track{background:color-mix(in srgb,var(--gx,var(--g)) 12%,transparent);border-radius:4px}
 </style>
 </head>
 <body data-lay="r" data-ct="1"><div id="app"></div><div id="md"></div><div id="ts"></div>
@@ -1119,7 +1123,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","네이버","토스","카카오","좌동클럽"];const APPV=95,APPD="2026-10-28",DEV="재용";function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,1,3,2][WK()%4];return ST.sx||4}
+const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","네이버","토스","카카오","좌동클럽"];const APPV=96,APPD="2026-10-28",DEV="재용";function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,1,3,2][WK()%4];return ST.sx||4}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -1460,25 +1464,30 @@ e.style.setProperty('padding-top',Math.max(0,Math.round(-2*d))+'px','important')
 function fitQ(){try{
 var v=document.querySelector('.rvs');if(!v)return;
 var rows=[].slice.call(v.querySelectorAll('.rv'));
-rows.forEach(function(r){r.classList.remove('qh')});v.removeAttribute('data-cm');v.style.removeProperty('--qh');
+rows.forEach(function(r){r.classList.remove('qh')});v.removeAttribute('data-cm');v.removeAttribute('data-sc');v.style.removeProperty('--qh');
 var old=document.getElementById('qmore');if(old)old.remove();
-var cnt=document.querySelector('.rt>.h b .cnt2');
+var cnt=document.querySelector('.rt>.h b .cnt2');if(cnt)cnt.textContent='';
 var filled=function(r){return !!r.querySelector('.p:not(.e)')};
-var total=rows.filter(filled).length;if(cnt)cnt.textContent=total+'팀';
 if(!document.body.matches('[data-ct="1"][data-lay="r"]'))return;if(!v.getBoundingClientRect().width)return;
 var cs=getComputedStyle(v);if(cs.overflowY==='visible')return;
 var gap=parseFloat(cs.rowGap)||8,H=v.clientHeight-(parseFloat(cs.paddingTop)||0)-(parseFloat(cs.paddingBottom)||0),n=rows.length;if(!n||!H)return;
 var h0=rows[0].getBoundingClientRect().height;
 var k=Math.min(n,MAXR);
 if(k*MIN+(k-1)*gap>H)k=Math.max(1,Math.floor((H+gap)/(MIN+gap)));
-if(k>=n&&n*h0+(n-1)*gap<=H+1)return;
 var qh=(H-(k-1)*gap)/k;
-if(k*h0+(k-1)*gap>H+1){v.setAttribute('data-cm','1');v.style.setProperty('--qh',Math.floor(qh)+'px')}
-rows.forEach(function(r,i){if(i>=k)r.classList.add('qh')});
+if(n>k||k*h0+(k-1)*gap>H+1){v.setAttribute('data-cm','1');v.style.setProperty('--qh',Math.floor(qh)+'px')}
+if(n>k)v.setAttribute('data-sc','1');
 var hid=rows.slice(k).filter(filled).length;
-if(cnt)cnt.textContent=(total-hid)+'팀';
-if(hid){var pl=document.createElement('span');pl.id='qmore';pl.className='ecb pl qm';pl.textContent='+'+hid+'팀';var b=document.querySelector('.rt>.h b');if(b)b.insertAdjacentElement('afterend',pl)}
+if(hid){var pl=document.createElement('button');pl.type='button';pl.id='qmore';pl.className='ecb pl qm';pl.textContent='+'+hid+'팀';var b=document.querySelector('.rt>.h b');if(b)b.insertAdjacentElement('afterend',pl)}
 }catch(e){}}
+function qmList(){try{
+var v=document.querySelector('.rvs');if(!v)return;var rows=[].slice.call(v.querySelectorAll('.rv')),k=MAXR;
+var h=rows.map(function(r,i){var nm=[].slice.call(r.querySelectorAll('.p:not(.e)')).map(function(x){return x.textContent.replace(/[✓\s]+/g,' ').trim()});return {i:i,no:(r.querySelector('.nb')||{}).textContent||(i+1),nm:nm}}).filter(function(x){return x.i>=k&&x.nm.length});
+if(!h.length)return;
+var ee=function(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+$('md').innerHTML='<div class="ov"><div class="pn sm"><div class="h"><b class="tt">대기 '+h.length+'팀 더 있어요</b><button class="b o" data-a="x">닫기</button></div>'+h.map(function(x){return '<div class="sr"><span>'+ee(x.no)+'번'+(x.nm.length<4?' · '+(4-x.nm.length)+'명 더 필요':'')+'</span><b>'+ee(x.nm.join(', '))+'</b></div>'}).join('')+'</div></div>';
+}catch(e){}}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#qmore');if(!b)return;e.stopPropagation();e.preventDefault();qmList()},true);
 function post(){wqCal();fitQ()}
 var _r=window.render;
 window.render=function(){var x=_r.apply(this,arguments);post();return x};

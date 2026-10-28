@@ -1108,7 +1108,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","네이버","토스","카카오","좌동클럽"];const APPV=91,APPD="2026-10-28",DEV="재용";function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,1,3,2][WK()%4];return ST.sx||4}
+const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","네이버","토스","카카오","좌동클럽"];const APPV=92,APPD="2026-10-28",DEV="재용";function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,1,3,2][WK()%4];return ST.sx||4}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -1474,6 +1474,26 @@ window.addEventListener('resize',function(){clearTimeout(post.t);post.t=setTimeo
 document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#ptb'))setTimeout(post,60)});window.addEventListener('orientationchange',function(){setTimeout(post,300)});
 try{document.fonts&&document.fonts.ready.then(post)}catch(e){}
 post();
+})();
+</script>
+<script>
+(function(){
+var T=null,sx=0,sy=0;
+function stop(){clearTimeout(T)}
+document.addEventListener('pointerdown',function(e){
+var rv=e.target.closest&&e.target.closest('.rvs .rv');if(!rv||e.button>0)return;
+var btn=e.target.closest('button[data-a="go"],button[data-a="pick"]');if(btn)return;
+var i=-1,c=rv.querySelector('[data-i]');if(c)i=+c.dataset.i;if(i<0||!S.rows[i]||!S.rows[i].some(Boolean))return;
+sx=e.clientX;sy=e.clientY;clearTimeout(T);
+T=setTimeout(function(){LPF=1;
+var r=S.rows[i],no=(rv.querySelector('.nb')||{}).textContent||(i+1),names=r.filter(Boolean).map(function(n){return dn(n)}).join(', ');
+$('md').innerHTML='<div class="ov"><div class="pn sm"><b class="tt">대기 '+no+'번 팀을 취소할까요?</b><p class="endm"><b>'+esc(names)+'</b></p><span class="mu">선수들은 쉬는 선수로 돌아가요. (뒤로 가기로 되돌릴 수 있어요)</span><div class="ft"><button class="b o" data-a="x">아니요</button><button class="b g" data-a="qcx" data-i="'+i+'">팀 취소</button></div></div></div>';
+},550)});
+document.addEventListener('pointermove',function(e){if(T&&Math.abs(e.clientX-sx)+Math.abs(e.clientY-sy)>12)stop()});
+['pointerup','pointercancel'].forEach(function(t){document.addEventListener(t,stop)});
+document.addEventListener('contextmenu',function(e){if(e.target.closest&&e.target.closest('.rvs .rv'))e.preventDefault()});
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-a="qcx"]');if(!b)return;e.stopPropagation();e.preventDefault();
+var i=+b.dataset.i,n=S.rows[i]?S.rows[i].filter(Boolean).length:0;$('md').innerHTML='';if(!n)return;mut(function(){S.rows[i]=[]});toast('대기 팀을 취소했어요')},true);
 })();
 </script>
 </body></html>

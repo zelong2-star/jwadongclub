@@ -1053,14 +1053,14 @@ html body button[data-a="wreg"],html body #wtg button[data-a="wreg"],html body[d
 html body button[data-a="wreg"]:disabled{background:#E5484D!important;color:#fff!important;opacity:.4}
 </style>
 <style>
-.ik.anim .kpl:nth-of-type(1){transform-origin:50% 95%;animation:kh1 2.6s ease-in-out infinite}
-.ik.anim .kpl:nth-of-type(2){transform-origin:50% 95%;animation:kh2 2.6s ease-in-out infinite}
-@keyframes kh1{0%,100%{transform:rotate(0)}4%{transform:rotate(-12deg)}10%{transform:rotate(9deg)}20%{transform:rotate(0)}}
-@keyframes kh2{0%,50%,70%,100%{transform:rotate(0)}54%{transform:rotate(12deg)}60%{transform:rotate(-9deg)}}
+.ik.anim .kpl:nth-of-type(2){transform-origin:50% 95%;animation:kh1 2.6s ease-in-out infinite}
+.ik.anim .kpl:nth-of-type(3){transform-origin:50% 95%;animation:kh2 2.6s ease-in-out infinite}
+@keyframes kh1{0%,30%,100%{transform:translate(-50%,-100%) rotate(0)}88%{transform:translate(-50%,-100%) rotate(0)}94%{transform:translate(-50%,-100%) rotate(-14deg)}99%{transform:translate(-50%,-100%) rotate(10deg)}}
+@keyframes kh2{0%,38%,62%,100%{transform:translate(-50%,-100%) rotate(0)}44%{transform:translate(-50%,-100%) rotate(14deg)}49%{transform:translate(-50%,-100%) rotate(-10deg)}}
 .ik.anim .ksw{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:3}
 .ik.anim .ksh{position:absolute;left:31%;top:34%;width:4.4%;aspect-ratio:2/3;background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 60'><path d='M13 38 L4 4 Q20 -2 36 4 L27 38 Z' fill='white' stroke='%23b9c0cc' stroke-width='2' stroke-linejoin='round'/><path d='M13 38 L9 5 M20 38 L20 2 M27 38 L31 5' stroke='%23c9cfd9' stroke-width='1.5' fill='none'/><path d='M12 36 H28' stroke='%23e5484d' stroke-width='3'/><circle cx='20' cy='46' r='10' fill='%23f2c14e' stroke='%23b8862a' stroke-width='2'/></svg>") center/contain no-repeat;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35));animation:kx 2.6s linear infinite,ky 2.6s linear infinite}
-@keyframes kx{0%,100%{left:31%}50%{left:60%}}
-@keyframes ky{0%{top:36%;transform:rotate(-70deg);animation-timing-function:ease-out}25%{top:22%;transform:rotate(-90deg);animation-timing-function:ease-in}50%{top:36%;transform:rotate(-110deg)}50.01%{top:36%;transform:rotate(70deg);animation-timing-function:ease-out}75%{top:22%;transform:rotate(90deg);animation-timing-function:ease-in}100%{top:36%;transform:rotate(110deg)}}
+@keyframes kx{0%,100%{left:33%}50%{left:50%}}
+@keyframes ky{0%{top:26%;transform:translate(-50%,-50%) rotate(-60deg);animation-timing-function:ease-out}25%{top:4%;transform:translate(-50%,-50%) rotate(-90deg);animation-timing-function:ease-in}50%{top:14%;transform:translate(-50%,-50%) rotate(-120deg)}50.01%{top:14%;transform:translate(-50%,-50%) rotate(60deg);animation-timing-function:ease-out}75%{top:2%;transform:translate(-50%,-50%) rotate(90deg);animation-timing-function:ease-in}100%{top:26%;transform:translate(-50%,-50%) rotate(120deg)}}
 @media (prefers-reduced-motion:reduce){.ik.anim .kpl,.ik.anim .ksh{animation:none}}
 </style>
 </head>
@@ -1157,7 +1157,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","네이버","토스","카카오","좌동클럽"];const APPV=107,APPD="2026-10-28",DEV="재용";function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,1,3,2][WK()%4];return ST.sx||4}
+const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","네이버","토스","카카오","좌동클럽"];const APPV=108,APPD="2026-10-28",DEV="재용";function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,1,3,2][WK()%4];return ST.sx||4}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;

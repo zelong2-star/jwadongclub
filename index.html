@@ -700,6 +700,39 @@ tr.sum td:first-child{font-weight:800}
 .sg3 .st2 .r+.r{padding-top:8px;border-top:1px solid var(--line)}
 .sg3 .st2 b{font-size:26px}
 .tz2 .sg3 .st2,.tz .sg3 .st2{flex-direction:column}
+/* 리포트 팝업 */
+.rpov{position:fixed;inset:0;z-index:60;background:rgb(8 16 32/.55);display:flex;align-items:center;justify-content:center;padding:20px 16px}
+.rp{width:100%;max-width:400px;max-height:calc(100vh - 40px);overflow:auto;background:var(--bg);border-radius:24px;box-shadow:0 20px 50px rgb(0 0 0/.35)}
+.rp-hd{position:relative;padding:20px 20px 18px;background:linear-gradient(150deg,#0c50a1,#083a78);color:#fff;border-radius:24px 24px 0 0}
+.rp-hd .k{font:italic 800 13px/1 var(--disp);letter-spacing:.12em;opacity:.8}
+.rp-hd h3{margin:6px 0 2px;font:800 21px/1.3 var(--body);letter-spacing:-.03em}
+.rp-hd .d{font:600 12.5px var(--body);opacity:.8}
+.rp-hd .x{border:0;color:#fff;cursor:pointer;position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgb(255 255 255/.14);font-size:20px}
+.rp-big{display:flex;align-items:flex-end;justify-content:space-between;margin-top:14px}
+.rp-big b{font:italic 800 34px/1 var(--disp)} .rp-big b em{font:800 15px var(--body);font-style:normal;margin:0 3px 0 1px;opacity:.85}
+.rp-big .rt{text-align:right;font:700 12px var(--body);opacity:.85}.rp-big .rt strong{display:block;font:italic 800 34px/1 var(--disp);color:#7be08f;opacity:1}
+.rp-bd{padding:14px 16px 16px;display:grid;gap:10px}
+.rc{background:var(--surface);border-radius:16px;padding:13px 14px;box-shadow:0 1px 2px rgb(1 2 60/.05)}
+.rc .t{font:800 13px var(--body);color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.rc .row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font:600 14px var(--body);color:var(--ink)}
+.rc .row b{font-weight:800}.rp .up{color:var(--court-txt)!important}.rp .dn{color:#c23d30!important}
+.rc p{margin:0;font:600 14px/1.5 var(--body);color:var(--ink)} .rc p small{display:block;color:var(--muted);font-size:12.5px;font-weight:500}
+.rc .sc{float:right;font:italic 800 22px/1 var(--disp);color:var(--navy)}
+.rc .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rc .two div{background:var(--bg);border-radius:12px;padding:10px}
+.rc .two small{display:block;font:700 12px var(--body);color:var(--muted)}.rc .two b{display:block;font:800 16px var(--body);margin-top:3px;color:var(--ink)!important}.rc .two i{font:600 12px var(--body);font-style:normal;color:var(--muted)}
+.badge{display:inline-flex;align-items:center;gap:4px;margin:2px 4px 2px 0;padding:6px 10px;border-radius:99px;background:#fff4d6;color:#7a5200;font:800 12.5px var(--body)}
+.goal{background:#e8f4ea}.goal p{color:#14532d}
+.rp-ft{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;padding:0 16px 16px}
+.rp-ft button{min-height:48px;border:0;border-radius:14px;font:800 15px var(--body)}
+.rp-ft .c{background:var(--surface);color:var(--muted)}.rp-ft .s{background:#0c1838;color:#fff}
+
+.rp-cmp{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font:600 14px var(--body);color:var(--ink)}
+.rp-cmp .t0{font:800 13px var(--body);color:var(--muted);margin-right:auto}
+.rp-cmp b{font-weight:800;margin-left:3px}.rp-na{color:var(--muted);font-size:13px}
+.rc p small b{font-weight:800}
+.rpbtn{display:block;width:100%;min-height:44px;margin:-4px 0 12px;border:0;border-radius:14px;background:var(--surface);color:var(--hero-txt);font:800 14.5px var(--body);box-shadow:0 1px 2px rgb(1 2 60/.06);cursor:pointer}
+@media (prefers-color-scheme:dark){.badge{background:#3a2e10;color:#ffd77a}.goal{background:#12301b}.goal p{color:#9be3ad}}
+
 /* 콕 소비 박스 */
 .cokbox{display:flex;align-items:center;gap:12px;margin-top:8px;padding:12px 14px;border-radius:14px;background:var(--surface);box-shadow:0 1px 2px rgb(1 2 60 / .05)}
 .cokbox .ci{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--icbg);color:var(--navy)}
@@ -1787,6 +1820,97 @@ async function boot() {
   render();
   initDownloads();
   if (mode === 'local') askMeIfNeeded();
+  setTimeout(maybeReport, 2600);
+}
+
+/* ---------- 주간·월간 리포트 팝업 (앱을 열 때 지난주/지난달 한 번) ---------- */
+const RPK = 'mgl.report';
+function rpRange(kind, off) {   // off: 0 = 이번, -1 = 지난
+  const n = new Date();
+  if (kind === 'week') { const s = new Date(n.getFullYear(), n.getMonth(), n.getDate() - (n.getDay() + 6) % 7 + off * 7), e = new Date(s.getFullYear(), s.getMonth(), s.getDate() + 6); return [ymd(s), ymd(e)]; }
+  const s = new Date(n.getFullYear(), n.getMonth() + off, 1), e = new Date(s.getFullYear(), s.getMonth() + 1, 0); return [ymd(s), ymd(e)];
+}
+function reportData(kind, off) {
+  const rg = rpRange(kind, off), pr = rpRange(kind, off - 1), all = sorted();
+  const L = all.filter(g => g.date >= rg[0] && g.date <= rg[1]); if (!L.length) return null;
+  const t = tally(L), pt = tally(all.filter(g => g.date >= pr[0] && g.date <= pr[1]));
+  const keyOf = kind === 'week' ? (g => weekNo(g.date)) : (g => g.date.slice(0, 7));
+  const past = all.filter(g => g.date < rg[0]), grp = groupBy(past, keyOf), pts = [...grp.values()].map(tally);
+  const avg = pts.length ? pts.reduce((a, x) => a + x.l, 0) / pts.length : null;
+  // 기간 끝 기준 연승
+  let st = 0; for (let i = all.length - 1; i >= 0; i--) { const g = all[i]; if (g.date > rg[1]) continue; const r = resOf(g); if (r === 'd') continue; if (r !== 'w') break; st++; }
+  const unit = kind === 'week' ? '주' : '달';
+  const badges = [];
+  if (st >= 3) badges.push(`🔥 ${st}연승 중`);
+  const big = pts.filter(x => x.w + x.l >= 3);
+  if (t.w + t.l >= 3 && big.length >= 2 && big.every(x => t.rate > x.rate)) badges.push(`🏅 최고 승률 ${unit}`);
+  if (pts.length >= 2 && pts.every(x => t.n > x.n)) badges.push(`💪 가장 많이 뛴 ${unit}`);
+  if (t.n >= 3 && pts.length >= 2 && pts.every(x => t.l < x.l)) badges.push(`🪶 콕을 가장 아낀 ${unit}`);
+  const beaten = new Set(); past.forEach(g => { if (resOf(g) === 'w') (g.opp || []).forEach(o => o && beaten.add(o)); });
+  const firsts = [...new Set(L.filter(g => resOf(g) === 'w').flatMap(g => (g.opp || []).filter(o => o && !beaten.has(o) && past.some(h => (h.opp || []).includes(o)))))];
+  if (firsts.length) badges.push(`🎯 첫 승: ${firsts.slice(0, 2).map(pn).join(', ')}${firsts.length > 2 ? ` 외 ${firsts.length - 2}명` : ''}`);
+  const two = rankPeople(L, 'partner').filter(p => p.rate !== null);
+  const bp = two.sort((a, b) => b.w - a.w || b.rate - a.rate || b.n - a.n)[0];
+  const ho = rankPeople(L, 'opp').filter(p => p.l > 0).sort((a, b) => b.l - a.l || a.rate - b.rate)[0];
+  // 다음 목표
+  const nxt = kind === 'week' ? '이번 주' : '이번 달';
+  let goal;
+  if (st >= 2) goal = `다음 경기를 이기면 ${st + 1}연승이에요!`;
+  else if (avg !== null && t.l > avg) goal = `${nxt}엔 셔틀콕 ${Math.max(1, Math.floor(avg))}개 이하로 줄여 봐요.`;
+  else if (t.rate !== null && t.rate < 50) goal = `${nxt} 승률 50%를 넘겨 봐요.`;
+  else goal = `${nxt}도 셔틀콕 ${Math.max(1, t.l)}개 이하로 지켜 봐요.`;
+  return { kind, off, rg, L, t, pt, avg, badges, bp, ho, goal, days: new Set(L.map(g => g.date)).size };
+}
+function reportHtml(d) {
+  const { kind, rg, t, pt, avg } = d, W = kind === 'week';
+  const [, M1, D1] = rg[0].split('-').map(Number), [, M2, D2] = rg[1].split('-').map(Number);
+  const prevNm = W ? '그 전 주' : '그 전 달', unitNm = W ? '주' : '월';
+  const f1 = v => String(Math.round(v * 10) / 10);
+  let cmp = '<span class="rp-na">비교할 기록이 없어요</span>';
+  if (pt.n) {
+    const dr = t.rate !== null && pt.rate !== null ? t.rate - pt.rate : null, dn = t.n - pt.n;
+    cmp = `${dr === null ? '' : `<span>승률 <b class="${dr > 0 ? 'up' : dr < 0 ? 'dn' : ''}">${dr ? (dr > 0 ? '▲' : '▼') + Math.abs(dr) + '%p' : '그대로'}</b></span>`}<span>경기 <b>${dn > 0 ? '+' : ''}${dn}</b></span>`;
+  }
+  const cokSub = [pt.n ? (t.l - pt.l ? `${prevNm}보다 <b class="${t.l < pt.l ? 'up' : 'dn'}">${Math.abs(t.l - pt.l)}개 ${t.l < pt.l ? '덜' : '더'}</b>` : `${prevNm}와 똑같이`) : '', avg !== null ? (Math.abs(t.l - avg) < 0.5 ? `${unitNm} 평균과 비슷` : `${unitNm} 평균보다 <b class="${t.l < avg ? 'up' : 'dn'}">${f1(Math.abs(t.l - avg))}개 ${t.l < avg ? '덜' : '더'}</b>`) : ''].filter(Boolean).join(' · ');
+  const ppl = `<div class="two"><div><small>베스트 파트너</small><b>${d.bp ? esc(pn(d.bp.nm)) : '-'}</b><i>${d.bp ? `${d.bp.w}승 ${d.bp.l}패` : '복식 기록이 없어요'}</i></div><div><small>어려운 상대</small><b>${d.ho ? esc(pn(d.ho.nm)) : '없음'}</b><i>${d.ho ? `${d.ho.w}승 ${d.ho.l}패` : '진 상대가 없어요'}</i></div></div>`;
+  return `<div class="rp" role="dialog" aria-modal="true" aria-label="${W ? '주간' : '월간'} 리포트">
+    <div class="rp-hd"><div class="k">${W ? 'WEEKLY' : 'MONTHLY'} REPORT</div><h3>${W ? '지난주' : '지난달'} 리포트가 도착했어요</h3>
+      <div class="d">${W ? `${M1}월 ${D1}일 ~ ${M2 !== M1 ? M2 + '월 ' : ''}${D2}일` : `${rg[0].slice(0, 4)}년 ${M1}월`} · ${d.days}일 출석</div>
+      <button type="button" class="x" data-rp="close" aria-label="닫기">×</button>
+      <div class="rp-big"><b>${nf(t.n)}<em>전</em>${t.w}<em>승</em>${t.l}<em>패</em></b><span class="rt">승률<strong>${t.rate ?? '-'}%</strong></span></div></div>
+    <div class="rp-bd">
+      <div class="rc rp-cmp"><span class="t0">${prevNm} 대비</span>${cmp}</div>
+      <div class="rc"><div class="t">셔틀콕</div><p>셔틀콕 <b>${nf(t.l)}개</b> 썼어요${cokSub ? `<small>${cokSub}</small>` : ''}</p></div>
+      <div class="rc"><div class="t">사람</div>${ppl}</div>
+      ${d.badges.length ? `<div class="rc"><div class="t">새로 생긴 기록</div>${d.badges.map(b => `<span class="badge">${esc(b)}</span>`).join('')}</div>` : ''}
+      <div class="rc goal"><div class="t">${W ? '이번 주' : '이번 달'} 목표</div><p>${esc(d.goal)}</p></div>
+    </div>
+    <div class="rp-ft"><button type="button" class="c" data-rp="close">닫기</button><button type="button" class="s" data-rp="card">기록 카드로 저장</button></div></div>`;
+}
+function openReport(kind, off) {
+  const d = reportData(kind, off === undefined ? -1 : off);
+  if (!d) { toast(kind === 'week' ? '그 주에는 경기가 없어요' : '그 달에는 경기가 없어요'); return; }
+  gcEvent('리포트-' + (kind === 'week' ? '주간' : '월간'));
+  const ov = document.createElement('div'); ov.className = 'rpov'; ov.innerHTML = reportHtml(d);
+  const close = () => { ov.remove(); document.body.style.overflow = sheetStack.length ? 'hidden' : ''; };
+  ov.addEventListener('click', e => {
+    const b = e.target.closest('[data-rp]');
+    if (e.target === ov || (b && b.dataset.rp === 'close')) { close(); return; }
+    if (b && b.dataset.rp === 'card') { close(); period = kind; periodOff = d.off; openPeriodCard(); }
+  });
+  document.body.appendChild(ov); document.body.style.overflow = 'hidden';
+  try { SFX.sheet(); } catch (e) {}
+}
+function maybeReport(tries) {
+  tries = tries || 0;
+  if (!me || sheetStack.length || document.querySelector('.rpov')) { if (tries < 6) setTimeout(() => maybeReport(tries + 1), 2500); return; }
+  let seen = ''; try { seen = localStorage.getItem(RPK) || ''; } catch (e) {}
+  const mk = 'm' + rpRange('month', -1)[0], wk = 'w' + rpRange('week', -1)[0];
+  const cand = (new Date().getDate() <= 7 ? [['month', mk]] : []).concat([['week', wk]]);   // 월간은 매달 1~7일에만
+  const todo = cand.find(([k, key]) => !seen.split(',').includes(key) && reportData(k, -1));
+  if (!todo) { if (mode === 'db' && !games.length && tries < 3) setTimeout(() => maybeReport(tries + 1), 2500); return; }
+  try { localStorage.setItem(RPK, [mk, wk].filter(k => k === todo[1] || seen.split(',').includes(k)).concat(todo[0] === 'month' ? [wk] : []).join(',')); } catch (e) {}
+  openReport(todo[0], -1);
 }
 
 /* ---------- 계산 ---------- */
@@ -1998,7 +2122,8 @@ function renderStats() {
   const rowLabel = k => { const [Y, M, D] = k.split('-').map(Number); return byDay ? `${M}월 ${D}일 (${WD[new Date(Y, M - 1, D).getDay()]})` : `${String(Y).slice(2)}년 ${M}월`; };
 
   const pcBtn = period === 'all' ? '' : `<button type="button" class="daycard" id="pcBtn" style="margin:0 0 12px"><span class="ic" aria-hidden="true">${tsvg('trophy')}</span>${{ day: '이 날', week: '이 주', month: '이 달', year: '이 해' }[period]} 기록 카드 만들기</button>`;
-  body.innerHTML = nav + pcBtn + `
+  const rpBtn = (period === 'week' || period === 'month') && periodOff < 0 ? `<button type="button" class="rpbtn" id="rpBtn">📊 ${period === 'week' ? '주간' : '월간'} 리포트 보기</button>` : '';
+  body.innerHTML = nav + pcBtn + rpBtn + `
     <div class="statgrid sg3">
       <div class="st st-wide"><div class="st-l"><small>전적</small><b>${nf(t.n)}<em>전</em> ${t.w}<em>승</em> ${t.l}<em>패</em></b></div><div class="st-r"><small>승률</small><strong class="st-pct ${t.rate === null ? '' : t.rate >= 50 ? 'up' : 'dn'}">${t.rate ?? '-'}<span>%</span></strong></div></div>
       <div class="st st2"><div class="r"><small>득점</small><b>${nf(t.pf)}</b></div><div class="r"><small>실점</small><b>${nf(t.pa)}</b></div></div>
@@ -3819,7 +3944,7 @@ $('#pPeriod').addEventListener('click', e => { const b = e.target.closest('.fchi
 $('#pNav').addEventListener('click', e => { const nv = e.target.closest('[data-nav]'); if (nv) { periodOff = Math.min(0, periodOff + +nv.dataset.nav); renderPeople(); } });
 $('#peopleTop').addEventListener('click', e => { const p = e.target.closest('[data-person]'); if (p) openPerson(p.dataset.person); });
 $('#period').addEventListener('click', e => { const b = e.target.closest('.fchip'); if (b) { period = b.dataset.p; periodOff = 0; renderStats(); } });
-$('#statsBody').addEventListener('click', e => { const nv = e.target.closest('[data-nav]'); if (nv) { periodOff = Math.min(0, periodOff + +nv.dataset.nav); renderStats(); return; } if (e.target.closest('#imgBtn')) saveImage(); if (e.target.closest('#pcBtn')) { if (period === 'day') openDayCard(periodRange()[0]); else openPeriodCard(); } if (e.target.closest('#sendBtn')) sendToOwner(); const pp = e.target.closest('[data-person]'); if (pp) openPerson(pp.dataset.person); });
+$('#statsBody').addEventListener('click', e => { const nv = e.target.closest('[data-nav]'); if (nv) { periodOff = Math.min(0, periodOff + +nv.dataset.nav); renderStats(); return; } if (e.target.closest('#imgBtn')) saveImage(); if (e.target.closest('#rpBtn')) { openReport(period, periodOff); return; } if (e.target.closest('#pcBtn')) { if (period === 'day') openDayCard(periodRange()[0]); else openPeriodCard(); } if (e.target.closest('#sendBtn')) sendToOwner(); const pp = e.target.closest('[data-person]'); if (pp) openPerson(pp.dataset.person); });
 $('#clubImport').addEventListener('click', () => importCodes($('#clubIn').value));
 $('#clubExport').addEventListener('click', async () => {
   const t = clubExportText();
@@ -3856,7 +3981,7 @@ boot();
 })();
 </script>
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610280303)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610280922)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

@@ -5,7 +5,7 @@
   "lang": "ko",
   "start_url": "/jwadongclub/board/",
   "scope": "/jwadongclub/board/",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "any",
   "background_color": "#eef3f9",
   "theme_color": "#0c50a1",
@@ -35,5 +35,9 @@
       "purpose": "maskable"
     }
   ],
-  "id": "/jwadongclub/board/"
+  "id": "/jwadongclub/board/",
+  "display_override": [
+    "fullscreen",
+    "standalone"
+  ]
 }

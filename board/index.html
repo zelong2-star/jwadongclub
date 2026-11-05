@@ -1245,6 +1245,10 @@ html body .rt>.h .aqb{margin-right:0!important}
 .lvpop button.on{background:#191919;color:#fff;border-color:#191919}
 .lvpop button:active{transform:scale(.96)}
 @media (display-mode:standalone),(display-mode:fullscreen){html:root{padding-bottom:0!important}html body #ts{bottom:24px!important}}
+.aqpn,html body .ov .aqpn{max-width:520px;height:auto!important;min-height:0!important;align-self:center}.aqh{margin:4px 2px 12px}
+.aqc{display:flex;flex-direction:column;gap:10px}
+html body .aqo{display:flex;flex-direction:column;align-items:flex-start;gap:4px;height:auto;min-height:84px;padding:14px 18px;text-align:left;border-radius:18px;white-space:normal}
+.aqo b{font-size:19px;font-weight:800}.aqo span{font-size:14px;font-weight:500;opacity:.75}.aqo em{font-style:normal;font-size:14px;font-weight:700;margin-top:2px}
 </style>
 </head>
 <body data-lay="r" data-ct="1"><div id="app"></div><div id="md"></div><div id="ts"></div>
@@ -1346,7 +1350,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=180,APPD="2026-10-29",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
+const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=181,APPD="2026-10-29",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -1655,7 +1659,7 @@ fitVP();try{ptbBuild();ptbCount()}catch(e){}addEventListener('orientationchange'
 /* ===== 자동 대기열 편성 ===== */
 const PAIR=(()=>{try{return JSON.parse(localStorage.getItem('bdpair')||'{}')||{}}catch(e){return{}}})();
 function pairRec(p){for(let i=0;i<p.length;i++)for(let j=i+1;j<p.length;j++){const k=[p[i],p[j]].sort().join('|');PAIR[k]=(PAIR[k]||0)+1}try{localStorage.setItem('bdpair',JSON.stringify(PAIR))}catch(e){}}
-function aqBuild(){
+function aqBuild(mix){
  const LV={A:5,B:4,C:3,D:2,'초심':1},mem=n=>MEM.find(x=>x.n==n)||{},lv=n=>LV[mem(n).lv]||0,ag=n=>mem(n).a||0,gm=n=>S.games[n]||0;
  const sc=(a,b)=>{const x=lv(a),y=lv(b);const gd=x&&y?Math.abs(x-y):1;const ad=ag(a)&&ag(b)?Math.abs(ag(a)-ag(b))/10:.3;const af=Math.min(PAIR[[a,b].sort().join('|')]||0,6);return gd*3+ad-af*2};
  const busy=new Set();S.courts.forEach(c=>c&&c.p.forEach(n=>busy.add(n)));S.rows.forEach(r=>r.forEach(n=>n&&busy.add(n)));(S.les||[]).forEach(n=>busy.add(n));
@@ -1663,16 +1667,21 @@ function aqBuild(){
  const games=[],left=[];
  const mk=(P,tag)=>{P=P.slice();while(P.length>=4){const g=[P.shift()];for(let t=0;t<3;t++){let bi=0,bs=1e9;P.forEach((c,i)=>{const v=g.reduce((z,m)=>z+sc(m,c),0)+gm(c)*.2;if(v<bs){bs=v;bi=i}});g.push(P.splice(bi,1)[0])}games.push({g,tag})}left.push(...P)};
  const isG=n=>!!GU(n);
- mk(pool.filter(n=>!isG(n)&&GM[n]=='m'),'남');mk(pool.filter(n=>!isG(n)&&GM[n]=='f'),'여');mk(pool.filter(isG),'손님');
- const rest=left.splice(0).sort((a,b)=>gm(a)-gm(b));mk(rest,'혼합');
+ if(mix){mk(pool,'혼합')}else{mk(pool.filter(n=>!isG(n)&&GM[n]=='m'),'남');mk(pool.filter(n=>!isG(n)&&GM[n]=='f'),'여');mk(pool.filter(isG),'손님');
+ const rest=left.splice(0).sort((a,b)=>gm(a)-gm(b));mk(rest,'혼합')}
  return{games,left,total:pool.length}}
-document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-a=aq]');if(!b)return;e.stopPropagation();e.preventDefault();
+function aqRun(mix){
  const empty=[];S.rows.forEach((r,i)=>{if(!r.some(Boolean))empty.push(i)});
- const R=aqBuild();if(!R.games.length)return toast('편성할 수 있는 쉬는 선수가 4명 미만이에요',1);
+ const R=aqBuild(mix);if(!R.games.length)return toast('편성할 수 있는 쉬는 선수가 4명 미만이에요',1);
  const use=R.games;const cnt={};use.forEach(x=>cnt[x.tag]=(cnt[x.tag]||0)+1);
  mut(()=>{while(empty.length<use.length){S.rows.push([]);empty.push(S.rows.length-1)}use.forEach((x,k)=>{S.rows[empty[k]]=x.g.slice()})});
  const lf=R.left.length;
- toast(use.length+'팀 편성 ('+Object.keys(cnt).map(k=>k+' '+cnt[k]).join(' · ')+')'+(lf?' · 남은 '+lf+'명':''),1);try{snd('ok')}catch(_){}
+ toast(use.length+'팀 편성 ('+Object.keys(cnt).map(k=>k+' '+cnt[k]).join(' · ')+')'+(lf?' · 남은 '+lf+'명':''),1);try{snd('ok')}catch(_){}}
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-a=aq],[data-a=aqgo]');if(!t)return;e.stopPropagation();e.preventDefault();
+ if(t.dataset.a=='aqgo'){$('md').innerHTML='';aqRun(t.dataset.n=='m');return}
+ const A=aqBuild(false),B=aqBuild(true);if(!A.games.length&&!B.games.length)return toast('편성할 수 있는 쉬는 선수가 4명 미만이에요',1);
+ const sm=r=>r.games.length+'팀'+(r.left.length?' · 남은 '+r.left.length+'명':'');
+ $('md').innerHTML='<div class="ov"><div class="pn aqpn"><div class="h"><b class="tt">자동 편성</b><button class="b o" data-a="x">닫기</button></div><p class="mu aqh">쉬는 선수 '+A.total+'명을 4명씩 팀으로 만들어 빈 대기 줄에 넣어요.</p><div class="aqc"><button class="b aqo" data-a="aqgo" data-n="s"><b>같은 성별끼리</b><span>남자·여자·손님 따로 묶고, 남는 사람만 섞어요</span><em>'+sm(A)+'</em></button><button class="b aqo" data-a="aqgo" data-n="m"><b>성별 섞기</b><span>성별 구분 없이 급수·게임 수로 묶어요</span><em>'+sm(B)+'</em></button></div></div></div>'
 },true);
 
 /* 급수 선택 팝업 */

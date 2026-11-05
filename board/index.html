@@ -1249,6 +1249,11 @@ html body .rt>.h .aqb{margin-right:0!important}
 .aqc{display:flex;flex-direction:column;gap:10px}
 html body .aqo{display:flex;flex-direction:column;align-items:flex-start;gap:4px;height:auto;min-height:84px;padding:14px 18px;text-align:left;border-radius:18px;white-space:normal}
 .aqo b{font-size:19px;font-weight:800}.aqo span{font-size:14px;font-weight:500;opacity:.75}.aqo em{font-style:normal;font-size:14px;font-weight:700;margin-top:2px}
+.aqpn,.cmpn{max-width:520px}.cmpn,html body .ov .cmpn{height:auto!important;min-height:0!important;align-self:center}
+.cmh{margin:4px 2px 12px}.cmc{display:flex;flex-direction:column;gap:10px}
+html body .cmo{display:flex;flex-direction:column;align-items:flex-start;gap:4px;height:auto;min-height:72px;padding:12px 18px;text-align:left;border-radius:18px;white-space:normal}
+.cmo b{font-size:19px;font-weight:800}.cmo span{font-size:14px;font-weight:500;opacity:.75}
+.kk[data-ci]{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 </style>
 </head>
 <body data-lay="r" data-ct="1"><div id="app"></div><div id="md"></div><div id="ts"></div>
@@ -1350,7 +1355,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=186,APPD="2026-10-29",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
+const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=187,APPD="2026-10-29",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -1388,7 +1393,7 @@ function KIMG(gs,t){const ch=IMGT[t];if(!ch||IMGBAD[t])return '';const H=gs?ch*1
 function sxk(c,i,t){const tt=`<b class="kkp">${i+1}번 코트</b>`;
  if(!c)return `<div class="kk kke"><div class="kk1">${tt}<div class="kkm">${KIMG(null,t)||ISOK(null,t)}</div></div><div class="kkr"><span class="kks">빈 코트</span><button class="b g kgo" data-a="next" data-i="${i}">입장</button></div></div>`;
  const m=Math.floor((now()-c.t)/6e4),ovr=(now()-c.t)/6e4>=avgMin(),nr=(now()-c.t)/6e4>=avgMin()*.8,gs=c.p.map(n=>GM[n]||'m');
- return `<div class="kk"><div class="kk1">${tt}<div class="kkm">${KIMG(gs,t)||ISOK(gs,t)}</div></div><div class="kkr"><span class="kks${ovr?' ov':''}${nr?' nr':''}" style="${gcol((now()-c.t)/6e4)}"><i></i><span class="gj">게임 중</span><u></u><b>${m}분</b></span>${EBk(1,'button',` data-a="end" data-i="${i}" aria-label="게임 종료"`)}</div><div class="kkn">${c.p.map((n,k)=>`<button class="kkb" style="--d:${gs[k]=='f'?'#E0457F':'#2F6FE0'}" data-a="rp" data-t="c" data-i="${i}" data-k="${k}" data-n="${n}"${GU(n)}>${n}</button>`).join('')}</div></div>`}
+ return `<div class="kk" data-ci="${i}"><div class="kk1">${tt}<div class="kkm">${KIMG(gs,t)||ISOK(gs,t)}</div></div><div class="kkr"><span class="kks${ovr?' ov':''}${nr?' nr':''}" style="${gcol((now()-c.t)/6e4)}"><i></i><span class="gj">게임 중</span><u></u><b>${m}분</b></span>${EBk(1,'button',` data-a="end" data-i="${i}" aria-label="게임 종료"`)}</div><div class="kkn">${c.p.map((n,k)=>`<button class="kkb" style="--d:${gs[k]=='f'?'#E0457F':'#2F6FE0'}" data-a="rp" data-t="c" data-i="${i}" data-k="${k}" data-n="${n}"${GU(n)}>${n}</button>`).join('')}</div></div>`}
 function noteExp(){if(!Array.isArray(S.notes)){S.notes=ntOld().map(t=>({t,d:S.nd||'',i:0,s:''}));S.notice='';S.nd='';save()}const t=dk(new Date()),k=S.notes.filter(n=>!n.d||n.d>=t);if(k.length!=S.notes.length){S.notes=k;save()}}
 function render(){noteExp();if(VIEW)return rrender();
  
@@ -1703,11 +1708,25 @@ document.addEventListener('click',e=>{const t=e.target;if(!t.closest)return;
 document.addEventListener('keydown',e=>{if(e.key=='Escape'&&pop){close();e.stopPropagation()}},true);
 document.addEventListener('scroll',close,true);
 })();
+
+/* 코트 박스 꾹 누르기 → 코트 이동 */
+(function(){let T=null,SX=0,SY=0,F=0;const clr=()=>{clearTimeout(T);T=null};
+function ask(f){const c=S.courts[f];if(!c)return;const opts=S.courts.map((x,i)=>i).filter(i=>i!=f).map(i=>{const o=S.courts[i];const sub=o?(i+1)+'번 코트와 자리 바꾸기 · 게임 중 '+Math.floor((now()-o.t)/6e4)+'분':'빈 코트로 이동';return `<button class="b cmo" data-a="cmvgo" data-i="${f}" data-n="${i}"><b>${i+1}번 코트</b><span>${sub}</span></button>`}).join('');
+ $('md').innerHTML=`<div class="ov"><div class="pn cmpn"><div class="h"><b class="tt">${f+1}번 코트 이동</b><button class="b o" data-a="x">닫기</button></div><p class="mu cmh">${c.p.map(n=>esc(n)).join(' · ')}</p><div class="cmc">${opts}</div></div></div>`}
+document.addEventListener('pointerdown',e=>{const k=e.target.closest&&e.target.closest('.kk[data-ci]');if(!k||e.button>0||e.target.closest('[data-a="end"]'))return;clr();SX=e.clientX;SY=e.clientY;const f=+k.dataset.ci;T=setTimeout(()=>{T=null;F=1;try{navigator.vibrate&&navigator.vibrate(30)}catch(_){}ask(f)},600)});
+document.addEventListener('pointermove',e=>{if(T&&(Math.abs(e.clientX-SX)>12||Math.abs(e.clientY-SY)>12))clr()});
+['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,clr));
+document.addEventListener('click',e=>{if(F){F=0;e.stopPropagation();e.preventDefault();return}const b=e.target.closest&&e.target.closest('[data-a=cmvgo]');if(!b)return;e.stopPropagation();e.preventDefault();const f=+b.dataset.i,t=+b.dataset.n;$('md').innerHTML='';if(!S.courts[f])return;mut(()=>{const a=S.courts[f],o=S.courts[t];S.courts[t]=a;S.courts[f]=o||null});toast((f+1)+'번 코트 → '+(t+1)+'번 코트로 옮겼어요',1)},true);
+document.addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('.kk[data-ci]'))e.preventDefault()});
+setTimeout(()=>{F=0},0)})();
+/* 출석 이름 검색: 처음 누르면 목록만, 한 번 더 누르면 키보드 */
+let WQK=0;document.addEventListener('pointerdown',e=>{const w=e.target;if(!w||w.id!='wq')return;if(document.activeElement===w&&$('wqd')&&w.inputMode=='none'){WQK=1;w.inputMode='text';w.blur();setTimeout(()=>{w.focus();WQK=0},40)}else if(document.activeElement!==w){w.inputMode='none'}},true);
+document.addEventListener('focusout',e=>{if(e.target&&e.target.id=='wq'&&!WQK)e.target.inputMode='none'});
 /* PWA: 앱 설치용 오프라인 저장 (GitHub 배포 주소에서만) */
 try{if('serviceWorker' in navigator&&/github\.io$/.test(location.hostname)&&location.pathname.includes('/board/'))addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{scope:'./'}).catch(()=>{}))}catch(e){}
 /* ===== 화면 꺼짐 방지 (태블릿) ===== */
 let WL=null;async function wake(){try{if('wakeLock' in navigator&&!WL&&document.visibilityState=='visible'){WL=await navigator.wakeLock.request('screen');WL.addEventListener('release',()=>{WL=null})}}catch(e){}}
-document.addEventListener('visibilitychange',wake);document.addEventListener('click',wake,{once:true});wake();
+document.addEventListener('visibilitychange',wake);['click','pointerdown','touchstart','keydown'].forEach(t=>document.addEventListener(t,wake,{passive:true}));setInterval(wake,20000);window.addEventListener('focus',wake);window.addEventListener('pageshow',wake);wake();
 
 /* 두 글자 이름은 세 글자와 같은 폭으로 */
 (function(){let q=0;const mark=()=>{q=0;document.querySelectorAll('button[data-n].p,button[data-n].kkb,.pv[data-n]').forEach(e=>{const t=(e.textContent||'').replace(/[✓\s]/g,'');const two=/^[가-힣]{2}$/.test(t);if(e.classList.contains('n2')!==two)e.classList.toggle('n2',two)})};const sch=()=>{if(!q)q=requestAnimationFrame(mark)};try{new MutationObserver(sch).observe(document.body,{childList:true,subtree:true})}catch(e){}mark()})();

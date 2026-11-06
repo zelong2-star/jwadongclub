@@ -1369,7 +1369,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=215,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
+const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=216,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -1590,7 +1590,7 @@ function rlist(){const q=V.q.trim();const L=[...new Set([...MEM.filter(m=>m.on!=
  const sk=V.sk||'c',dir=V.asc?1:-1,val=([n,c],k)=>{const d=RA[n]||0,mm=RM[n]||0;return k=='a'?d:k=='ag'?(d?c/d:0):k=='pt'?(c?mm/c:0):k=='tm'?mm:c};
  L.sort((a,b)=>sk=='n'?dir*a[0].localeCompare(b[0],'ko'):(dir*(val(a,sk)-val(b,sk)))||a[0].localeCompare(b[0],'ko'));
  const ar=(k,t)=>t=='#'?'':(V.sk||'c')==k?`<i class="ar on">${V.asc?'▲':'▼'}</i>`:'<i class="ar">⇅</i>',hd=(k,t,c)=>`<button type="button" class="${c} sk${t!='#'&&(V.sk||'c')==k?' on':''}" data-a="rsk" data-n="${k}" aria-label="${t} 정렬"><span class="lb">${t}${ar(k,t)}</span></button>`;
- $('rl').innerHTML='<div class="rk rh">'+hd('c','#','n')+hd('n','이름','nm')+hd('a','출석일','v')+hd('ag','일 평균','v')+hd('c','총 게임','v')+hd('pt','게임당','v')+hd('tm','내 시간','v')+'</div>'+(L.map(([n,c],i)=>{const d=RA[n]||0,mm=RM[n]||0;const rkOn=(V.sk||'c')!='n'&&!V.asc&&c>0&&i<3;return `<div class="rk"><b class="n${rkOn?' md':''}">${rkOn?RKI[i]:nf(i+1)}</b><b class="nm">${n}</b><span class="v">${nf(d)}일</span><span class="v">${d?(c/d).toFixed(1):'0.0'}게임</span><b class="v">${nf(c)}게임</b><span class="v">${fm(c?Math.round(mm/c):0)}</span><span class="v">${fm(mm)}</span></div>`}).join('')||'<p class="mu">검색 결과가 없어요</p>')}
+ $('rl').innerHTML='<div class="rk rh">'+hd('c','#','n')+hd('n','이름','nm')+hd('a','출석일','v')+hd('ag','일 평균','v')+hd('c','총 게임','v')+hd('pt','게임당','v')+hd('tm','운동시간','v')+'</div>'+(L.map(([n,c],i)=>{const d=RA[n]||0,mm=RM[n]||0;const rkOn=(V.sk||'c')!='n'&&!V.asc&&c>0&&i<3;return `<div class="rk"><b class="n${rkOn?' md':''}">${rkOn?RKI[i]:nf(i+1)}</b><b class="nm">${n}</b><span class="v">${nf(d)}일</span><span class="v">${d?(c/d).toFixed(1):'0.0'}게임</span><b class="v">${nf(c)}게임</b><span class="v">${fm(c?Math.round(mm/c):0)}</span><span class="v">${fm(mm)}</span></div>`}).join('')||'<p class="mu">검색 결과가 없어요</p>')}
 function rAgg(ds){let G=0,cs=0,ms=0;const u=new Set();ds.forEach(k=>{const x=dd(k);if(!x)return;G+=x.g||0;(x.a||[]).filter(n=>((x.c||{})[n]||0)>0).forEach(n=>u.add(n));for(const n in (x.c||{}))cs+=x.c[n];for(const n in (x.m||{}))ms+=x.m[n]});const tm=Math.round(ms/4);return{n:u.size,avg:u.size?cs/u.size:0,g:G,per:G?Math.round(tm/G):0,tm}}
 function rPrev(){const T=V.tab;if(T=='누적')return null;const td=dk(new Date());
  if(T=='오늘'){const d=new Date();d.setDate(d.getDate()-7);return{ds:[dk(d)],lab:'지난 '+WD[d.getDay()]+'요일'}}
@@ -1948,7 +1948,7 @@ if(a=='rdc'){arm=null;clearTimeout(tm);const o=$$('rdw');if(o)o.remove();try{if(
 const k=t.closest('.r').dataset.k;if(arm==k){arm=null;clearTimeout(tm);del(k);return draw()}arm=k;clearTimeout(tm);tm=setTimeout(()=>{arm=null;if($$('rdw'))draw()},3500);draw()},true)})();
 </script>
 <script>try{if(ST.mode!=1){ST.mode=1;ST.ns=1;sv();if(typeof render=="function")render()}}catch(e){}</script>
-<style id="rkcss">html body .rg{grid-template-columns:minmax(300px,.85fr) 1.15fr!important;grid-template-rows:minmax(0,1fr)!important}html body .lc{overflow:auto;min-height:0!important}html body .rc{min-height:0!important}.rcp{align-items:stretch;gap:10px;padding:10px}.rcimg{width:100%;height:auto;border-radius:14px;display:block}
+<style id="rkcss">html body .rg{grid-template-columns:minmax(280px,.62fr) 1.38fr!important;grid-template-rows:minmax(0,1fr)!important}html body .lc{overflow:auto;min-height:0!important}html body .rc{min-height:0!important}.rcp{align-items:stretch;gap:10px;padding:10px}.rcimg{width:100%;height:auto;border-radius:14px;display:block}
 .kst{display:flex;flex-wrap:wrap;gap:8px}.ks{flex:1 1 120px;min-width:0;background:var(--chip);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:1px}
 .ks span{font-size:13px;color:var(--mut);font-weight:600}.ks b{font-size:24px;white-space:nowrap}.ks b small{font-size:13px}.ks .dl{font-style:normal;font-size:12.5px;color:#5b6b78}
 .kcap{font-size:13px;color:var(--mut);margin-top:-2px}.kcap.no{color:#8a8f94}
@@ -2251,11 +2251,18 @@ function build(){
  schedule(pl);return {plan:pl}}
 
 /* ---------- 코트 동기화 ---------- */
+var BOOT=Date.now(),AC=null;
+function whistle(){if(!ST.snd||Date.now()-BOOT<4000)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();var t=AC.currentTime+.02,vol=Math.max(.15,Math.min(1,(+ST.vol||60)/100));
+ [[0,.32],[.42,.62]].forEach(function(b){var o=AC.createOscillator(),l=AC.createOscillator(),lg=AC.createGain(),g=AC.createGain();o.type='sine';o.frequency.value=2850;l.frequency.value=34;lg.gain.value=170;l.connect(lg);lg.connect(o.frequency);o.connect(g);g.connect(AC.destination);
+  g.gain.setValueAtTime(0,t+b[0]);g.gain.linearRampToValueAtTime(.5*vol,t+b[0]+.03);g.gain.setValueAtTime(.5*vol,t+b[0]+b[1]-.06);g.gain.linearRampToValueAtTime(0,t+b[0]+b[1]);o.start(t+b[0]);l.start(t+b[0]);o.stop(t+b[0]+b[1]+.02);l.stop(t+b[0]+b[1]+.02)});
+ if(ST.vib&&navigator.vibrate)navigator.vibrate([200,80,300])}catch(e){}}
+document.addEventListener('pointerdown',function(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}},true);
+function chip(){try{var p=plan();if(!p||p.date!==today())return;var n=p.games.filter(function(g){return g.st==='end'||g.st==='done'}).length,e=document.querySelector('.lf .h .ecb.pl');if(!e)return;var b=Math.round(Object.values(S.games||{}).reduce(function(a,c){return a+c},0)/4);e.textContent='오늘 '+(b+n).toLocaleString('en-US')+'게임'}catch(x){}}
 function sync(){
  var p=plan();if(!p)return false;var ch=false,cs=[];try{cs=S.courts}catch(e){}
  p.games.forEach(function(g){if(g.st!=='play')return;var q=players(g),idx=-1;
   if(q)cs.forEach(function(c,i){if(c&&c.p.length===q.length&&q.every(function(n){return c.p.indexOf(n)>=0}))idx=i});
-  if(idx<0){g.st='end';g.court=null;g.te=Date.now();ch=true}else if(g.court!==idx){g.court=idx;ch=true}});
+  if(idx<0){g.st='end';g.court=null;g.te=Date.now();ch=true;whistle()}else if(g.court!==idx){g.court=idx;ch=true}});
  if(ch)wsv();return ch}
 function startGame(gid,pref){
  var g=gById(gid);if(!g||g.st!=='wait')return;var b=blocker(g);if(b)return toast(b==='경기 중'?'이미 경기 중이에요':b);
@@ -2520,9 +2527,9 @@ var _m=mmlist;mmlist=function(){var x=_m.apply(this,arguments);try{
   i.insertAdjacentHTML('afterend','<input class="in mj" inputmode="numeric" maxlength="7" placeholder="입회 2026-03" aria-label="입회 연월" data-wj="'+esc(n)+'" value="'+esc(m.j||'')+'"><input class="in mc" inputmode="numeric" maxlength="2" placeholder="구력" aria-label="입회 전 구력(년)" data-wc="'+esc(n)+'" value="'+(m.c!=null?m.c:'')+'">')})}catch(e){}return x};
 var _wo=wqOpen;wqOpen=function(){var x=_wo.apply(this,arguments);try{var e=Q('wqd'),i=Q('wq');if(e&&i){var r=i.getBoundingClientRect(),w=Math.min(600,innerWidth-16);e.style.left=Math.max(8,Math.min(r.left,innerWidth-w-8))+'px';e.style.width=w+'px';var h=Math.max(240,innerHeight-r.bottom-18);e.style.maxHeight=h+'px';e.style.height=h+'px'}}catch(z){}return x};
 var CSIG='';function csig(){try{return S.courts.map(function(c){return c?1:0}).join('')}catch(e){return ''}}
-var _r=render;render=function(){var x=_r.apply(this,arguments);try{var ch=sync(),sg=csig();if(W.on&&(ch||sg!==CSIG))draw();CSIG=sg;if(W.on)place()}catch(e){}return x};
+var _r=render;render=function(){var x=_r.apply(this,arguments);try{var ch=sync(),sg=csig();if(W.on&&(ch||sg!==CSIG))draw();CSIG=sg;if(W.on)place();chip()}catch(e){}return x};
 addEventListener('resize',function(){if(W.on)place()});
-setInterval(function(){try{var ch=sync(),sg=csig();if(W.on&&(ch||sg!==CSIG))draw();CSIG=sg}catch(e){}},1500);
+setInterval(function(){try{var ch=sync(),sg=csig();if(W.on&&(ch||sg!==CSIG))draw();CSIG=sg;chip()}catch(e){}},1500);
 function boot(){mk();document.body.classList.toggle('wol',!!W.on);el().style.display=W.on?'flex':'none';if(W.on){ST.pr=1;draw()}}
 if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);else boot();
 window.WOL={W:W,build:build,draw:draw,sync:sync,plan:plan,startGame:startGame,setScore:setScore,gById:gById,indStandings:indStandings,tourRank:tourRank,genTour:genTour,genIndividual:genIndividual,mkTeams:mkTeams,pinfo:pinfo};

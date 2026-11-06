@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>게임현황판 가이드북 · 좌동배드민턴클럽</title>
+<meta name="description" content="역할별로 골라 한 화면씩 넘겨 보는 좌동클럽 게임현황판 가이드북">
+<meta property="og:title" content="좌동클럽 게임현황판 가이드북">
+<meta property="og:description" content="회원·당번·운영, 내 역할만 골라서 3~5분이면 끝">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<style>
+:root{--bg:#F3F7FC;--card:#fff;--ink:#14213D;--ink2:#2A3650;--mu:#5B6780;--line:#D5DEEC;--ac:#0C50A1;--ac2:#E8F0FB;--red:#E53935;--grn:#0B7A3B;--ylw:#8A6A00}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1724;--card:#182235;--ink:#EEF2F9;--ink2:#CBD5E6;--mu:#93A0B8;--line:#2C3A54;--ac:#6AA7FF;--ac2:#1B2C4A;--grn:#6FD39A;--ylw:#FFD866;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;-webkit-text-size-adjust:100%}
+.app{height:100dvh;display:flex;flex-direction:column;max-width:600px;margin:0 auto;padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px))}
+[hidden]{display:none!important}
+/* hub */
+#hub{flex:1;overflow-y:auto;padding:max(18px,env(safe-area-inset-top,0px)) 18px 24px;display:flex;flex-direction:column;gap:14px}
+.hero{background:var(--ac);color:#fff;border-radius:26px;padding:26px 22px}
+.hero small{font-weight:800;letter-spacing:.14em;font-size:13px;opacity:.85}
+.hero h1{font:400 38px/1.15 'Do Hyeon',sans-serif;margin:8px 0 6px}
+.hero p{margin:0;font-size:17px;opacity:.95}
+.q{font-size:21px;font-weight:800;margin:6px 2px 0}
+.role{display:flex;gap:14px;align-items:center;width:100%;text-align:left;border:2px solid var(--line);border-radius:20px;padding:15px 16px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.role:active{background:var(--ac2)}
+.role .ic{flex:none;width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font:400 28px/1 'Do Hyeon',sans-serif;color:#fff}
+.role b{display:block;font-size:22px;line-height:1.3}
+.role span{font-size:16px;color:var(--mu);line-height:1.4;display:block}
+.role em{font-style:normal;margin-left:auto;flex:none;font-weight:800;font-size:14px;background:var(--ac);color:#fff;border-radius:14px;padding:3px 12px}
+.sub{display:flex;gap:10px}
+.sub button,.sub a{flex:1;text-align:center;text-decoration:none;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:13px 8px;font:800 17px/1.3 inherit;cursor:pointer}
+.foot{margin-top:auto;text-align:center;color:var(--mu);font-size:14px;padding-top:6px}
+/* pager */
+#pg{flex:1;min-height:0;display:flex;flex-direction:column}
+.top{flex:none;display:flex;align-items:center;gap:10px;padding:max(10px,env(safe-area-inset-top,0px)) 16px 6px}
+.home{flex:none;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:6px 12px;font:800 15px/1 inherit;cursor:pointer}
+.dots{flex:1;display:flex;gap:4px}
+.dots button{flex:1;height:8px;border:0;border-radius:4px;background:var(--line);padding:0;transition:flex .2s;cursor:pointer}
+.dots button.on{background:var(--ac);flex:2.6}
+.cnt{flex:none;font-size:15px;font-weight:800;color:var(--mu);min-width:3.2em;text-align:right}
+.track{flex:1;min-height:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.track::-webkit-scrollbar{display:none}
+.sl{flex:none;width:100%;scroll-snap-align:start;overflow-y:auto;padding:6px 18px 14px;display:flex;flex-direction:column;gap:12px}
+.eb{font-size:14px;font-weight:800;letter-spacing:.1em;color:var(--ac)}
+.sl h2{margin:0;font:400 31px/1.22 'Do Hyeon',sans-serif}
+.shot{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:8px;display:flex;justify-content:center}
+.shot img{max-width:100%;max-height:40dvh;width:auto;height:auto;border-radius:11px;cursor:zoom-in;display:block}
+.say{font-size:20.5px;line-height:1.55;font-weight:500;margin:0}
+.say b{color:var(--ac)}
+.tip{background:var(--ac2);border-radius:14px;padding:10px 14px;font-size:17px;line-height:1.5;color:var(--ink2)}
+.tip b{color:var(--ink)}
+.warn{background:#FDECEC;border-radius:14px;padding:10px 14px;font-size:17px;line-height:1.5;color:#7A1F1F}
+@media (prefers-color-scheme:dark){.warn{background:#3A1E22;color:#FFB4AB}}
+.list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.list li{display:flex;gap:12px;align-items:center;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:11px 14px;font-size:19px;font-weight:700}
+.list i{flex:none;width:30px;height:30px;border-radius:50%;background:var(--ac);color:#fff;font:400 19px/30px 'Do Hyeon',sans-serif;text-align:center;font-style:normal}
+.bar{flex:none;display:flex;gap:10px;padding:8px 18px max(14px,env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1.5px solid var(--line)}
+.bar button{height:56px;border-radius:15px;font:800 19px/1 inherit;cursor:pointer}
+.prev{width:100px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.next{flex:1;border:0;background:var(--ac);color:#fff}
+.prev:disabled{opacity:.35}
+/* find */
+#fd{flex:1;overflow-y:auto;padding:0 18px 24px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid button{text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:13px 14px;font:inherit;cursor:pointer}
+.grid b{display:block;font-size:19px}.grid span{font-size:14px;color:var(--mu)}
+/* lightbox */
+#lb{position:fixed;inset:0;background:rgba(10,16,28,.9);z-index:50;display:none;align-items:flex-start;justify-content:flex-start;padding:14px;overflow:auto}
+#lb.on{display:flex}
+#lb img{max-width:none;width:min(1100px,230vw);border-radius:10px;background:#fff}
+#lb .x{position:fixed;top:max(12px,env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));background:#fff;color:#14213D;border:0;border-radius:20px;font:800 16px/1 inherit;padding:11px 18px;cursor:pointer}
+@media (max-height:640px){.shot img{max-height:32dvh}.sl h2{font-size:27px}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- 처음 화면 -->
+<div id="hub">
+  <div class="hero">
+    <small>좌동배드민턴클럽 · 게임현황판</small>
+    <h1>내 역할만 골라서<br>가볍게 보세요</h1>
+    <p>한 화면에 한 가지씩, 옆으로 넘기면 끝나요.</p>
+  </div>
+  <div class="q">나는 어떤 일을 해요?</div>
+  <button class="role" data-go="play"><div class="ic" style="background:#0C50A1">회</div><div><b>회원 · 당번</b><span>출석 · 대기 · 입장 · 게임 종료 · 정산 · 내 기록</span></div><em data-n="play"></em></button>
+  <button class="role" data-go="ops"><div class="ic" style="background:#8A6A00">운</div><div><b>운영</b><span>월례회 대진표 · 설정 · 백업</span></div><em data-n="ops"></em></button>
+  <div class="sub"><button data-go="find">궁금한 것 찾아보기</button><a href="more.html">전체 설명 보기</a></div>
+  <div class="foot">장 수는 한 화면씩 넘기는 분량이에요.<br>사진을 누르면 크게 볼 수 있어요.</div>
+</div>
+
+<!-- 코스 화면 -->
+<div id="pg" hidden>
+  <div class="top"><button class="home" id="home">처음</button><div class="dots" id="dots"></div><div class="cnt" id="cnt"></div></div>
+  <div class="track" id="track"></div>
+  <div class="bar"><button class="prev" id="prev">이전</button><button class="next" id="next">다음</button></div>
+</div>
+
+<!-- 찾아보기 -->
+<div id="fd" hidden>
+  <div class="top" style="padding-left:0;padding-right:0"><button class="home" data-go="">처음</button><div style="font-weight:800;font-size:19px">궁금한 것 찾아보기</div></div>
+  <p style="color:var(--mu);margin:4px 2px 12px;font-size:16px">누르면 그 화면으로 바로 가요.</p>
+  <div class="grid" id="grid"></div>
+</div>
+
+</div>
+<div id="lb"><button class="x" id="lbx">닫기</button><img alt=""></div>
+
+<script>
+(function(){
+var COURSES={
+play:{name:'회원·당번',tag:'회원·당번',slides:[
+ {t:'화면은 세 칸이에요',img:'main',s:'왼쪽은 <b>코트</b>, 가운데는 <b>대기</b>, 오른쪽은 <b>출석·쉬는 선수</b>예요.',tip:'이름 앞 <b>파란 점은 남자, 분홍 점은 여자</b>예요.',k:'화면 보는 법'},
+ {t:'하루는 이 순서예요',list:['출석 체크','대기 만들기 (예약·자동 편성)','입장','게임 종료 ✕','오늘 게임 종료'],s:'이 순서만 기억하면 돼요. 하나씩 볼게요.',k:'하루 흐름'},
+ {t:'도착하면 출석부터',img:'att',s:'<b>이름 또는 초성</b>으로 찾아 누르거나, <b>회원명단</b>에서 골라 <b>불러오기</b>를 눌러요. 손님은 <b>손님</b> 필터에서 골라요.',tip:'초성만 쳐도 돼요. 예를 들어 <b>ㄱㅈㅇ</b>. 같은 요일 단골은 설정의 <b>단골 출석 넣기</b> 한 번이면 돼요.',k:'출석하기'},
+ {t:'4명을 골라 예약',img:'pick_c',s:'<b>쉬는 선수</b> 이름을 누르면 ✓가 붙어요. 4명이 차면 <b>예약</b>을 눌러요.',tip:'잘못 골랐으면 <b>취소</b>로 처음부터.',k:'대기 만들기(예약)'},
+ {t:'많을 땐 자동 편성',img:'auto',s:'대기 칸 위 노란 <b>자동 편성</b>. <b>같은 성별끼리</b> 또는 <b>성별 섞기</b> 중 고르면 4명씩 한꺼번에 들어가요.',tip:'마음에 안 들면 <b>되돌리기</b> 한 번!',k:'자동 편성'},
+ {t:'내 순서를 기다려요',img:'c_go',s:'대기 줄에 이름이 올라가면 줄 옆의 <b>곧 입장 · 약 N분 후</b>를 보세요. 코트가 비고 4명이 모이면 줄 왼쪽에 <b>입장 가능</b>이 뜨고 <b>입장</b> 버튼이 <b>빨갛게 깜빡여요</b>.',tip:'빨간 <b>입장</b>을 눌러서 코트로 가요.',k:'순서·입장'},
+ {t:'게임이 끝나면 ✕',img:'c_end',s:'코트 오른쪽 위 <b>✕</b>를 누르고, 확인 창에서 <b>게임 종료</b>를 눌러요.',tip:'코트 시간은 노랑 → 주황 → 빨강으로 변해요. 빨강이 오래 친 코트예요.',warn:'안 누르면 시간이 계속 흘러가요. 3분 미만·30분 초과 게임은 기록에서 빠져요.',k:'게임 종료'},
+ {t:'점수 입력 전, 파트너 정하기',img:'tm',s:'✕를 누르면 먼저 <b>파트너 정하기</b> 창이 떠요. <b>내 이름 → 내 파트너</b> 순서로 누르면 나머지 두 명이 <b>상대</b>로 정리돼요. 그다음 <b>다음</b>.',tip:'코트에 적힌 순서 그대로면 <b>코트 순서 그대로</b>를 눌러요. 점수는 본인이 직접 와서 입력해요.',k:'파트너 정하기'},
+ {t:'점수 입력 모드일 때',img:'scm',s:'팀을 정했으면 <b>점수 입력</b> 창에서 숫자를 누르고 <b>저장하고 종료</b>. 모르면 <b>점수 없이 종료</b>(한 번 더 물어봐요).',tip:'맨 아래 <b>승 25</b>(또는 <b>승 21</b>) 키는 이긴 팀 점수를 한 번에 입력해요.',k:'점수 입력'},
+ {t:'21점제로 바꿀 땐',img:'ptsys',s:'코트 위 <b>25점제</b> 칩을 누르면 선택 창이 열려요. <b>21점제</b>를 고르면 칩이 <b>빨갛게 깜빡여요</b>.',tip:'예약 완료 음성이 <b>"이십일점제 입니다"</b>도 함께 말해요.',k:'21점제·25점제'},
+ {t:'코트 자리 바꾸기',img:'cmv',s:'코트 카드를 <b>꾹 누르면</b> <b>○번 코트 이동</b> 창이 떠요. 게임 중인 다른 코트와 <b>자리 바꾸기</b>를 할 수 있어요.',tip:'빈 코트가 있으면 <b>빈 코트로 이동</b>도 보여요.',k:'코트 자리 바꾸기'},
+ {t:'쉬고 싶을 땐 이름을 꾹',img:'status',s:'쉬는 선수 이름을 <b>길게 누르면</b> <b>레슨중 · 휴식중 · 운동끝</b>을 고를 수 있어요.',tip:'휴식중·운동끝이면 자동 편성에서 빠져요. 돌아오면 <b>표시 해제</b>!',k:'휴식·운동끝 표시'},
+ {t:'코트에서 사람 바꾸기',img:'swapc',s:'코트에서 <b>바꿀 이름</b>을 눌러요. <b>쉬는 선수</b> 중 한 명을 골라 <b>선수 교체</b>.',k:'코트 선수 교체'},
+ {t:'대기 선수 교체',img:'swapq',s:'대기 줄의 <b>이름을 눌러요</b>. <b>사유</b>(레슨·휴식·운동끝·개인사정)를 고르고 <b>대기선수에서 고르기</b>로 대신할 사람을 정해요.',warn:'정당한 이유 없이 <b>그냥 빼기</b>를 하면 <b>순번이 한 칸 뒤로</b> 밀려요.',k:'대기 선수 교체'},
+ {t:'대기 팀 통째로 취소',img:'qcx',s:'대기 줄의 <b>입장</b> 버튼을 <b>꾹 누르면</b> 버튼이 <b>취소</b>로 바뀌고, <b>"대기 N번 팀을 취소할까요?"</b> 창이 떠요. <b>팀 취소</b>를 누르면 그 줄이 비어요.',tip:'선수들은 쉬는 선수로 돌아가요. <b>되돌리기</b>로 취소할 수 있어요.',k:'대기 팀 취소'},
+ {t:'잘못 눌렀어요',img:'c_top',s:'맨 위 <b>되돌리기</b>를 누르면 한 단계 취소돼요. <b>다시하기</b>는 되살리기, <b>비우기</b>는 코트·대기를 처음으로.',k:'되돌리기'},
+ {t:'하루 마무리와 정산',img:'rol',s:'맨 위 <b>오늘 게임 종료</b> → <b>오늘 종료</b>. 입장명부가 열리면 이름마다 <b>현금 / 송금</b>을 체크해요.',tip:'<b>이미지 저장</b>이나 <b>보낼 글 복사</b>로 단톡방에 올려요. 안 뛴 사람은 자동으로 빠져요.',k:'정산·입장명부'},
+ {t:'내 운동 기록 보기',img:'rec',s:'맨 위 <b>기록</b> 버튼을 눌러요. 오늘·주간·월간·연간·누적 <b>출석과 게임 수</b>가 나와요.',tip:'이름 검색 칸에 내 이름을 치면 한 줄로 볼 수 있어요.',k:'내 기록 보기'}]},
+ops:{name:'운영',tag:'운영',slides:[
+ {t:'설정 위쪽',img:'set1',s:'<b>효과음 · 음량 · 효과음 종류</b>, <b>진동</b>, <b>음성 안내</b>, <b>코트 테마</b>를 여기서 바꿔요.',tip:'진동은 안드로이드에서만 돼요.',k:'소리·화면 설정'},
+ {t:'설정 아래쪽',img:'set2',s:'<b>데이터 백업</b>, <b>기록 관리</b>(연습 모드·기록 삭제), <b>업데이트 받기</b>가 있어요.',warn:'기록 삭제는 되돌릴 수 없어요. 먼저 <b>백업 저장</b>!',k:'백업·업데이트'},
+ {t:'월례회 모드 켜기',img:'wl1',s:'설정의 <b>월례회 모드 › 대진표</b>를 누르고 <b>대진표 열기</b>.',tip:'다음 날이 되면 자동으로 일반 모드로 돌아와요.',k:'월례회 켜기'},
+ {t:'월례회 설정 고르기',img:'wl2',s:'<b>풀리그/토너먼트</b>, <b>팀 짜기</b>, <b>코트 수</b>, <b>점수제</b>, <b>대관 시간</b>을 고르면 초록 글씨로 끝나는 시간이 나와요.',tip:'참가자는 <b>홈 출석 불러오기</b>로 한 번에 가져와요.',k:'월례회 설정'},
+ {t:'일정으로 진행해요',img:'wl_sched',s:'<b>대진표 만들기</b> 후 <b>일정</b> 탭. <b>입장</b>으로 코트에 보내고, 끝나면 점수를 입력해요.',tip:'경기 전 사람이 바뀌면 <b>교체</b> 버튼.',k:'월례회 일정'},
+ {t:'대진표 이미지 저장',img:'wl_bracket',s:'<b>대진표</b> 탭 오른쪽 위 <b>이미지로 저장</b>. 이긴 팀이 선을 타고 올라가요.',k:'대진표 이미지'},
+ {t:'순위 보기',img:'wl_rank',s:'<b>순위</b> 탭에서 팀별 전적과 득실을 봐요. 끝나면 <b>월례회 종료</b>.',k:'월례회 순위'}]}
+};
+var FIND=[];Object.keys(COURSES).forEach(function(c){COURSES[c].slides.forEach(function(s,i){FIND.push({c:c,i:i,k:s.k,tag:COURSES[c].tag})})});
+var hub=document.getElementById('hub'),pg=document.getElementById('pg'),fd=document.getElementById('fd'),track=document.getElementById('track'),dots=document.getElementById('dots'),cnt=document.getElementById('cnt'),prev=document.getElementById('prev'),next=document.getElementById('next');
+document.querySelectorAll('[data-n]').forEach(function(e){e.textContent=COURSES[e.dataset.n].slides.length+'장'});
+var cur=null,p=0,n=0;
+function esc(x){return x}
+function build(c){
+ var C=COURSES[c];n=C.slides.length;track.innerHTML='';dots.innerHTML='';
+ C.slides.forEach(function(s,i){
+  var d=document.createElement('div');d.className='sl';
+  var h='<div class="eb">'+C.name+' 코스 · '+(i+1)+' / '+n+'</div><h2>'+s.t+'</h2>';
+  if(s.list)h+='<ol class="list">'+s.list.map(function(x,k){return '<li><i>'+(k+1)+'</i>'+x+'</li>'}).join('')+'</ol>';
+  else if(s.img)h+='<div class="shot"><img src="img/'+s.img+'.jpg" alt="'+s.t+' 화면" loading="lazy"></div>';
+  h+='<p class="say">'+s.s+'</p>';
+  if(s.tip)h+='<div class="tip">'+s.tip+'</div>';
+  if(s.warn)h+='<div class="warn">'+s.warn+'</div>';
+  d.innerHTML=h;track.appendChild(d);
+  var b=document.createElement('button');b.setAttribute('aria-label',(i+1)+'쪽');b.onclick=function(){go(i)};dots.appendChild(b)});
+}
+function ui(){
+ for(var i=0;i<n;i++)dots.children[i].className=i===p?'on':'';
+ cnt.textContent=(p+1)+' / '+n;prev.disabled=p===0;
+ next.textContent=p===n-1?'처음으로':'다음';
+}
+function go(i){p=Math.max(0,Math.min(n-1,i));track.scrollTo({left:p*track.clientWidth,behavior:'smooth'});ui()}
+var st;track.addEventListener('scroll',function(){clearTimeout(st);st=setTimeout(function(){var q=Math.round(track.scrollLeft/track.clientWidth);if(q!==p){p=q;ui()}},60)});
+prev.onclick=function(){go(p-1)};
+next.onclick=function(){if(p===n-1)route('');else go(p+1)};
+document.getElementById('home').onclick=function(){route('')};
+function route(h){if(location.hash.slice(1)===h){show()}else location.hash=h}
+function show(){
+ var h=location.hash.slice(1);h=h.replace(/^(member|duty)/,'play');var m=h.match(/^(play|ops)(?:-(\d+))?$/);
+ hub.hidden=pg.hidden=fd.hidden=true;
+ if(m){cur=m[1];build(cur);pg.hidden=false;var i=m[2]?+m[2]-1:0;p=Math.max(0,Math.min(n-1,i));track.scrollLeft=p*track.clientWidth;ui()}
+ else if(h==='find'){fd.hidden=false}
+ else{hub.hidden=false;hub.scrollTop=0}
+}
+window.addEventListener('hashchange',show);
+document.addEventListener('click',function(e){var t=e.target.closest('[data-go]');if(t){e.preventDefault();route(t.dataset.go)}});
+var g=document.getElementById('grid');
+FIND.forEach(function(f){var b=document.createElement('button');b.innerHTML='<b>'+f.k+'</b><span>'+f.tag+' 코스 '+(f.i+1)+'장</span>';b.onclick=function(){location.hash=f.c+'-'+(f.i+1)};g.appendChild(b)});
+var lb=document.getElementById('lb'),li=lb.querySelector('img');
+document.addEventListener('click',function(e){var t=e.target;if(t.closest&&t.closest('.shot')&&t.tagName==='IMG'){li.src=t.src;lb.classList.add('on');lb.scrollTop=0;lb.scrollLeft=0}else if(t===lb||t.id==='lbx'||t===li){lb.classList.remove('on')}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('on');if(!pg.hidden){if(e.key==='ArrowRight')go(p+1);if(e.key==='ArrowLeft')go(p-1)}});
+window.addEventListener('resize',function(){if(!pg.hidden)track.scrollLeft=p*track.clientWidth});
+show();
+})();
+</script>
+</body>
+</html>

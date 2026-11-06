@@ -1379,7 +1379,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=250,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
+const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=251,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -2025,7 +2025,7 @@ html body .ks{align-items:flex-end;text-align:right}html body .ks span,html body
 .wlsc i.w{background:#0a7a43;color:#fff}.wlsc.off{opacity:.45}
 .wlsc.blink i{outline:3px solid #c9382f;animation:wlb 1s infinite}
 @keyframes wlb{50%{outline-color:transparent}}
-.wlbrs{overflow:auto;background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:6px}
+.wlbrs{overflow:auto;background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:6px;flex:none}
 .wlpod{display:flex;align-items:flex-end;justify-content:center;gap:10px}
 .wlpod .pd{flex:1;max-width:200px;border-radius:14px 14px 0 0;padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:2px;background:var(--card);border:1px solid var(--ln)}
 .wlpod .p1{min-height:130px;background:#fff3c4}.wlpod .p2{min-height:100px}.wlpod .p3{min-height:84px}
@@ -2490,9 +2490,11 @@ function vBr(){
  var rounds=p.mainRounds,Wd=rounds*CW+170,Ht=Math.max(slot*GH,GH)+30,sv='';
  main.forEach(function(g){var x=(g.rd-1)*CW+10,y=pos[g.id]+14;
   [g.a,g.b].forEach(function(r){if(r.g){var f=gById(r.g),fx=(f.rd-1)*CW+10+BW,fy=pos[f.id]+14+BH/2,done=f.st==='done';
-   sv+='<path d="M'+fx+' '+fy+'H'+(fx+(x-fx)/2)+'V'+(y+BH/2)+'H'+x+'" fill="none" stroke="'+(done?'#0a7a43':'#b9c0b4')+'" stroke-width="'+(done?4:2)+'"'+(done?'':' stroke-dasharray="5 5"')+'/>'}})});
+   sv+='<path d="M'+fx+' '+fy+'H'+(fx+(x-fx)/2)+'V'+(y+BH/2)+'H'+x+'" fill="none" stroke="'+(done?'#0a7a43':'#8b948a')+'" stroke-width="'+(done?4:2.5)+'" stroke-linejoin="round"/>'}})});
+ var seen={};main.forEach(function(g){if(seen[g.rd])return;seen[g.rd]=1;var lb=String(g.lab||'').split(' ')[0];sv+='<text x="'+((g.rd-1)*CW+10+BW/2)+'" y="12" text-anchor="middle" font-size="13" font-weight="800" fill="var(--ink)">'+esc(lb)+'</text>'});
  main.forEach(function(g){var x=(g.rd-1)*CW+10,y=pos[g.id]+14,w=winOf(g,1);
-  sv+='<g><rect x="'+x+'" y="'+y+'" width="'+BW+'" height="'+BH+'" rx="10" fill="var(--card)" stroke="'+(g.st==='done'?'#0a7a43':'var(--ln)')+'" stroke-width="2"/>';
+  sv+='<g><rect x="'+x+'" y="'+y+'" width="'+BW+'" height="'+BH+'" rx="10" fill="var(--card)" stroke="'+(g.st==='done'?'#0a7a43':'#8b948a')+'" stroke-width="2"/>';
+  if(g.st==='done'&&w){var wk=resolve(g.a)===w?0:1;sv+='<rect x="'+(x+1)+'" y="'+(y+1+wk*(BH/2-1))+'" width="'+(BW-2)+'" height="'+(BH/2-1)+'" rx="8" fill="#0a7a43" opacity=".14"/>'}
   [g.a,g.b].forEach(function(r,k){var t=resolve(r),nm=t?tName(t.n):refLabel(r),iw=g.st==='done'&&w===t&&t,sc=g.st==='done'?(k?g.sb:g.sa):'',yy=y+(k?BH*.75:BH*.28)+5;
    sv+='<text x="'+(x+10)+'" y="'+yy+'" font-size="14" font-weight="'+(iw?800:600)+'" fill="'+(t?'var(--ink)':'var(--mut)')+'">'+esc(nm.length>11?nm.slice(0,10)+'…':nm)+'</text><text x="'+(x+BW-10)+'" y="'+yy+'" text-anchor="end" font-size="16" font-weight="800" fill="'+(iw?'#0a7a43':'var(--mut)')+'">'+sc+'</text>'});
   sv+='<line x1="'+x+'" x2="'+(x+BW)+'" y1="'+(y+BH/2)+'" y2="'+(y+BH/2)+'" stroke="var(--ln)"/><text x="'+(x+BW/2)+'" y="'+(y-4)+'" text-anchor="middle" font-size="12" fill="var(--mut)">'+esc(g.lab||'')+'</text></g>'});

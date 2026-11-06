@@ -1369,7 +1369,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=223,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
+const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=224,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -2009,6 +2009,8 @@ html body button,html body input,html body select,html body textarea{font-family
 .wlpod .pd{flex:1;max-width:200px;border-radius:14px 14px 0 0;padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:2px;background:var(--card);border:1px solid var(--ln)}
 .wlpod .p1{min-height:130px;background:#fff3c4}.wlpod .p2{min-height:100px}.wlpod .p3{min-height:84px}
 .wlpod small{font-size:26px}.wlpod b{font-size:17px}.wlpod span{color:var(--mut);font-size:14px}
+.wlper{display:flex;gap:6px;margin-bottom:10px}.wlper button{min-height:44px;padding:0 18px;border-radius:22px;border:2px solid var(--ln);background:var(--card);color:var(--ink);font-size:16px;font-weight:800}.wlper button.on{background:#01023c;border-color:#01023c;color:#fff}
+.wlimgs{display:flex;gap:8px;overflow-x:auto;padding:4px 0}.wlimgs img{height:260px;border-radius:8px;border:1px solid var(--ln)}
 .wltb{width:100%;border-collapse:collapse;font-size:16px}.wltb th{font-size:13px;color:var(--mut);text-align:left;padding:8px 6px}.wltb td{padding:10px 6px;border-top:1px solid var(--ln)}
 .wltb td small{color:var(--mut)}
 .wlnote{font-size:14px;color:var(--mut);line-height:1.5}
@@ -2076,15 +2078,15 @@ html body #wqd .wqs{flex:1 1 auto;min-height:0}
 
 html body .wlbox .wlg{grid-template-columns:72px minmax(0,1fr) 200px minmax(0,1fr);min-height:64px;padding:6px 12px;gap:8px}
 .wlsd{flex-direction:row!important;align-items:center;gap:6px;flex-wrap:nowrap}
-.wlsd.a,.wlsd.b{align-items:center!important}.wlsd .wlnn{flex:0 0 auto;min-width:88px}.wlsd.b .wlnn{text-align:right}.wlsd.a{justify-content:flex-start}.wlsd.b{justify-content:flex-end;text-align:right}
+.wlsd.a,.wlsd.b{align-items:center!important}.wlsd .wlnn{flex:0 0 auto;width:96px;font-weight:700!important}.wlsd .wlnn.w,.wlsd .wlnn.l,.wlsd .wlnn{margin:0!important;padding:0!important}.wlsd .wlnn.w{font-weight:700!important}.wlsd .wlnn.ref{width:auto}.wlbg.ph{visibility:hidden}.wlsd.b .wlnn{text-align:right}.wlsd.a{justify-content:flex-start}.wlsd.b{justify-content:flex-end;text-align:right}
 .wlbg{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:13px;font-weight:800;color:#fff;flex:none}
 .wlbg.bs{background:#d4372c}.wlbg.bp{background:#3d6fc7}
 .wlmid{min-width:0!important;width:200px;align-items:center;justify-content:center;gap:2px}
-.wlsr{display:grid!important;grid-template-columns:1fr auto 1fr;align-items:center;width:100%;gap:4px}
-.wlsr .wls{min-width:0!important;text-align:center;font-size:36px;line-height:1}.wlsr .wls:first-child{text-align:right}.wlsr .wls:last-child{text-align:left}
-.wlsr em{font-style:normal;font-size:24px;font-weight:800;color:var(--mut);line-height:1}
+.wlsr{display:grid!important;grid-template-columns:64px 16px 64px;justify-content:center;align-items:center;width:100%;gap:2px}
+.wlsr .wls{min-width:0!important;width:64px;text-align:center!important;font-size:36px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.wlsr em{text-align:center;font-style:normal;font-size:24px;font-weight:800;color:var(--mut);line-height:1}
 .wlsub .wltag{white-space:nowrap}.wlsub{white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:6px}
-.wlbox .wlpl{min-height:52px}
+.wlbox .wlpl{min-height:52px;box-sizing:border-box;width:72px}
 .wlbrs{overflow:auto}.wlmx{border-collapse:collapse;font-size:15px;background:var(--card)}.wlmx th,.wlmx td{border:1px solid var(--ln);padding:6px 8px;text-align:center;white-space:nowrap}
 .wlmx th{background:var(--chip);font-weight:800}.wlmx td.w{color:#d4372c;font-weight:800}.wlmx td.l{color:#3d6fc7;font-weight:800}.wlmx td.x{background:var(--chip)}
 .wlpp td{min-width:112px;padding:4px 6px}.wlmc{display:flex;flex-direction:column;line-height:1.2}.wlmc b{font-size:15px}.wlmc small{font-size:11px;color:var(--mut)}.wlmc span{font-weight:800}.wlmc.w span{color:#d4372c}.wlmc.l span{color:#3d6fc7}
@@ -2424,7 +2426,7 @@ function rowHtml(g){
  var done=st==='done',aw=done?(g.sa>g.sb?1:0):null,bw=done?(g.sb>g.sa?1:0):null;
  var chip=st==='done'?'<span class="wlchip y">종료</span>':st==='play'?'<span class="wlchip n">게임 중</span>':st==='end'?'<span class="wlchip r">점수 입력</span>':bl?'<span class="wlchip g">'+esc(bl)+'</span>':'<span class="wlchip g">'+(fc&&!ahead(g)?'입장 가능':'대기')+'</span>';
  var sA=done?g.sa:'–',sB=done?g.sb:'–',can=(st==='done'||st==='end');
- var bgA=done?'<i class="wlbg '+(aw?'bs':'bp')+'">'+(aw?'승':'패')+'</i>':'',bgB=done?'<i class="wlbg '+(bw?'bs':'bp')+'">'+(bw?'승':'패')+'</i>':'';
+ var bgA=done?'<i class="wlbg '+(aw?'bs':'bp')+'">'+(aw?'승':'패')+'</i>':'<i class="wlbg ph"></i>',bgB=done?'<i class="wlbg '+(bw?'bs':'bp')+'">'+(bw?'승':'패')+'</i>':'<i class="wlbg ph"></i>';
  var mid='<'+(can?'button data-wl="sc" data-g="'+g.id+'"':'div')+' class="wlmid'+(st==='end'?' blink':'')+'"><span class="wlsr"><b class="wls'+(aw?' w':'')+'">'+sA+'</b><em>:</em><b class="wls'+(bw?' w':'')+'">'+sB+'</b></span><span class="wlsub">'+(tag?'<span class="wltag">'+esc(tag)+'</span>':'')+chip+'</span></'+(can?'button':'div')+'>';
  return '<div class="wlg st-'+st+cls+kc+'">'+plate+'<div class="wlsd a">'+pnames(g.a,aw)+bgA+'</div>'+mid+'<div class="wlsd b">'+bgB+pnames(g.b,bw)+'</div></div>'}
 function funElig(){var p=plan();if(!p||p.kind!=='tour')return[];var m=teamStandings(),busy={};
@@ -2435,7 +2437,7 @@ function funElig(){var p=plan();if(!p||p.kind!=='tour')return[];var m=teamStandi
 function vSch(){
  var p=plan();if(!p)return '<div class="wlempty">아직 대진표가 없어요.<br><button class="wlbtn" data-wl="tab" data-v="set">설정에서 만들기</button></div>';
  var c=p.cfg,by={},ex=[];p.games.forEach(function(g){if(g.slot)(by[g.slot]=by[g.slot]||[]).push(g);else ex.push(g)});
- var done=p.games.filter(function(g){return g.st==='done'}).length,h='<div class="wlbar"><span>'+(p.kind==='tour'?'토너먼트':p.kind==='team'?'풀리그(고정 팀)':'풀리그(랜덤 파트너)')+' · '+p.cfg.pts+'점제 · <b>'+done+'/'+p.games.length+'경기</b></span>'+(funElig().length>=2?'<button class="wlbtn sm" data-wl="fun">＋ 친선 경기</button>':'')+'</div>';
+ var done=p.games.filter(function(g){return g.st==='done'}).length,h='<div class="wlbar"><span>'+(p.kind==='tour'?'토너먼트':p.kind==='team'?'풀리그(고정 팀)':'풀리그(랜덤 파트너)')+' · '+p.cfg.pts+'점제 · <b>'+done+'/'+p.games.length+'경기</b></span>'+'<span style="display:flex;gap:6px">'+(funElig().length>=2?'<button class="wlbtn sm" data-wl="fun">＋ 친선 경기</button>':'')+'<button class="wlbtn sm" data-wl="simg">📷 일정 이미지</button></span></div>';
  Object.keys(by).map(Number).sort(function(a,b){return a-b}).forEach(function(s){var L=by[s].slice().sort(function(a,b){return (a.cn||0)-(b.cn||0)});
   var dn=L.filter(function(g){return g.st==='done'}).length;h+='<div class="wlrd"><div class="wlrh"><b class="wlgm">'+s+'GAME</b><span class="wlcnt'+(dn===L.length?' ok':'')+'">'+dn+'/'+L.length+' 완료</span><span>'+fm(tm(c.start)+(s-1)*c.gm)+'</span></div><div class="wlbox">'+L.map(rowHtml).join('')+'</div></div>'});
  if(ex.length)h+='<div class="wlrd"><div class="wlrh"><b class="wlgm">EXTRA</b></div><div class="wlbox">'+ex.map(rowHtml).join('')+'</div></div>';
@@ -2483,9 +2485,21 @@ function rankData(){var p=plan();if(!p)return null;
  if(p.kind==='ind'){var r=indStandings();return{kind:'ind',rows:r.map(function(x){return{rank:x.rank,name:x.n,sub:[(p.info[x.n]||{}).g,(p.info[x.n]||{}).gr].filter(Boolean).join('·'),a:(Math.round(x.pt*10)/10).toFixed(1)+'점',b:x.w+'승 '+x.l+'패',c:(x.d>0?'+':'')+x.d}}),cols:['포인트','전적','득실']}}
  if(p.kind==='team'){var t=teamLeagueRank();return{kind:'team',rows:t.map(function(x){return{rank:x.rank,name:tName(x.n),sub:'',a:x.w+'승 '+x.l+'패',b:(x.d>0?'+':'')+x.d,c:x.pf}}),cols:['전적','득실','득점']}}
  var t2=tourRank();return{kind:'tour',rows:t2.map(function(x){return{rank:x.lab,name:tName(x.n),sub:'',a:x.s.w+'승 '+x.s.l+'패',b:(x.s.lw+x.s.fw)+'-'+(x.s.ll+x.s.fl),c:(x.s.d>0?'+':'')+x.s.d}}),cols:['전적','패자전·친선','득실']}}
+function perAgg(per){var t=today(),L=(W.saved||[]).filter(function(x){return per==='누적'||(per==='월간'?x.date.slice(0,7)===t.slice(0,7):x.date.slice(0,4)===t.slice(0,4))}),M={};
+ L.forEach(function(sv){var seen={};(sv.games||[]).forEach(function(g){if(g.sa==null||g.sb==null)return;[[g.a,g.sa,g.sb],[g.b,g.sb,g.sa]].forEach(function(q){String(q[0]).split('·').forEach(function(n){if(!n)return;var m=M[n]=M[n]||{n:n,w:0,l:0,pf:0,pa:0,d:{}};if(q[1]>q[2])m.w++;else if(q[1]<q[2])m.l++;m.pf+=q[1];m.pa+=q[2];m.d[sv.id]=1})})})});
+ var R=Object.keys(M).map(function(k){var m=M[k];m.c=Object.keys(m.d).length;m.g=m.w+m.l;m.r=m.g?m.w/m.g:0;m.df=m.pf-m.pa;return m});
+ R.sort(function(a,b){return b.w-a.w||b.r-a.r||b.df-a.df||b.pf-a.pf||a.n.localeCompare(b.n,'ko')});
+ R.forEach(function(m,i){var q=R[i-1];m.rk=q&&q.w===m.w&&q.r===m.r&&q.df===m.df?q.rk:i+1});return{L:L,R:R}}
+function vPer(per){var a=perAgg(per),p=plan(),h='';
+ if(!a.R.length)return '<div class="wlempty">'+per+' 보관된 월례회 기록이 없어요.<br><small>순위 탭 \'오늘\'에서 「월례회 기록 보관」을 누르면 쌓여요</small></div>';
+ h+='<div class="wlnote">보관한 월례회 '+a.L.length+'회 기준 ('+(per==='월간'?today().slice(0,7).replace('-','년 ')+'월':per==='연간'?today().slice(0,4)+'년':'전체')+'). 오늘 기록은 보관해야 반영돼요.</div>';
+ h+='<div class="wlcard"><table class="wltb"><thead><tr><th>순위</th><th>이름</th><th>참가</th><th>전적</th><th>승률</th><th>득실</th></tr></thead><tbody>'+a.R.map(function(m){return '<tr><td><b>'+m.rk+'</b></td><td>'+esc(m.n)+'</td><td>'+m.c+'회</td><td>'+m.w+'승 '+m.l+'패</td><td>'+Math.round(m.r*100)+'%</td><td>'+(m.df>0?'+':'')+m.df+'</td></tr>'}).join('')+'</tbody></table></div>';
+ return h}
 function vRk(){
  var p=plan();if(!p)return '<div class="wlempty">아직 대진표가 없어요</div>';var d=rankData(),done=p.games.filter(function(g){return g.st==='done'}).length;
- var pod=d.rows.slice(0,3),ord=[pod[1],pod[0],pod[2]],h='';
+ var per=W.rp||'오늘',pb='<div class="wlper">'+['오늘','월간','연간','누적'].map(function(k){return '<button data-wl="rp" data-v="'+k+'" class="'+(per===k?'on':'')+'">'+k+'</button>'}).join('')+'</div>';
+ if(per!=='오늘')return pb+vPer(per);
+ var pod=d.rows.slice(0,3),ord=[pod[1],pod[0],pod[2]],h=pb;
  if(done&&pod.length>=3&&d.kind!=='ind'||done&&d.kind==='ind'&&pod.length>=3){h+='<div class="wlpod">'+ord.map(function(x,i){var n=[2,1,3][i];return '<div class="pd p'+n+'"><small>'+(n===1?'🥇':n===2?'🥈':'🥉')+'</small><b>'+esc(x.name)+'</b><span>'+esc(String(x.rank))+'</span></div>'}).join('')+'</div>'}
  h+='<div class="wlcard"><table class="wltb"><thead><tr><th>순위</th><th>'+(d.kind==='ind'?'이름':'팀')+'</th>'+d.cols.map(function(c){return '<th>'+c+'</th>'}).join('')+'</tr></thead><tbody>'+d.rows.map(function(x){return '<tr><td><b>'+esc(String(x.rank))+'</b></td><td>'+esc(x.name)+(x.sub?' <small>'+esc(x.sub)+'</small>':'')+'</td><td>'+esc(String(x.a))+'</td><td>'+esc(String(x.b))+'</td><td>'+esc(String(x.c))+'</td></tr>'}).join('')+'</tbody></table></div>'
  +(d.kind==='ind'?'<div class="wlnote">포인트: 경기 참가 2점 + 이기면 최대 10점(센 팀을 이길수록 많이). 남자가 적은 팀·나이대가 높은 팀·구력이 낮은 선수가 이기면 가산점(경기당 최대 +3). 같으면 승수 → 득실차 → 득점 → 맞대결 → 낮은 급수 순.</div>':'')
@@ -2498,6 +2512,35 @@ function cardPng(){
  x.fillStyle='#1b2a1f';x.font='700 28px sans-serif';x.fillText('순위',48,246);x.fillText(d.kind==='ind'?'이름':'팀',170,246);x.textAlign='right';x.fillText(d.cols[0],700,246);x.fillText(d.cols[1],880,246);x.fillText(d.cols[2],1032,246);x.textAlign='left';
  d.rows.forEach(function(r,i){var y=270+i*74;x.fillStyle=i%2?'#eee9db':'#fff';x.fillRect(32,y,Wd-64,66);x.fillStyle=i<3?'#b8860b':'#1b2a1f';x.font='800 34px sans-serif';x.fillText(String(r.rank),48,y+45);x.fillStyle='#1b2a1f';x.font='700 32px sans-serif';x.fillText(r.name,170,y+45);x.font='500 28px sans-serif';x.textAlign='right';x.fillText(String(r.a),700,y+44);x.fillText(String(r.b),880,y+44);x.fillText(String(r.c),1032,y+44);x.textAlign='left'});
  return cv}
+var SCH=[];
+function schPages(){var p=plan(),c=p.cfg,by={};p.games.forEach(function(g){if(g.slot)(by[g.slot]=by[g.slot]||[]).push(g)});
+ var slots=Object.keys(by).map(Number).sort(function(a,b){return a-b}),Wd=1080,RH=96,GH=84,TOP1=210,TOP2=120,MAXH=2200,pages=[],cur=null;
+ function np(){cur={top:pages.length?TOP2:TOP1,h:pages.length?TOP2:TOP1,items:[]};pages.push(cur)}
+ slots.forEach(function(sl){var L=by[sl].slice().sort(function(a,b){return (a.cn||0)-(b.cn||0)}),need=GH+L.length*RH+16;if(!cur||cur.h+need>MAXH)np();cur.items.push({sl:sl,L:L,y:cur.h});cur.h+=need});
+ return{pages:pages,Wd:Wd,RH:RH,GH:GH,c:c,p:p}}
+function schCanvas(P,pg,idx,N){var x,cv=document.createElement('canvas'),Wd=P.Wd,Hh=pg.h+70,p=P.p,c=P.c;cv.width=Wd;cv.height=Hh;x=cv.getContext('2d');
+ var F='"Pretendard","Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif';
+ x.fillStyle='#f4f1e8';x.fillRect(0,0,Wd,Hh);x.fillStyle='#01023c';x.fillRect(0,0,Wd,idx?96:180);x.fillStyle='#fff';
+ x.textBaseline='alphabetic';x.font='800 '+(idx?44:58)+'px '+F;x.fillText('좌동클럽 월례회 경기 순서',48,idx?64:86);
+ if(!idx){x.font='500 30px '+F;x.fillText(p.date+' · '+(p.kind==='tour'?'토너먼트':p.kind==='team'?'풀리그(고정 팀)':'풀리그(랜덤 파트너)')+' · '+c.pts+'점제 · 코트 '+c.courts+'면',48,138)}
+ if(N>1){x.textAlign='right';x.font='700 30px '+F;x.fillText((idx+1)+' / '+N,Wd-48,idx?62:86);x.textAlign='left'}
+ function fit(t,w,fs,wt){var z=fs;x.font=wt+' '+z+'px '+F;while(x.measureText(t).width>w&&z>20){z-=2;x.font=wt+' '+z+'px '+F}return z}
+ pg.items.forEach(function(it){var y=it.y+(idx?0:0)+8;
+  x.fillStyle='#1b2a1f';x.font='800 46px '+F;x.fillText(it.sl+'GAME',48,y+54);var w1=x.measureText(it.sl+'GAME').width;
+  x.fillStyle='#6c6c70';x.font='700 32px '+F;x.fillText(fm(tm(c.start)+(it.sl-1)*c.gm),48+w1+20,y+54);
+  it.L.forEach(function(g,i){var ry=y+P.GH-8+i*P.RH;x.fillStyle=i%2?'#eee9db':'#fff';x.fillRect(32,ry,Wd-64,P.RH-8);
+   x.fillStyle='#F2D54B';x.beginPath();x.roundRect?x.roundRect(48,ry+10,116,P.RH-28,14):x.rect(48,ry+10,116,P.RH-28);x.fill();x.fillStyle='#1b2a1f';x.textAlign='center';x.font='800 34px '+F;x.fillText((g.cn||'')?g.cn+'코트':'–',106,ry+P.RH/2+6);
+   [[g.a,'right',500],[g.b,'left',596]].forEach(function(q){var t=resolve(q[0]),tx=t?t.n.join(' · '):refLabel(q[0]);x.fillStyle=t?'#1b2a1f':'#8a8a8e';var z=fit(tx,330,t?38:30,t?'800':'600');x.font=(t?800:600)+' '+z+'px '+F;x.textAlign=q[1];x.fillText(tx,q[2],ry+P.RH/2+8)});
+   x.textAlign='center';x.fillStyle='#c9382f';x.font='italic 800 32px '+F;x.fillText('VS',548,ry+P.RH/2+6);
+   var tg=g.lab||TAG[g.k]||'';if(tg){x.fillStyle='#6c6c70';x.font='700 24px '+F;x.textAlign='right';x.fillText(tg,Wd-48,ry+P.RH/2+6)}x.textAlign='left'})});
+ x.fillStyle='#8a8a8e';x.font='500 24px '+F;x.textAlign='center';x.fillText('좌동배드민턴클럽',Wd/2,Hh-26);x.textAlign='left';return cv}
+function schImg(){var p=plan();if(!p||!p.games.some(function(g){return g.slot}))return toast('일정이 없어요');
+ var P=schPages(),N=P.pages.length,cvs=P.pages.map(function(pg,i){return schCanvas(P,pg,i,N)});SCH=[];var left=cvs.length;
+ cvs.forEach(function(cv,i){cv.toBlob(function(b){SCH[i]={name:'월례회_일정_'+p.date+(N>1?'_'+(i+1)+'of'+N:'')+'.png',blob:b,url:b?URL.createObjectURL(b):''};if(--left===0)schShow()},'image/png')})}
+function schShow(){var ok=SCH.every(function(x){return x&&x.blob});if(!ok)return toast('이미지를 만들지 못했어요');
+ modal('<b class="wltt">경기 순서 이미지 · '+SCH.length+'장</b><p>'+(SCH.length>1?'한 장에 다 담기엔 길어서 '+SCH.length+'장으로 나눴어요.':'한 장으로 만들었어요.')+'</p><div class="wlimgs">'+SCH.map(function(x){return '<img src="'+x.url+'">'}).join('')+'</div><div class="wlbts"><button class="wlbtn o" data-wl="mx">닫기</button><button class="wlbtn o" data-wl="sav">저장</button><button class="wlbtn" data-wl="shr">카톡·공유</button></div>',1)}
+function schSave(){SCH.forEach(function(x,i){setTimeout(function(){try{var a=document.createElement('a');a.href=x.url;a.download=x.name;document.body.appendChild(a);a.click();a.remove()}catch(e){}},i*400)});toast('이미지 '+SCH.length+'장을 저장했어요',1)}
+function schShare(){try{var fs=SCH.map(function(x){return new File([x.blob],x.name,{type:'image/png'})});if(navigator.canShare&&navigator.canShare({files:fs}))return navigator.share({files:fs,title:'좌동클럽 월례회 경기 순서'}).catch(function(e){if(e&&e.name!=='AbortError')schSave()});}catch(e){}schSave();toast('공유가 안 돼서 저장했어요. 카톡에서 사진으로 보내 주세요')}
 function saveCard(){var cv=cardPng(),fn='월례회_순위_'+plan().date+'.png';
  cv.toBlob(function(b){if(!b)return toast('이미지를 만들지 못했어요');try{var u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();setTimeout(function(){a.remove();URL.revokeObjectURL(u)},1500);toast('순위 카드를 저장했어요',1)}catch(e){toast('저장하지 못했어요')}},'image/png')}
 function keep(){var p=plan(),d=rankData();if(!p||!d.rows.length)return;
@@ -2552,6 +2595,10 @@ document.addEventListener('click',function(e){var t=e.target.closest&&e.target.c
  if(a==='scok'){if(t.disabled)return;if(setScore(SC.gid,+SC.a,+SC.b)){modal('');draw()}return}
  if(a==='fun'){var el2=funElig().sort(function(x,y){return x.fw+x.fl-(y.fw+y.fl)});if(el2.length<2)return;var p=plan(),A=el2[0],B=el2.slice(1).find(function(y){return !p.games.some(function(g){return g.k==='fun'&&((g.a.t===A.i&&g.b.t===y.i)||(g.a.t===y.i&&g.b.t===A.i))})})||el2[1];
   p.games.push({id:'F'+Date.now(),k:'fun',lab:'친선',a:{t:A.i},b:{t:B.i},st:'wait',sa:null,sb:null,court:null,lv:99});wsv();return draw()}
+ if(a==='rp'){W.rp=d.v;wsv();return draw()}
+ if(a==='simg')return schImg();
+ if(a==='shr')return schShare();
+ if(a==='sav')return schSave();
  if(a==='card')return saveCard();
  if(a==='keep')return keep();
  if(a==='svdel'){W.saved=W.saved.filter(function(s){return String(s.id)!==d.id});wsv();return draw()}

@@ -1127,7 +1127,7 @@ html body[data-lay] .hd button.endb.b[data-a="endday"],html body .hd button.endb
 html body .rv.rdy{outline:2px solid var(--gx,var(--g))!important;outline-offset:-2px}
 html body .rvs .rv.rdy:not(:has(.re.ok)){--stb:var(--gx,var(--g));--stc:#fff}
 /* ===== v142 입장명부 정돈 + 글꼴 통일 ===== */
-html body[data-sx]{font-family:"Pretendard","Noto Sans KR","Noto Sans CJK KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif!important}
+html body[data-sx]{font-family:"Barlow Condensed","Pretendard","Noto Sans KR","Noto Sans CJK KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif!important}
 html body .in,html body button{font-family:inherit}
 html body .pn.rop .rog0,html body .pn.rop .rogr{grid-template-columns:repeat(var(--co,3),1fr)!important}
 html body .pn.rop .roch,html body .pn.rop .roc{grid-template-columns:26px 54px minmax(0,1fr) 60px 88px 22px!important;column-gap:6px!important;padding:0 8px!important;font-variant-numeric:tabular-nums;align-items:center}
@@ -1257,7 +1257,7 @@ html body .cmo{display:flex;flex-direction:column;align-items:flex-start;gap:4px
 html body[data-lay][data-ct] .wtc .wg button.p.les.brk:not(.x):not(.y):not(.z):not(.w),html body .wtc .wg button.p.les.brk:not(.x):not(.y):not(.z):not(.w){background:#8A5A00!important;background-color:#8A5A00!important;border-color:#8A5A00!important;color:#fff!important}
 .cmo.on{outline:2px solid var(--ink,#191919);outline-offset:-2px}
 </style>
-</head>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,800;1,800&family=Noto+Sans+KR:wght@400;500;700;900&display=swap"></head>
 <body data-lay="r" data-ct="1">
 <script>(function(){try{var H='1850144478736258-2337184690506919',K='bdgate',hn=location.hostname,force=/[?&]gate=1/.test(location.search);if(!force&&(!hn||hn=='localhost'||hn=='127.0.0.1'))return;
 try{if(localStorage.getItem(K)===H)return}catch(e){}
@@ -1369,7 +1369,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=221,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
+const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=222,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -1948,6 +1948,9 @@ if(a=='rdc'){arm=null;clearTimeout(tm);const o=$$('rdw');if(o)o.remove();try{if(
 const k=t.closest('.r').dataset.k;if(arm==k){arm=null;clearTimeout(tm);del(k);return draw()}arm=k;clearTimeout(tm);tm=setTimeout(()=>{arm=null;if($$('rdw'))draw()},3500);draw()},true)})();
 </script>
 <script>try{if(ST.mode!=1){ST.mode=1;ST.ns=1;sv();if(typeof render=="function")render()}}catch(e){}</script>
+<style id="bccss">html body{font-family:'Barlow Condensed',-apple-system,BlinkMacSystemFont,"SF Pro Text","Pretendard","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif}
+html body[data-sx]{font-family:'Barlow Condensed',var(--ff,-apple-system,BlinkMacSystemFont,"SF Pro Text","Pretendard","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif)}
+html body button,html body input,html body select,html body textarea{font-family:inherit}</style>
 <style id="rkcss">html body .rg{grid-template-columns:minmax(280px,.62fr) 1.38fr!important;grid-template-rows:minmax(0,1fr)!important}html body .lc{overflow:auto;min-height:0!important}html body .rc{min-height:0!important}.rcp{align-items:stretch;gap:10px;padding:10px}.rcimg{width:100%;height:auto;border-radius:14px;display:block}
 .kst{display:flex;flex-wrap:wrap;gap:8px}.ks{flex:1 1 120px;min-width:0;background:var(--chip);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:1px}
 .ks span{font-size:13px;color:var(--mut);font-weight:600}.ks b{font-size:24px;white-space:nowrap}.ks b small{font-size:13px}.ks .dl{font-style:normal;font-size:12.5px;color:#5b6b78}

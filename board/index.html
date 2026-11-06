@@ -1379,7 +1379,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=255,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
+const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=256,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -2314,7 +2314,7 @@ function speak(t){if(!ST.snd||!window.speechSynthesis)return;try{var u=new Speec
 var _tc=toCourt;toCourt=function(r,c){var x=_tc.apply(this,arguments);try{speak((c+1)+'번 코트 입장하세요')}catch(e){}return x};
 var _pa=window.payAsk;if(_pa)window.payAsk=function(){var x=_pa.apply(this,arguments);try{if(document.getElementById('payq'))speak('입장료 송금 확인 바랍니다')}catch(e){}return x};
 var RSV=0,RSL=0;setInterval(function(){try{var b=document.querySelector('.rvs button[aria-label="대기에 넣기"]'),n=Date.now();if(!b){RSV=0;return}if(!RSV)RSV=n;if(n-RSV>=3000&&n-RSL>=10000){RSL=n;speak('예약 버튼을 눌러주세요')}}catch(e){}},1000);
-function whistle(){if(!ST.snd||Date.now()-BOOT<4000)return;
+function whistle(){return;
  try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();var t=AC.currentTime+.005,k=.6*Math.max(.3,Math.min(1.6,(+ST.vol||60)/60)),o=AC.createOscillator(),l=AC.createOscillator(),lg=AC.createGain(),v=AC.createGain(),m=AC.createGain();
   o.frequency.value=2900;l.frequency.value=38;lg.gain.value=140;l.connect(lg);lg.connect(o.frequency);m.gain.value=k;
   v.gain.setValueAtTime(.0001,t);v.gain.exponentialRampToValueAtTime(.18,t+.02);v.gain.setValueAtTime(.18,t+.22);v.gain.exponentialRampToValueAtTime(.001,t+.3);
@@ -2536,11 +2536,24 @@ function vBr(){
    sv+='<text x="'+(x+10)+'" y="'+yy+'" font-size="14" font-weight="'+(iw?800:600)+'" fill="'+(t?'var(--ink)':'var(--mut)')+'">'+esc(nm.length>11?nm.slice(0,10)+'…':nm)+'</text><text x="'+(x+BW-10)+'" y="'+yy+'" text-anchor="end" font-size="16" font-weight="800" fill="'+(iw?'#0a7a43':'var(--mut)')+'">'+sc+'</text>'});
   sv+='<line x1="'+x+'" x2="'+(x+BW)+'" y1="'+(y+BH/2)+'" y2="'+(y+BH/2)+'" stroke="var(--ln)"/><text x="'+(x+BW/2)+'" y="'+(y-4)+'" text-anchor="middle" font-size="12" fill="var(--mut)">'+esc(g.lab||'')+'</text></g>'});
  var ch=winOf(fin,1);if(ch){var fx=(fin.rd-1)*CW+10+BW,fy=pos[fin.id]+14+BH/2;sv+='<path d="M'+fx+' '+fy+'H'+(fx+26)+'" stroke="#0a7a43" stroke-width="4"/><text x="'+(fx+34)+'" y="'+(fy-4)+'" font-size="26">🏆</text><text x="'+(fx+34)+'" y="'+(fy+20)+'" font-size="15" font-weight="800" fill="var(--ink)">'+esc(tName(ch.n))+'</text>'}
- var h='<div class="wlbrs"><svg width="'+Wd+'" height="'+Ht+'" viewBox="0 0 '+Wd+' '+Ht+'">'+sv+'</svg></div>';
+ var h='<div class="wlpt" style="justify-content:flex-end;margin:0 0 8px"><button class="wlbtn sm" data-wl="brimg">📷 대진표 이미지로 저장</button></div><div class="wlbrs"><svg width="'+Wd+'" height="'+Ht+'" viewBox="0 0 '+Wd+' '+Ht+'">'+sv+'</svg></div>';
  var oth=p.games.filter(function(g){return g.k!=='main'});
  if(oth.length)h+='<div class="wlrd"><div class="wlrh"><b>패자전 · 3·4위전 · 친선</b></div><div class="wlbox">'+oth.map(rowHtml).join('')+'</div></div>';
  return h}
 
+
+function brImg(){var sv=document.querySelector('#wol .wlbrs svg');if(!sv)return toast('대진표가 없어요');
+ var cs=getComputedStyle(sv),T={'--ink':cs.getPropertyValue('--ink')||'#1b2430','--card':cs.getPropertyValue('--card')||'#fff','--mut':cs.getPropertyValue('--mut')||'#6a7685','--ln':cs.getPropertyValue('--ln')||'#d5dbe3'};
+ var w=+sv.getAttribute('width'),h=+sv.getAttribute('height'),x=new XMLSerializer().serializeToString(sv);
+ x=x.replace(/var\((--[a-z]+)\)/g,function(m,k){return (T[k]||'#222').trim()||'#222'});x=x.replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" font-family="Noto Sans KR,Apple SD Gothic Neo,Malgun Gothic,system-ui,sans-serif" ');
+ var img=new Image(),sc=2,PX=24,HD=74,FT=34,CW=w+PX*2,CH=h+HD+FT;
+ img.onload=function(){var c=document.createElement('canvas');c.width=CW*sc;c.height=CH*sc;var g=c.getContext('2d');g.scale(sc,sc);g.fillStyle='#fff';g.fillRect(0,0,CW,CH);
+  var gr=g.createLinearGradient(0,0,CW,0);gr.addColorStop(0,'#0C50A1');gr.addColorStop(1,'#1A64BF');g.fillStyle=gr;g.fillRect(0,0,CW,HD-10);
+  var d=new Date(),ds=d.getFullYear()+'.'+(d.getMonth()+1)+'.'+d.getDate();
+  g.fillStyle='#fff';g.font='italic 800 26px "Barlow Condensed",sans-serif';g.fillText('PLAY. LOG. PLAY.',PX,34);g.font='700 15px "Noto Sans KR",sans-serif';g.fillText('좌동클럽 월례회 대진표 · '+ds,PX,54);
+  g.drawImage(img,PX,HD);g.fillStyle='#6A7685';g.font='700 12px "Noto Sans KR",sans-serif';g.fillText('좌동클럽 게임현황판 · '+ds,PX,CH-12);
+  c.toBlob(function(b){if(!b)return toast('이미지를 만들지 못했어요');var nm='좌동클럽_월례회대진표_'+ds.replace(/\./g,'')+'.png';if(window.__gimgShow)window.__gimgShow([{name:nm,blob:b,url:URL.createObjectURL(b)}])},'image/png')};
+ img.onerror=function(){toast('이미지를 만들지 못했어요')};img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(x)}
 function vBrAny(){var p=plan();if(!p)return '<div class="wlempty">아직 대진표가 없어요</div>';
  if(p.kind==='tour')return vBr();
  var gs=p.games.filter(function(g){return g.slot}).slice().sort(function(a,b){return a.slot-b.slot||(a.cn||0)-(b.cn||0)});
@@ -2643,8 +2656,9 @@ function expire(){try{if(!(W.on||W.plan))return;if(!W.day){W.day=S.day;wsv();ret
 setInterval(expire,20000);setTimeout(expire,1500);
 function enter(){W.day=S.day;try{if(S.mday!==S.day){S.mday=S.day;save()}}catch(e){}if(!W.on&&W.prPrev==null)W.prPrev=ST.pr?1:0;W.tab=plan()?'sch':'set';var md=Q('md');if(md)md.innerHTML='';setOn(1)}
 function leave(){setOn(0);ST.pr=W.prPrev?1:0;W.prPrev=null;try{sv();render()}catch(e){}wsv();toast('월례회 모드를 종료했어요. 대진과 점수는 그대로 남아 있어요',1)}
-var SNDK={swo:'tap',swa:'sel',swb:'sel',swc:'sel',swok:'ok',mtp:'sel',mtu:'tap',mtd:'tap',mtx:'unsel',mtclr:'warn',mstart:'ok',rst:'warn',rst2:'warn',tab:'tap',cfg:'sel',gm:'sel',rn:'sel',pp:'sel',padd:'unsel',pk:'sel',kp:'tap',sf:'sel',sd:'sel',go:'go',enter:'ok',ask:'tap',mk:'ok',mk2:'ok',scok:'ok',keep:'ok',card:'ok',fun:'ok',exit:'back',mx:'back',addm:'tap',allx:'warn',alli:'ok',reset:'warn',reset2:'warn',svdel:'warn'};
+var SNDK={brimg:'ok',swo:'tap',swa:'sel',swb:'sel',swc:'sel',swok:'ok',mtp:'sel',mtu:'tap',mtd:'tap',mtx:'unsel',mtclr:'warn',mstart:'ok',rst:'warn',rst2:'warn',tab:'tap',cfg:'sel',gm:'sel',rn:'sel',pp:'sel',padd:'unsel',pk:'sel',kp:'tap',sf:'sel',sd:'sel',go:'go',enter:'ok',ask:'tap',mk:'ok',mk2:'ok',scok:'ok',keep:'ok',card:'ok',fun:'ok',exit:'back',mx:'back',addm:'tap',allx:'warn',alli:'ok',reset:'warn',reset2:'warn',svdel:'warn'};
 document.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest('[data-wl]');if(!t)return;e.stopPropagation();e.preventDefault();var a=t.dataset.wl,d=t.dataset,c=W.cfg;try{if(!t.disabled)snd(SNDK[a]||'tap')}catch(z){}
+ if(a==='brimg')return brImg();
  if(a==='swo'){var g0=gById(d.g);if(!g0||g0.st!=='wait'||!players(g0))return toast('지금은 교체할 수 없어요');SW={g:d.g,who:'',why:'',nn:''};return swDraw()}
  if(a==='swa'){SW.who=SW.who===d.n?'':d.n;return swDraw()}
  if(a==='swb'){SW.why=SW.why===d.n?'':d.n;return swDraw()}
@@ -3042,6 +3056,7 @@ function gbuild(sub,kidsIn,left,nm,tn){var o=q('grm')||document.body,W=390,PH=88
    pw.appendChild(hd);pw.appendChild(bd);pw.appendChild(ft);o.appendChild(pw);var H=Math.ceil(pw.getBoundingClientRect().height);
    return nodeToImg(pw,W,H,font,sc).then(function(b){pw.remove();arr.push({name:'좌동클럽_'+(left?'클럽':nm)+'_'+tn+'_'+(pi+1)+'of'+N+'.png',blob:b,url:URL.createObjectURL(b)});return arr},function(e){pw.remove();throw e})})});
   return chain}).then(function(arr){host.remove();GIMG.forEach(function(x){try{URL.revokeObjectURL(x.url)}catch(e){}});GIMG=arr;gshow()}).catch(function(){host.remove();toast('이미지를 만들지 못했어요. 다시 눌러 주세요')})}
+window.__gimgShow=function(arr){GIMG.forEach(function(x){try{URL.revokeObjectURL(x.url)}catch(e){}});GIMG=arr;gshow()};
 function gshow(){var m=q('gimg');if(m)m.remove();m=document.createElement('div');m.id='gimg';m.innerHTML='<div class="gib"><b>이미지 '+GIMG.length+'장</b><p>'+(GIMG.length>1?'스마트폰 화면에 맞게 '+GIMG.length+'장으로 나눴어요.':'한 장으로 만들었어요.')+'</p><div class="gil">'+GIMG.map(function(x){return '<img src="'+x.url+'">'}).join('')+'</div><div class="gibt"><button data-gi="x">닫기</button><button data-gi="s">저장</button><button data-gi="h" class="p">카톡·공유</button></div></div>';document.body.appendChild(m)}
 function gsave(){GIMG.forEach(function(x,i){setTimeout(function(){try{var a=document.createElement('a');a.href=x.url;a.download=x.name;document.body.appendChild(a);a.click();a.remove()}catch(e){}},i*400)});toast('이미지 '+GIMG.length+'장을 저장했어요',1)}
 function gshare(){try{var fs=GIMG.map(function(x){return new File([x.blob],x.name,{type:'image/png'})});if(navigator.canShare&&navigator.canShare({files:fs}))return navigator.share({files:fs,title:'좌동클럽 기록'}).catch(function(e){if(e&&e.name!=='AbortError')gsave()})}catch(e){}gsave();toast('공유가 안 돼서 저장했어요. 카톡에서 사진으로 보내 주세요')}

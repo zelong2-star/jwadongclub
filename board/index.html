@@ -1369,7 +1369,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=230,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
+const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=231,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -2290,13 +2290,19 @@ function speak(t){if(!ST.snd||!window.speechSynthesis)return;try{var u=new Speec
 var _tc=toCourt;toCourt=function(r,c){var x=_tc.apply(this,arguments);try{speak((c+1)+'번 코트 입장하세요')}catch(e){}return x};
 var _pa=window.payAsk;if(_pa)window.payAsk=function(){var x=_pa.apply(this,arguments);try{if(document.getElementById('payq'))speak('입장료 송금 확인 바랍니다')}catch(e){}return x};
 var RSV=0,RSL=0;setInterval(function(){try{var b=document.querySelector('.rvs button[aria-label="대기에 넣기"]'),n=Date.now();if(!b){RSV=0;return}if(!RSV)RSV=n;if(n-RSV>=3000&&n-RSL>=10000){RSL=n;speak('예약 버튼을 눌러주세요')}}catch(e){}},1000);
+function whistle(){if(!ST.snd||Date.now()-BOOT<4000)return;
+ try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();var t=AC.currentTime+.005,k=.6*Math.max(.3,Math.min(1.6,(+ST.vol||60)/60)),o=AC.createOscillator(),l=AC.createOscillator(),lg=AC.createGain(),v=AC.createGain(),m=AC.createGain();
+  o.frequency.value=2900;l.frequency.value=38;lg.gain.value=140;l.connect(lg);lg.connect(o.frequency);m.gain.value=k;
+  v.gain.setValueAtTime(.0001,t);v.gain.exponentialRampToValueAtTime(.18,t+.02);v.gain.setValueAtTime(.18,t+.22);v.gain.exponentialRampToValueAtTime(.001,t+.3);
+  o.connect(v);v.connect(m);m.connect(AC.destination);o.start(t);l.start(t);o.stop(t+.32);l.stop(t+.32);
+  if(ST.vib&&navigator.vibrate)navigator.vibrate([70,60,70])}catch(e){}}
 document.addEventListener('pointerdown',function(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}},true);
 function chip(){return;try{var p=plan();if(!p||p.date!==today())return;var n=p.games.filter(function(g){return g.st==='end'||g.st==='done'}).length,e=document.querySelector('.lf .h .ecb.pl');if(!e)return;var b=Math.round(Object.values(S.games||{}).reduce(function(a,c){return a+c},0)/4);e.textContent='오늘 '+(b+n).toLocaleString('en-US')+'게임'}catch(x){}}
 function sync(){
  var p=plan();if(!p)return false;var ch=false,cs=[];try{cs=S.courts}catch(e){}
  p.games.forEach(function(g){if(g.st!=='play')return;var q=players(g),idx=-1;
   if(q)cs.forEach(function(c,i){if(c&&c.p.length===q.length&&q.every(function(n){return c.p.indexOf(n)>=0}))idx=i});
-  if(idx<0){g.st='end';g.court=null;g.te=Date.now();ch=true}else if(g.court!==idx){g.court=idx;ch=true}});
+  if(idx<0){g.st='end';g.court=null;g.te=Date.now();ch=true;whistle()}else if(g.court!==idx){g.court=idx;ch=true}});
  if(ch)wsv();return ch}
 function startGame(gid,pref){
  var g=gById(gid);if(!g||g.st!=='wait')return;var b=blocker(g);if(b)return toast(b==='경기 중'?'이미 경기 중이에요':b);
@@ -2716,6 +2722,27 @@ function clubHtml(L){var A=agg(L),h='',per=[['all','전체'],['y','올해'],['m'
  h+='<div class="gg2"><div class="gbx"><small>명콤비 (2경기 이상)</small>'+(mc.length?mc.map(function(c){return '<b>'+esc2(c.k)+' · '+c.w+'승 '+c.l+'패</b>'}).join(''):'<span class="mu">아직 없어요</span>')+'</div><div class="gbx"><small>천적 관계 (2승 이상)</small>'+(rv.length?rv.map(function(c){return '<b>'+esc2(c.a)+' → '+esc2(c.b)+' · '+c.w+'승 '+c.l+'패</b>'}).join(''):'<span class="mu">아직 없어요</span>')+'</div></div>';
  h+='<div class="gbx"><small>많이 뛴 사람</small>'+top.map(function(p){return pbar([p.n,p.g],top[0].g)}).join('')+'</div>';
  return h+histBlock(L)}
+var GRD={S:6,A:5,B:4,C:3,D:2,'E':1,'초심':0};
+function gv(n){var g=(WOL.pinfo(n)||{}).gr;return GRD[g]!=null?GRD[g]:3}
+function pstat(n,mine,pr,op){var h='',tot=mine.length,wins=function(x){return (x.P.indexOf(n)>=0)===(x.sa>x.sb)};
+ var pf=0,pa=0,cl=0,cw=0,tg={u:[0,0],s:[0,0],d:[0,0]};
+ mine.forEach(function(x){var a=x.P.indexOf(n)>=0,my=a?x.P:x.Q,ot=a?x.Q:x.P,w=wins(x);pf+=a?x.sa:x.sb;pa+=a?x.sb:x.sa;if(Math.abs(x.sa-x.sb)<=2){cl++;if(w)cw++}
+  var d=ot.reduce(function(s,m){return s+gv(m)},0)/ot.length-my.reduce(function(s,m){return s+gv(m)},0)/my.length,k=d>=.5?'u':d<=-.5?'d':'s';tg[k][0]++;if(w)tg[k][1]++});
+ var pct=function(a,b){return b?Math.round(a/b*100):null},fm=function(v){return v==null?'–':v+'%'};
+ var B={},mk=mine.slice().sort(function(a,b){return a.k<b.k?-1:a.k>b.k?1:a.t-b.t}),monthly=new Set(mk.map(function(x){return x.k.slice(0,7)})).size>1;
+ mk.forEach(function(x){var key=monthly?x.k.slice(0,7):x.k,b=B[key]||(B[key]=[0,0]);b[0]++;if(wins(x))b[1]++});
+ var ks=Object.keys(B).sort().slice(-8),pts=ks.map(function(k){return Math.round(B[k][1]/B[k][0]*100)}),svg='';
+ if(pts.length>=2){var W=300,H=84,px=function(i){return 14+i*(W-28)/(pts.length-1)},py=function(v){return 8+(100-v)/100*(H-30)},prev=pts.slice(0,-1),av=prev.reduce(function(s,v){return s+v},0)/prev.length,last=pts[pts.length-1],col=last-av>5?'#1D9533':last-av<-5?'#b3412f':'#8a948e',tr=last-av>5?'오르는 중':last-av<-5?'내려가는 중':'비슷해요';
+  svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" aria-label="승률 변화"><polyline fill="none" stroke="#1D9533" stroke-width="2.6" points="'+pts.map(function(v,i){return px(i)+','+py(v)}).join(' ')+'"/>'+pts.map(function(v,i){return '<circle cx="'+px(i)+'" cy="'+py(v)+'" r="'+(i===pts.length-1?5:3.5)+'" fill="'+(i===pts.length-1?col:'#1D9533')+'"/>'}).join('')+ks.map(function(k,i){return '<text x="'+px(i)+'" y="'+(H-3)+'" font-size="11" text-anchor="middle" fill="#888">'+(monthly?(+k.slice(5))+'월':(+k.slice(5,7))+'/'+(+k.slice(8)))+'</text>'}).join('')+'</svg><div class="mu" style="font-size:13px">마지막 <b style="color:'+col+'">'+last+'%</b> · 그 전 평균 '+Math.round(av)+'% 대비 <b style="color:'+col+'">'+tr+'</b></div>'}
+ else svg='<p class="mu">승률 변화는 '+(monthly?'두 달':'이틀')+' 이상 기록이 쌓이면 나와요.</p>';
+ var best=Object.keys(pr).map(function(k){return pr[k]}).filter(function(c){return c.g>=2}).sort(function(a,b){return b.w/b.g-a.w/a.g||b.g-a.g}).slice(0,3),
+  hard=Object.keys(op).map(function(k){return op[k]}).filter(function(c){return c.g>=2}).sort(function(a,b){return a.w/a.g-b.w/b.g||b.g-a.g}).slice(0,3),
+  ln=function(c){return '<b>'+esc2(c.n)+' · '+c.w+'승 '+c.l+'패</b>'};
+ h+='<div class="sec">통계</div><div class="gbx"><small>승률 변화 ('+(monthly?'달별':'날짜별')+')</small>'+svg+'</div>'
+  +'<div class="gg2"><div class="gbx"><small>득점률</small><b style="font-size:26px">'+fm(pct(pf,pf+pa))+'</b><small>'+pf+'점 득점 · '+pa+'점 실점</small></div><div class="gbx"><small>접전 승률 (2점 차 이내)</small><b style="font-size:26px">'+fm(pct(cw,cl))+'</b><small>'+cl+'경기 중 '+cw+'승</small></div></div>'
+  +'<div class="gbx"><small>급수별 승률 (상대 평균 급수 기준)</small>'+[['윗 급수 상대','u'],['비슷한 상대','s'],['아래 급수 상대','d']].map(function(r){var v=pct(tg[r[1]][1],tg[r[1]][0]);return '<div class="bar"><span style="width:88px">'+r[0]+'</span><span class="t"><i style="width:'+(v||0)+'%"></i></span><span class="n" style="width:78px">'+fm(v)+' <small class="mu">('+tg[r[1]][0]+')</small></span></div>'}).join('')+'</div>'
+  +'<div class="gg2"><div class="gbx"><small>베스트 파트너 (2경기 이상)</small>'+(best.length?best.map(ln).join(''):'<span class="mu">아직 없어요</span>')+'</div><div class="gbx"><small>어려운 상대 (2경기 이상)</small>'+(hard.length?hard.map(ln).join(''):'<span class="mu">아직 없어요</span>')+'</div></div>';
+ return h}
 function playerHtml(L){var h='',qq=GR.pq.trim(),A=agg(L);
  var names=Object.keys(A.P).sort(function(a,b){return A.P[b].g-A.P[a].g||a.localeCompare(b,'ko')}).filter(function(n){return !qq||n.indexOf(qq)>=0});
  h+='<div class="grt"><input id="grp" type="search" placeholder="선수 이름 검색" value="'+esc2(GR.pq)+'"></div><div class="gnm">'+(names.map(function(n){return '<button data-gr="pl" data-n="'+esc2(n)+'" class="'+(GR.pl===n?'on':'')+'">'+esc2(n)+'</button>'}).join('')||'<span class="mu">기록된 선수가 없어요</span>')+'</div>';
@@ -2727,7 +2754,7 @@ function playerHtml(L){var h='',qq=GR.pq.trim(),A=agg(L);
  var pr={},op={};mine.forEach(function(x){var a=x.P.indexOf(n)>=0,my=a?x.P:x.Q,ot=a?x.Q:x.P,win=a?x.sa>x.sb:x.sb>x.sa,gp=a?x.sa:x.sb,go=a?x.sb:x.sa;
   my.filter(function(m){return m!==n}).forEach(function(m){var c=pr[m]||(pr[m]={n:m,g:0,w:0,l:0,pf:0,pa:0});c.g++;win?c.w++:c.l++;c.pf+=gp;c.pa+=go});ot.forEach(function(m){var c=op[m]||(op[m]={n:m,g:0,w:0,l:0,pf:0,pa:0});c.g++;win?c.w++:c.l++;c.pf+=gp;c.pa+=go})});
  var T=GR.rel==='opp'?op:pr,rows=Object.keys(T).map(function(k){return T[k]}).sort(function(a,b){return b.g-a.g||b.w/b.g-a.w/a.g});
- h+='<div class="sec">매치업</div><div class="grt"><button data-gr="r" data-v="opp" class="'+(GR.rel==='opp'?'on':'')+'">상대</button><button data-gr="r" data-v="pt" class="'+(GR.rel==='pt'?'on':'')+'">파트너</button></div>'
+ h+=pstat(n,mine,pr,op)+'<div class="sec">매치업</div><div class="grt"><button data-gr="r" data-v="opp" class="'+(GR.rel==='opp'?'on':'')+'">상대</button><button data-gr="r" data-v="pt" class="'+(GR.rel==='pt'?'on':'')+'">파트너</button></div>'
   +'<table class="gtb"><tr><th>이름</th><th class="r">경기</th><th class="r">전적</th><th class="r">승률</th><th class="r">득-실</th></tr>'+(rows.map(function(c){return '<tr><td><b>'+esc2(c.n)+'</b></td><td class="r">'+c.g+'</td><td class="r">'+c.w+'승 '+c.l+'패</td><td class="r">'+Math.round(c.w/c.g*100)+'%</td><td class="r">'+c.pf+'-'+c.pa+'</td></tr>'}).join('')||'<tr><td colspan="5" class="mu">기록이 없어요</td></tr>')+'</table>';
  GR.q='';return h+histBlock(mine.slice().reverse())}
 function gdraw(){var o=q('grm');if(!o)return;var L=recs(),b=o.querySelector('.grl'),sy=b.scrollTop;b.innerHTML=GR.mode==='club'?clubHtml(L):playerHtml(L);b.scrollTop=sy;[].forEach.call(o.querySelectorAll('.grm button'),function(x){x.classList.toggle('on',x.dataset.v===GR.mode)})}

@@ -1379,7 +1379,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=267,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
+const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=268,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -2135,6 +2135,7 @@ html body .wlbox .wlg{grid-template-columns:72px minmax(0,1fr) 200px minmax(0,1f
 (function(){
 'use strict';
 var K='bdwol',COURT_ORDER=[1,2,3,4];
+function hpa(){return (S.present||[]).slice()}
 try{if(!localStorage.getItem('bdfg2k')){var ch0=0;if(ST.fg===4000){ST.fg=2000;ch0=1}Object.keys(S.rost||{}).forEach(function(d){var R0=S.rost[d];if(R0&&R0.fg===4000){R0.fg=2000;ch0=1}});if(ch0){try{sv()}catch(e){}try{save()}catch(e){}}localStorage.setItem('bdfg2k','1')}}catch(e){}
 var W=null;try{W=JSON.parse(localStorage.getItem(K)||'null')}catch(e){}
 if(!W||typeof W!=='object')W={};
@@ -2162,7 +2163,7 @@ function pinfo(n){var m=(typeof MEM!=='undefined'?MEM:[]).find(function(x){retur
  var g=m.g==='f'?'여':m.g==='m'?'남':'',gr=m.lv||'C',gv=GV[gr];if(gv==null)gv=0;
  var band=ageBand(m.a),yr=careerYears(m.j,m.c),cb=yr==null?0:(yr<1?-.3:yr<3?-.1:yr<5?0:yr<10?.15:.3);
  return{n:n,g:g,band:band,gr:gr,yr:yr,cs:gr==='초심',nw:isNew(m.j),miss:(!m.lv||!m.a),sc:r2(gv+(AGEV[band]||0)+(g==='남'?.3:0)+cb)}}
-function attNames(){var a=[];try{a=att().slice()}catch(e){}W.add=W.add||[];return a.filter(function(n){return W.ex.indexOf(n)<0}).concat(W.add.filter(function(n){return a.indexOf(n)<0}))}
+function attNames(){var a=[];try{a=hpa().slice()}catch(e){}W.add=W.add||[];return a.filter(function(n){return W.ex.indexOf(n)<0}).concat(W.add.filter(function(n){return a.indexOf(n)<0}))}
 
 /* ---------- 시간 ---------- */
 function availRounds(c){var n=Math.floor((tm(c.end)-tm(c.start))/Math.max(5,+c.gm||13));return Math.max(1,Math.min(isFinite(n)?n:1,30))}
@@ -2440,7 +2441,7 @@ function manPanel(names){var M=W.man=W.man||{teams:[],pick:''};M.teams=M.teams.f
  +'<div class="wlswh">팀이 없는 선수 <small>('+free.length+'명'+(M.pick?' · '+esc(M.pick)+' 선택됨, 같은 팀 선수를 누르세요':'')+')</small></div><div class="wlpgrid">'+free.map(function(n){var g=pinfo(n).g;return '<button data-wl="mtp" data-n="'+esc(n)+'" class="wlpn2 '+(g==='여'?'f':'m')+(M.pick===n?' on':' off')+'"><i></i>'+esc(n)+'</button>'}).join('')+'</div>'
  +(M.teams.length?'<div class="wlpt"><button class="wlbtn sm o" data-wl="mtclr">팀 모두 지우기</button></div>':'')+'</div></div>'}
 function vSet(){
- var c=W.cfg,isT=c.type==='tour',fixed=isT||c.fixed,names=attNames(),all=[];try{all=att()}catch(e){}
+ var c=W.cfg,isT=c.type==='tour',fixed=isT||c.fixed,names=attNames(),all=[];try{all=hpa()}catch(e){}
  var R=roundsOf(c),av=availRounds(c),tot=tm(c.end)-tm(c.start),sum='';
  if(isT){var T=c.man?((W.man&&W.man.teams)||[]).length:Math.floor(names.length/2),dummy=[];for(var i=0;i<T;i++)dummy.push({n:['a','b'],sc:0});
   if(T>=2){var tg=genTour(dummy,c),pl={cfg:{courts:c.courts},games:tg.games};schedule(pl);var need=pl.slots*c.gm;sum=pl.slots+'라운드 · 약 '+need+'분 · '+(need<=tot?'남는 시간 '+(tot-need)+'분':'<b class="wlbad">대관 시간 '+(need-tot)+'분 초과</b>')}else sum='팀이 2개 이상 필요해요'}
@@ -2649,11 +2650,11 @@ function keep(){var p=plan(),d=rankData();if(!p||!d.rows.length)return;
 /* ----- 모달 ----- */
 function modal(h,w){var m=Q('wolm');m.innerHTML=h?'<div class="wlov"><div class="wlpn'+(w?' wide':'')+'">'+h+'</div></div>':''}
 function wlPick(srch){try{picker('wl')}catch(e){return pickM()}P.sel=new Set(attNames());P.init=new Set(P.sel);var t=document.querySelector('#md .tt');if(t)t.textContent='월례회 참가자';var fe=document.querySelector('#md .fe');if(fe)fe.remove();var ok=document.querySelector('#md .ft .big');if(ok)ok.textContent='적용';plist();if(srch){var qi=document.getElementById('q');if(qi)setTimeout(function(){try{qi.focus()}catch(e){}},50)}}
-window.__wlPickOk=function(sel){var a=[];try{a=att()}catch(e){}W.ex=a.filter(function(n){return sel.indexOf(n)<0});W.add=sel.filter(function(n){return a.indexOf(n)<0});wsv();draw()};
+window.__wlPickOk=function(sel){var a=[];try{a=hpa()}catch(e){}W.ex=a.filter(function(n){return sel.indexOf(n)<0});W.add=sel.filter(function(n){return a.indexOf(n)<0});wsv();draw()};
 
 /* ----- 참가자 검색 드롭다운 (홈 출석 검색과 같은 방식) ----- */
 var SP=null;
-function spCur(){var a=[];try{a=att()}catch(e){}return{a:a,L:a.concat((W.add||[]).filter(function(n){return a.indexOf(n)<0}))}}
+function spCur(){var a=[];try{a=hpa()}catch(e){}return{a:a,L:a.concat((W.add||[]).filter(function(n){return a.indexOf(n)<0}))}}
 function spOpen(){var inp=Q('wlps');if(!inp)return;var b=document.querySelector('#wol .wlb');
  if(b){b.style.paddingBottom='70vh';var d=inp.getBoundingClientRect().top-b.getBoundingClientRect().top-70;if(d>0)b.scrollTop+=d}
  var el=Q('wlsp');if(!el){el=document.createElement('div');el.id='wlsp';Q('wol').appendChild(el);el.addEventListener('mousedown',function(e){if(!e.target.closest('[data-wl=spx]'))e.preventDefault()})}
@@ -2675,7 +2676,7 @@ try{if(window.visualViewport)window.visualViewport.addEventListener('resize',fun
 document.addEventListener('mousedown',function(e){if(SP&&!e.target.closest('#wlsp,#wlps'))spClose()},true);
 document.addEventListener('touchstart',function(e){if(SP&&!e.target.closest('#wlsp,#wlps'))spClose()},true);
 function pickM(){modal('<b class="wltt">회원 추가</b><input id="wlpq" class="wlin" type="search" placeholder="이름 또는 초성으로 검색" data-wlq="1"><div id="wlpl" class="wlpg"></div><div class="wlbts"><button class="wlbtn" data-wl="mx">완료</button></div>',1);pkList()}
-function pkList(){var e=Q('wlpl');if(!e)return;var q=((Q('wlpq')||{}).value||'').trim(),a=[];try{a=att()}catch(x){}
+function pkList(){var e=Q('wlpl');if(!e)return;var q=((Q('wlpq')||{}).value||'').trim(),a=[];try{a=hpa()}catch(x){}
  var L=ACT().map(function(m){return m.n}).filter(function(n){return !/^손님\d+$/.test(n)&&a.indexOf(n)<0&&(!q||mt(n,q))}).sort(function(x,y){return x.localeCompare(y,'ko')});
  e.innerHTML=L.map(function(n){var on=(W.add||[]).indexOf(n)>=0;return '<button data-wl="pk" data-n="'+esc(n)+'" class="'+(on?'on':'')+'">'+(on?'✓ ':'')+esc(n)+'</button>'}).join('')||'<span class="wlmu">추가할 회원이 없어요</span>'}
 document.addEventListener('input',function(e){if(e.target&&e.target.id==='wlpq')pkList();if(e.target&&e.target.id==='wlps'){if(!SP)spOpen();else spList()}},true);
@@ -2716,14 +2717,14 @@ document.addEventListener('click',function(e){var t=e.target.closest&&e.target.c
  if(a==='addm')return wlPick(0);
  if(a==='spt')return spToggle(d.n);
  if(a==='spx')return spClose();
- if(a==='allx'){W.hide=0;try{W.ex=att().slice()}catch(e){}wsv();return draw()}
+ if(a==='allx'){W.hide=0;try{W.ex=hpa().slice()}catch(e){}wsv();return draw()}
  if(a==='alli'){W.hide=0;W.ex=[];wsv();return draw()}
  if(a==='padd'){W.add=(W.add||[]).filter(function(n){return n!==d.n});wsv();return draw()}
  if(a==='pk'){W.add=W.add||[];var ix=W.add.indexOf(d.n);if(ix>=0)W.add.splice(ix,1);else W.add.push(d.n);wsv();pkList();return draw()}
  if(a==='pp'){var i=W.ex.indexOf(d.n);if(i>=0)W.ex.splice(i,1);else W.ex.push(d.n);wsv();return draw()}
  if(a==='mk'){if(plan()&&plan().games.some(function(g){return g.st!=='wait'}))return confirmM('새 대진표를 만들까요?','지금 대진표와 입력한 점수가 사라져요. 필요하면 먼저 순위 탭에서 기록을 보관하세요.','새로 만들기','mk2');return doMake()}
  if(a==='rst')return confirmM('모두 초기화할까요?','코트에 들어 있는 선수, 월례회 참가자, 대진표와 점수를 모두 지우고 설정을 처음 상태로 돌려요.','초기화','rst2');
- if(a==='rst2'){modal('');W.cfg=Object.assign({},DEFCFG);W.add=[];W.man=null;W.plan=null;W.hide=1;W.tab='set';try{W.ex=att().slice()}catch(e){W.ex=[]}wsv();try{mut(function(){S.courts=[null,null,null,null]})}catch(e){}toast('코트·참가자·일정을 모두 비웠어요',1);return draw()}
+ if(a==='rst2'){modal('');W.cfg=Object.assign({},DEFCFG);W.add=[];W.man=null;W.plan=null;W.hide=1;W.tab='set';try{W.ex=hpa().slice()}catch(e){W.ex=[]}wsv();try{mut(function(){S.courts=[null,null,null,null]})}catch(e){}toast('코트·참가자·일정을 모두 비웠어요',1);return draw()}
  if(a==='mk2'){modal('');return doMake()}
  if(a==='reset')return confirmM('대진표를 지울까요?','지금 대진표와 점수가 사라져요.','지우기','reset2');
  if(a==='reset2'){modal('');W.plan=null;W.tab='set';wsv();return draw()}

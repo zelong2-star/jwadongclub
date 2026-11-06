@@ -1369,7 +1369,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=222,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
+const SXN=["","naver","toss","kakao","playlog"],SXL=["기존 카드","초록","토스","카카오","좌동클럽"];const APPV=223,APPD="2026-11-06",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,3,2][WK()%3];return(ST.sx&&ST.sx!=1)?ST.sx:3}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -2074,6 +2074,21 @@ html body #wqd .wqg{display:grid!important;grid-template-columns:repeat(3,minmax
 html body #wqd .wqg .m{font-size:19px!important;min-height:48px!important;font-weight:800;min-width:0;width:auto!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 html body #wqd .wqs{flex:1 1 auto;min-height:0}
 
+html body .wlbox .wlg{grid-template-columns:72px minmax(0,1fr) 200px minmax(0,1fr);min-height:64px;padding:6px 12px;gap:8px}
+.wlsd{flex-direction:row!important;align-items:center;gap:6px;flex-wrap:nowrap}
+.wlsd.a,.wlsd.b{align-items:center!important}.wlsd .wlnn{flex:0 0 auto;min-width:88px}.wlsd.b .wlnn{text-align:right}.wlsd.a{justify-content:flex-start}.wlsd.b{justify-content:flex-end;text-align:right}
+.wlbg{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:13px;font-weight:800;color:#fff;flex:none}
+.wlbg.bs{background:#d4372c}.wlbg.bp{background:#3d6fc7}
+.wlmid{min-width:0!important;width:200px;align-items:center;justify-content:center;gap:2px}
+.wlsr{display:grid!important;grid-template-columns:1fr auto 1fr;align-items:center;width:100%;gap:4px}
+.wlsr .wls{min-width:0!important;text-align:center;font-size:36px;line-height:1}.wlsr .wls:first-child{text-align:right}.wlsr .wls:last-child{text-align:left}
+.wlsr em{font-style:normal;font-size:24px;font-weight:800;color:var(--mut);line-height:1}
+.wlsub .wltag{white-space:nowrap}.wlsub{white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:6px}
+.wlbox .wlpl{min-height:52px}
+.wlbrs{overflow:auto}.wlmx{border-collapse:collapse;font-size:15px;background:var(--card)}.wlmx th,.wlmx td{border:1px solid var(--ln);padding:6px 8px;text-align:center;white-space:nowrap}
+.wlmx th{background:var(--chip);font-weight:800}.wlmx td.w{color:#d4372c;font-weight:800}.wlmx td.l{color:#3d6fc7;font-weight:800}.wlmx td.x{background:var(--chip)}
+.wlpp td{min-width:112px;padding:4px 6px}.wlmc{display:flex;flex-direction:column;line-height:1.2}.wlmc b{font-size:15px}.wlmc small{font-size:11px;color:var(--mut)}.wlmc span{font-weight:800}.wlmc.w span{color:#d4372c}.wlmc.l span{color:#3d6fc7}
+@media(max-width:700px){html body .wlbox .wlg{grid-template-columns:60px minmax(0,1fr) 110px minmax(0,1fr)}.wlmid{width:110px}.wlsd{flex-wrap:wrap;gap:2px 8px}}
 #wol,#wolm{font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif}
 #wol button,#wolm button,#wol input,#wolm input{font-family:inherit}
 .wls,.wlgm,.wlpl b,.wlfd b,.wlstp b,.wlrh span,.wlcnt{font-family:'Barlow Condensed','Noto Sans KR',ui-sans-serif,system-ui,sans-serif;font-style:italic;font-weight:800}
@@ -2345,23 +2360,22 @@ function teamLeagueRank(){
  m.forEach(function(x,k){var pr=k?m[k-1]:null;x.rank=pr&&pr.w===x.w&&pr.d===x.d&&pr.pf===x.pf?pr.rank:k+1});return m}
 
 /* ================= UI ================= */
-var TABS=[['sch','일정'],['br','대진도'],['rk','순위'],['set','설정']];
+var TABS=[['sch','일정'],['br','대진표'],['rk','순위'],['set','설정']];
 var SC={gid:null,a:0,b:0};
 function el(){return Q('wol')}
 function mk(){if(el())return el();var d=document.createElement('div');d.id='wol';d.innerHTML='<div class="wlh"></div><div class="wlb"></div>';document.body.appendChild(d);
  var m=document.createElement('div');m.id='wolm';document.body.appendChild(m);return d}
 function place(){var d=el();if(!d)return;var lf=document.querySelector('.lf'),r=lf?lf.getBoundingClientRect():null,W2=innerWidth;
  if(r&&r.width>200&&r.right<W2*.62&&W2>=900){d.style.left=Math.round(r.right+12)+'px';d.dataset.mode='side'}else{d.style.left='0px';d.dataset.mode='full'}}
-function tabsOk(){var p=plan();return TABS.filter(function(t){return t[0]!=='br'||(p&&p.kind==='tour')})}
+function tabsOk(){return TABS}
 function head(){
  var h=el().querySelector('.wlh'),p=plan();
  h.innerHTML='<b class="wlt1">🏆 월례회</b><div class="wltabs">'+tabsOk().map(function(t){return '<button data-wl="tab" data-v="'+t[0]+'" class="'+(W.tab===t[0]?'on':'')+'">'+t[1]+'</button>'}).join('')+'</div><button class="wlx" data-wl="exit">월례회 종료</button>'}
 function draw(){
  if(!W.on||!el())return;place();
  if(!plan()&&W.tab!=='set')W.tab='set';
- if(W.tab==='br'&&(!plan()||plan().kind!=='tour'))W.tab='sch';
  head();var b=el().querySelector('.wlb'),sy=b.scrollTop;
- b.innerHTML=W.tab==='set'?vSet():W.tab==='sch'?vSch():W.tab==='br'?vBr():vRk();b.scrollTop=sy}
+ b.innerHTML=W.tab==='set'?vSet():W.tab==='sch'?vSch():W.tab==='br'?vBrAny():vRk();b.scrollTop=sy}
 function tnm(t){return t?esc(tName(t.n)):''}
 
 /* ----- 설정 탭 ----- */
@@ -2410,8 +2424,9 @@ function rowHtml(g){
  var done=st==='done',aw=done?(g.sa>g.sb?1:0):null,bw=done?(g.sb>g.sa?1:0):null;
  var chip=st==='done'?'<span class="wlchip y">종료</span>':st==='play'?'<span class="wlchip n">게임 중</span>':st==='end'?'<span class="wlchip r">점수 입력</span>':bl?'<span class="wlchip g">'+esc(bl)+'</span>':'<span class="wlchip g">'+(fc&&!ahead(g)?'입장 가능':'대기')+'</span>';
  var sA=done?g.sa:'–',sB=done?g.sb:'–',can=(st==='done'||st==='end');
- var mid='<'+(can?'button data-wl="sc" data-g="'+g.id+'"':'div')+' class="wlmid'+(st==='end'?' blink':'')+'">'+(tag?'<span class="wltag">'+esc(tag)+'</span>':'')+'<span class="wlsr"><b class="wls'+(aw?' w':'')+'">'+sA+'</b>'+chip+'<b class="wls'+(bw?' w':'')+'">'+sB+'</b></span>'+(done?'<span class="wlbd"><i class="'+(aw?'bs':'bp')+'">'+(aw?'승':'패')+'</i><i class="'+(bw?'bs':'bp')+'">'+(bw?'승':'패')+'</i></span>':'')+'</'+(can?'button':'div')+'>';
- return '<div class="wlg st-'+st+cls+kc+'">'+plate+'<div class="wlsd a">'+pnames(g.a,aw)+'</div>'+mid+'<div class="wlsd b">'+pnames(g.b,bw)+'</div></div>'}
+ var bgA=done?'<i class="wlbg '+(aw?'bs':'bp')+'">'+(aw?'승':'패')+'</i>':'',bgB=done?'<i class="wlbg '+(bw?'bs':'bp')+'">'+(bw?'승':'패')+'</i>':'';
+ var mid='<'+(can?'button data-wl="sc" data-g="'+g.id+'"':'div')+' class="wlmid'+(st==='end'?' blink':'')+'"><span class="wlsr"><b class="wls'+(aw?' w':'')+'">'+sA+'</b><em>:</em><b class="wls'+(bw?' w':'')+'">'+sB+'</b></span><span class="wlsub">'+(tag?'<span class="wltag">'+esc(tag)+'</span>':'')+chip+'</span></'+(can?'button':'div')+'>';
+ return '<div class="wlg st-'+st+cls+kc+'">'+plate+'<div class="wlsd a">'+pnames(g.a,aw)+bgA+'</div>'+mid+'<div class="wlsd b">'+bgB+pnames(g.b,bw)+'</div></div>'}
 function funElig(){var p=plan();if(!p||p.kind!=='tour')return[];var m=teamStandings(),busy={};
  p.games.forEach(function(g){if(g.st==='done')return;[g.a,g.b].forEach(function(r){var t=resolve(r);if(t)busy[p.teams.indexOf(t)]=1;if(r.g){var d=gById(r.g);}})});
  /* 패자전 대기: 1라운드 패자 참조 */
@@ -2446,6 +2461,22 @@ function vBr(){
  var oth=p.games.filter(function(g){return g.k!=='main'});
  if(oth.length)h+='<div class="wlrd"><div class="wlrh"><b>패자전 · 3·4위전 · 친선</b></div><div class="wlbox">'+oth.map(rowHtml).join('')+'</div></div>';
  return h}
+
+function vBrAny(){var p=plan();if(!p)return '<div class="wlempty">아직 대진표가 없어요</div>';
+ if(p.kind==='tour')return vBr();
+ var gs=p.games.filter(function(g){return g.slot}).slice().sort(function(a,b){return a.slot-b.slot||(a.cn||0)-(b.cn||0)});
+ function cell(g,me){var A=resolve(g.a),B=resolve(g.b),mine=A&&A.n.indexOf(me)>=0,my=mine?A:B,op=mine?B:A;if(!my||!op)return '';var ms=mine?g.sa:g.sb,os=mine?g.sb:g.sa,d=g.st==='done';
+  var pt=my.n.filter(function(x){return x!==me}).join('·');
+  return '<div class="wlmc'+(d?(ms>os?' w':' l'):'')+'"><b>'+(pt?esc(pt):'')+'</b><small>vs '+esc(op.n.join('·'))+'</small><span>'+(d?ms+':'+os:'–')+'</span></div>'}
+ if(p.kind==='team'){var T=p.teams,h='<div class="wlbrs"><table class="wlmx"><tr><th></th>'+T.map(function(t){return '<th>'+esc(tName(t.n))+'</th>'}).join('')+'</tr>';
+  T.forEach(function(t,i){h+='<tr><th>'+esc(tName(t.n))+'</th>'+T.map(function(u,j){if(i===j)return '<td class="x"></td>';
+   var g=p.games.find(function(g){var A=resolve(g.a),B=resolve(g.b);return (A===t&&B===u)||(A===u&&B===t)});if(!g)return '<td>–</td>';var A=resolve(g.a)===t,ms=A?g.sa:g.sb,os=A?g.sb:g.sa,d=g.st==='done';
+   return '<td class="'+(d?(ms>os?'w':'l'):'')+'">'+(d?ms+':'+os:(g.slot?g.slot+'G':'–'))+'</td>'}).join('')+'</tr>'});
+  return h+'</table></div>'}
+ var names=Object.keys(p.info||{}).sort(function(a,b){return a.localeCompare(b,'ko')}),nsl=[];gs.forEach(function(g){if(nsl.indexOf(g.slot)<0)nsl.push(g.slot)});
+ var h2='<div class="wlbrs"><table class="wlmx wlpp"><tr><th></th>'+nsl.map(function(s){return '<th>'+s+'G</th>'}).join('')+'</tr>';
+ names.forEach(function(n){h2+='<tr><th>'+esc(n)+'</th>'+nsl.map(function(sl){var g=gs.find(function(g){if(g.slot!==sl)return false;var A=resolve(g.a),B=resolve(g.b);return (A&&A.n.indexOf(n)>=0)||(B&&B.n.indexOf(n)>=0)});return '<td>'+(g?cell(g,n):'<span class="mu">쉼</span>')+'</td>'}).join('')+'</tr>'});
+ return h2+'</table></div>'}
 
 /* ----- 순위 ----- */
 function rankData(){var p=plan();if(!p)return null;

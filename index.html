@@ -740,6 +740,7 @@ tr.sum td:first-child{font-weight:800}
 .rp-cmp .t0{font:800 13px var(--body);color:var(--muted);margin-right:auto}
 .rp-cmp b{font-weight:800;margin-left:3px}.rp-na{color:var(--muted);font-size:13px}
 .rc p small b{font-weight:800}
+.sbody.imgs figure{margin:0 0 14px}.sbody.imgs figcaption{text-align:center;font:700 12.5px var(--body);color:var(--muted);margin-top:6px}
 .rpbtn{display:block;width:100%;min-height:44px;margin:-4px 0 12px;border:0;border-radius:14px;background:var(--surface);color:var(--hero-txt);font:800 14.5px var(--body);box-shadow:0 1px 2px rgb(1 2 60/.06);cursor:pointer}
 @media (prefers-color-scheme:dark){.badge{background:#3a2e10;color:#ffd77a}.goal{background:#12301b}.goal p{color:#9be3ad}}
 
@@ -3788,25 +3789,98 @@ async function drawCard() {
   c.fillStyle = '#58645d'; c.font = '500 22px ' + B; c.textAlign = 'right'; c.fillText(today().replace(/-/g, '.') + ' 기준 · 좌동배드민턴클럽', W - P, H - 34); c.textAlign = 'left';
   return cv;
 }
+/* ---------- 전적 이미지: 통계 화면 전체를 폰 크기 이미지 여러 장으로 ---------- */
+let H2C = null;
+function loadH2C() {
+  if (window.html2canvas) return Promise.resolve(window.html2canvas);
+  if (H2C) return H2C;
+  H2C = new Promise((res, rej) => { const s = document.createElement('script'); s.src = MEMBER_APP ? 'html2canvas.min.js' : 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'; s.onload = () => res(window.html2canvas); s.onerror = () => { H2C = null; rej(new Error('load')); }; document.head.appendChild(s); });
+  return H2C;
+}
+function statGroups(body) {
+  // 요약(맨 위) + 섹션 제목(h2)마다 한 묶음. 버튼·기간 넘기기는 뺌
+  const skip = el => el.matches('.pnav, #pcBtn, #rpBtn, .rpbtn') || el.querySelector('#imgBtn, #sendBtn, button.btn') && !el.querySelector('.h2') || (el.matches('p.note') && !el.previousElementSibling?.matches('.glist, .tblwrap, .chart, .plist'));
+  const groups = []; let cur = null;
+  [...body.children].forEach(el => {
+    if (skip(el) || !el.offsetHeight) return;
+    if (el.matches('h2.h2') || !cur) { cur = []; groups.push(cur); }
+    cur.push(el);
+  });
+  return groups;
+}
+async function buildStatPages() {
+  const h2c = await loadH2C();
+  const body = $('#statsBody'), br = body.getBoundingClientRect();
+  const W = 1080, PAD = 48, S = (W - PAD * 2) / br.width, MAXH = 1920, HH = 210, FH = 76, GAP = 40;
+  const bg = getComputedStyle(document.body).backgroundColor || '#f1f4f8';
+  const shot = await h2c(body, { scale: S, backgroundColor: bg, logging: false, useCORS: true, scrollX: 0, scrollY: -window.scrollY, windowWidth: document.documentElement.clientWidth });
+  const top0 = br.top;
+  const rel = el => { const r = el.getBoundingClientRect(); return [(r.top - top0) * S, (r.bottom - top0) * S]; };
+  // 묶음 → 잘라낼 조각 목록 (한 쪽에 안 들어가면 요소 단위로, 그래도 크면 높이로 자름)
+  const avail = MAXH - HH - FH - PAD;
+  const pieces = [];
+  statGroups(body).forEach(g => {
+    const a = rel(g[0])[0], b = rel(g[g.length - 1])[1];
+    if (b - a <= avail) { pieces.push({ a, b, gap: true }); return; }
+    // 자를 수 있는 자리: 각 요소 끝, 너무 긴 요소는 그 안의 줄(칸·표 줄) 끝. 제목 바로 뒤는 자르지 않음
+    const ys = [];
+    g.forEach((el, k) => { if (k === 0 && el.matches('h2')) return; const [ea, eb] = rel(el);
+      if (eb - ea > avail) el.querySelectorAll(':scope > *, tr').forEach(x => ys.push(rel(x)[1]));
+      ys.push(eb); });
+    const cut = [...new Set(ys.map(Math.round))].sort((x, y) => x - y);
+    let st = a;
+    while (st < b - 2) { const ok = cut.filter(y => y > st + 40 && y <= st + avail); const e = ok.length ? ok[ok.length - 1] : Math.min(b, st + avail); pieces.push({ a: st, b: e, gap: st === a }); st = e; }
+  });
+  // 쪽 나누기
+  const pages = []; let pg = [], h = 0;
+  pieces.forEach(p => { const ph = p.b - p.a + (pg.length && p.gap ? GAP : 0); if (pg.length && h + ph > avail) { pages.push(pg); pg = []; h = 0; } pg.push(p); h += p.b - p.a + (pg.length > 1 && p.gap ? GAP : 0); });
+  if (pg.length) pages.push(pg);
+  const label = period === 'all' ? '누적 기록' : periodLabel(), who = me + (metaStr(me) ? ' · ' + metaStr(me) : '');
+  const D = "'Barlow Condensed', sans-serif", B = "'Noto Sans KR', sans-serif";
+  return pages.map((pp, k) => {
+    const ch = pp.reduce((s, p, i) => s + (p.b - p.a) + (i && p.gap ? GAP : 0), 0);
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = Math.round(HH + ch + PAD * .6 + FH);
+    const c = cv.getContext('2d');
+    c.fillStyle = bg; c.fillRect(0, 0, W, cv.height);
+    const gr = c.createLinearGradient(0, 0, W, HH); gr.addColorStop(0, '#0c50a1'); gr.addColorStop(1, '#083a78');
+    c.fillStyle = gr; c.fillRect(0, 0, W, HH - 34);
+    c.fillStyle = '#fff'; c.font = `italic 800 34px ${D}`; c.fillText('PLAY. LOG. PLAY.', PAD, 62);
+    c.font = `800 46px ${B}`; c.fillText(who, PAD, 124);
+    c.font = `600 26px ${B}`; c.globalAlpha = .85; c.fillText(label, PAD, 160); c.globalAlpha = 1;
+    c.textAlign = 'right'; c.font = `italic 800 40px ${D}`; c.fillText(`${k + 1}/${pages.length}`, W - PAD, 62); c.textAlign = 'left';
+    let y = HH;
+    pp.forEach((p, i) => { if (i && p.gap) y += GAP; const hh = p.b - p.a; c.drawImage(shot, 0, Math.round(p.a), shot.width, Math.round(hh), PAD, y, W - PAD * 2, Math.round(hh)); y += hh; });
+    c.fillStyle = '#5f6a78'; c.font = `500 22px ${B}`; c.textAlign = 'right'; c.fillText(today().replace(/-/g, '.') + ' 기준 · 좌동배드민턴클럽', W - PAD, cv.height - 32); c.textAlign = 'left';
+    return cv;
+  });
+}
 async function saveImage() {
   gcEvent('카드-전적이미지');
   if (!games.filter(inPeriod).length) return;
-  const btn = $('#imgBtn'); btn.disabled = true;
+  const btn = $('#imgBtn'); btn.disabled = true; const old = btn.innerHTML; btn.lastChild && (btn.lastChild.textContent = ' 이미지 만드는 중…');
   try {
-    const cv = await drawCard();
-    const url = cv.toDataURL('image/png');
-    const fname = 'PLAYLOGPLAY_' + today() + '.png';
+    const cvs = await buildStatPages();
+    const blobs = await Promise.all(cvs.map(cv => new Promise(r => cv.toBlob(r, 'image/png'))));
+    const base = 'PLAYLOGPLAY_' + today();
+    const files = blobs.map((b, i) => new File([b], `${base}_${i + 1}.png`, { type: 'image/png' }));
+    const canShare = !!(navigator.canShare && navigator.canShare({ files }));
+    const urls = blobs.map(b => URL.createObjectURL(b));
     const sh = openSheet(`
-      <div class="shd"><h3>전적 이미지</h3><p>이미지를 길게 눌러 사진에 저장하거나, 아래 버튼으로 파일을 받으세요.</p><button class="shx" type="button" aria-label="닫기">×</button></div>
-      <div class="sbody"><img src="${url}" alt="내 경기 전적 요약 이미지" style="width:100%;border-radius:14px;border:1px solid var(--line);-webkit-touch-callout:default;user-select:auto"></div>
-      ${dl ? '<div class="sfoot"><button class="btn primary" type="button" id="imgSave">이미지 파일로 저장</button></div>' : ''}`);
-    const sb = sh.querySelector('#imgSave');
-    if (sb) sb.addEventListener('click', async () => {
-      try { const blob = await new Promise(r => cv.toBlob(r, 'image/png')); await dl.save({ filename: fname, data: blob }); toast('이미지를 저장했어요'); }
-      catch (e) { if (e && e.code !== 'declined') toast('파일로 저장하지 못했어요. 이미지를 길게 눌러 저장해 주세요.'); }
+      <div class="shd"><h3>전적 이미지 ${cvs.length}장</h3><p>이미지를 길게 눌러 한 장씩 저장할 수도 있어요.</p><button class="shx" type="button" aria-label="닫기">×</button></div>
+      <div class="sbody imgs">${urls.map((u, i) => `<figure><img src="${u}" alt="전적 이미지 ${i + 1}/${urls.length}" style="width:100%;border-radius:14px;border:1px solid var(--line);-webkit-touch-callout:default;user-select:auto"><figcaption>${i + 1} / ${urls.length}</figcaption></figure>`).join('')}</div>
+      <div class="sfoot">${canShare ? '<button class="btn ghost" type="button" id="imgShare">카톡 등으로 공유</button>' : ''}<button class="btn primary" type="button" id="imgSave">${cvs.length}장 모두 저장</button></div>`);
+    sh.addEventListener('click', async e => {
+      if (e.target.closest('#imgShare')) { try { await navigator.share({ files, title: '내 경기 전적' }); } catch (er) {} }
+      if (e.target.closest('#imgSave')) {
+        try {
+          if (dl) { for (const f of files) await dl.save({ filename: f.name, data: f }); }
+          else { for (let i = 0; i < files.length; i++) { const a = document.createElement('a'); a.href = urls[i]; a.download = files[i].name; document.body.appendChild(a); a.click(); a.remove(); await new Promise(r => setTimeout(r, 350)); } }
+          toast(`이미지 ${files.length}장을 저장했어요`);
+        } catch (er) { if (er && er.code !== 'declined') toast('파일로 저장하지 못했어요. 이미지를 길게 눌러 저장해 주세요.'); }
+      }
     });
-  } catch (e) { toast('이미지를 만들지 못했어요'); }
-  btn.disabled = false;
+  } catch (e) { toast('이미지를 만들지 못했어요. 인터넷 연결을 확인해 주세요.'); }
+  btn.disabled = false; btn.innerHTML = old;
 }
 
 /* ---------- 효과음, 진동 ---------- */
@@ -4017,7 +4091,7 @@ boot();
 })();
 </script>
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202611081431)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202611081440)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

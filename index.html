@@ -302,6 +302,14 @@ input[type=date],input[type=search],input[type=text]{width:100%;min-height:44px;
 /* 이름 시트 */
 .pick .sbody{gap:4px}
 .swh{font-size:12px;font-weight:700;color:var(--muted);margin:10px 4px 2px}
+.swh span{font-weight:600;opacity:.75;margin-left:2px}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.pgrid .so{margin:0;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;min-height:56px;padding:9px 12px;position:relative}
+.pgrid .so .mt{margin-left:0;font-size:12px}
+.pgrid .so:disabled{opacity:.45}
+.so.on{border-color:var(--hero);background:var(--icbg);box-shadow:inset 0 0 0 1px var(--hero)}
+.so .ck{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font:800 13px/1 var(--body);font-style:normal;color:#fff}
+.so.on .ck{background:var(--hero);border-color:var(--hero)}
 .so{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;margin:2px 0;cursor:pointer}
 .so:hover{background:var(--court-soft)}
 .so b{font-size:15.5px}
@@ -2333,45 +2341,64 @@ function commitGame() {
 
 /* 이름 고르기 */
 function openPicker(slot, gsh) {
+  const multi = slot !== 'partner' && draft.mode === 'd';   // 복식 상대는 두 명을 한 번에
   const cur = slot === 'partner' ? draft.partner : draft.opp[+slot.slice(3)];
-  const taken = [draft.partner, ...draft.opp].filter(n => n && n !== cur);
-  const title = slot === 'partner' ? '파트너 선택' : '상대 선택';
+  const taken = multi ? [draft.partner].filter(Boolean) : [draft.partner, ...draft.opp].filter(n => n && n !== cur);
+  let sel = multi ? draft.opp.filter(Boolean) : [];
+  const title = slot === 'partner' ? '파트너 선택' : multi ? '상대 선택 (2명)' : '상대 선택';
   const sh = openSheet(`
     <div class="shd"><h3>${title}</h3><button class="shx" type="button" aria-label="닫기">×</button>
       <input type="search" id="pkQ" placeholder="이름, 초성으로 찾기 (예: ㄱㅈㅇ)" autocomplete="off" readonly style="margin-top:10px"></div>
-    <div class="sbody" id="pkList"></div>`, 'pick');
+    <div class="sbody" id="pkList"></div>
+    ${multi ? '<div class="sfoot"><button class="btn primary" type="button" id="pkDone"></button></div>' : ''}`, 'pick' + (multi ? ' multi' : ''));
   const all = () => {
     const names = new Set(rosterNames(false));
     games.forEach(g => [g.partner, ...(g.opp || [])].forEach(n => n && names.add(n)));
     names.delete(me);
     return [...names].sort(collator.compare);
   };
-  const row = n => `<button type="button" class="so" data-n="${esc(n)}" ${taken.includes(n) ? 'disabled' : ''}><b>${esc(n)}</b><span class="mt">${taken.includes(n) ? '이미 선택' : esc(metaStr(n))}</span></button>`;
+  const row = n => { const on = sel.includes(n), dis = taken.includes(n); const mt = dis ? '이미 선택' : metaStr(n);
+    return `<button type="button" class="so${on ? ' on' : ''}" data-n="${esc(n)}" ${dis ? 'disabled' : ''} aria-pressed="${on}"><b>${esc(n)}</b>${mt ? `<span class="mt">${esc(mt)}</span>` : ''}${multi ? `<i class="ck">${on ? sel.indexOf(n) + 1 : ''}</i>` : ''}</button>`; };
+  const grid = arr => `<div class="pgrid">${arr.map(row).join('')}</div>`;
+  const byG = arr => { const m = arr.filter(n => infoOf(n).g === '남'), f = arr.filter(n => infoOf(n).g === '여'), u = arr.filter(n => !['남', '여'].includes(infoOf(n).g));
+    return (m.length ? `<div class="swh">남성부 <span>${m.length}</span></div>` + grid(m) : '') + (f.length ? `<div class="swh">여성부 <span>${f.length}</span></div>` + grid(f) : '') + (u.length ? `<div class="swh">성별 미입력 <span>${u.length}</span></div>` + grid(u) : ''); };
   const draw = () => {
     const q = sh.querySelector('#pkQ').value.trim();
     let html = '';
-    if (cur) html += `<button type="button" class="so clear" data-clear="1">선택 지우기</button>`;
+    if (cur || sel.length) html += `<button type="button" class="so clear" data-clear="1">선택 지우기</button>`;
     if (!q) {
       const rec = recentPeople().filter(n => n !== me).slice(0, 8);
-      if (rec.length) html += '<div class="swh">최근 함께한 사람</div>' + rec.map(row).join('');
-      html += '<div class="swh">가나다순</div>' + all().map(row).join('');
+      if (rec.length) html += '<div class="swh">최근 함께한 사람</div>' + grid(rec);
+      html += byG(all());
     } else {
       const hits = all().filter(n => nameHit(n, q));
-      html += hits.map(row).join('');
+      html += grid(hits);
       if (!all().includes(q) && q !== me && !jamoOnly(q)) html += `<button type="button" class="so add" data-add="${esc(q)}"><b>+ ‘${esc(q)}’ 추가</b><span class="mt">명단에 없는 사람</span></button>`;
-      if (!hits.length && all().includes(q)) html += '';
     }
-    sh.querySelector('#pkList').innerHTML = html;
+    const st = sh.querySelector('#pkList').scrollTop;
+    sh.querySelector('#pkList').innerHTML = html; sh.querySelector('#pkList').scrollTop = st;
+    const d = sh.querySelector('#pkDone'); if (d) { d.textContent = sel.length ? `선택 완료 (${sel.length}/2)` : '두 명을 골라 주세요'; d.disabled = !sel.length; }
   };
   draw();
   ['input', 'keyup', 'compositionupdate', 'compositionend'].forEach(ev => sh.querySelector('#pkQ').addEventListener(ev, () => setTimeout(draw, 0)));
   { const q = sh.querySelector('#pkQ'); q.addEventListener('click', () => { if (q.readOnly) { q.readOnly = false; q.blur(); q.focus(); } }); }
+  const finish = () => { if (multi) draft.opp = [...sel, '', ''].slice(0, 2); closeSheet(); drawGame(gsh); };
   sh.addEventListener('click', e => {
+    if (e.target.closest('#pkDone')) { finish(); return; }
     const b = e.target.closest('button.so'); if (!b) return;
+    if (b.dataset.clear) { if (multi) { sel = []; draw(); return; } }
     let n = b.dataset.n || '';
     if (b.dataset.add) {
       n = b.dataset.add.slice(0, 20);
       if (!extraPeople.find(p => p.n === n) && !META[n]) { extraPeople.push({ n, g: '', gr: '', a: '' }); } unhide(n); saveProfile().catch(() => {});
+    }
+    if (multi) {
+      if (sel.includes(n)) sel = sel.filter(x => x !== n);
+      else if (sel.length >= 2) { toast('상대는 두 명까지 고를 수 있어요'); return; }
+      else sel.push(n);
+      const q = sh.querySelector('#pkQ'); if (q.value) { q.value = ''; q.blur(); }
+      if (sel.length === 2) { draw(); setTimeout(finish, 180); return; }   // 두 명 다 고르면 바로 닫힘
+      draw(); return;
     }
     if (slot === 'partner') draft.partner = n; else draft.opp[+slot.slice(3)] = n;
     closeSheet(); drawGame(gsh);
@@ -3988,7 +4015,7 @@ boot();
 })();
 </script>
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202611081049)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202611081411)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

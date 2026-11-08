@@ -1924,6 +1924,8 @@ function maybeReport(tries) {
   openReport(todo[0], -1);
 }
 
+// 듀스: 우리 클럽은 25점 경기 → 24:24를 넘긴 경기만 듀스. 25점 미만으로 끝난 경기는 21점 경기로 보고 20:20 이후면 듀스
+function isDeuce(g) { const hi = Math.max(+g.my, +g.their), lo = Math.min(+g.my, +g.their); return hi >= 25 ? lo >= 24 : lo >= 20; }
 /* ---------- 계산 ---------- */
 const sorted = () => games.slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : (a.ts || 0) - (b.ts || 0)));
 const resOf = g => g.res || (g.my > g.their ? 'w' : g.my < g.their ? 'l' : 'd');
@@ -3225,7 +3227,7 @@ function analysis(list) {
       a.pf += +g.my; a.pa += +g.their; a.ps++;
       const m = Math.abs(g.my - g.their);
       if (m <= 2) a.close[k]++;
-      if (Math.min(g.my, g.their) >= 20) a.deuce[k]++;
+      if (isDeuce(g)) a.deuce[k]++;
       if (m >= 10) a.big[k]++;
     }
     const s = grSide(g); if (s) { a.gr[s][k]++; a.grN++; }
@@ -3322,7 +3324,7 @@ function earnedBadges(list) {
     (g.opp || []).filter(Boolean).forEach(o => { if (r === 'w' && (losses[o] || 0) >= 3) got.add('nem'); if (r === 'l') losses[o] = (losses[o] || 0) + 1; });
     const m = g.date.slice(0, 7); months[m] = (months[m] || 0) + 1; if (months[m] >= 10) got.add('m10');
     if (sc && r === 'w' && g.my - g.their >= 10) got.add('blow');
-    if (sc && r === 'w' && g.their >= 20) got.add('deuce');
+    if (sc && r === 'w' && isDeuce(g)) got.add('deuce');
     if (g.partner) { duo[g.partner] = (duo[g.partner] || 0) + 1; if (duo[g.partner] >= 10) got.add('duo'); }
     if (r === 'w' && grSide(g) === 'up') got.add('upset');
     if (isScored(g) && r !== 'd') { pf += +g.my; pa += +g.their; ps++; if (r === 'w' && Math.abs(g.my - g.their) <= 2 && ++cw >= 5) got.add('clutch'); }
@@ -3442,7 +3444,7 @@ async function openDayCard(d) {
     const cy = y + RH / 2;
     txt(r === 'w' ? '승' : r === 'l' ? '패' : '무', P + 10 * S, cy + 6 * S, `800 ${16 * S}px ${B}`, r === 'w' ? '#7fe08f' : '#8fa6c8');
     const opp = (g.opp || []).filter(Boolean).join('·') || '상대 미입력';
-    const sub = (g.mode === 's' ? '단식' : g.partner ? '파트너 ' + g.partner : '파트너 미입력') + (isScored(g) && Math.min(g.my, g.their) >= 20 ? ' · 듀스' : '');
+    const sub = (g.mode === 's' ? '단식' : g.partner ? '파트너 ' + g.partner : '파트너 미입력') + (isScored(g) && isDeuce(g) ? ' · 듀스' : '');
     let scW = 0; if (isScored(g)) { c.font = `italic 800 ${24 * S}px ${N}`; scW = c.measureText(g.my + ' · ' + g.their).width; } else scW = 20 * S;
     const maxW = W - P - 10 * S - scW - 12 * S - (P + 38 * S);
     fitDraw(c, opp, P + 38 * S, cy - 2 * S, maxW, 13 * S, 10 * S, 500, B, '#ffffff');
@@ -4091,7 +4093,7 @@ boot();
 })();
 </script>
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202611081440)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202611081505)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

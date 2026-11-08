@@ -1,0 +1,28 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>점 깜빡임 시안</title>
+<style>
+body{margin:0;padding:18px;background:#FAF7EF;color:#191919;font-family:'Noto Sans KR','Malgun Gothic',sans-serif}
+h1{font-size:20px;margin:0 0 14px}h2{font-size:16px;margin:22px 0 10px}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;background:#fff;border-radius:16px;padding:20px;margin-bottom:10px}
+.row small{width:120px;font-weight:800;color:#555;font-size:14px}
+.kks{display:flex;align-items:center;gap:6px;height:28px;padding:0 11px;border-radius:999px;font-size:13px;font-weight:800;white-space:nowrap;color:#191919;transform:scale(1.7);transform-origin:left center;margin-right:80px}
+.kks u{width:2px;height:12px;background:currentColor;opacity:.3}
+.kks i{width:9px;height:9px;border-radius:50%;background:#C62828}
+.kks b{font-variant-numeric:tabular-nums}
+.y{background:#FFE9A6}.o{background:#F7B267}.ov{background:#C62828;color:#fff}.ov i{background:#fff}
+@keyframes blk{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.15;transform:scale(.75)}}
+.now.n i{animation:blk 1.6s ease-in-out infinite}
+/* 4번: 점 키우기 + 파문 */
+.v4.n i{width:15px;height:15px;position:relative;animation:blk4 .9s ease-in-out infinite}
+.v4.n i::after{content:"";position:absolute;left:50%;top:50%;width:100%;height:100%;border-radius:50%;border:2px solid #C62828;transform:translate(-50%,-50%) scale(1);opacity:.9;animation:rip 1.1s ease-out infinite}
+.v4.ov.n i::after{border-color:#fff}
+@keyframes blk4{0%,100%{opacity:1;transform:scale(1.15)}50%{opacity:.2;transform:scale(.7)}}
+@keyframes rip{0%{transform:translate(-50%,-50%) scale(1);opacity:.9}100%{transform:translate(-50%,-50%) scale(3.4);opacity:0}}
+p{font-size:13px;color:#666}
+</style></head><body>
+<h1>게임 중 알약 · 점 깜빡임 시안 (확대 표시)</h1>
+<h2>지금 (v297)</h2>
+<div class="row"><small>평균 80% 이상</small><span class="kks now n o"><i></i><span>게임 중</span><u></u><b>12분</b></span><small>평균 도달</small><span class="kks now n ov"><i></i><span>게임 중</span><u></u><b>15분</b></span></div>
+<h2>4번: 점 키우기 + 파문</h2>
+<div class="row"><small>평균 80% 이상</small><span class="kks v4 n o"><i></i><span>게임 중</span><u></u><b>12분</b></span><small>평균 도달</small><span class="kks v4 n ov"><i></i><span>게임 중</span><u></u><b>15분</b></span></div>
+<p>실제 앱에서는 알약이 이 크기의 약 60%예요. 위 화면은 비교하기 쉽게 확대했어요.</p>
+</body></html>

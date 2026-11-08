@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="theme-color" content="#0c50a1">
 <meta name="description" content="좌동배드민턴클럽 회원 경기 기록 · 승률 · 상대 전적 · 클럽 순위">
 <meta property="og:type" content="website">
@@ -263,8 +263,8 @@ tr:last-child td{border-bottom:0}
 .tab[aria-current="page"] svg{stroke-width:2.3}
 
 /* 시트 */
-.ov{position:fixed;inset:0;z-index:40;background:rgb(0 0 0/.42);display:flex;align-items:flex-end;justify-content:center}
-.sheet{width:100%;max-width:560px;max-height:92vh;display:flex;flex-direction:column;background:var(--surface);border-radius:22px 22px 0 0;box-shadow:0 -10px 30px rgb(0 0 0/.25);padding-bottom:env(safe-area-inset-bottom,0px)}
+.ov{position:fixed;inset:0;top:var(--vvt,0px);bottom:auto;height:var(--vvh,100%);z-index:40;background:rgb(0 0 0/.42);display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:560px;max-height:92vh;max-height:calc(var(--vvh,100vh) - 24px);display:flex;flex-direction:column;background:var(--surface);border-radius:22px 22px 0 0;box-shadow:0 -10px 30px rgb(0 0 0/.25);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-reduced-motion:no-preference){.sheet{animation:up .2s ease-out}@keyframes up{from{transform:translateY(40px);opacity:.4}}}
 .shd{position:relative;padding:14px 48px 10px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
 .shd h3{margin:0;font:400 21px/1.2 var(--title)}
@@ -2197,10 +2197,16 @@ function openSheet(html, cls, onMount) {
   return ov.firstElementChild;
 }
 function closeSheet() {
-  const ov = sheetStack.pop(); if (ov) ov.remove();
+  const ov = sheetStack.pop();
+  if (ov && ov.contains(document.activeElement)) document.activeElement.blur();
+  if (ov) ov.remove();
   if (!sheetStack.length) document.body.style.overflow = '';
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheetStack.length) closeSheet(); });
+if (window.visualViewport) {
+  const vv = window.visualViewport, fit = () => { const r = document.documentElement.style; r.setProperty('--vvh', vv.height + 'px'); r.setProperty('--vvt', vv.offsetTop + 'px'); };
+  vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit); fit();
+}
 
 /* 경기 입력 */
 let draft = null;
@@ -2332,7 +2338,7 @@ function openPicker(slot, gsh) {
   const title = slot === 'partner' ? '파트너 선택' : '상대 선택';
   const sh = openSheet(`
     <div class="shd"><h3>${title}</h3><button class="shx" type="button" aria-label="닫기">×</button>
-      <input type="search" id="pkQ" placeholder="이름, 초성으로 찾기 (예: ㄱㅈㅇ)" autocomplete="off" style="margin-top:10px"></div>
+      <input type="search" id="pkQ" placeholder="이름, 초성으로 찾기 (예: ㄱㅈㅇ)" autocomplete="off" readonly style="margin-top:10px"></div>
     <div class="sbody" id="pkList"></div>`, 'pick');
   const all = () => {
     const names = new Set(rosterNames(false));
@@ -2359,6 +2365,7 @@ function openPicker(slot, gsh) {
   };
   draw();
   ['input', 'keyup', 'compositionupdate', 'compositionend'].forEach(ev => sh.querySelector('#pkQ').addEventListener(ev, () => setTimeout(draw, 0)));
+  { const q = sh.querySelector('#pkQ'); q.addEventListener('click', () => { if (q.readOnly) { q.readOnly = false; q.blur(); q.focus(); } }); }
   sh.addEventListener('click', e => {
     const b = e.target.closest('button.so'); if (!b) return;
     let n = b.dataset.n || '';
@@ -2609,7 +2616,7 @@ function openMe(first) {
       <div class="mp-row mp-dim mp-volrow"><svg class="mp-volic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.5" cy="17.5" r="2.5"/><path d="M9 17.5V5l5 2"/><path class="w1" d="M16 9.5a4 4 0 0 1 0 5"/><path class="w2" d="M18.6 7a7.5 7.5 0 0 1 0 10"/></svg><input type="range" class="mp-vol" id="fxVol" min="0" max="100" step="5" value="${fx.vol}" style="--v:${fx.vol}%" aria-label="효과음 볼륨"><b class="mp-volv" id="fxVolV" hidden>${fx.vol}</b></div>
     </div>
     <p class="mp-hint">경기를 저장하면 라켓을 맞대는 소리 뒤에, 이겼을 때와 졌을 때 다른 소리가 나요.</p>
-    <div class="mp-ver">${logoSrc ? `<img src="${esc(logoSrc)}" alt="">` : ''}<b>PLAY. LOG. PLAY.</b><span>2026.10.28 · 제작 김재용</span></div>`;
+    <div class="mp-ver">${logoSrc ? `<img src="${esc(logoSrc)}" alt="">` : ''}<b>PLAY. LOG. PLAY.</b><span>2026.11.08 · 제작 김재용</span></div>`;
   const sh = openSheet(`
     <div class="shd"><h3>${first ? '반가워요! 누구세요?' : '마이페이지'}</h3>${first ? '<p>내 이름을 고르면 바로 경기를 기록할 수 있어요.</p>' : ''}<button class="shx" type="button" aria-label="닫기">×</button></div>
     <div class="sbody${first ? '' : ' mp'}">${first ? `
@@ -2633,7 +2640,7 @@ function openMe(first) {
         <div class="fxvol"><span>볼륨</span><input type="range" id="fxVol" min="0" max="100" step="5" value="${fx.vol}" aria-label="효과음 볼륨"><b id="fxVolV">${fx.vol}</b></div>
         <div class="fxth"><span>효과음</span><div class="optrow">${[['court', '셔틀콕'], ['soft', '부드럽게'], ['retro', '게임기']].map(([k, l]) => `<button type="button" class="opt" data-th="${k}" aria-pressed="${fx.th === k}">${l}</button>`).join('')}</div></div>
         <p class="hint">누르면 미리 들어볼 수 있어요. 경기를 저장하면 종료 휘슬이 울리고, 이겼을 때와 졌을 때 소리가 달라요.</p></div>`}
-      <div class="appver"><b>PLAY. LOG. PLAY.</b><span>업데이트 2026.10.28<i></i>제작 김재용</span></div>` : mainHtml}
+      <div class="appver"><b>PLAY. LOG. PLAY.</b><span>업데이트 2026.11.08<i></i>제작 김재용</span></div>` : mainHtml}
     </div>`);
   let volT = 0;
   sh.addEventListener('change', e => {
@@ -3981,7 +3988,7 @@ boot();
 })();
 </script>
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202610280922)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202611081049)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

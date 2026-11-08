@@ -710,6 +710,8 @@ tr.sum td:first-child{font-weight:800}
 .sg3 .st2 .r+.r{padding-top:8px;border-top:1px solid var(--line)}
 .sg3 .st2 b{font-size:26px}
 .tz2 .sg3 .st2,.tz .sg3 .st2{flex-direction:column}
+/* 숫자 폭 고정(점수 줄 정렬) */
+body{font-variant-numeric:tabular-nums}
 /* 리포트 팝업 */
 .rpov{position:fixed;inset:0;z-index:60;background:rgb(8 16 32/.55);display:flex;align-items:center;justify-content:center;padding:20px 16px}
 .rp{width:100%;max-width:400px;max-height:calc(100vh - 40px);overflow:auto;background:var(--bg);border-radius:24px;box-shadow:0 20px 50px rgb(0 0 0/.35)}
@@ -1925,6 +1927,10 @@ function maybeReport(tries) {
 }
 
 // 듀스: 우리 클럽은 25점 경기 → 24:24를 넘긴 경기만 듀스. 25점 미만으로 끝난 경기는 21점 경기로 보고 20:20 이후면 듀스
+function tabNum(c, str, xr, y, font, col) {   // 오른쪽 끝 xr 기준, 숫자마다 '0' 폭 칸 가운데에 그림
+  c.font = font; c.fillStyle = col; c.textAlign = 'center'; const dw = c.measureText('0').width; const ch = String(str).split('');
+  ch.forEach((d, i) => c.fillText(d, xr - dw * (ch.length - i) + dw / 2, y)); c.textAlign = 'left'; return dw * ch.length;
+}
 function isDeuce(g) { const hi = Math.max(+g.my, +g.their), lo = Math.min(+g.my, +g.their); return hi >= 25 ? lo >= 24 : lo >= 20; }
 /* ---------- 계산 ---------- */
 const sorted = () => games.slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : (a.ts || 0) - (b.ts || 0)));
@@ -2491,6 +2497,8 @@ async function openH2HCard(n) {
   y += BOX + GAP + 20 * S;
   txt('최근 경기', P + 2 * S, y, `500 ${12 * S}px ${B}`, '#8fa6c8'); y += 6 * S;
   const md = d => { const [, M, D] = d.split('-').map(Number); return `${M}.${D}`; };
+  c.font = `italic 800 ${22 * S}px ${N}`;
+  const colW2 = c.measureText('0').width * Math.max(2, ...recent.filter(isScored).flatMap(g => [String(g.my).length, String(g.their).length])), dotW2 = c.measureText(' · ').width, scR2 = W - P - 10 * S;
   recent.forEach(g => {
     const r = resOf(g), role = (g.opp || []).includes(n) ? '상대' : '파트너';
     c.fillStyle = '#13254a'; rr(c, P, y, W - 2 * P, RH, 10 * S); c.fill();
@@ -2501,7 +2509,7 @@ async function openH2HCard(n) {
     txt(role, P + 104 * S, cy + 5 * S, `700 ${11 * S}px ${B}`, role === '상대' ? '#f0c4ea' : '#7fe08f', 'center');
     const other = role === '상대' ? (g.partner ? '파트너 ' + g.partner : (g.mode === 's' ? '단식' : '')) : '상대 ' + ((g.opp || []).filter(Boolean).join('·') || '미입력');
     let scW = 0;
-    if (isScored(g)) { c.font = `italic 800 ${22 * S}px ${N}`; const tw = c.measureText(' · ' + g.their).width; scW = tw + c.measureText(String(g.my)).width; txt(' · ' + g.their, W - P - 10 * S, cy + 8 * S, `italic 800 ${22 * S}px ${N}`, '#5c739b', 'right'); txt(String(g.my), W - P - 10 * S - tw, cy + 8 * S, `italic 800 ${22 * S}px ${N}`, '#ffffff', 'right'); }
+    if (isScored(g)) { const F = `italic 800 ${22 * S}px ${N}`; scW = colW2 * 2 + dotW2; const pad = n => (colW2 - c.measureText('0').width * String(n).length) / 2; tabNum(c, g.their, scR2 - pad(g.their), cy + 8 * S, F, '#5c739b'); txt('·', scR2 - colW2 - dotW2 / 2, cy + 8 * S, F, '#5c739b', 'center'); tabNum(c, g.my, scR2 - colW2 - dotW2 - pad(g.my), cy + 8 * S, F, '#ffffff'); }
     fitDraw(c, other, P + 134 * S, cy + 5 * S, W - P - 10 * S - scW - 10 * S - (P + 134 * S), 12 * S, 9 * S, 500, B, '#ffffff');
     y += RH + GAP;
   });
@@ -3439,17 +3447,21 @@ async function openDayCard(d) {
   txt(t.rate === null ? '-' : String(t.rate), W - P - pw - 2, y, `italic 800 ${40 * S}px ${N}`, '#ffffff', 'right');
   // 경기 줄
   y += 12 * S;
+  // 점수 칸 폭을 모든 줄에서 같게: 내 점수·상대 점수를 각자 고정 칸 안에 오른쪽 정렬, 가운데 점 위치 고정
+  c.font = `italic 800 ${24 * S}px ${N}`;
+  const colW = c.measureText('0').width * Math.max(2, ...list.filter(isScored).flatMap(g => [String(g.my).length, String(g.their).length]));
+  const dotW = c.measureText(' · ').width, scR = W - P - 10 * S;
   list.forEach(g => {
     const r = resOf(g); c.fillStyle = '#13254a'; rr(c, P, y, W - 2 * P, RH, 10 * S); c.fill();
     const cy = y + RH / 2;
     txt(r === 'w' ? '승' : r === 'l' ? '패' : '무', P + 10 * S, cy + 6 * S, `800 ${16 * S}px ${B}`, r === 'w' ? '#7fe08f' : '#8fa6c8');
     const opp = (g.opp || []).filter(Boolean).join('·') || '상대 미입력';
     const sub = (g.mode === 's' ? '단식' : g.partner ? '파트너 ' + g.partner : '파트너 미입력') + (isScored(g) && isDeuce(g) ? ' · 듀스' : '');
-    let scW = 0; if (isScored(g)) { c.font = `italic 800 ${24 * S}px ${N}`; scW = c.measureText(g.my + ' · ' + g.their).width; } else scW = 20 * S;
+    const scW = isScored(g) ? colW * 2 + dotW : 20 * S;
     const maxW = W - P - 10 * S - scW - 12 * S - (P + 38 * S);
     fitDraw(c, opp, P + 38 * S, cy - 2 * S, maxW, 13 * S, 10 * S, 500, B, '#ffffff');
     fitDraw(c, sub, P + 38 * S, cy + 14 * S, maxW, 11 * S, 9 * S, 500, B, '#8fa6c8');
-    if (isScored(g)) { c.font = `italic 800 ${24 * S}px ${N}`; const tw = c.measureText(' · ' + g.their).width; txt(' · ' + g.their, W - P - 10 * S, cy + 8 * S, `italic 800 ${24 * S}px ${N}`, '#5c739b', 'right'); txt(String(g.my), W - P - 10 * S - tw, cy + 8 * S, `italic 800 ${24 * S}px ${N}`, '#ffffff', 'right'); }
+    if (isScored(g)) { const F = `italic 800 ${24 * S}px ${N}`; c.font = F; const pad = n => (colW - c.measureText('0').width * String(n).length) / 2; tabNum(c, g.their, scR - pad(g.their), cy + 8 * S, F, '#5c739b'); txt('·', scR - colW - dotW / 2, cy + 8 * S, F, '#5c739b', 'center'); tabNum(c, g.my, scR - colW - dotW - pad(g.my), cy + 8 * S, F, '#ffffff'); }
     else txt(r === 'w' ? '승' : '패', W - P - 10 * S, cy + 7 * S, `800 ${18 * S}px ${B}`, '#ffffff', 'right');
     y += RH + GAP;
   });
@@ -4093,7 +4105,7 @@ boot();
 })();
 </script>
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202611081505)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202611081513)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

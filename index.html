@@ -1649,6 +1649,10 @@ let me = '';
 const ROSTER = [["김재용","남","C",40],["이완","남","C",40],["정병학","남","B",60],["김영택","남","D",60],["강원기","남","D",60],["강향숙","여","A",60],["고영안","남","D",40],["공권우","남","D",20],["곽명하","여","D",30],["권미정","여","D",50],["김경환","남","D",50],["김근호","남","D",20],["김동율","남","D",60],["김동환","남","D",20],["김미라","여","D",40],["김석조","남","D",20],["김선길","남","C",60],["김순덕","여","C",60],["김유성","남","C",60],["김은지","여","D",20],["김종대","남","D",60],["김지웅","남","D",40],["김태우","남","C",50],["김한석","남","D",20],["김혜란","여","D",40],["김혜원","여","C",20],["문재만","남","C",40],["문정혜","여","D",20],["박가린","여","D",60],["박선언","여","D",20],["박수진","여","D",30],["박영근","남","D",60],["박은서","여","C",20],["박인철","남","C",50],["박정일","남","D",50],["박종만","남","C",60],["배중환","남","D",30],["서명숙","여","B",50],["서미란","여","D",40],["서은경","여","D",40],["선형식","남","D",50],["고진숙","여","D",50],["손경석","남","D",20],["손지원","남","D",20],["송인근","남","D",40],["금병록","남","A",50],["송지영","여","D",40],["신영숙","여","A",50],["신유정","여","D",50],["오현규","남","D",60],["오현택","남","D",30],["윤성국","남","D",40],["윤인균","남","D",50],["이민성","남","C",50],["이민수","남","D",40],["이상수","남","C",50],["이소정","여","D",40],["이순이","여","A",60],["이외숙","여","A",50],["이유정","여","D",40],["이재원","남","A",30],["이재현","남","D",40],["이정주","남","D",50],["이찬명","남","D",20],["이화진","남","C",50],["인종선","남","D",60],["임가은","여","D",20],["임용호","남","D",20],["허태원","남","D",20],["장진성","남","D",30],["장천숙","여","D",60],["장철영","남","D",60],["전재국","남","D",60],["정수현","여","D",20],["정엽","남","D",50],["정은현","여","C",60],["정인환","남","D",20],["정현영","여","D",40],["정현진","남","D",30],["제영준","남","D",40],["조배근","남","D",30],["조정이","여","D",60],["주형순","남","D",60],["차대성","남","D",60],["천건희","남","D",30],["최성일","남","D",60],["최영곤","남","A",60],["최은자","남","D",60],["탁재광","남","A",70],["편진효","남","D",70],["하영대","남","A",70],["한숙영","여","C",50],["허해리","여","D",30],["현세웅","남","D",20],["현종석","남","D",50],["홍봉선","남","D",70],["황명선","남","D",30],["황태호","남","D",20],["세웅맘","","C",40,1]];
 const META = {};
 ROSTER.forEach(([n, g, gr, a]) => META[n] = { g, gr, a });
+// 게스트: 급수 A~D조, 남·녀. 이름 고르기에서 고르고, 같은 칸에 두 명이 와도 돼요. 클럽 순위·통계에는 넣지 않아요.
+const GUEST_NAMES = [];
+['A', 'B', 'C', 'D'].forEach(gr => ['남', '여'].forEach(g => { const n = `게스트${gr}조 ${g}`; GUEST_NAMES.push(n); META[n] = { g, gr, a: 40, guest: true }; }));
+const isGuest = n => GUEST_NAMES.includes(n);
 const OFF = new Set(ROSTER.filter(r => r[4]).map(r => r[0]));   // 재용님이 명단에서 뺀 사람
 // 이 페이지 자신의 원본. 재용님이 명단을 회원들에게 반영할 때 새 버전을 이걸로 다시 만들어요.
 const SELF_SRC = "";
@@ -1950,6 +1954,7 @@ function rosterNames(includeHidden) {
   return [...s].filter(n => includeHidden || !isOff(n)).sort(collator.compare);
 }
 function metaStr(n) {
+  if (isGuest(n)) return META[n].g + ' · ' + META[n].gr + '조 게스트';
   const m = infoOf(n);
   const parts = [];
   if (m.g) parts.push(m.g);
@@ -1968,7 +1973,7 @@ function dateLabel(d) {
 }
 function recentPeople() {
   const out = [];
-  sorted().reverse().forEach(g => [g.partner, ...(g.opp || [])].forEach(n => { if (n && !out.includes(n)) out.push(n); }));
+  sorted().reverse().forEach(g => [g.partner, ...(g.opp || [])].forEach(n => { if (n && !isGuest(n) && !out.includes(n)) out.push(n); }));
   return out;
 }
 
@@ -2297,10 +2302,11 @@ function drawGame(sh) {
 function freqChips() {
   const taken = [draft.partner, ...draft.opp].filter(Boolean), cnt = {};
   games.forEach(g => [g.partner, ...(g.opp || [])].forEach(n => { if (n && n !== me) cnt[n] = (cnt[n] || 0) + 1; }));
-  const top = Object.entries(cnt).filter(([n]) => !taken.includes(n)).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const top = Object.entries(cnt).filter(([n]) => isGuest(n) || !taken.includes(n)).sort((a, b) => b[1] - a[1]).slice(0, 8);
   return top.length ? `<div class="freq"><span class="lb">자주 함께한 사람</span><div class="fr">${top.map(([n]) => `<button type="button" class="fchip" data-fill="${esc(n)}">${esc(n)}</button>`).join('')}</div></div>` : '';
 }
 function isDup(g) {
+  if ([g.partner, ...(g.opp || [])].some(n => n && isGuest(n))) return false;   // 게스트는 같은 칸에 여러 명이 와서 겹침 검사를 하지 않아요
   const k = x => [x.date, x.mode, x.partner || '', [...(x.opp || [])].filter(Boolean).sort().join('+'), x.res ? x.res : x.my + '-' + x.their].join('|');
   return games.some(x => x.id !== g.id && k(x) === k(g));
 }
@@ -2354,7 +2360,7 @@ function commitGame() {
 function openPicker(slot, gsh) {
   const multi = slot !== 'partner' && draft.mode === 'd';   // 복식 상대는 두 명을 한 번에
   const cur = slot === 'partner' ? draft.partner : draft.opp[+slot.slice(3)];
-  const taken = multi ? [draft.partner].filter(Boolean) : [draft.partner, ...draft.opp].filter(n => n && n !== cur);
+  const taken = (multi ? [draft.partner].filter(Boolean) : [draft.partner, ...draft.opp].filter(n => n && n !== cur)).filter(n => !isGuest(n));
   let sel = multi ? draft.opp.filter(Boolean) : [];
   const title = slot === 'partner' ? '파트너 선택' : multi ? '상대 선택 (2명)' : '상대 선택';
   const sh = openSheet(`
@@ -2365,11 +2371,11 @@ function openPicker(slot, gsh) {
   const all = () => {
     const names = new Set(rosterNames(false));
     games.forEach(g => [g.partner, ...(g.opp || [])].forEach(n => n && names.add(n)));
-    names.delete(me);
+    names.delete(me); GUEST_NAMES.forEach(n => names.delete(n));
     return [...names].sort(collator.compare);
   };
-  const row = (n, noG) => { const on = sel.includes(n), dis = taken.includes(n); const mt = dis ? '이미 선택' : noG ? metaStr(n).replace(/^[남여] · /, '') : metaStr(n);
-    return `<button type="button" class="so${on ? ' on' : ''}" data-n="${esc(n)}" ${dis ? 'disabled' : ''} aria-pressed="${on}"><b>${esc(n)}</b>${mt ? `<span class="mt">${esc(mt)}</span>` : ''}${multi ? `<i class="ck">${on ? sel.indexOf(n) + 1 : ''}</i>` : ''}</button>`; };
+  const row = (n, noG) => { const on = sel.includes(n), dis = taken.includes(n), gs = isGuest(n); const mt = dis ? '이미 선택' : gs ? '게스트' : noG ? metaStr(n).replace(/^[남여] · /, '') : metaStr(n);
+    return `<button type="button" class="so${on ? ' on' : ''}" data-n="${esc(n)}" ${dis ? 'disabled' : ''} aria-pressed="${on}"><b>${esc(gs ? n.replace('게스트', '') : n)}</b>${mt ? `<span class="mt">${esc(mt)}</span>` : ''}${multi ? `<i class="ck">${on ? sel.indexOf(n) + 1 : ''}</i>` : ''}</button>`; };
   const grid = (arr, noG) => `<div class="pgrid">${arr.map(n => row(n, noG)).join('')}</div>`;
   const byG = arr => { const m = arr.filter(n => infoOf(n).g === '남'), f = arr.filter(n => infoOf(n).g === '여'), u = arr.filter(n => !['남', '여'].includes(infoOf(n).g));
     return (m.length ? `<div class="swh">남성부 <span>${m.length}</span></div>` + grid(m, 1) : '') + (f.length ? `<div class="swh">여성부 <span>${f.length}</span></div>` + grid(f, 1) : '') + (u.length ? `<div class="swh">성별 미입력 <span>${u.length}</span></div>` + grid(u) : ''); };
@@ -2379,10 +2385,11 @@ function openPicker(slot, gsh) {
     if (cur || sel.length) html += `<button type="button" class="so clear" data-clear="1">선택 지우기</button>`;
     if (!q) {
       const rec = recentPeople().filter(n => n !== me).slice(0, 8);
+      html += '<div class="swh">게스트 <span>조별 · 남녀</span></div>' + grid(GUEST_NAMES);
       if (rec.length) html += '<div class="swh">최근 함께한 사람</div>' + grid(rec);
       html += byG(all());
     } else {
-      const hits = all().filter(n => nameHit(n, q));
+      const hits = all().concat(GUEST_NAMES).filter(n => nameHit(n, q));
       html += grid(hits);
       if (!all().includes(q) && q !== me && !jamoOnly(q)) html += `<button type="button" class="so add" data-add="${esc(q)}"><b>+ ‘${esc(q)}’ 추가</b><span class="mt">명단에 없는 사람</span></button>`;
     }
@@ -2404,7 +2411,7 @@ function openPicker(slot, gsh) {
       if (!extraPeople.find(p => p.n === n) && !META[n]) { extraPeople.push({ n, g: '', gr: '', a: '' }); } unhide(n); saveProfile().catch(() => {});
     }
     if (multi) {
-      if (sel.includes(n)) sel = sel.filter(x => x !== n);
+      if (sel.includes(n) && !isGuest(n)) sel = sel.filter(x => x !== n);
       else if (sel.length >= 2) { toast('상대는 두 명까지 고를 수 있어요'); return; }
       else sel.push(n);
       const q = sh.querySelector('#pkQ'); if (q.value) { q.value = ''; q.blur(); }
@@ -2656,7 +2663,7 @@ function openMe(first) {
       <div class="mp-row mp-dim mp-volrow"><svg class="mp-volic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.5" cy="17.5" r="2.5"/><path d="M9 17.5V5l5 2"/><path class="w1" d="M16 9.5a4 4 0 0 1 0 5"/><path class="w2" d="M18.6 7a7.5 7.5 0 0 1 0 10"/></svg><input type="range" class="mp-vol" id="fxVol" min="0" max="100" step="5" value="${fx.vol}" style="--v:${fx.vol}%" aria-label="효과음 볼륨"><b class="mp-volv" id="fxVolV" hidden>${fx.vol}</b></div>
     </div>
     <p class="mp-hint">경기를 저장하면 라켓을 맞대는 소리 뒤에, 이겼을 때와 졌을 때 다른 소리가 나요.</p>
-    <div class="mp-ver">${logoSrc ? `<img src="${esc(logoSrc)}" alt="">` : ''}<b>PLAY. LOG. PLAY.</b><span>2026.11.08 · 제작 김재용</span></div>`;
+    <div class="mp-ver">${logoSrc ? `<img src="${esc(logoSrc)}" alt="">` : ''}<b>PLAY. LOG. PLAY.</b><span>2026.11.11 · 제작 김재용</span></div>`;
   const sh = openSheet(`
     <div class="shd"><h3>${first ? '반가워요! 누구세요?' : '마이페이지'}</h3>${first ? '<p>내 이름을 고르면 바로 경기를 기록할 수 있어요.</p>' : ''}<button class="shx" type="button" aria-label="닫기">×</button></div>
     <div class="sbody${first ? '' : ' mp'}">${first ? `
@@ -2680,7 +2687,7 @@ function openMe(first) {
         <div class="fxvol"><span>볼륨</span><input type="range" id="fxVol" min="0" max="100" step="5" value="${fx.vol}" aria-label="효과음 볼륨"><b id="fxVolV">${fx.vol}</b></div>
         <div class="fxth"><span>효과음</span><div class="optrow">${[['court', '셔틀콕'], ['soft', '부드럽게'], ['retro', '게임기']].map(([k, l]) => `<button type="button" class="opt" data-th="${k}" aria-pressed="${fx.th === k}">${l}</button>`).join('')}</div></div>
         <p class="hint">누르면 미리 들어볼 수 있어요. 경기를 저장하면 종료 휘슬이 울리고, 이겼을 때와 졌을 때 소리가 달라요.</p></div>`}
-      <div class="appver"><b>PLAY. LOG. PLAY.</b><span>업데이트 2026.11.08<i></i>제작 김재용</span></div>` : mainHtml}
+      <div class="appver"><b>PLAY. LOG. PLAY.</b><span>업데이트 2026.11.11<i></i>제작 김재용</span></div>` : mainHtml}
     </div>`);
   let volT = 0;
   sh.addEventListener('change', e => {
@@ -2912,6 +2919,10 @@ function clubStats(list) {
       gm.t[i].forEach(p => { const o = get(P, p, mk); o.pt = (o.pt || 0) + pts + (bon[p] || 0); o.pf = (o.pf || 0) + (+sc[i] || 0); o.d = (o.d || 0) + ((+sc[i] || 0) - (+sc[1 - i] || 0)); o.hw = o.hw || {}; if (won) gm.t[1 - i].forEach(q => { o.hw[q] = (o.hw[q] || 0) + 1; }); });
     });
   });
+  // 게스트는 상대 팀 세기 계산에만 쓰고, 순위·명콤비·천적·등장 선수에서는 뺀다
+  [...P.keys()].forEach(k => { if (isGuest(k)) P.delete(k); });
+  [...pairs.keys()].forEach(k => { if (k.split(' · ').some(isGuest)) pairs.delete(k); });
+  [...h2h.entries()].forEach(([k, o]) => { if (isGuest(o.a) || isGuest(o.b)) h2h.delete(k); });
   const rate = o => (o.w + o.l ? Math.round(o.w / (o.w + o.l) * 100) : null);
   return { P, pairs, h2h, rate };
 }
@@ -4105,7 +4116,7 @@ boot();
 })();
 </script>
 <script>
-// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202611081513)
+// 인터넷이 약해도 열리도록 앱 파일을 폰에 저장 (버전 202611112142)
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>

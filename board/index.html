@@ -1403,7 +1403,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog","lotte"],SXL=["기존 카드","네이버","토스","카카오","좌동","롯데"];const APPV=311,APPD="2026-11-12",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,1,3,2,5][WK()%5];return ST.sx?ST.sx:3}
+const SXN=["","naver","toss","kakao","playlog","lotte"],SXL=["기존 카드","네이버","토스","카카오","좌동","롯데"];const APPV=312,APPD="2026-11-12",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,1,3,2,5][WK()%5];return ST.sx?ST.sx:3}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -3288,5 +3288,24 @@ document.addEventListener('pointerdown',function(){PD=Date.now()},true);
 document.addEventListener('click',function(e){var t0=Date.now(),el=e.target&&e.target.closest&&e.target.closest('button,[data-a],[data-wl],[data-sc],[data-swx],[data-rq],[data-rqa],[data-gr],[data-gi],[data-pts],[data-pt],[data-f],[data-j],[role="button"]');
  if(!el||el.disabled||el.tagName=='INPUT'||el.tagName=='TEXTAREA'||el.tagName=='SELECT')return;var d=el.dataset;if(d.m||d.a=='st'||d.a=='pv')return;
  setTimeout(function(){if(LS>=t0||LS>PD)return;var k=(d.a&&SM[d.a])||(d.wl&&typeof SNDK!='undefined'&&SNDK[d.wl])||(/삭제|지우|취소/.test(el.textContent||'')&&!/닫기/.test(el.textContent||'')?'del':'tap');try{snd(k)}catch(_){}},0)},true)})();
+</script><style id="qdcss">html body .rv .nb{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab}html body .rv.qdg{position:relative;z-index:50;opacity:.92;box-shadow:0 14px 34px rgba(0,0,0,.35);transform-origin:center;pointer-events:none!important;transition:none}html body .rv.qdt{outline:4px dashed var(--pvi,#1B64DA);outline-offset:-4px;background-image:linear-gradient(rgba(255,229,0,.18),rgba(255,229,0,.18))}html body.qdon{overflow:hidden}</style>
+<script>
+/* 대기 번호 꾹 누르기 → 끌어서 다른 대기 박스와 순서 바꾸기 */
+(function(){var T=null,A=null,X=0,Y=0,PID=0,H=null;
+function idx(rv){var b=rv&&rv.querySelector('[data-i]');return b?+b.dataset.i:-1}
+function clr(){clearTimeout(T);T=null}
+function tgt(x,y){var el=document.elementFromPoint(x,y),rv=el&&el.closest&&el.closest('.rv');return rv&&rv!==A?rv:null}
+function end(ok,x,y){clr();if(!A)return;var from=idx(A),to=-1,t=ok?tgt(x,y):null;if(t)to=idx(t);
+ A.classList.remove('qdg');A.style.transform='';if(H)H.classList.remove('qdt');document.body.classList.remove('qdon');A=null;H=null;
+ if(ok&&from>=0&&to>=0&&from!=to){try{snd('swap')}catch(_){}mut(function(){var a=S.rows.splice(from,1)[0];S.rows.splice(to,0,a)});toast('대기 '+(from+1)+'번을 '+(to+1)+'번 자리로 옮겼어요',1)}else if(ok){try{snd('back')}catch(_){}}}
+document.addEventListener('pointerdown',function(e){var nb=e.target.closest&&e.target.closest('.rv .nb');if(!nb)return;X=e.clientX;Y=e.clientY;PID=e.pointerId;clr();
+ T=setTimeout(function(){T=null;var rv=nb.closest('.rv');if(!rv)return;A=rv;rv.classList.add('qdg');document.body.classList.add('qdon');try{nb.setPointerCapture(PID)}catch(_){}try{snd('sel')}catch(_){}try{navigator.vibrate&&navigator.vibrate(25)}catch(_){}},450)},true);
+document.addEventListener('pointermove',function(e){if(T&&Math.hypot(e.clientX-X,e.clientY-Y)>10)clr();if(!A)return;A.style.transform='translate('+(e.clientX-X)+'px,'+(e.clientY-Y)+'px) scale(1.03)';var t=tgt(e.clientX,e.clientY);if(t!==H){if(H)H.classList.remove('qdt');H=t;if(H){H.classList.add('qdt');try{navigator.vibrate&&navigator.vibrate(6)}catch(_){}}}},true);
+document.addEventListener('pointerup',function(e){if(A)end(true,e.clientX,e.clientY);else clr()},true);
+document.addEventListener('pointercancel',function(){if(A)end(false);else clr()},true);
+document.addEventListener('touchmove',function(e){if(A||T===null&&A)e.preventDefault()},{passive:false,capture:true});
+document.addEventListener('contextmenu',function(e){if(e.target.closest&&e.target.closest('.rv .nb'))e.preventDefault()},true);
+})();
 </script>
+
 </body></html>

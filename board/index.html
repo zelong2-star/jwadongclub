@@ -1403,7 +1403,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const SXN=["","naver","toss","kakao","playlog","lotte"],SXL=["기존 카드","네이버","토스","카카오","좌동","롯데"];const APPV=310,APPD="2026-11-12",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,1,3,2,5][WK()%5];return ST.sx?ST.sx:3}
+const SXN=["","naver","toss","kakao","playlog","lotte"],SXL=["기존 카드","네이버","토스","카카오","좌동","롯데"];const APPV=311,APPD="2026-11-12",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function STE(){if(ST.rot&&ST.sthW!==WK())return WK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==WK())return[4,1,3,2,5][WK()%5];return ST.sx?ST.sx:3}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -1878,7 +1878,7 @@ document.addEventListener('pointermove',function(e){if(B&&!armed&&Math.abs(e.cli
 ['pointerup','pointercancel'].forEach(function(t){document.addEventListener(t,function(){clearTimeout(T1);if(armed){clearTimeout(T2);pop()}else restore()})});
 document.addEventListener('contextmenu',function(e){if(e.target.closest&&e.target.closest('.rvs .rv button[data-a="go"]'))e.preventDefault()});
 document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-a="qcx"]');if(!b)return;e.stopPropagation();e.preventDefault();
-var i=+b.dataset.i,n=S.rows[i]?S.rows[i].filter(Boolean).length:0;$('md').innerHTML='';if(!n)return;mut(function(){S.rows[i]=[]});toast('대기 팀을 취소했어요',1)},true);
+var i=+b.dataset.i,n=S.rows[i]?S.rows[i].filter(Boolean).length:0;$('md').innerHTML='';if(!n)return;mut(function(){S.rows[i]=[]});try{snd('del')}catch(_){}toast('대기 팀을 취소했어요',1)},true);
 })();
 </script>
 <script>
@@ -3281,5 +3281,12 @@ function start(){QU=[document.body];run();mo.observe(document.body,{childList:tr
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else setTimeout(start,300);
 var st=document.createElement('style');st.textContent='.n2w{display:inline-block;width:3em;text-align:justify;text-align-last:justify;text-justify:inter-character;letter-spacing:0!important;text-indent:0!important;padding:0!important;white-space:nowrap;vertical-align:baseline}';document.head.appendChild(st);
 })();
+</script><script>
+/* 소리·진동 누락 방지: 어떤 버튼이든 처리 중 효과음이 한 번도 안 났으면 기본음(+진동)을 대신 낸다 */
+(function(){var LS=0,PD=0,P=SND.play;SND.play=function(){LS=Date.now();return P.apply(this,arguments)};
+document.addEventListener('pointerdown',function(){PD=Date.now()},true);
+document.addEventListener('click',function(e){var t0=Date.now(),el=e.target&&e.target.closest&&e.target.closest('button,[data-a],[data-wl],[data-sc],[data-swx],[data-rq],[data-rqa],[data-gr],[data-gi],[data-pts],[data-pt],[data-f],[data-j],[role="button"]');
+ if(!el||el.disabled||el.tagName=='INPUT'||el.tagName=='TEXTAREA'||el.tagName=='SELECT')return;var d=el.dataset;if(d.m||d.a=='st'||d.a=='pv')return;
+ setTimeout(function(){if(LS>=t0||LS>PD)return;var k=(d.a&&SM[d.a])||(d.wl&&typeof SNDK!='undefined'&&SNDK[d.wl])||(/삭제|지우|취소/.test(el.textContent||'')&&!/닫기/.test(el.textContent||'')?'del':'tap');try{snd(k)}catch(_){}},0)},true)})();
 </script>
 </body></html>

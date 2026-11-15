@@ -6,7 +6,8 @@
   "start_url": "/jwadongclub/board/",
   "scope": "/jwadongclub/board/",
   "display": "fullscreen",
-  "orientation": "any",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "landscape",
   "background_color": "#eef3f9",
   "theme_color": "#0c50a1",
   "icons": [

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#faf6ea">
+<title>게임현황판 공지 작성</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#faf6ea;color:#2b2618;font-family:-apple-system,'Noto Sans KR','Malgun Gothic',sans-serif}
+.wrap{max-width:520px;margin:0 auto;padding:16px 16px 190px}
+h1{font-size:20px;margin:4px 0 2px}.sub{font-size:13px;color:#7a735c;margin:0 0 14px}
+.card{background:#fff;border:1px solid #e3dcc4;border-radius:14px;padding:12px;margin-bottom:10px}
+.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tag{font-size:12px;font-weight:800;border-radius:99px;padding:2px 8px;background:#fff;border:1px solid #c33;color:#c33}
+.tag.d{background:#ffc400;border:0;color:#222}.tag.p{border-color:#bbb;color:#777}
+.t{font-size:16px;font-weight:700;margin:6px 0 2px;line-height:1.4;white-space:pre-wrap;word-break:break-word}
+.del{float:right;border:0;background:none;color:#b33;font-size:14px;font-weight:700;padding:6px 4px}
+textarea.in{width:100%;height:90px;border:1.5px solid #ddd3b3;border-radius:10px;padding:10px;font-size:16px;line-height:1.4;font-family:inherit;background:#fffdf6;resize:vertical}
+.chip{border:1.5px solid #d8cfb0;background:#fff;color:#2b2618;border-radius:99px;padding:9px 14px;font-size:14px;font-weight:700;font-family:inherit}
+.chip.on{background:#ffc400;border-color:#ffc400}
+input[type=date]{border:1.5px solid #d8cfb0;border-radius:10px;padding:8px;font-size:15px;font-family:inherit;background:#fff}
+small.k{font-size:12px;color:#8a8368;display:block;margin:10px 0 5px}
+.big{display:block;width:100%;border:0;background:#2e7d5b;color:#fff;border-radius:14px;padding:15px;text-align:center;font-size:17px;font-weight:800;font-family:inherit;text-decoration:none}
+.big.o{background:#fff;color:#2e7d5b;border:2px solid #2e7d5b}.big.s{padding:11px;font-size:15px;margin-top:12px;background:#ffc400;color:#222}
+.bar{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(#faf6ea00,#faf6ea 20%);padding:18px 16px max(16px,env(safe-area-inset-bottom));}
+.bar>div{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
+.empty{color:#8a8368;font-size:14px;text-align:center;padding:14px 0}
+details{font-size:13px;color:#7a735c;margin:8px 2px}pre{white-space:pre-wrap;background:#fff;border:1px solid #e3dcc4;border-radius:10px;padding:10px;font-size:12px;color:#444}
+#msg{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:#2b2618;color:#fff;border-radius:99px;padding:9px 16px;font-size:14px;font-weight:700;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+#msg.on{opacity:1}
+</style></head><body>
+<div class="wrap">
+<h1>게임현황판 공지</h1>
+<p class="sub" id="sub">불러오는 중…</p>
+<div id="list"></div>
+<div class="card" style="border:2px solid #ffc400">
+<b style="font-size:15px">＋ 새 공지</b>
+<textarea class="in" id="txt" maxlength="300" placeholder="공지 내용 (줄바꿈 가능, 300자까지)"></textarea>
+<small class="k">표시</small><div class="row"><button type="button" class="chip" id="imp">★ 중요</button></div>
+<small class="k">마감</small>
+<div class="row" id="dq"><button type="button" class="chip on" data-o="">없음</button><button type="button" class="chip" data-o="0">오늘</button><button type="button" class="chip" data-o="1">내일</button><button type="button" class="chip" data-o="7">1주</button><input type="date" id="dd" aria-label="마감일 직접 선택"></div>
+<button type="button" class="big s" id="add">목록에 추가</button>
+</div>
+<details><summary>복사될 내용 미리보기</summary><pre id="pre"></pre></details>
+</div>
+<div class="bar"><div>
+<button type="button" class="big" id="copy">① 전체 복사하기</button>
+<a class="big o" id="gh" href="https://github.com/zelong2-star/jwadongclub/edit/main/board/remote.txt" target="_blank" rel="noopener">② GitHub 열어서 붙여넣기</a>
+</div></div>
+<div id="msg"></div>
+<script>
+const $=s=>document.querySelector(s),p2=v=>String(v).padStart(2,'0');
+const dk=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
+const off=n=>{const d=new Date();d.setDate(d.getDate()+n);return dk(d)};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const HEAD=`# 폰에서 고치는 게임현황판 공지 (이 파일을 저장하면 1~2분 안에 태블릿 공지에 더해져요)
+# '#'으로 시작하는 줄은 설명이라 화면에 안 나와요.
+# 공지 한 건은 '---' 줄로 구분하고, 여러 줄로 써도 돼요(홈 띠에는 첫 줄만 나와요).
+# 선택 줄(공지 맨 위에 한 줄씩): 중요 / 시작: 2026-11-20 / 마감: 2026-11-25
+# 이 파일은 폰 공지 작성 페이지(remote-edit.html)가 만들어 준 내용이에요.
+`;
+let items=[],imp=0,dsel='',expired=0;
+function parse(x){return String(x||'').replace(/\r/g,'').split(/^\s*-{3,}\s*$/m).map(b=>{const o={t:'',d:'',i:0,s:''},body=[];b.split('\n').forEach(l=>{if(/^\s*#/.test(l))return;let m=l.match(/^\s*(마감|시작)\s*[:：]\s*(\d{4})-(\d{1,2})-(\d{1,2})\s*$/);if(m){const v=m[2]+'-'+p2(m[3])+'-'+p2(m[4]);if(m[1]=='마감')o.d=v;else o.s=v;return}m=l.match(/^\s*중요\s*(?:[:：]\s*(예|네|o|y|yes|true|1)?\s*)?$/i);if(m){o.i=1;return}body.push(l)});o.t=body.join('\n').trim().slice(0,300);return o}).filter(o=>o.t)}
+function gen(){return HEAD+items.map(n=>'\n'+(n.i?'중요\n':'')+(n.s?'시작: '+n.s+'\n':'')+(n.d?'마감: '+n.d+'\n':'')+n.t+'\n---').join('\n').replace(/\n---$/,'')+'\n'}
+const dl=d=>d?'~'+(+d.slice(5,7))+'/'+(+d.slice(8)):'';
+function draw(){const t=dk(new Date());$('#list').innerHTML=items.length?items.map((n,k)=>`<div class="card"><button class="del" data-k="${k}">삭제</button><div class="row">${n.i?'<span class="tag">중요</span>':''}${n.d?`<span class="tag d">${n.d==t?'오늘까지':n.d==off(1)?'내일까지':dl(n.d)+'까지'}</span>`:''}${n.s?`<span class="tag p">${dl(n.s).slice(1)}부터</span>`:''}</div><div class="t">${esc(n.t)}</div></div>`).join(''):'<div class="card empty">올라가 있는 공지가 없어요</div>';$('#pre').textContent=gen()}
+function toast(m){const e=$('#msg');e.textContent=m;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2200)}
+async function load(){const t=dk(new Date());try{const r=await fetch('remote.txt?t='+Date.now(),{cache:'no-store'});if(r.status==404)items=[];else if(r.ok){const a=parse(await r.text());items=a.filter(n=>!n.d||n.d>=t);expired=a.length-items.length}else throw 0;const h=new Date();$('#sub').textContent=`지금 올라가 있는 공지 ${items.length}건 · 불러옴 ${p2(h.getHours())}:${p2(h.getMinutes())}`+(expired?` · 마감 지난 ${expired}건은 뺐어요`:'')}catch(e){items=[];$('#sub').textContent='현재 공지를 못 불러왔어요. 아래에서 새로 쓰면 이 내용으로 전체가 바뀌어요.'}draw()}
+$('#list').addEventListener('click',e=>{const b=e.target.closest('.del');if(!b)return;items.splice(+b.dataset.k,1);draw()});
+$('#imp').onclick=()=>{imp=imp?0:1;$('#imp').classList.toggle('on',!!imp)};
+$('#dq').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;document.querySelectorAll('#dq .chip').forEach(x=>x.classList.toggle('on',x==b));dsel=b.dataset.o===''?'':off(+b.dataset.o);$('#dd').value=dsel});
+$('#dd').addEventListener('change',()=>{dsel=$('#dd').value;document.querySelectorAll('#dq .chip').forEach(x=>x.classList.remove('on'))});
+$('#add').onclick=()=>{const t=$('#txt').value.trim();if(!t)return toast('공지 내용을 써 주세요');if(dsel&&dsel<dk(new Date()))return toast('마감일은 오늘 이후로 정해 주세요');items.push({t:t.slice(0,300),d:dsel,i:imp,s:''});$('#txt').value='';imp=0;$('#imp').classList.remove('on');dsel='';$('#dd').value='';document.querySelectorAll('#dq .chip').forEach((x,i)=>x.classList.toggle('on',i==0));draw();toast('목록에 넣었어요. 아래 ① 복사 → ② 붙여넣기까지 해야 반영돼요')};
+$('#copy').onclick=async()=>{const s=gen();try{await navigator.clipboard.writeText(s);toast('복사했어요. 이제 ② GitHub에서 붙여넣기')}catch(e){const a=document.createElement('textarea');a.value=s;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();let ok=0;try{ok=document.execCommand('copy')}catch(_){}a.remove();if(ok)toast('복사했어요. 이제 ② GitHub에서 붙여넣기');else{document.querySelector('details').open=true;toast('복사가 안 돼요. 아래 내용을 길게 눌러 직접 복사해 주세요')}}};
+load();
+</script></body></html>

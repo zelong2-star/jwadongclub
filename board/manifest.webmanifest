@@ -3,14 +3,10 @@
   "short_name": "좌동클럽",
   "description": "좌동배드민턴클럽 코트·대기 현황판 (체육관 태블릿용)",
   "lang": "ko",
-  "id": "/jwadongclub/board/",
   "start_url": "/jwadongclub/board/",
   "scope": "/jwadongclub/board/",
   "display": "fullscreen",
-  "display_override": [
-    "fullscreen",
-    "standalone"
-  ],
+  "display_override": ["fullscreen", "standalone"],
   "orientation": "landscape",
   "background_color": "#eef3f9",
   "theme_color": "#0c50a1",
@@ -39,5 +35,10 @@
       "type": "image/png",
       "purpose": "maskable"
     }
+  ],
+  "id": "/jwadongclub/board/",
+  "display_override": [
+    "fullscreen",
+    "standalone"
   ]
 }

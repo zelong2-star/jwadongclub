@@ -53,15 +53,10 @@ const $=s=>document.querySelector(s),p2=v=>String(v).padStart(2,'0');
 const dk=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());
 const off=n=>{const d=new Date();d.setDate(d.getDate()+n);return dk(d)};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const HEAD=`# 폰에서 고치는 게임현황판 공지 (이 파일을 저장하면 1~2분 안에 태블릿 공지에 더해져요)
-# '#'으로 시작하는 줄은 설명이라 화면에 안 나와요.
-# 공지 한 건은 '---' 줄로 구분하고, 여러 줄로 써도 돼요(홈 띠에는 첫 줄만 나와요).
-# 선택 줄(공지 맨 위에 한 줄씩): 중요 / 시작: 2026-11-20 / 마감: 2026-11-25
-# 이 파일은 폰 공지 작성 페이지(remote-edit.html)가 만들어 준 내용이에요.
-`;
+
 let items=[],imp=0,dsel='',expired=0;
 function parse(x){return String(x||'').replace(/\r/g,'').split(/^\s*-{3,}\s*$/m).map(b=>{const o={t:'',d:'',i:0,s:''},body=[];b.split('\n').forEach(l=>{if(/^\s*#/.test(l))return;let m=l.match(/^\s*(마감|시작)\s*[:：]\s*(\d{4})-(\d{1,2})-(\d{1,2})\s*$/);if(m){const v=m[2]+'-'+p2(m[3])+'-'+p2(m[4]);if(m[1]=='마감')o.d=v;else o.s=v;return}m=l.match(/^\s*중요\s*(?:[:：]\s*(예|네|o|y|yes|true|1)?\s*)?$/i);if(m){o.i=1;return}body.push(l)});o.t=body.join('\n').trim().slice(0,300);return o}).filter(o=>o.t)}
-function gen(){return HEAD+items.map(n=>'\n'+(n.i?'중요\n':'')+(n.s?'시작: '+n.s+'\n':'')+(n.d?'마감: '+n.d+'\n':'')+n.t+'\n---').join('\n').replace(/\n---$/,'')+'\n'}
+function gen(){return items.map(n=>(n.i?'중요\n':'')+(n.s?'시작: '+n.s+'\n':'')+(n.d?'마감: '+n.d+'\n':'')+n.t).join('\n---\n')+'\n'}
 const dl=d=>d?'~'+(+d.slice(5,7))+'/'+(+d.slice(8)):'';
 function draw(){const t=dk(new Date());$('#list').innerHTML=items.length?items.map((n,k)=>`<div class="card"><button class="del" data-k="${k}">삭제</button><div class="row">${n.i?'<span class="tag">중요</span>':''}${n.d?`<span class="tag d">${n.d==t?'오늘까지':n.d==off(1)?'내일까지':dl(n.d)+'까지'}</span>`:''}${n.s?`<span class="tag p">${dl(n.s).slice(1)}부터</span>`:''}</div><div class="t">${esc(n.t)}</div></div>`).join(''):'<div class="card empty">올라가 있는 공지가 없어요</div>';$('#pre').textContent=gen()}
 function toast(m){const e=$('#msg');e.textContent=m;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2200)}

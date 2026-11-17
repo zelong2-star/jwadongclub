@@ -9,10 +9,10 @@
 .w{max-width:480px;margin:0 auto;padding:18px 16px 40px;text-align:center}
 h1{font-size:22px;margin:6px 0 4px}.sub{font-size:15px;color:#666;margin:0 0 14px}
 #qr{display:inline-block;background:#fff;padding:14px;border:3px solid #ffc400;border-radius:20px}#qr svg{display:block;width:min(70vw,300px);height:min(70vw,300px)}
-#nm{font-size:34px;font-weight:800;margin:12px 0 2px}.hint{font-size:15px;color:#555;margin:4px 0 14px}
+#nm{font-size:34px;font-weight:800}.nmrow{margin:12px 0 2px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}.chip{border:2px solid #ffc400;background:#fff6cc;color:#6b5200;border-radius:99px;padding:8px 14px;font-size:15px;font-weight:800}.hd1{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}.hd1 .tx{text-align:left}.hd1 h1,.hd1 .sub{margin:0}.hd1 .sub{font-size:14px}.lg{width:52px;height:52px;border-radius:13px}.hint{font-size:15px;color:#555;margin:4px 0 14px}
 button{font-family:inherit;border:0;cursor:pointer}
 .ptit{font-size:20px;font-weight:800;margin:6px 0 8px}.row3{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:6px 0}.ap{background:#2e7d5b;color:#fff;border-radius:14px;padding:18px 4px;font-size:18px;font-weight:800}.btn{display:block;text-decoration:none;width:100%;border-radius:16px;padding:18px;font-size:21px;font-weight:800;margin:10px 0}.g{background:#2e7d5b;color:#fff}.y{background:#ffc400;color:#111}.o{background:#fff;color:#2e7d5b;border:2px solid #2e7d5b!important;font-size:17px;padding:13px}
-.fee{font-size:15px;color:#444;margin:4px 0 0}.msg{min-height:22px;font-size:15px;font-weight:700;color:#1b7f4b;margin:8px 0}
+.fee{font-size:15px;color:#444;margin:6px 0 0;line-height:1.6}.msg{min-height:22px;font-size:15px;font-weight:700;color:#1b7f4b;margin:8px 0}
 .lk{background:none;color:#555;font-size:14px;text-decoration:underline;padding:8px 10px}
 label{display:block;font-size:15px;color:#555;margin:14px 0 6px}input{width:100%;max-width:300px;font-size:24px;padding:12px;border:2px solid #ddd;border-radius:12px;text-align:center;font-family:inherit}
 .note{font-size:13px;color:#888;margin-top:14px;line-height:1.5}[hidden]{display:none!important}
@@ -26,15 +26,14 @@ label{display:block;font-size:15px;color:#555;margin:14px 0 6px}input{width:100%
 </div>
 
 <div id="vMain" hidden>
- <h1>내 출석 QR</h1><p class="sub">체육관 태블릿 카메라에 이 화면을 비춰 주세요</p>
- <div id="qr"></div><div id="nm"></div><p class="hint">화면 밝기를 높이면 더 잘 읽혀요</p>
+ <div class="hd1"><img class="lg" src="icons/icon-512.png" alt=""><div class="tx"><h1>좌동클럽 출석 QR</h1><p class="sub">태블릿 카메라에 비춰 주세요</p></div></div>
+ <div id="qr"></div><div class="nmrow"><span id="nm"></span><button class="chip" id="chgNm" type="button">✎ 이름 바꾸기</button></div><p class="hint">화면 밝기를 높이면 더 잘 읽혀요</p>
  <div class="ptit" id="ptit"></div>
  <div class="row3" id="aps"><button class="ap" type="button" data-k="toss">토스</button><button class="ap" type="button" data-k="kakaobank">카카오뱅크</button><button class="ap" type="button" data-k="kakaopay">카카오페이</button><button class="ap" type="button" data-k="naverpay">네이버페이</button></div>
  <a id="pay" class="btn o" href="#" target="_blank" rel="noopener"></a>
  <div class="fee" id="fee"></div>
  <div class="msg" id="msg"></div>
  <button id="cp" class="btn o" type="button">계좌번호 복사</button>
- <div><button class="lk" id="chgNm" type="button">이름 바꾸기</button></div>
 </div>
 
 </div>
@@ -51,7 +50,7 @@ function show(id){['vName','vMain'].forEach(function(x){$('#'+x).hidden=(x!==id)
 function draw(n){var q=qrcode(0,'M');q.addData('JWQ1:'+encodeURIComponent(n));q.make();$('#qr').innerHTML=q.createSvgTag({cellSize:6,margin:0,scalable:true});$('#nm').textContent=n}
 function main(){var n=g('jwqn');if(!n){show('vName');return}
  show('vMain');draw(n);$('#pay').href=ACC.url;$('#pay').textContent='그 외 은행 앱 (계좌 자동 입력)';$('#ptit').textContent='송금하기 · 입장료 '+ACC.fee.toLocaleString()+'원';
- $('#fee').textContent='금액은 송금 화면에서 직접 입력해 주세요 (예금주 '+ACC.nm+')';$('#msg').textContent=''}
+ $('#fee').innerHTML='금액은 송금 화면에서<br>직접 입력해 주세요<br>예금주 '+ACC.nm+' · '+ACC.bk;$('#msg').textContent=''}
 function copy(){var t=ACC.no.replace(/-/g,'');
  return (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t):Promise.reject()).then(function(){return 1}).catch(function(){
   try{var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();var ok=document.execCommand('copy');a.remove();return ok?1:0}catch(e){return 0}})}

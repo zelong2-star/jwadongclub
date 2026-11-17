@@ -26,13 +26,6 @@ label{display:block;font-size:15px;color:#555;margin:14px 0 6px}input{width:100%
  <p class="note">이 이름은 이 폰에만 저장돼요. 이름이 명단과 다르면 태블릿이 읽어도 출석되지 않아요.</p>
 </div>
 
-<div id="vApp" hidden>
- <h1>자주 쓰는 송금 앱</h1><p class="sub">한 번 고르면 이 폰에 기억해요</p>
- <div class="row" id="aps"></div>
- <p class="note">앱을 누르면 계좌번호가 복사되고 그 앱이 열려요.<br>앱이 열리지 않으면 직접 앱을 열어 붙여넣어 주세요.</p>
- <button class="lk" id="appBack" type="button">돌아가기</button>
-</div>
-
 <div id="vMain" hidden>
  <h1>내 출석 QR</h1><p class="sub">체육관 태블릿 카메라에 이 화면을 비춰 주세요</p>
  <div id="qr"></div><div id="nm"></div><p class="hint">화면 밝기를 높이면 더 잘 읽혀요</p>
@@ -40,7 +33,7 @@ label{display:block;font-size:15px;color:#555;margin:14px 0 6px}input{width:100%
  <div class="fee" id="fee"></div>
  <div class="msg" id="msg"></div>
  <button id="cp" class="btn o" type="button">계좌번호 복사</button>
- <div><button class="lk" id="chgApp" type="button">앱 바꾸기</button><button class="lk" id="chgNm" type="button">이름 바꾸기</button></div>
+ <div><button class="lk" id="chgNm" type="button">이름 바꾸기</button></div>
 </div>
 
 </div>
@@ -49,34 +42,24 @@ label{display:block;font-size:15px;color:#555;margin:14px 0 6px}input{width:100%
 (function(){
 var $=function(s){return document.querySelector(s)};
 var ACC={bk:'카카오뱅크',no:'3333-3570-3351-0',nm:'정현영',fee:2000};
-var APPS={toss:{n:'토스',sc:'supertoss',pk:'viva.republica.toss'},kakaobank:{n:'카카오뱅크',sc:'kakaobank',pk:'com.kakaobank.channel'},kakaopay:{n:'카카오페이',sc:'kakaopay',pk:'com.kakaopay.app'},naverpay:{n:'네이버페이',sc:'naverpay',pk:'com.naverfin.payapp'},bank:{n:'그 외 은행 앱'}};
+ACC.url='https://qrsee.co.kr/p?v=1&b=090&a=3333357033510&n='+encodeURIComponent(ACC.nm);
 function g(k){try{return localStorage.getItem(k)||''}catch(e){return ''}}
 function s(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 window.jwGo=function(u){location.href=u};
-function show(id){['vName','vApp','vMain'].forEach(function(x){$('#'+x).hidden=(x!==id)})}
+function show(id){['vName','vMain'].forEach(function(x){$('#'+x).hidden=(x!==id)})}
 function draw(n){var q=qrcode(0,'M');q.addData('JWQ1:'+encodeURIComponent(n));q.make();$('#qr').innerHTML=q.createSvgTag({cellSize:6,margin:0,scalable:true});$('#nm').textContent=n}
-function main(){var n=g('jwqn'),a=g('jwqapp');if(!n){show('vName');return}
- show('vMain');draw(n);var A=APPS[a];
- $('#pay').textContent=A?(A.n==='그 외 은행 앱'?'송금하기 (계좌번호 복사)':A.n+'로 송금하기'):'송금하기';
- $('#fee').textContent='입장료 '+ACC.fee.toLocaleString()+'원 · '+ACC.bk+' · 예금주 '+ACC.nm;$('#msg').textContent=''}
+function main(){var n=g('jwqn');if(!n){show('vName');return}
+ show('vMain');draw(n);$('#pay').textContent='송금하기 ('+ACC.fee.toLocaleString()+'원)';
+ $('#fee').textContent='입장료 '+ACC.fee.toLocaleString()+'원 · 송금 화면에서 금액을 직접 입력해 주세요';$('#msg').textContent=''}
 function copy(){var t=ACC.no.replace(/-/g,'');
  return (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t):Promise.reject()).then(function(){return 1}).catch(function(){
   try{var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();var ok=document.execCommand('copy');a.remove();return ok?1:0}catch(e){return 0}})}
-function openApp(key){var A=APPS[key];
- return copy().then(function(ok){
-  $('#msg').textContent=ok?(A&&A.sc?'계좌번호를 복사했어요. 앱이 열리면 붙여넣어 주세요':'계좌번호를 복사했어요. 쓰시는 은행 앱을 열어 붙여넣어 주세요'):'계좌번호: '+ACC.bk+' '+ACC.no;
-  if(!A||!A.sc)return;
-  var ios=/iPhone|iPad|iPod/i.test(navigator.userAgent);
-  if(ios){window.jwGo(A.sc+'://')}
-  else{var fb=encodeURIComponent('https://play.google.com/store/apps/details?id='+A.pk);
-   window.jwGo('intent://#Intent;scheme='+A.sc+';package='+A.pk+';S.browser_fallback_url='+fb+';end')}
- })}
+function pay(){return copy().then(function(ok){
+  $('#msg').textContent=ok?'계좌번호도 복사했어요. 송금 앱을 골라 주세요':'송금 앱을 골라 주세요';
+  window.jwGo(ACC.url)})}
 var u=new URLSearchParams(location.search).get('n');if(u)s('jwqn',u.trim());
-$('#aps').innerHTML=Object.keys(APPS).map(function(k){return '<button class="ap" type="button" data-k="'+k+'">'+APPS[k].n+'</button>'}).join('');
-$('#aps').addEventListener('click',function(e){var b=e.target.closest('.ap');if(!b)return;var k=b.dataset.k;s('jwqapp',k);main();openApp(k)});
-$('#pay').onclick=function(){var a=g('jwqapp');if(!APPS[a]){show('vApp');return}openApp(a)};
+$('#pay').onclick=pay;
 $('#cp').onclick=function(){copy().then(function(ok){$('#msg').textContent=ok?'계좌번호를 복사했어요':'복사가 안 돼요: '+ACC.bk+' '+ACC.no})};
-$('#chgApp').onclick=function(){show('vApp')};$('#appBack').onclick=main;
 $('#chgNm').onclick=function(){$('#n').value=g('jwqn');show('vName')};
 $('#nok').onclick=function(){var v=$('#n').value.trim();if(!v){$('#n').focus();return}s('jwqn',v);main()};
 $('#n').addEventListener('keydown',function(e){if(e.key==='Enter')$('#nok').click()});

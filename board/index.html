@@ -1419,7 +1419,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const ACCT={bk:"카카오뱅크",no:"3333-3570-3351-0",nm:"정현영"};function acCopy(){const t=ACCT.no;const fb=()=>{try{const a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();toast("계좌번호를 복사했어요",1)}catch(e){toast("복사하지 못했어요")}};try{navigator.clipboard.writeText(t).then(()=>toast("계좌번호를 복사했어요",1),fb)}catch(e){fb()}}document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-a=acc]");if(!b)return;e.stopPropagation();e.preventDefault();try{snd("ok")}catch(_){}acCopy()},true);const SXN=["","naver","toss","kakao","playlog","lotte"],SXL=["기존 카드","네이버","토스","카카오","좌동","롯데"];const APPV=438,APPD="2026-11-14",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function SK(){const d=Math.floor((Date.now()+324e5)/864e5)+3;return Math.floor(d/7)*4+[-1,0,0,1,1,2,3][d%7]}function STE(){if(ST.rot&&ST.sthW!==SK())return SK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==SK())return[4,1,3,2][SK()%4];return ST.sx&&ST.sx!=5?ST.sx:(ST.sx==5?4:3)}function FTE(){if(ST.rot&&ST.ftW!==SK())return SXE()==3?2:SK()%3;return ST.ft||0}
+const ACCT={bk:"카카오뱅크",no:"3333-3570-3351-0",nm:"정현영"};function acCopy(){const t=ACCT.no;const fb=()=>{try{const a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();toast("계좌번호를 복사했어요",1)}catch(e){toast("복사하지 못했어요")}};try{navigator.clipboard.writeText(t).then(()=>toast("계좌번호를 복사했어요",1),fb)}catch(e){fb()}}document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-a=acc]");if(!b)return;e.stopPropagation();e.preventDefault();try{snd("ok")}catch(_){}acCopy()},true);const SXN=["","naver","toss","kakao","playlog","lotte"],SXL=["기존 카드","네이버","토스","카카오","좌동","롯데"];const APPV=439,APPD="2026-11-14",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function SK(){const d=Math.floor((Date.now()+324e5)/864e5)+3;return Math.floor(d/7)*4+[-1,0,0,1,1,2,3][d%7]}function STE(){if(ST.rot&&ST.sthW!==SK())return SK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==SK())return[4,1,3,2][SK()%4];return ST.sx&&ST.sx!=5?ST.sx:(ST.sx==5?4:3)}function FTE(){if(ST.rot&&ST.ftW!==SK())return SXE()==3?2:SK()%3;return ST.ft||0}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -3657,9 +3657,9 @@ setInterval(function(){try{gk();if(!S.present)return;
 </script>
 <script id="facescan">/* ---- 얼굴 인식 출석 (테스트): 얼굴 시험 페이지(face-test.html)에서 등록한 얼굴을 읽어 출석 처리. 얼굴 정보는 이 기기 안에만 있어요 ---- */
 (function(){
-var O=null,SM=null,TM=0,BUSY=0,STK=0,LIB=0,OPT=null,TH=0.45;
+var O=null,SM=null,TM=0,BUSY=0,STK=0,LIB=0,OPT=null,TH=0.45,ENR=0,BUF=[],LT=0;
 function say(t,c){var s=document.getElementById('jf-st');if(s){s.textContent=t;s.style.background=c||'#333'}}
-function stop(){clearTimeout(TM);TM=0;BUSY=0;try{if(SM)SM.getTracks().forEach(function(t){t.stop()})}catch(e){}SM=null;if(O){O.remove();O=null}}
+function stop(){clearTimeout(TM);TM=0;BUSY=0;ENR=0;BUF=[];try{if(SM)SM.getTracks().forEach(function(t){t.stop()})}catch(e){}SM=null;if(O){O.remove();O=null}}
 function load(src){return new Promise(function(ok,no){var s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=function(){no(new Error('load'))};document.head.appendChild(s)})}
 function ld(){try{return JSON.parse(localStorage.getItem('jwface')||'null')}catch(e){return null}}
 function hit(n,m){
@@ -3669,12 +3669,16 @@ function hit(n,m){
  mut(function(){S.present=S.present.concat([n])});try{snd('ok')}catch(e){}stop();var md=document.getElementById('md');if(md)md.innerHTML='';try{toast(n+'님 출석 완료 (얼굴 인식)',1)}catch(e){}setTimeout(function(){try{payAsk([n])}catch(e){}},150);
 }
 function loop(){
- if(!O)return;var v=document.getElementById('jf-v'),o=ld();
+ if(!O)return;var v=document.getElementById('jf-v'),o=ld();if(o&&(!o.d||!o.d.length))o=null;
  if(!v||v.readyState<2||BUSY){TM=setTimeout(loop,200);return}
  BUSY=1;
  faceapi.detectSingleFace(v,OPT).withFaceLandmarks(true).withFaceDescriptor().then(function(r){
   if(!O)return;
-  if(!r){STK=0;say('얼굴을 화면에 비춰 주세요','#333');return}
+  if(!r){STK=0;say(ENR?'등록 중 '+BUF.length+'/8 — 얼굴을 화면에 비춰 주세요':'얼굴을 화면에 비춰 주세요','#333');return}
+  if(ENR){if(Date.now()-LT>450){LT=Date.now();BUF.push(Array.from(r.descriptor));say('등록 중 '+BUF.length+'/8 — 고개를 천천히 움직여 주세요','#8a6d00');
+    if(BUF.length>=8){var nm=ENR;try{localStorage.setItem('jwface',JSON.stringify({name:nm,d:BUF,t:new Date().toLocaleString('ko-KR')}))}catch(e){}ENR=0;BUF=[];var pn=document.getElementById('jf-p');if(pn)pn.style.display='none';try{snd('ok')}catch(e){}say(nm+' 얼굴 등록 완료! 이제 카메라를 보면 출석돼요','#1b5e20')}}
+   return}
+  if(!o){say('등록된 얼굴이 없어요. 위쪽 "얼굴 등록"을 눌러 등록해 주세요','#b71c1c');return}
   var m=9;o.d.forEach(function(d){var x=faceapi.euclideanDistance(r.descriptor,new Float32Array(d));if(x<m)m=x});
   if(m<TH){STK++;if(STK>=3)hit(o.name,m);else say('확인 중… '+o.name+'? ('+m.toFixed(2)+')','#1b5e20')}
   else{STK=0;say('모르는 얼굴 (거리 '+m.toFixed(2)+')','#b71c1c')}
@@ -3682,23 +3686,28 @@ function loop(){
 }
 async function start(){
  try{
-  var o=ld();if(!o||!o.d||!o.d.length){say('등록된 얼굴이 없어요. 먼저 얼굴 시험 페이지(board/face-test.html)에서 얼굴을 등록해 주세요','#b71c1c');return}
   SM=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'user'},width:{ideal:960},height:{ideal:720}},audio:false});
   var v=document.getElementById('jf-v');v.srcObject=SM;v.style.transform='scaleX(-1)';await v.play();
   if(!LIB){say('얼굴 인식 준비 중… (처음에는 조금 걸려요)','#333');if(typeof faceapi==='undefined')await load('face/face-api.js');
    await Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri('face/'),faceapi.nets.faceLandmark68TinyNet.loadFromUri('face/'),faceapi.nets.faceRecognitionNet.loadFromUri('face/')]);
    OPT=new faceapi.TinyFaceDetectorOptions({inputSize:320,scoreThreshold:.5});LIB=1}
-  say('얼굴을 화면에 비춰 주세요','#333');loop();
+  var o=ld();if(!o||!o.d||!o.d.length){say('등록된 얼굴이 없어요. 위쪽 "얼굴 등록"을 눌러 등록해 주세요','#b71c1c');var pn=document.getElementById('jf-p');if(pn)pn.style.display='flex'}else say('얼굴을 화면에 비춰 주세요','#333');loop();
  }catch(e){say('시작하지 못했어요. 카메라 권한과 인터넷 연결을 확인해 주세요','#b71c1c')}
 }
 window.faceScan=function(){
  if(O)return;if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('이 기기·브라우저는 카메라를 지원하지 않아요');return}
  O=document.createElement('div');O.id='jf-o';
  O.style.cssText='position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;font-family:inherit';
- O.innerHTML='<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:#111;color:#fff"><b style="font-size:20px;flex:1">얼굴 인식 출석 (테스트)</b><button id="jf-x" style="font-size:16px;padding:10px 18px;border-radius:12px;border:0;background:#ffc400;color:#111;font-weight:800">닫기</button></div>'+
+ O.innerHTML='<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:#111;color:#fff"><b style="font-size:20px;flex:1">얼굴 인식 출석 (테스트)</b><button id="jf-e" style="font-size:16px;padding:10px 16px;border-radius:12px;border:1px solid #888;background:#222;color:#fff">얼굴 등록</button><button id="jf-x" style="font-size:16px;padding:10px 18px;border-radius:12px;border:0;background:#ffc400;color:#111;font-weight:800">닫기</button></div>'+
   '<div style="flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center"><video id="jf-v" playsinline muted style="max-width:100%;max-height:100%"></video></div>'+
+  '<div id="jf-p" style="display:none;gap:10px;align-items:center;padding:12px 16px;background:#222;color:#fff;flex-wrap:wrap"><span style="font-size:17px;font-weight:700">회원 이름</span><input id="jf-n" maxlength="8" placeholder="예) 김재용" style="font-size:20px;padding:8px 12px;border-radius:10px;border:2px solid #ffc400;width:150px"><button id="jf-g" style="font-size:17px;font-weight:800;padding:10px 16px;border-radius:12px;border:0;background:#ffc400;color:#111">등록 시작 (8장)</button><span style="font-size:14px;color:#ccc">시작하면 고개를 천천히 움직여 주세요 (얼굴 정보는 이 기기에만 저장돼요)</span></div>'+
   '<div id="jf-st" style="padding:18px;text-align:center;font-size:26px;font-weight:800;color:#fff;background:#333">카메라 켜는 중…</div>';
- document.body.appendChild(O);document.getElementById('jf-x').onclick=stop;STK=0;start();
+ document.body.appendChild(O);document.getElementById('jf-x').onclick=stop;STK=0;
+ document.getElementById('jf-e').onclick=function(){var pn=document.getElementById('jf-p');pn.style.display=pn.style.display==='none'?'flex':'none'};
+ document.getElementById('jf-g').onclick=function(){var nm=(document.getElementById('jf-n').value||'').trim();if(!LIB){say('얼굴 인식 준비 중이에요. 잠시 후 다시 눌러 주세요','#8a6d00');return}
+  if(!ACT().some(function(x){return x.n===nm})){say('회원 명단에 없는 이름이에요: '+(nm||'(비어 있음)'),'#b71c1c');return}
+  ENR=nm;BUF=[];LT=0;say('등록 중 0/8 — 얼굴을 화면에 비춰 주세요','#8a6d00')};
+ start();
 };
 })();
 </script>

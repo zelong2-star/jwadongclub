@@ -1419,7 +1419,7 @@ function rpok(d){$('md').innerHTML='';const i=+d.i,k=+d.k;mut(()=>{if(d.t=='c')S
 const chip=(n,c='')=>`<div class="p ${c}" data-g="${GM[n]}"${GU(n)}>${c=='k'?dn(n):n}</div>`;
 const CK='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5"/></svg>',PWI='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8"/><path d="M6.6 7.2a7.6 7.6 0 1010.8 0"/></svg>',IS='<svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2.5" fill="currentColor"/></svg>',IX='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>',EI=[0,IX,IS,IX,IX,IX],EN=['','전원 틴트','정지 틴트','전원 + 종료','전원 단색','회색 ✕'];
 const EBk=(k,t,x='')=>`<${t} class="end e${k}"${x}>${EI[k]}${k==3?'<span>종료</span>':''}</${t}>`;
-const ACCT={bk:"카카오뱅크",no:"3333-3570-3351-0",nm:"정현영"};function acCopy(){const t=ACCT.no;const fb=()=>{try{const a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();toast("계좌번호를 복사했어요",1)}catch(e){toast("복사하지 못했어요")}};try{navigator.clipboard.writeText(t).then(()=>toast("계좌번호를 복사했어요",1),fb)}catch(e){fb()}}document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-a=acc]");if(!b)return;e.stopPropagation();e.preventDefault();try{snd("ok")}catch(_){}acCopy()},true);const SXN=["","naver","toss","kakao","playlog","lotte"],SXL=["기존 카드","네이버","토스","카카오","좌동","롯데"];const APPV=431,APPD="2026-11-14",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function SK(){const d=Math.floor((Date.now()+324e5)/864e5)+3;return Math.floor(d/7)*4+[-1,0,0,1,1,2,3][d%7]}function STE(){if(ST.rot&&ST.sthW!==SK())return SK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==SK())return[4,1,3,2][SK()%4];return ST.sx&&ST.sx!=5?ST.sx:(ST.sx==5?4:3)}function FTE(){if(ST.rot&&ST.ftW!==SK())return SXE()==3?2:SK()%3;return ST.ft||0}
+const ACCT={bk:"카카오뱅크",no:"3333-3570-3351-0",nm:"정현영"};function acCopy(){const t=ACCT.no;const fb=()=>{try{const a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();toast("계좌번호를 복사했어요",1)}catch(e){toast("복사하지 못했어요")}};try{navigator.clipboard.writeText(t).then(()=>toast("계좌번호를 복사했어요",1),fb)}catch(e){fb()}}document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-a=acc]");if(!b)return;e.stopPropagation();e.preventDefault();try{snd("ok")}catch(_){}acCopy()},true);const SXN=["","naver","toss","kakao","playlog","lotte"],SXL=["기존 카드","네이버","토스","카카오","좌동","롯데"];const APPV=432,APPD="2026-11-14",DEV="재용";function VS(n){n=+n||0;return"v"+Math.floor(n/100)+"."+String(n%100).padStart(2,"0")}function WK(){return Math.floor((Math.floor((Date.now()+324e5)/864e5)+3)/7)}function SK(){const d=Math.floor((Date.now()+324e5)/864e5)+3;return Math.floor(d/7)*4+[-1,0,0,1,1,2,3][d%7]}function STE(){if(ST.rot&&ST.sthW!==SK())return SK()%SOUND_THEMES.length;return ST.sth}function SXE(){if(ST.rot&&ST.sxW!==SK())return[4,1,3,2][SK()%4];return ST.sx&&ST.sx!=5?ST.sx:(ST.sx==5?4:3)}function FTE(){if(ST.rot&&ST.ftW!==SK())return SXE()==3?2:SK()%3;return ST.ft||0}
 const ISO=c=>{const T=(x,y)=>[10+x+.5*y,34-.1*x+.5*y],Q=(x,y,d=0)=>{const q=T(x,y);return q[0].toFixed(1)+','+(q[1]+d).toFixed(1)},P=(a,d=0)=>a.map(p=>Q(p[0],p[1],d)).join(' '),R=[[0,0],[220,0],[220,100],[0,100]],D=11,L=(a)=>a.map((p,k)=>{const q=T(...p);return(k?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('');
  let g=`<polygon points="${Q(0,100)} ${Q(220,100)} ${Q(220,100,D)} ${Q(0,100,D)}" fill="var(--sv2)"/><polygon points="${Q(0,0)} ${Q(0,100)} ${Q(0,100,D)} ${Q(0,0,D)}" fill="var(--sv2)" style="filter:brightness(.82)"/><polygon points="${Q(220,0)} ${Q(220,100)} ${Q(220,100,D)} ${Q(220,0,D)}" fill="var(--sv2)" style="filter:brightness(.9)"/>`;
  g+=`<path d="${L([[0,100],[220,100]])}" stroke="#fff" stroke-opacity=".35" stroke-width=".8" transform="translate(0 .6)"/><polygon points="${P(R)}" fill="var(--sv1)"/><polygon points="${P([[0,0],[110,0],[110,100],[0,100]])}" fill="#fff" opacity=".05"/>`;
@@ -1637,7 +1637,7 @@ document.addEventListener('input',e=>{if(e.target.id=='mq'){MQ=e.target.value;mm
 document.addEventListener('input',e=>{if(e.target.id=='vol'){ST.vol=+e.target.value;$('vl').textContent=ST.vol+'%';sv()}if(e.target.id=='wq'){WQ=e.target.value;wlist()}if(e.target.id=='q'){P.q=e.target.value;plist()}if(e.target.id=='rq'){V.sel=[];e.target.dataset.sel='';V.q=e.target.value;rlist()}});
 const OP=[0,2,3,4,6],WD='일월화수목금토';
 function dk(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
-function rollover(){const t=dk(new Date());if(S.day==t)return;if(ST.pr){ST.pr=0;sv()}const g=Object.values(S.games).reduce((a,b)=>a+b,0);if(g||S.present.length)S.hist[S.day]={g:Math.round(g/4),a:att(),c:S.games,m:S.mins||{}};try{roBuild(S.day,1);const RR=S.rost&&S.rost[S.day];if(RR&&S.hist[S.day])S.hist[S.day].a=RR.list.map(x=>x.n)}catch(e){}S.day=t;S.duty=[];S.les=[];S.brk=[];S.out=[];S.longs=[];S.pa=[];S.pl={};S.pay={};S.games={};S.mins={};S.tl=[];S.present=[];S.courts=[null,null,null,null];S.rows=S.rows.map(()=>[]);S.present=ST.au===0?[]:usual(t);save()}
+function rollover(){const t=dk(new Date());if(S.day==t)return;if(ST.pr){ST.pr=0;sv()}const g=Object.values(S.games).reduce((a,b)=>a+b,0);if(g||S.present.length)S.hist[S.day]={g:Math.round(g/4),a:att(),c:S.games,m:S.mins||{}};try{roBuild(S.day,1);const RR=S.rost&&S.rost[S.day];if(RR&&S.hist[S.day])S.hist[S.day].a=RR.list.map(x=>x.n)}catch(e){}S.day=t;S.gn={};S.gq=[];S.duty=[];S.les=[];S.brk=[];S.out=[];S.longs=[];S.pa=[];S.pl={};S.pay={};S.games={};S.mins={};S.tl=[];S.present=[];S.courts=[null,null,null,null];S.rows=S.rows.map(()=>[]);S.present=ST.au===0?[]:usual(t);save()}
 function usual(k){const W=x=>new Date(+x.slice(0,4),+x.slice(5,7)-1,+x.slice(8)).getDay(),wd=W(k),f=K=>{const ds=K.filter(x=>x!=k&&W(x)==wd).map(x=>dd(x)).filter(d=>d&&d.a&&d.a.length),cnt={};ds.forEach(d=>[...new Set(d.a)].forEach(n=>{cnt[n]=(cnt[n]||0)+1}));return{n:ds.length,cnt}};let r=f(Object.keys(S.hist));if(r.n<2)r=f(Object.keys(seed()));if(r.n<2)return[];return Object.keys(r.cnt).filter(n=>isAct(n)&&r.cnt[n]/r.n>=.5)}
 function usualAdd(){const u=usual(S.day).filter(n=>!S.present.includes(n));if(u.length)S.present=[...S.present,...u];return u.length}
 function rnd(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -3600,6 +3600,53 @@ window.qrScan=function(){
  LAST='';start();loop();
 };
 document.addEventListener('click',function(e){var t=e.target;if(t&&t.closest&&t.closest('.hd .clogo')){var md=document.getElementById('md');if(md&&md.children.length)return;window.qrScan()}});
+})();
+</script>
+<style id="gncss">
+.gbd{display:inline-block;margin-left:4px;padding:1px 6px;border-radius:99px;background:#FFC800;color:#222;font-size:11px;font-weight:800;font-style:normal;vertical-align:middle;line-height:1.5;white-space:nowrap}
+#wgs .p,#pl .m,#pl .p{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+#gnq{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+#gnq .gp{background:#fff;border-radius:18px;padding:20px;width:min(420px,100%);box-shadow:0 10px 40px rgba(0,0,0,.3)}
+#gnq b.t{display:block;font-size:20px;margin-bottom:4px}#gnq .s{font-size:14px;color:#666;line-height:1.5;margin-bottom:12px}
+#gnq input{width:100%;font:inherit;font-size:22px;font-weight:700;padding:12px;border:2px solid #FFC800;border-radius:12px;margin-bottom:12px}
+#gnq .r{display:flex;gap:8px}#gnq .r button{flex:1;font:inherit;font-weight:800;font-size:17px;padding:13px 6px;border-radius:12px;border:2px solid #ddd;background:#fff}
+#gnq .r button.ok{background:#FFC800;border-color:#FFC800}
+</style>
+<script id="gnscript">
+(function(){
+var GR=/^손님\d+$/;
+function gk(){S.gn=S.gn||{};S.gq=S.gq||[];return S}
+function paint(root){try{if(!S||!S.gn)return;var ks=Object.keys(S.gn).filter(function(k){return S.gn[k]});if(!ks.length)return;
+ var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),a=[],n;while(n=w.nextNode())a.push(n);
+ a.forEach(function(t){var v=t.nodeValue;if(v.indexOf('손님')<0)return;var p=t.parentElement;if(!p||/^(TEXTAREA|SCRIPT|STYLE|OPTION|INPUT)$/.test(p.tagName)||p.closest('#gnq'))return;
+  var nv=v,hit=0;ks.forEach(function(k){var re=new RegExp(k+'(?!\\d)','g');if(re.test(nv)){nv=nv.replace(new RegExp(k+'(?!\\d)','g'),S.gn[k]);hit=1}});
+  if(!hit)return;t.nodeValue=nv;if(p.tagName==='BUTTON'||p.classList.contains('p')||p.classList.contains('m')||p.tagName==='SPAN'){if(!p.querySelector(':scope > .gbd')){var i=document.createElement('i');i.className='gbd';i.textContent='게스트';t.after(i)}}})}catch(e){}}
+var busy=0,mo=new MutationObserver(function(){if(busy)return;busy=1;mo.disconnect();try{paint(document.body)}finally{busy=0;mo.observe(document.body,{childList:true,subtree:true,characterData:true})}});
+mo.observe(document.body,{childList:true,subtree:true,characterData:true});
+function close(){var o=document.getElementById('gnq');if(o)o.remove()}
+function ask(k,first){close();gk();var cur=S.gn[k]||'';var o=document.createElement('div');o.id='gnq';
+ o.innerHTML='<div class="gp"><b class="t">'+k+' 이름 적기</b><div class="s">'+(first?'방금 출석한 손님이에요. ':'')+'오늘만 쓰이고, 내일은 자동으로 “'+k+'”로 돌아가요.</div><input id="gni" maxlength="8" placeholder="예) 김철수" value="'+cur.replace(/"/g,'&quot;')+'"><div class="r">'+(cur?'<button data-x="rs">원래대로</button>':'')+'<button data-x="no">'+(first?'나중에':'취소')+'</button><button class="ok" data-x="ok">저장</button></div></div>';
+ document.body.appendChild(o);var inp=o.querySelector('input');setTimeout(function(){inp.focus();inp.select()},50);
+ function done(x){if(x==='ok'){var v=inp.value.trim();if(v)S.gn[k]=v;else delete S.gn[k]}else if(x==='rs'){delete S.gn[k]}
+  if(x!=='no'||true){if(S.gq.indexOf(k)<0)S.gq.push(k)}
+  try{save()}catch(e){}close();try{render()}catch(e){}}
+ o.addEventListener('click',function(e){var b=e.target.closest('button[data-x]');if(b){e.stopPropagation();done(b.dataset.x)}else if(e.target===o)done('no')});
+ inp.addEventListener('keydown',function(e){if(e.key==='Enter')done('ok')})}
+window.guestName=ask;
+/* 길게 누르기 */
+var T=null,LP=0,sx=0,sy=0;
+function target(e){var b=e.target.closest&&e.target.closest('#wgs button[data-n],#pl .m[data-m]');if(!b)return null;var k=b.dataset.n||b.dataset.m;return GR.test(k||'')?k:null}
+document.addEventListener('pointerdown',function(e){var k=target(e);if(!k)return;sx=e.clientX;sy=e.clientY;clearTimeout(T);T=setTimeout(function(){LP=1;try{navigator.vibrate&&navigator.vibrate(30)}catch(_){}ask(k,0)},550)},true);
+document.addEventListener('pointermove',function(e){if(T&&(Math.abs(e.clientX-sx)>10||Math.abs(e.clientY-sy)>10)){clearTimeout(T);T=null}},true);
+['pointerup','pointercancel'].forEach(function(n){document.addEventListener(n,function(){clearTimeout(T);T=null},true)});
+document.addEventListener('click',function(e){if(LP&&target(e)){e.stopPropagation();e.preventDefault()}LP=0},true);
+document.addEventListener('contextmenu',function(e){if(target(e))e.preventDefault()},true);
+/* 출석 직후 이름 묻기 */
+setInterval(function(){try{gk();if(!S.present)return;
+ var g=S.present.filter(function(n){return GR.test(n)});
+ if(!window.__gni){window.__gni=1;g.forEach(function(n){if(S.gq.indexOf(n)<0)S.gq.push(n)});save();return}
+ if(document.getElementById('gnq')||document.getElementById('payq'))return;var md=document.getElementById('md');if(md&&md.children.length)return;
+ var k=g.find(function(n){return S.gq.indexOf(n)<0&&!S.gn[n]});if(k){S.gq.push(k);save();ask(k,1)}}catch(e){}},1500);
 })();
 </script>
 </body></html>

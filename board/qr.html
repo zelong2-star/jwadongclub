@@ -11,7 +11,7 @@ h1{font-size:22px;margin:6px 0 4px}.sub{font-size:15px;color:#666;margin:0 0 14p
 #qr{display:inline-block;background:#fff;padding:14px;border:3px solid #ffc400;border-radius:20px}#qr svg{display:block;width:min(70vw,300px);height:min(70vw,300px)}
 #nm{font-size:34px;font-weight:800;margin:12px 0 2px}.hint{font-size:15px;color:#555;margin:4px 0 14px}
 button{font-family:inherit;border:0;cursor:pointer}
-.ptit{font-size:20px;font-weight:800;margin:6px 0 8px}.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0}.ap{background:#2e7d5b;color:#fff;border-radius:14px;padding:18px 4px;font-size:18px;font-weight:800}.btn{display:block;text-decoration:none;width:100%;border-radius:16px;padding:18px;font-size:21px;font-weight:800;margin:10px 0}.g{background:#2e7d5b;color:#fff}.y{background:#ffc400;color:#111}.o{background:#fff;color:#2e7d5b;border:2px solid #2e7d5b!important;font-size:17px;padding:13px}
+.ptit{font-size:20px;font-weight:800;margin:6px 0 8px}.row3{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:6px 0}.ap{background:#2e7d5b;color:#fff;border-radius:14px;padding:18px 4px;font-size:18px;font-weight:800}.btn{display:block;text-decoration:none;width:100%;border-radius:16px;padding:18px;font-size:21px;font-weight:800;margin:10px 0}.g{background:#2e7d5b;color:#fff}.y{background:#ffc400;color:#111}.o{background:#fff;color:#2e7d5b;border:2px solid #2e7d5b!important;font-size:17px;padding:13px}
 .fee{font-size:15px;color:#444;margin:4px 0 0}.msg{min-height:22px;font-size:15px;font-weight:700;color:#1b7f4b;margin:8px 0}
 .lk{background:none;color:#555;font-size:14px;text-decoration:underline;padding:8px 10px}
 label{display:block;font-size:15px;color:#555;margin:14px 0 6px}input{width:100%;max-width:300px;font-size:24px;padding:12px;border:2px solid #ddd;border-radius:12px;text-align:center;font-family:inherit}
@@ -29,7 +29,7 @@ label{display:block;font-size:15px;color:#555;margin:14px 0 6px}input{width:100%
  <h1>내 출석 QR</h1><p class="sub">체육관 태블릿 카메라에 이 화면을 비춰 주세요</p>
  <div id="qr"></div><div id="nm"></div><p class="hint">화면 밝기를 높이면 더 잘 읽혀요</p>
  <div class="ptit" id="ptit"></div>
- <div class="row3" id="aps"><button class="ap" type="button" data-k="toss">토스</button><button class="ap" type="button" data-k="kakaobank">카카오뱅크</button><button class="ap" type="button" data-k="naverpay">네이버페이</button></div>
+ <div class="row3" id="aps"><button class="ap" type="button" data-k="toss">토스</button><button class="ap" type="button" data-k="kakaobank">카카오뱅크</button><button class="ap" type="button" data-k="kakaopay">카카오페이</button><button class="ap" type="button" data-k="naverpay">네이버페이</button></div>
  <a id="pay" class="btn o" href="#" target="_blank" rel="noopener"></a>
  <div class="fee" id="fee"></div>
  <div class="msg" id="msg"></div>
@@ -55,7 +55,7 @@ function main(){var n=g('jwqn');if(!n){show('vName');return}
 function copy(){var t=ACC.no.replace(/-/g,'');
  return (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t):Promise.reject()).then(function(){return 1}).catch(function(){
   try{var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();var ok=document.execCommand('copy');a.remove();return ok?1:0}catch(e){return 0}})}
-var APPS={toss:{sc:'supertoss',pk:'viva.republica.toss'},kakaobank:{sc:'kakaobank',pk:'com.kakaobank.channel'},naverpay:{sc:'naverpay',pk:'com.naverfin.payapp'}};
+var APPS={toss:{sc:'supertoss',pk:'viva.republica.toss'},kakaobank:{sc:'kakaobank',pk:'com.kakaobank.channel'},kakaopay:{sc:'kakaopay',pk:'com.kakaopay.app'},naverpay:{sc:'naverpay',pk:'com.naverfin.payapp'}};
 function openApp(k){var A=APPS[k];if(!A)return;copy().then(function(ok){
   $('#msg').textContent=ok?'계좌번호를 복사했어요. 앱이 열리면 붙여넣어 주세요':'앱이 열리면 계좌번호를 직접 입력해 주세요';
   var ios=/iPhone|iPad|iPod/i.test(navigator.userAgent);

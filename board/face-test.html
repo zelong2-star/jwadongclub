@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex"><title>얼굴 인식 출석 시험</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Pretendard,'Noto Sans KR',-apple-system,sans-serif;background:#fffdf6;color:#1b1b1b;padding:12px max(14px,env(safe-area-inset-right)) 24px max(14px,env(safe-area-inset-left))}
+h1{font-size:20px;margin:0 0 2px}.sub{font-size:13px;color:#666;margin:0 0 10px;line-height:1.5}
+.grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.cam{position:relative;background:#000;border-radius:16px;overflow:hidden;aspect-ratio:4/3}
+video,canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.ban{position:absolute;left:10px;right:10px;bottom:10px;border-radius:14px;padding:10px 12px;font-weight:800;font-size:20px;text-align:center;background:#222c;color:#fff}
+.ban.ok{background:#17a34acc}.ban.no{background:#dc2626cc}.ban.wait{background:#222c}.ban.ev{background:#ffc400;color:#111}
+.box{background:#fff;border:2px solid #eadfb8;border-radius:14px;padding:12px;margin-bottom:10px}
+.box h2{font-size:15px;margin:0 0 8px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button,input{font:inherit}button{font-weight:800;border:2px solid #ddd;background:#fff;border-radius:12px;padding:10px 14px;font-size:15px}
+button.pr{background:#ffc400;border-color:#ffc400}button.dg{color:#b91c1c}button:disabled{opacity:.45}
+input[type=text]{border:2px solid #ffc400;border-radius:10px;padding:8px 10px;width:110px;font-size:16px;font-weight:700}
+input[type=range]{width:160px}.chip{display:inline-block;padding:2px 9px;border-radius:99px;background:#f1ecd9;font-weight:800;font-size:13px}
+.st{font-size:14px;line-height:1.7}.st b{font-size:16px}
+#log{font-size:13px;line-height:1.6;max-height:170px;overflow:auto;border-top:1px dashed #ddd;margin-top:8px;padding-top:6px}
+.g{color:#15803d;font-weight:800}.r{color:#b91c1c;font-weight:800}.y{color:#a16207;font-weight:800}
+.note{font-size:12px;color:#777;line-height:1.55;margin-top:6px}
+</style></head><body>
+<h1>얼굴 인식 출석 시험</h1>
+<p class="sub">시험용 페이지입니다. 등록한 얼굴 정보는 <b>이 기기 브라우저에만</b> 저장되고, 서버나 다른 곳으로 보내지 않아요.</p>
+<div class="grid"><div>
+ <div class="cam"><video id="v" playsinline muted></video><canvas id="c"></canvas><div class="ban wait" id="ban">불러오는 중…</div></div>
+ <div class="row" style="margin-top:8px"><button id="flip">카메라 전환</button><span class="note" id="cinfo"></span></div>
+</div><div>
+ <div class="box"><h2>① 내 얼굴 등록</h2>
+  <div class="row"><input type="text" id="nm" value="김재용" maxlength="8"><button class="pr" id="enr" disabled>등록 시작 (8장)</button><button class="dg" id="del">등록 삭제</button></div>
+  <div class="note" id="enrst">등록된 얼굴 없음. 카메라를 정면으로 보고 등록을 누른 뒤, 고개를 천천히 좌우·위아래로 조금씩 움직여 주세요.</div></div>
+ <div class="box"><h2>② 인식 시험</h2>
+  <div class="row">엄격도 <input type="range" id="th" min="30" max="65" value="45"> <span class="chip" id="thv">0.45</span></div>
+  <div class="note">작을수록 엄격합니다(오인식은 줄고, 본인이 안 읽힐 수 있음).</div>
+  <div class="row" style="margin-top:8px"><button id="oth">지금 앞에 있는 사람: 본인</button></div>
+  <div class="st" id="stat"></div><div id="log"></div></div>
+</div></div>
+<script src="face/face-api.js"></script>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)},KEY='jwface',MD='face/';
+var V=$('v'),C=$('c'),ban=$('ban'),face='user',stream=null,enrolling=0,buf=[],OTHER=0,last=0,cool=0,streak=0;
+var st={me:0,meMin:9,meMax:0,meSum:0,unk:0,fp:0,otherTot:0};
+function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){return null}}
+function sv(o){try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){alert('저장 실패')}}
+function setB(c,t){ban.className='ban '+c;ban.textContent=t}
+function beep(){try{var a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.frequency.value=880;g.gain.value=.15;o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.18)}catch(e){}}
+function log(h){var d=document.createElement('div');d.innerHTML=h;$('log').prepend(d);while($('log').children.length>40)$('log').lastChild.remove()}
+function stat(){var avg=st.me?(st.meSum/st.me).toFixed(2):'-';
+ $('stat').innerHTML='본인으로 인식 <b class="g">'+st.me+'</b>회 (거리 평균 '+avg+' · 최소 '+(st.me?st.meMin.toFixed(2):'-')+' · 최대 '+(st.me?st.meMax.toFixed(2):'-')+')<br>모르는 얼굴 <b class="y">'+st.unk+'</b>회 · <b>다른 사람 시험 중 본인으로 오인식 <span class="r">'+st.fp+'</span>회</b>'}
+function enrst(){var o=ld();$('enrst').textContent=o?(o.name+' 등록됨 · 얼굴 샘플 '+o.d.length+'장 · '+o.t):'등록된 얼굴 없음. 카메라를 정면으로 보고 등록을 누른 뒤, 고개를 천천히 좌우·위아래로 조금씩 움직여 주세요.'}
+function cam(){if(stream)stream.getTracks().forEach(function(t){t.stop()});
+ return navigator.mediaDevices.getUserMedia({video:{facingMode:face,width:{ideal:960},height:{ideal:720}},audio:false}).then(function(s){stream=s;V.srcObject=s;V.style.transform=C.style.transform=(face==='user'?'scaleX(-1)':'none');return V.play()}).then(function(){var t=stream.getVideoTracks()[0].getSettings();$('cinfo').textContent=(face==='user'?'앞 카메라':'뒤 카메라')+' '+t.width+'×'+t.height})}
+function dist(a,b){return faceapi.euclideanDistance(a,b)}
+var OPT=null;
+function tick(){var o=ld();
+ if(V.readyState<2){return setTimeout(tick,200)}
+ faceapi.detectAllFaces(V,OPT).withFaceLandmarks(true).withFaceDescriptors().then(function(rs){
+  var w=V.videoWidth,h=V.videoHeight;C.width=w;C.height=h;var cx=C.getContext('2d');cx.clearRect(0,0,w,h);
+  if(!rs.length){streak=0;if(!enrolling)setB('wait',o?'얼굴을 카메라에 비춰 주세요':'먼저 얼굴을 등록해 주세요');return}
+  var r=rs.sort(function(a,b){return b.detection.box.area-a.detection.box.area})[0],bx=r.detection.box;
+  if(enrolling){if(rs.length>1){setB('no','한 명만 비춰 주세요');drawBox(cx,bx,'#dc2626','');return}
+   if(Date.now()-last>450){last=Date.now();buf.push(Array.from(r.descriptor));setB('ev','등록 중 '+buf.length+'/8 — 고개를 천천히 움직여 주세요');if(buf.length>=8){var nm=$('nm').value.trim()||'본인';sv({name:nm,d:buf,t:new Date().toLocaleString('ko-KR')});enrolling=0;buf=[];$('enr').disabled=false;enrst();beep();setB('ok','등록 완료! 이제 인식을 시험해 보세요')}}
+   drawBox(cx,bx,'#ffc400','');return}
+  if(!o){setB('wait','먼저 얼굴을 등록해 주세요');drawBox(cx,bx,'#999','');return}
+  var m=9;o.d.forEach(function(d){var x=dist(r.descriptor,new Float32Array(d));if(x<m)m=x});
+  var TH=$('th').value/100,hit=m<TH;
+  drawBox(cx,bx,hit?'#16a34a':'#dc2626',hit?o.name:'모르는 얼굴');
+  if(hit){streak++;setB(streak>=3?'ok':'wait',streak>=3?(o.name+' 님 인식 ✓ (거리 '+m.toFixed(2)+')'):('확인 중… '+o.name+'? ('+m.toFixed(2)+')'));
+   if(streak>=3&&Date.now()>cool){cool=Date.now()+4000;beep();
+    if(OTHER){st.fp++;st.otherTot++;log('<span class="r">'+new Date().toLocaleTimeString('ko-KR')+' 다른 사람인데 본인으로 인식됨 ✗ 거리 '+m.toFixed(2)+'</span>')}
+    else{st.me++;st.meSum+=m;if(m<st.meMin)st.meMin=m;if(m>st.meMax)st.meMax=m;log('<span class="g">'+new Date().toLocaleTimeString('ko-KR')+' 본인 인식 ✓ 거리 '+m.toFixed(2)+'</span>')}stat()}}
+  else{streak=0;setB('no','모르는 얼굴 (거리 '+m.toFixed(2)+')');if(Date.now()>cool){cool=Date.now()+2500;st.unk++;if(OTHER)st.otherTot++;log('<span class="y">'+new Date().toLocaleTimeString('ko-KR')+(OTHER?' 다른 사람 → 모르는 얼굴 ✓':' 본인인데 모르는 얼굴')+' 거리 '+m.toFixed(2)+'</span>');stat()}}
+ }).catch(function(e){console.log(e)}).then(function(){setTimeout(tick,160)})}
+function drawBox(cx,b,col,t){cx.lineWidth=4;cx.strokeStyle=col;cx.strokeRect(b.x,b.y,b.width,b.height);if(t){cx.save();var mir=(face==='user');cx.fillStyle=col;cx.font='bold 26px sans-serif';var tw=cx.measureText(t).width+14;cx.fillRect(b.x,b.y-34,tw,34);cx.fillStyle='#fff';
+  if(mir){cx.translate(b.x+tw,b.y-8);cx.scale(-1,1);cx.fillText(t,7,0)}else cx.fillText(t,b.x+7,b.y-8);cx.restore()}}
+$('enr').onclick=function(){enrolling=1;buf=[];last=0;this.disabled=true;setB('ev','등록 중 0/8')};
+$('del').onclick=function(){try{localStorage.removeItem(KEY)}catch(e){}enrolling=0;buf=[];$('enr').disabled=false;enrst();setB('wait','등록을 삭제했어요');streak=0};
+$('th').oninput=function(){$('thv').textContent=($('th').value/100).toFixed(2)};
+$('oth').onclick=function(){OTHER=!OTHER;this.textContent='지금 앞에 있는 사람: '+(OTHER?'다른 사람':'본인');this.className=OTHER?'pr':''};
+$('flip').onclick=function(){face=face==='user'?'environment':'user';cam().catch(function(e){setB('no','카메라를 열 수 없어요: '+e.name)})};
+enrst();stat();
+Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri(MD),faceapi.nets.faceLandmark68TinyNet.loadFromUri(MD),faceapi.nets.faceRecognitionNet.loadFromUri(MD)]).then(function(){OPT=new faceapi.TinyFaceDetectorOptions({inputSize:320,scoreThreshold:.5});setB('wait','카메라 켜는 중…');return cam()}).then(function(){$('enr').disabled=false;setB('wait',ld()?'얼굴을 카메라에 비춰 주세요':'먼저 얼굴을 등록해 주세요');tick()}).catch(function(e){setB('no','시작 실패: '+(e&&e.name||e)+' — 카메라 권한을 허용했는지 확인해 주세요')});
+})();
+</script></body></html>

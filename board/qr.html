@@ -55,12 +55,12 @@ function main(){var n=g('jwqn');if(!n){show('vName');return}
 function copy(){var t=ACC.no.replace(/-/g,'');
  return (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t):Promise.reject()).then(function(){return 1}).catch(function(){
   try{var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();var ok=document.execCommand('copy');a.remove();return ok?1:0}catch(e){return 0}})}
-var APPS={toss:{sc:'supertoss',pk:'viva.republica.toss'},kakaobank:{sc:'kakaobank',pk:'com.kakaobank.channel'},kakaopay:{sc:'kakaopay',pk:'com.kakaopay.app'},naverpay:{sc:'naverpay',pk:'com.naverfin.payapp'}};
+var APPS={toss:{sc:'supertoss',pk:'viva.republica.toss',path:'send?amount='+ACC.fee+'&bank='+encodeURIComponent(ACC.bk)+'&accountNo='+ACC.no.replace(/-/g,'')+'&origin=qr'},kakaobank:{sc:'kakaobank',pk:'com.kakaobank.channel'},kakaopay:{sc:'kakaopay',pk:'com.kakaopay.app'},naverpay:{sc:'naverpay',pk:'com.naverfin.payapp'}};
 function openApp(k){var A=APPS[k];if(!A)return;copy().then(function(ok){
   $('#msg').textContent=ok?'계좌번호를 복사했어요. 앱이 열리면 붙여넣어 주세요':'앱이 열리면 계좌번호를 직접 입력해 주세요';
   var ios=/iPhone|iPad|iPod/i.test(navigator.userAgent);
-  if(ios)window.jwGo(A.sc+'://');
-  else window.jwGo('intent://#Intent;scheme='+A.sc+';package='+A.pk+';S.browser_fallback_url='+encodeURIComponent('https://play.google.com/store/apps/details?id='+A.pk)+';end')})}
+  if(ios)window.jwGo(A.sc+'://'+(A.path||''));
+  else window.jwGo('intent://'+(A.path||'')+'#Intent;scheme='+A.sc+';package='+A.pk+';S.browser_fallback_url='+encodeURIComponent('https://play.google.com/store/apps/details?id='+A.pk)+';end')})}
 $('#aps').addEventListener('click',function(e){var b=e.target.closest('.ap');if(b)openApp(b.dataset.k)});
 function pay(){copy().then(function(ok){$('#msg').textContent=ok?'계좌번호도 복사했어요. 은행 앱을 골라 주세요':'은행 앱을 골라 주세요'})}
 var u=new URLSearchParams(location.search).get('n');if(u)s('jwqn',u.trim());

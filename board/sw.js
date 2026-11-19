@@ -1,5 +1,5 @@
 // 좌동클럽 게임현황판 오프라인 캐시 (이 폴더 /board/ 안에서만 동작)
-const V = 'board-202611192255';
+const V = 'board-202611192350';
 const FC = 'board-face'; // 얼굴 인식 모델(약 8MB)은 앱 버전이 바뀌어도 지우지 않는 별도 보관함에 둬요
 const CORE = ['./', './index.html', './manifest.webmanifest', './qr.png', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });

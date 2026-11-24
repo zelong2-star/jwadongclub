@@ -3,198 +3,206 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>게임현황판 가이드북 · 좌동배드민턴클럽</title>
-<meta name="description" content="체육관 이용자 · 당번 · 부가기능(기록보관소·월례회 대진표)으로 나눠 한 화면씩 넘겨 보는 좌동클럽 게임현황판 가이드북">
-<meta property="og:title" content="좌동클럽 게임현황판 가이드북">
-<meta property="og:description" content="체육관 이용자 · 당번 · 부가기능, 내 역할만 골라서 한 화면씩">
-<meta property="og:type" content="website"><meta property="og:url" content="https://zelong2-star.github.io/jwadongclub/guide/full/"><meta property="og:image" content="https://zelong2-star.github.io/jwadongclub/guide/full/og.jpg?v=2"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://zelong2-star.github.io/jwadongclub/guide/full/og.jpg?v=2">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<title>좌동클럽 게임현황판 가이드북</title>
+<meta name="description" content="체육관 이용자와 당번을 위한 게임현황판 사용 안내서. 출석부터 송금 확인, 예약·입장, 교체, 기록, 월례회 대진표까지 사진으로 따라 하세요.">
+<meta name="theme-color" content="#FEE500">
+<meta property="og:type" content="website"><meta property="og:title" content="좌동클럽 게임현황판 가이드북"><meta property="og:description" content="출석 · 송금 확인 · 예약/입장 · 교체 · 기록 · 월례회 대진표까지, 사진으로 따라 하는 사용 안내서"><meta property="og:url" content="https://zelong2-star.github.io/jwadongclub/guide/full/"><meta property="og:image" content="https://zelong2-star.github.io/jwadongclub/guide/full/og.jpg?v=3"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://zelong2-star.github.io/jwadongclub/guide/full/og.jpg?v=3">
+<link rel="icon" href="../../board/icons/icon-192.png">
 <style>
-:root{--bg:#F3F7FC;--card:#fff;--ink:#14213D;--ink2:#2A3650;--mu:#5B6780;--line:#D5DEEC;--ac:#0C50A1;--ac2:#E8F0FB;--red:#E53935;--grn:#0B7A3B;--ylw:#8A6A00}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1724;--card:#182235;--ink:#EEF2F9;--ink2:#CBD5E6;--mu:#93A0B8;--line:#2C3A54;--ac:#6AA7FF;--ac2:#1B2C4A;--grn:#6FD39A;--ylw:#FFD866;color-scheme:dark}}
-*{box-sizing:border-box}
-html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;-webkit-text-size-adjust:100%}
-.app{height:100dvh;display:flex;flex-direction:column;max-width:600px;margin:0 auto;padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px))}
-[hidden]{display:none!important}
-/* hub */
-#hub{flex:1;overflow-y:auto;padding:max(18px,env(safe-area-inset-top,0px)) 18px 24px;display:flex;flex-direction:column;gap:14px}
-.hero{background:var(--ac);color:#fff;border-radius:26px;padding:26px 22px}
-.hero small{font-weight:800;letter-spacing:.14em;font-size:13px;opacity:.85}
-.hero h1{font:400 38px/1.15 'Do Hyeon',sans-serif;margin:8px 0 6px}
-.hero p{margin:0;font-size:17px;opacity:.95}
-.q{font-size:21px;font-weight:800;margin:6px 2px 0}
-.role{display:flex;gap:14px;align-items:center;width:100%;text-align:left;border:2px solid var(--line);border-radius:20px;padding:15px 16px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
-.role:active{background:var(--ac2)}
-.role .ic{flex:none;width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font:400 28px/1 'Do Hyeon',sans-serif;color:#fff}
-.role b{display:block;font-size:22px;line-height:1.3}
-.role span{font-size:16px;color:var(--mu);line-height:1.4;display:block}
-.role em{font-style:normal;margin-left:auto;flex:none;font-weight:800;font-size:14px;background:var(--ac);color:#fff;border-radius:14px;padding:3px 12px}
-.sub{display:flex;gap:10px}
-.sub button,.sub a{flex:1;text-align:center;text-decoration:none;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:13px 8px;font:800 17px/1.3 inherit;cursor:pointer}
-.foot{margin-top:auto;text-align:center;color:var(--mu);font-size:14px;padding-top:6px}
-/* pager */
-#pg{flex:1;min-height:0;display:flex;flex-direction:column}
-.top{flex:none;display:flex;align-items:center;gap:10px;padding:max(10px,env(safe-area-inset-top,0px)) 16px 6px}
-.home{flex:none;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:6px 12px;font:800 15px/1 inherit;cursor:pointer}
-.dots{flex:1;display:flex;gap:4px}
-.dots button{flex:1;height:8px;border:0;border-radius:4px;background:var(--line);padding:0;transition:flex .2s;cursor:pointer}
-.dots button.on{background:var(--ac);flex:2.6}
-.cnt{flex:none;font-size:15px;font-weight:800;color:var(--mu);min-width:3.2em;text-align:right}
-.track{flex:1;min-height:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.track::-webkit-scrollbar{display:none}
-.sl{flex:none;width:100%;scroll-snap-align:start;overflow-y:auto;padding:6px 18px 14px;display:flex;flex-direction:column;gap:12px}
-.eb{font-size:14px;font-weight:800;letter-spacing:.1em;color:var(--ac)}
-.sl h2{margin:0;font:400 31px/1.22 'Do Hyeon',sans-serif}
-.shot{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:8px;display:flex;justify-content:center}
-.shot img{max-width:100%;max-height:40dvh;width:auto;height:auto;border-radius:11px;cursor:zoom-in;display:block}
-.say{font-size:20.5px;line-height:1.55;font-weight:500;margin:0}
-.say b{color:var(--ac)}
-.tip{background:var(--ac2);border-radius:14px;padding:10px 14px;font-size:17px;line-height:1.5;color:var(--ink2)}
-.tip b{color:var(--ink)}
-.warn{background:#FDECEC;border-radius:14px;padding:10px 14px;font-size:17px;line-height:1.5;color:#7A1F1F}
-@media (prefers-color-scheme:dark){.warn{background:#3A1E22;color:#FFB4AB}}
-.list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
-.list li{display:flex;gap:12px;align-items:center;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:11px 14px;font-size:19px;font-weight:700}
-.list i{flex:none;width:30px;height:30px;border-radius:50%;background:var(--ac);color:#fff;font:400 19px/30px 'Do Hyeon',sans-serif;text-align:center;font-style:normal}
-.bar{flex:none;display:flex;gap:10px;padding:8px 18px max(14px,env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1.5px solid var(--line)}
-.bar button{height:56px;border-radius:15px;font:800 19px/1 inherit;cursor:pointer}
-.prev{width:100px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
-.next{flex:1;border:0;background:var(--ac);color:#fff}
-.prev:disabled{opacity:.35}
-/* find */
-#fd{flex:1;overflow-y:auto;padding:0 18px 24px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.grid button{text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:13px 14px;font:inherit;cursor:pointer}
-.grid b{display:block;font-size:19px}.grid span{font-size:14px;color:var(--mu)}
-/* lightbox */
-#lb{position:fixed;inset:0;background:rgba(10,16,28,.9);z-index:50;display:none;align-items:flex-start;justify-content:flex-start;padding:14px;overflow:auto}
-#lb.on{display:flex}
-#lb img{max-width:none;width:min(1100px,230vw);border-radius:10px;background:#fff}
-#lb .x{position:fixed;top:max(12px,env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));background:#fff;color:#14213D;border:0;border-radius:20px;font:800 16px/1 inherit;padding:11px 18px;cursor:pointer}
-@media (max-height:640px){.shot img{max-height:32dvh}.sl h2{font-size:27px}}
+@font-face{font-family:KK;src:url(../../board/fonts/kk.woff2) format("woff2");font-display:swap}
+:root{--bg:#FBF8EF;--card:#fff;--ink:#2B2118;--mu:#7A6F62;--ln:#E8E1D2;--y:#FEE500;--br:#3C1E1E;--vi:#5B3DF5;--vis:#EFEBFF;--rd:#E8452C;--rds:#FFF0EC;--gn:#1F8A5B;--gns:#E6F5EC;--r:18px;--hd:"KK","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;--bd:"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:68px;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.65 var(--bd);word-break:keep-all;overflow-wrap:anywhere;padding-bottom:env(safe-area-inset-bottom)}
+img{max-width:100%;height:auto;display:block}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+.wrap{max-width:820px;margin:0 auto;padding:0 max(18px,env(safe-area-inset-left))}
+/* 상단바 */
+.bar{position:sticky;top:0;z-index:30;background:rgba(251,248,239,.92);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--ln);padding-top:env(safe-area-inset-top)}
+.bar .wrap{display:flex;align-items:center;gap:10px;height:56px}
+.bar .bt{font:700 15px/1 var(--hd);white-space:nowrap}
+.bar .cur{flex:1;min-width:0;font-size:13px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .menu{border:0;background:var(--br);color:var(--y);font-weight:700;font-size:14px;padding:9px 16px;border-radius:99px}
+.prog{position:absolute;left:0;bottom:-1px;height:3px;background:var(--vi);width:0}
+/* 표지 */
+.cover{background:var(--y);color:var(--br);padding:44px 0 56px;position:relative;overflow:hidden}
+.cover:after{content:"";position:absolute;right:-90px;bottom:-110px;width:360px;height:360px;border-radius:50%;background:rgba(255,255,255,.28)}
+.cover .ic{width:72px;height:72px;border-radius:19px;background:#fff;box-shadow:0 6px 18px rgba(60,30,30,.18);padding:8px}
+.cover .eb{margin-top:26px;font-weight:700;letter-spacing:.04em;font-size:14px}
+.cover h1{font:400 clamp(40px,10vw,68px)/1.12 var(--hd);margin:8px 0 14px;text-wrap:balance}
+.cover p.s{font-size:18px;max-width:30em;line-height:1.55}
+.cover .meta{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px}
+.cover .meta span{background:rgba(60,30,30,.9);color:var(--y);font-size:13px;font-weight:700;padding:6px 13px;border-radius:99px}
+.cover .go{margin-top:30px;display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
+.btn{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:99px;padding:14px 24px;font-weight:800;font-size:16px;text-decoration:none}
+.btn.p{background:var(--br);color:var(--y)}.btn.o{background:#fff;color:var(--br)}
+/* 읽는 법 */
+.how{padding:34px 0 8px}
+.how h2{font:400 26px/1.3 var(--hd);margin-bottom:6px}
+.how>.wrap>p{color:var(--mu)}
+.hg{display:grid;gap:12px;margin-top:18px}
+@media(min-width:700px){.hg{grid-template-columns:repeat(3,1fr)}}
+.hc{background:var(--card);border:1px solid var(--ln);border-radius:var(--r);padding:16px 16px 18px}
+.hc .n{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--vi);color:#fff;font-weight:800;box-shadow:0 0 0 4px var(--vis)}
+.hc h4{margin:10px 0 4px;font-size:16px}.hc p{font-size:14px;color:var(--mu);line-height:1.55}
+.roles{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;font-size:14px;align-items:center}
+.chip{font-style:normal;font-size:12px;font-weight:800;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.r0{background:#E3EEFF;color:#1B4FB5}.r1{background:#FFE9C7;color:#8A4A00}.r2{background:#ECE8DF;color:#5B5040}
+/* 장 */
+.ch{padding:46px 0 10px}
+.chh{display:flex;gap:16px;align-items:flex-start;padding:0 0 18px;border-bottom:2px solid var(--br);margin-bottom:6px}
+.cno{flex:none;white-space:nowrap;font:400 64px/.9 var(--hd);color:var(--y);-webkit-text-stroke:2px var(--br);paint-order:stroke fill;text-shadow:3px 3px 0 var(--br)}
+.chh h2{font:400 clamp(26px,6vw,34px)/1.2 var(--hd)}
+.chh p{color:var(--mu);margin-top:4px}
+.ch.red .chh{border-color:var(--rd)}
+.ch.red .cno{color:var(--rd);-webkit-text-stroke:2px var(--br)}
+.ch.red .chh p{color:var(--rd);font-weight:700}
+/* 스텝 */
+.step{padding:28px 0 10px}
+.sh{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sn{font:700 13px/1 var(--bd);color:#fff;background:var(--br);padding:6px 9px;border-radius:8px;letter-spacing:.02em}
+.sh h3{font-size:21px;line-height:1.35;font-weight:800;text-wrap:balance;flex:1;min-width:0}
+.chips{display:flex;gap:5px}
+.lead{margin:10px 0 14px;font-size:17px}
+.lead b,.lg b:not(.n),.note b{font-weight:800}
+.pair{margin:14px 0 18px;display:grid;gap:14px}
+.pair.sd{align-items:start}
+@media(min-width:820px){.pair.sd{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px}.pair.sd .pcap{grid-column:1/-1}}
+.pcap{font-weight:800;font-size:14px;color:var(--vi)}
+.shot{margin:0}
+.zoom{display:block;width:100%;padding:0;border:0;background:none;border-radius:16px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.04),0 10px 30px -8px rgba(60,30,30,.28);outline:1px solid rgba(60,30,30,.1);outline-offset:-1px;position:relative}
+.zoom:after{content:"⤢";position:absolute;right:8px;bottom:8px;width:30px;height:30px;border-radius:50%;background:rgba(43,33,24,.7);color:#fff;display:grid;place-items:center;font-size:15px}
+.zoom img{width:100%}
+.shot figcaption{font-size:13px;color:var(--mu);margin-top:6px}
+/* 범례 */
+.lg{list-style:none;padding:0;display:grid;gap:10px}
+.lg li{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:11px 14px}
+.lg .n{flex:none;display:grid;place-items:center;width:28px;height:28px;margin-top:1px;border-radius:50%;background:var(--vi);color:#fff;font-weight:800;font-size:15px;box-shadow:0 0 0 4px var(--vis)}
+.lg div{min-width:0;display:flex;flex-direction:column;gap:1px}
+.lg strong{font-size:16px}.lg span{font-size:15px;color:#4d4337;line-height:1.55}
+/* 갤러리 */
+.gal{display:grid;gap:12px;margin:14px 0}
+.gal.grid{grid-template-columns:repeat(2,1fr)}
+.gal.grid3{grid-template-columns:1fr}
+@media(min-width:700px){.gal.grid3{grid-template-columns:repeat(3,1fr)}}
+.gi{display:flex;flex-direction:column;gap:6px}
+.gc{font-weight:800;font-size:14px;text-align:center}
+/* 노트 */
+.note{display:flex;gap:12px;border-radius:14px;padding:13px 15px;margin:14px 0;font-size:15px;line-height:1.55;align-items:flex-start}
+.note b{flex:none;font-size:11px;letter-spacing:.06em;padding:4px 8px;border-radius:7px;margin-top:2px;color:#fff;font-weight:800}
+.note p{margin:0;min-width:0}
+.tip{background:var(--gns)}.tip b{background:var(--gn)}
+.warn{background:var(--rds);border:1.5px solid #F7B9AB}.warn b{background:var(--rd)}
+.ch.red .warn{border-width:2px;border-color:var(--rd)}
+/* 끝 */
+.end{margin:56px 0 0;background:var(--br);color:#fff;padding:44px 0 60px}
+.end h2{font:400 28px/1.3 var(--hd);color:var(--y)}
+.end p{margin-top:8px;color:#EADFD4}
+.end .btn{margin-top:20px}
+.end small{display:block;margin-top:26px;color:#A8978A}
+/* 목차 시트 */
+.sheet{position:fixed;inset:0;z-index:50;display:none}
+.sheet.on{display:block}
+.sheet .bg{position:absolute;inset:0;background:rgba(30,20,10,.5)}
+.sheet .pn{position:absolute;left:0;right:0;bottom:0;max-height:88vh;background:var(--bg);border-radius:24px 24px 0 0;display:flex;flex-direction:column;box-shadow:0 -10px 40px rgba(0,0,0,.3);padding-bottom:env(safe-area-inset-bottom)}
+@media(min-width:820px){.sheet .pn{left:50%;transform:translateX(-50%);width:640px;bottom:5vh;border-radius:24px;max-height:84vh}}
+.sheet .hd{padding:18px 20px 10px;display:flex;align-items:center;gap:10px}
+.sheet .hd h2{flex:1;font:400 22px var(--hd)}
+.sheet .x{border:0;background:var(--ln);width:36px;height:36px;border-radius:50%;font-size:18px}
+.sheet .q{margin:0 20px 8px;padding:12px 16px;border:1.5px solid var(--ln);background:#fff;border-radius:14px;font:inherit;width:calc(100% - 40px)}
+.sheet .q:focus{outline:2px solid var(--vi);border-color:var(--vi)}
+.sheet .ls{overflow:auto;padding:4px 20px 26px;-webkit-overflow-scrolling:touch}
+.tg{margin-top:12px}
+.tc{display:flex;gap:10px;align-items:center;font-weight:800;text-decoration:none;padding:8px 0}
+.tc b{font:400 20px var(--hd);color:var(--vi);min-width:28px}
+.ts{display:block;text-decoration:none;color:#4d4337;font-size:15px;padding:7px 0 7px 38px;border-top:1px solid var(--ln)}
+.ts:hover,.tc:hover{color:var(--vi)}
+.nores{display:none;padding:20px 0;color:var(--mu)}
+/* 라이트박스 */
+.lb{position:fixed;inset:0;z-index:60;background:rgba(15,10,5,.92);display:none;overflow:auto;-webkit-overflow-scrolling:touch}
+.lb.on{display:block}
+.lb img{width:min(1400px,max(100%,160vw));max-width:none;margin:0 auto}
+@media(min-width:900px){.lb img{width:min(1400px,96vw)}}
+.lb .x{position:fixed;top:calc(12px + env(safe-area-inset-top));right:14px;z-index:2;border:0;background:#fff;color:var(--ink);width:44px;height:44px;border-radius:50%;font-size:20px;font-weight:800}
+.lb .hint{position:fixed;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));text-align:center;color:#fff;font-size:13px;opacity:.8;pointer-events:none}
+.top{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:calc(16px + env(safe-area-inset-bottom));z-index:25;width:46px;height:46px;border-radius:50%;border:0;background:var(--br);color:var(--y);font-size:20px;box-shadow:0 6px 18px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:.2s}
+.top.on{opacity:1;pointer-events:auto}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<div class="app">
+<div class="bar"><div class="wrap"><span class="bt">가이드북</span><span class="cur" id="cur">표지</span><button class="menu" id="menu" type="button">목차 · 찾기</button></div><div class="prog" id="prog"></div></div>
 
-<!-- 처음 화면 -->
-<div id="hub">
-  <div class="hero">
-    <small>좌동배드민턴클럽 · 게임현황판</small>
-    <h1>내 역할만 골라서<br>가볍게 보세요</h1>
-    <p>한 화면에 한 가지씩, 옆으로 넘기면 끝나요.</p>
-  </div>
-  <div class="q">나는 어떤 일을 해요?</div>
-  <button class="role" data-go="user"><div class="ic" style="background:#0C50A1">이</div><div><b>체육관 이용자</b><span>출석 · 순서 · 입장료 · 게임 종료 · 점수</span></div><em data-n="user"></em></button>
-  <button class="role" data-go="duty"><div class="ic" style="background:#0B7A3B">당</div><div><b>당번</b><span>대기 편성 · 입장 · 교체 · 정산 · 설정</span></div><em data-n="duty"></em></button>
-  <button class="role" data-go="extra"><div class="ic" style="background:#8A6A00">부</div><div><b>부가기능</b><span>기록보관소 · 월례회 대진표</span></div><em data-n="extra"></em></button>
-  <div class="sub"><button data-go="find">궁금한 것 찾아보기</button><a href="more.html">전체 설명 보기</a></div>
-  <div class="foot">장 수는 한 화면씩 넘기는 분량이에요.<br>사진을 누르면 크게 볼 수 있어요.</div>
+<header class="cover" id="top">
+<div class="wrap">
+<img class="ic" src="../../board/icons/icon-192.png" alt="" width="72" height="72">
+<div class="eb">좌동배드민턴클럽</div>
+<h1>게임현황판<br>가이드북</h1>
+<p class="s">체육관에 도착해서 운동을 마칠 때까지, 사진을 보며 한 단계씩 따라 하세요.</p>
+<div class="meta"><span>이용자 · 당번 공통</span><span>총 10장</span><span>v4.91 기준</span></div>
+<div class="go"><a class="btn p" href="#home">처음부터 보기</a><button class="btn o" type="button" id="menu2">목차 · 찾기</button></div>
 </div>
+</header>
 
-<!-- 코스 화면 -->
-<div id="pg" hidden>
-  <div class="top"><button class="home" id="home">처음</button><div class="dots" id="dots"></div><div class="cnt" id="cnt"></div></div>
-  <div class="track" id="track"></div>
-  <div class="bar"><button class="prev" id="prev">이전</button><button class="next" id="next">다음</button></div>
+<section class="how"><div class="wrap">
+<h2>이렇게 읽으세요</h2>
+<p>사진 위의 번호와 아래 설명의 번호가 서로 같아요.</p>
+<div class="hg">
+<div class="hc"><span class="n">1</span><h4>번호를 따라가요</h4><p>사진 속 보라색 번호가 설명의 번호예요. 눌러야 할 곳이 테두리로 표시돼요.</p></div>
+<div class="hc"><span class="n">⤢</span><h4>사진을 눌러 크게</h4><p>글씨가 작으면 사진을 눌러서 크게 볼 수 있어요.</p></div>
+<div class="hc"><span class="n">?</span><h4>급하면 찾기</h4><p>위의 <b>목차 · 찾기</b>에서 궁금한 말을 치면 바로 가요.</p></div>
 </div>
+<div class="roles"><span>내용 옆 표시:</span><i class="chip r0">이용자</i><i class="chip r1">당번</i><i class="chip r2">공통</i></div>
+<p style="margin-top:14px;font-size:14px;color:var(--mu)">처음이라면 <b>01 ~ 04장</b>만 읽어도 충분해요. 당번은 전체를 한 번 훑어보세요.</p>
+</div></section>
 
-<!-- 찾아보기 -->
-<div id="fd" hidden>
-  <div class="top" style="padding-left:0;padding-right:0"><button class="home" data-go="">처음</button><div style="font-weight:800;font-size:19px">궁금한 것 찾아보기</div></div>
-  <p style="color:var(--mu);margin:4px 2px 12px;font-size:16px">누르면 그 화면으로 바로 가요.</p>
-  <div class="grid" id="grid"></div>
-</div>
+<main class="wrap">
+<article class="ch" id="home" data-ch="01 홈 화면 살펴보기"><header class="chh"><span class="cno">01</span><div><h2>홈 화면 살펴보기</h2><p>화면은 세 칸이에요. 먼저 어디에 뭐가 있는지만 익히면 끝!</p></div></header><section class="step" id="home-all" data-kw="한눈에 보는 홈 화면 화면 구성 홈 코트 예약 출석 대기"><header class="sh"><span class="sn">1.1</span><h3>한눈에 보는 홈 화면</h3><span class="chips"><i class="chip r2">공통</i></span></header><p class="lead">태블릿 한 화면에 모든 게 있어요. 번호는 아래 설명과 같아요.</p><div class="pair w"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="한눈에 보는 홈 화면 화면 크게 보기"><img src="g/home.webp" width="1600" height="902" alt="한눈에 보는 홈 화면 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>코트</strong><span>지금 게임 중인 코트예요. 코트 번호와 게임 시간이 보여요.</span></div></li><li><b class="n">2</b><div><strong>예약</strong><span>다음에 칠 팀 순서예요. 4명이 한 팀으로 줄을 서요.</span></div></li><li><b class="n">3</b><div><strong>출석/대기</strong><span>오늘 온 사람 중 아직 코트에도 예약에도 없는 <b>대기 선수</b>가 모여 있어요.</span></div></li><li><b class="n">4</b><div><strong>당번</strong><span>오늘 당번 두 명을 정하는 버튼이에요.</span></div></li><li><b class="n">5</b><div><strong>종료 · 입장명부</strong><span>하루를 마칠 때 쓰는 버튼이에요.</span></div></li><li><b class="n">6</b><div><strong>되돌리기 · 기록 · 설정</strong><span>실수 취소, 기록보관소, 설정이 모여 있어요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p>이름 앞 <b>파란 점은 남자, 분홍 점은 여자</b>예요.</p></div></section><section class="step" id="home-card" data-kw="코트와 예약 줄 읽는 법 코트 카드 예약 줄 게임 시간"><header class="sh"><span class="sn">1.2</span><h3>코트와 예약 줄 읽는 법</h3><span class="chips"><i class="chip r2">공통</i></span></header><p class="lead">코트 카드와 예약 줄이 어떻게 생겼는지 볼게요.</p><div class="pair sd"><div class="pcap">코트 카드</div><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="코트와 예약 줄 읽는 법 화면 크게 보기"><img src="g/court.webp" width="900" height="360" alt="코트와 예약 줄 읽는 법 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>코트 번호</strong><span>1번~4번 코트예요.</span></div></li><li><b class="n">2</b><div><strong>게임 시간</strong><span>노랑 → 주황 → 빨강으로 바뀌어요. 빨강일수록 오래 친 코트예요.</span></div></li><li><b class="n">3</b><div><strong>✕ 버튼</strong><span>게임이 끝나면 여기를 눌러요.</span></div></li><li><b class="n">4</b><div><strong>선수 4명</strong><span>복식 네 명이에요.</span></div></li></ol></div></div><div class="pair sd"><div class="pcap">예약 줄</div><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="코트와 예약 줄 읽는 법 화면 크게 보기"><img src="g/row.webp" width="680" height="292" alt="코트와 예약 줄 읽는 법 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>예약 번호</strong><span>몇 번째로 입장하는 팀인지 보여요. 아래 작은 글씨로 <b>곧 입장</b> 또는 <b>약 N분 후</b>가 나와요.</span></div></li><li><b class="n">2</b><div><strong>선수 4명</strong><span>한 팀 네 명이에요. 이름을 누르면 교체 화면이 열려요.</span></div></li><li><b class="n">3</b><div><strong>입장 버튼</strong><span>코트가 비면 켜져요. 눌러서 코트로 가요.</span></div></li></ol></div></div></section><section class="step" id="home-top" data-kw="위쪽 버튼 모음 상단 버튼 되돌리기 비우기 기록 설정 종료"><header class="sh"><span class="sn">1.3</span><h3>위쪽 버튼 모음</h3><span class="chips"><i class="chip r2">공통</i></span></header><p class="lead">화면 맨 위 줄이에요.</p><div class="pair w"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="위쪽 버튼 모음 화면 크게 보기"><img src="g/topbar.webp" width="1400" height="66" alt="위쪽 버튼 모음 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>종료</strong><span>오늘 운동을 마칠 때 눌러요. (7장에서 설명해요)</span></div></li><li><b class="n">2</b><div><strong>입장명부</strong><span>오늘 입장료 정산 명부예요.</span></div></li><li><b class="n">3</b><div><strong>되돌리기</strong><span>방금 한 동작을 한 단계 취소해요.</span></div></li><li><b class="n">4</b><div><strong>다시하기</strong><span>되돌린 걸 다시 살려요.</span></div></li><li><b class="n">5</b><div><strong>비우기</strong><span>코트와 예약을 처음 상태로 비워요.</span></div></li><li><b class="n">6</b><div><strong>기록</strong><span>기록보관소를 열어요.</span></div></li><li><b class="n">7</b><div><strong>설정</strong><span>소리·화면·백업·월례회가 있어요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p>뭔가 잘못 눌렀다면 당황하지 말고 <b>되돌리기</b>부터 눌러 보세요.</p></div></section></article><article class="ch" id="attend" data-ch="02 출석 체크"><header class="chh"><span class="cno">02</span><div><h2>출석 체크</h2><p>체육관에 도착하면 가장 먼저! 이름 하나만 누르면 돼요.</p></div></header><section class="step" id="att-me" data-kw="내 이름으로 출석하기 출석 체크 회원명단 초성 검색 손님"><header class="sh"><span class="sn">2.1</span><h3>내 이름으로 출석하기</h3><span class="chips"><i class="chip r0">이용자</i><i class="chip r1">당번</i></span></header><p class="lead"><b>출석/대기</b> 칸의 <b>회원명단</b> 버튼을 누르면 출석 체크 창이 열려요.</p><div class="pair sd"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="내 이름으로 출석하기 화면 크게 보기"><img src="g/att.webp" width="1000" height="877" alt="내 이름으로 출석하기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>검색칸</strong><span>이름이나 <b>초성</b>(예: ㄱㅈㅇ)을 쳐서 찾아요.</span></div></li><li><b class="n">2</b><div><strong>내 이름 누르기</strong><span>누르면 노랗게 ✓가 붙어요. 잘못 눌렀으면 한 번 더 눌러요.</span></div></li><li><b class="n">3</b><div><strong>불러오기</strong><span>다 골랐으면 눌러요. 출석한 사람이 대기 선수 칸에 올라와요.</span></div></li><li><b class="n">4</b><div><strong>손님</strong><span>회원이 아닌 손님은 <b>손님</b> 필터에서 골라요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p>검색칸은 이름을 고르면 저절로 비워져요. 이어서 다음 사람을 찾을 수 있어요.</p></div></section><section class="step" id="att-duty" data-kw="당번이 챙길 일 당번 선택 단골 출석 QR 얼굴 출석 회원명부"><header class="sh"><span class="sn">2.2</span><h3>당번이 챙길 일</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead">당번은 출석을 도와주고, 오늘 당번 두 명을 정해 두어요.</p><div class="pair sd"><div class="pcap">당번 버튼</div><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="당번이 챙길 일 화면 크게 보기"><img src="g/duty_btn.webp" width="760" height="58" alt="당번이 챙길 일 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>당번 버튼</strong><span><b>당번 1 · 당번 2</b>를 누르면 오늘 당번을 고르는 창이 열려요.</span></div></li></ol></div></div><div class="pair sd"><div class="pcap">당번 고르기</div><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="당번이 챙길 일 화면 크게 보기"><img src="g/duty.webp" width="900" height="830" alt="당번이 챙길 일 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>선택된 당번</strong><span>고른 두 명이 위 칸에 들어가요.</span></div></li><li><b class="n">2</b><div><strong>검색</strong><span>이름이나 초성으로 찾아요.</span></div></li><li><b class="n">3</b><div><strong>이름 누르기</strong><span>당번이 될 사람을 눌러요.</span></div></li><li><b class="n">4</b><div><strong>완료</strong><span>다 골랐으면 눌러요.</span></div></li></ol></div></div><div class="pair sd"><div class="pcap">설정의 출석 도우미</div><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="당번이 챙길 일 화면 크게 보기"><img src="g/set_ops.webp" width="760" height="1154" alt="당번이 챙길 일 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>QR·얼굴 출석</strong><span>회원 폰의 QR이나 등록한 얼굴을 태블릿 카메라로 읽어 출석시켜요.</span></div></li><li><b class="n">2</b><div><strong>단골 출석 넣기</strong><span>같은 요일에 자주 오는 분(출석률 50% 이상, 2회 이상 기록)을 한 번에 출석시켜요.</span></div></li><li><b class="n">3</b><div><strong>회원명부 관리</strong><span>새 회원 추가, 급수·상향/초심 설정은 여기서 해요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p><b>당번 · 수요일 · 월례회</b>는 입장료가 무료예요.</p></div></section></article><article class="ch red" id="pay" data-ch="03 입장료 송금 확인"><header class="chh"><span class="cno">03</span><div><h2>입장료 송금 확인</h2><p>가장 중요한 단계! 예약에 이름이 올라가면 꼭 확인해요.</p></div></header><section class="step" id="pay-1" data-kw="송금 확인 창이 뜨면 송금 확인 입장료 QR 현금 완료 전체 취소"><header class="sh"><span class="sn">3.1</span><h3>송금 확인 창이 뜨면</h3><span class="chips"><i class="chip r0">이용자</i><i class="chip r1">당번</i></span></header><p class="lead">예약에 이름이 올라가면 <b>입장료 송금 확인 바랍니다</b> 창이 떠요. <b>QR을 찍어 송금</b>한 뒤 내 이름 옆 <b>송금 확인</b>을 눌러요.</p><div class="pair sd"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="송금 확인 창이 뜨면 화면 크게 보기"><img src="g/pay.webp" width="640" height="795" alt="송금 확인 창이 뜨면 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>송금 확인</strong><span>내 이름 옆 버튼이에요. 송금한 뒤 본인이 눌러요.</span></div></li><li><b class="n">2</b><div><strong>✕</strong><span>빠져야 하는 사람은 ✕로 목록에서 빼요.</span></div></li><li><b class="n">3</b><div><strong>전체 취소</strong><span>두 번 눌러야 취소돼요. 실수를 막기 위해서예요.</span></div></li><li><b class="n">4</b><div><strong>완료</strong><span>모두 확인되면 켜져요. 확인 안 된 사람이 남으면 눌리지 않아요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p><b>당번 · 수요일 · 월례회</b>는 무료예요.</p></div><div class="note warn"><b>꼭 확인</b><p><b>내 이름이 아니면 건드리지 마세요.</b> 현금으로 낼 땐 <b>당번에게</b> 내면 돼요.</p></div></section></article><article class="ch" id="play" data-ch="04 게임하기"><header class="chh"><span class="cno">04</span><div><h2>게임하기</h2><p>예약 → 입장 → 게임 종료. 이 세 가지만 기억해요.</p></div></header><section class="step" id="play-res" data-kw="4명을 골라 예약하기 예약 4명 선택"><header class="sh"><span class="sn">4.1</span><h3>4명을 골라 예약하기</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead">대기 선수 칸에서 이름 네 명을 누르면 <b>예약</b> 버튼이 켜져요.</p><div class="pair w"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="4명을 골라 예약하기 화면 크게 보기"><img src="g/reserve.webp" width="1000" height="465" alt="4명을 골라 예약하기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>이름 누르기</strong><span>누르면 ✓가 붙어요.</span></div></li><li><b class="n">2</b><div><strong>선택 인원</strong><span>4/4가 되면 팀이 다 찬 거예요.</span></div></li><li><b class="n">3</b><div><strong>예약</strong><span>누르면 다음 빈 예약 줄에 들어가요. 곧바로 송금 확인 창이 떠요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p>잘못 골랐으면 <b>취소</b>를 눌러 처음부터 다시 골라요.</p></div></section><section class="step" id="play-auto" data-kw="사람이 많을 땐 자동 편성 자동 편성 성별"><header class="sh"><span class="sn">4.2</span><h3>사람이 많을 땐 자동 편성</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead">예약 칸 위의 노란 <b>자동 편성</b> 버튼을 누르면 대기 선수를 4명씩 한꺼번에 팀으로 만들어요.</p><div class="pair sd"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="사람이 많을 땐 자동 편성 화면 크게 보기"><img src="g/auto.webp" width="900" height="588" alt="사람이 많을 땐 자동 편성 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>같은 성별끼리</strong><span>남자·여자·손님을 따로 묶고, 남는 사람만 섞어요.</span></div></li><li><b class="n">2</b><div><strong>성별 섞기</strong><span>성별 상관없이 급수와 게임 수로 묶어요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p>마음에 안 들면 <b>되돌리기</b> 한 번이면 돼요.</p></div></section><section class="step" id="play-crit" data-kw="자동 편성의 기준 · 상향 / 초심 상향 초심 급수 자동 편성 기준"><header class="sh"><span class="sn">4.3</span><h3>자동 편성의 기준 · 상향 / 초심</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead"><b>급수와 나이</b>가 비슷한 사람끼리, <b>게임 수가 적은 사람</b>이 먼저 묶여요. 같은 급수 안에서도 실력 차가 크면 <b>상향</b>이나 <b>초심</b> 표시로 보정해요.</p><div class="pair w"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="자동 편성의 기준 · 상향 / 초심 화면 크게 보기"><img src="g/mem.webp" width="1100" height="336" alt="자동 편성의 기준 · 상향 / 초심 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>상향</strong><span>실력이 급수보다 위일 때 눌러요. 급수를 <b>+0.5</b>급으로 계산해요.</span></div></li><li><b class="n">2</b><div><strong>초심</strong><span>아직 서툰 분이에요. 급수를 <b>−0.5</b>급으로 계산해요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p><b>설정 › 회원명부 관리</b>에서 눌러요. 상향과 초심은 둘 중 하나만 켜져요.</p></div></section><section class="step" id="play-go" data-kw="입장하기 입장 코트 비면"><header class="sh"><span class="sn">4.4</span><h3>입장하기</h3><span class="chips"><i class="chip r0">이용자</i><i class="chip r1">당번</i></span></header><p class="lead">코트가 비고 팀이 모이면 예약 줄에 <b>입장 가능</b>이 떠요.</p><div class="pair sd"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="입장하기 화면 크게 보기"><img src="g/go.webp" width="900" height="815" alt="입장하기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>입장 가능</strong><span>1번 예약이 바로 들어갈 수 있다는 표시예요.</span></div></li><li><b class="n">2</b><div><strong>입장 버튼</strong><span>깜빡이며 켜져요. 눌러서 코트로 보내요.</span></div></li><li><b class="n">3</b><div><strong>빈 코트</strong><span>게임이 끝나 비어 있는 코트예요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p>예약 줄의 <b>곧 입장 · 약 N분 후</b>로 내 차례를 가늠해요.</p></div></section><section class="step" id="play-pts" data-kw="25점제 ↔ 21점제 바꾸기 점수제 21점제 25점제"><header class="sh"><span class="sn">4.5</span><h3>25점제 ↔ 21점제 바꾸기</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead">코트 위 <b>25점제</b> 칩을 누르면 선택 창이 열려요.</p><div class="pair sd"><div class="pcap">점수제 칩</div><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="25점제 ↔ 21점제 바꾸기 화면 크게 보기"><img src="g/pt_chip.webp" width="760" height="82" alt="25점제 ↔ 21점제 바꾸기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>점수제 칩</strong><span>지금 점수제가 보여요. 눌러서 바꿔요.</span></div></li></ol></div></div><div class="pair sd"><div class="pcap">선택 창</div><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="25점제 ↔ 21점제 바꾸기 화면 크게 보기"><img src="g/pt_modal.webp" width="800" height="369" alt="25점제 ↔ 21점제 바꾸기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>21점제</strong><span>고르면 칩이 <b>빨갛게 깜빡여서</b> 21점제인 걸 알려 줘요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p>예약할 때 음성이 <b>"이십일점제 입니다"</b>도 함께 말해요. 기록보관소에서 점수제별 평균 시간도 따로 볼 수 있어요.</p></div></section><section class="step" id="play-end" data-kw="게임 끝내기 게임 종료 ✕"><header class="sh"><span class="sn">4.6</span><h3>게임 끝내기</h3><span class="chips"><i class="chip r0">이용자</i><i class="chip r1">당번</i></span></header><p class="lead">게임이 끝나면 코트 오른쪽 위 <b>✕</b>를 눌러요. 확인 창에서 <b>게임 종료</b>를 누르면 끝!</p><div class="pair w"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="게임 끝내기 화면 크게 보기"><img src="g/end.webp" width="900" height="318" alt="게임 끝내기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>선수 확인</strong><span>맞는 코트의 선수인지 확인해요.</span></div></li><li><b class="n">2</b><div><strong>게임 종료</strong><span>누르면 코트가 비고 기록이 쌓여요.</span></div></li></ol></div></div><div class="note warn"><b>꼭 확인</b><p>안 누르면 코트 시간이 계속 흘러가요. <b>5분 미만 · 25분 초과</b> 게임은 기록에서 빠져요.</p></div></section><section class="step" id="play-score" data-kw="점수 입력 모드를 켠 경우 점수 입력 파트너"><header class="sh"><span class="sn">4.7</span><h3>점수 입력 모드를 켠 경우</h3><span class="chips"><i class="chip r0">이용자</i><i class="chip r1">당번</i></span></header><p class="lead"><b>설정 › 점수 입력 모드</b>를 켜 두면 게임 종료 때 파트너와 점수를 입력해요. 꺼져 있으면 이 단계는 건너뛰어요.</p><div class="pair sd"><div class="pcap">① 파트너 정하기</div><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="점수 입력 모드를 켠 경우 화면 크게 보기"><img src="g/tm.webp" width="900" height="636" alt="점수 입력 모드를 켠 경우 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>안내 문구</strong><span>지금 무엇을 누를지 알려 줘요.</span></div></li><li><b class="n">2</b><div><strong>내 이름</strong><span>먼저 내 이름을 눌러요.</span></div></li><li><b class="n">3</b><div><strong>내 파트너</strong><span>다음에 내 파트너를 눌러요. 나머지 두 명은 상대로 정리돼요.</span></div></li><li><b class="n">4</b><div><strong>다음</strong><span>팀이 정해지면 눌러요.</span></div></li></ol></div></div><div class="pair sd"><div class="pcap">② 점수 입력</div><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="점수 입력 모드를 켠 경우 화면 크게 보기"><img src="g/sc.webp" width="800" height="788" alt="점수 입력 모드를 켠 경우 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>팀 점수칸</strong><span>눌러서 선택한 뒤 숫자를 입력해요.</span></div></li><li><b class="n">2</b><div><strong>팀 점수칸</strong><span>반대 팀도 똑같이 입력해요.</span></div></li><li><b class="n">3</b><div><strong>승 25</strong><span>이긴 팀 점수를 한 번에 넣는 빠른 키예요. (21점제면 승 21)</span></div></li><li><b class="n">4</b><div><strong>저장하고 종료</strong><span>점수를 다 넣고 눌러요.</span></div></li><li><b class="n">5</b><div><strong>점수 없이 종료</strong><span>점수를 모르면 눌러요. 한 번 더 물어봐요.</span></div></li></ol></div></div></section></article><article class="ch" id="swap" data-ch="05 선수 교체 · 취소"><header class="chh"><span class="cno">05</span><div><h2>선수 교체 · 취소</h2><p>사람이 바뀌거나 팀을 빼야 할 때의 방법이에요.</p></div></header><section class="step" id="swap-court" data-kw="코트에서 선수 바꾸기 코트 선수 교체"><header class="sh"><span class="sn">5.1</span><h3>코트에서 선수 바꾸기</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead">코트에서 <b>바꿀 이름</b>을 눌러요.</p><div class="pair sd"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="코트에서 선수 바꾸기 화면 크게 보기"><img src="g/swapc.webp" width="900" height="790" alt="코트에서 선수 바꾸기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>현재 선수</strong><span>바뀔 사람이에요.</span></div></li><li><b class="n">2</b><div><strong>대기 선수 고르기</strong><span>들어올 사람을 눌러요.</span></div></li><li><b class="n">3</b><div><strong>선수 교체</strong><span>눌러서 마쳐요.</span></div></li></ol></div></div></section><section class="step" id="swap-q" data-kw="예약 줄에서 선수 바꾸기 예약 선수 교체 사유 그냥 빼기"><header class="sh"><span class="sn">5.2</span><h3>예약 줄에서 선수 바꾸기</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead">예약 줄의 <b>이름을 눌러요</b>. 예약에서는 <b>교체 사유</b>를 꼭 골라야 해요.</p><div class="pair w"><div class="pcap">① 사유 고르기 전</div><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="예약 줄에서 선수 바꾸기 화면 크게 보기"><img src="g/swapq0.webp" width="900" height="414" alt="예약 줄에서 선수 바꾸기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>교체 사유</strong><span>레슨 · 휴식 · 운동끝 · 개인사정 중 하나를 골라요. 고르기 전에는 이 칸이 흔들려서 알려 줘요.</span></div></li><li><b class="n">2</b><div><strong>대기선수에서 고르기</strong><span>사유를 고르면 이 버튼이 켜지고 흔들려요.</span></div></li><li><b class="n">3</b><div><strong>그냥 빼기</strong><span><b style="color:#E8452C">순번 한 칸 뒤로</b> 밀려요. 정당한 이유가 없을 때만 써요.</span></div></li></ol></div></div><div class="pair w"><div class="pcap">② 사유를 고른 뒤</div><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="예약 줄에서 선수 바꾸기 화면 크게 보기"><img src="g/swapq1.webp" width="900" height="414" alt="예약 줄에서 선수 바꾸기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>고른 사유</strong><span>고른 사유가 초록으로 표시돼요.</span></div></li><li><b class="n">2</b><div><strong>대기선수에서 고르기</strong><span>눌러서 다음 단계로 가요.</span></div></li><li><b class="n">3</b><div><strong>그냥 빼기</strong><span>이 사람만 한 칸 뒤로 보내요.</span></div></li></ol></div></div><div class="pair w"><div class="pcap">③ 대기 선수 고르기</div><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="예약 줄에서 선수 바꾸기 화면 크게 보기"><img src="g/swapq2.webp" width="1400" height="789" alt="예약 줄에서 선수 바꾸기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>안내 띠</strong><span>아래 대기 선수 칸에서 교체할 사람을 누르라는 안내예요.</span></div></li><li><b class="n">2</b><div><strong>대기 선수 칸</strong><span>여기서 새로 들어올 사람을 눌러요.</span></div></li></ol></div></div><div class="note warn"><b>꼭 확인</b><p>정당한 이유 없이 <b>그냥 빼기</b>를 하면 그 팀의 <b>순번이 한 칸 뒤로</b> 밀려요.</p></div></section><section class="step" id="swap-cancel" data-kw="예약 팀 통째로 취소하기 팀 취소 예약 취소 꾹"><header class="sh"><span class="sn">5.3</span><h3>예약 팀 통째로 취소하기</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead">예약 줄의 <b>입장</b> 버튼을 <b>꾹 누르면</b> 팀 취소 창이 열려요.</p><div class="pair sd"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="예약 팀 통째로 취소하기 화면 크게 보기"><img src="g/qcx.webp" width="800" height="280" alt="예약 팀 통째로 취소하기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>팀 취소</strong><span>누르면 그 줄이 비어요. 선수들은 대기 선수로 돌아가요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p><b>되돌리기</b>로 취소할 수 있어요.</p></div></section><section class="step" id="swap-move" data-kw="코트 자리 바꾸기 코트 이동 자리 바꾸기"><header class="sh"><span class="sn">5.4</span><h3>코트 자리 바꾸기</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead">코트 카드를 <b>꾹 누르면</b> <b>○번 코트 이동</b> 창이 떠요.</p><div class="pair sd"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="코트 자리 바꾸기 화면 크게 보기"><img src="g/cmv.webp" width="800" height="566" alt="코트 자리 바꾸기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>다른 코트와 자리 바꾸기</strong><span>게임 중인 다른 코트와 팀을 바꿔요. 빈 코트가 있으면 <b>빈 코트로 이동</b>도 보여요.</span></div></li></ol></div></div></section></article><article class="ch" id="rest" data-ch="06 쉬고 싶을 때"><header class="chh"><span class="cno">06</span><div><h2>쉬고 싶을 때</h2><p>이름을 꾹 누르면 쉬는 이유를 표시할 수 있어요.</p></div></header><section class="step" id="rest-1" data-kw="이름을 꾹 눌러서 표시하기 휴식 레슨 운동끝 쉬기"><header class="sh"><span class="sn">6.1</span><h3>이름을 꾹 눌러서 표시하기</h3><span class="chips"><i class="chip r0">이용자</i><i class="chip r1">당번</i></span></header><p class="lead">대기 선수 칸에서 내 이름을 <b>길게 눌러요</b>.</p><div class="pair sd"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="이름을 꾹 눌러서 표시하기 화면 크게 보기"><img src="g/status.webp" width="800" height="495" alt="이름을 꾹 눌러서 표시하기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>레슨중</strong><span>레슨 때문에 자리를 비워요.</span></div></li><li><b class="n">2</b><div><strong>휴식중</strong><span>잠깐 쉬어요. 자동 편성에서 빠져요.</span></div></li><li><b class="n">3</b><div><strong>운동끝</strong><span>오늘 운동을 마쳤어요. 자동 편성에서 빠져요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p>다시 운동할 땐 이름을 길게 눌러 <b>표시 해제</b>를 눌러요.</p></div></section></article><article class="ch" id="finish" data-ch="07 운동 마무리 · 입장명부"><header class="chh"><span class="cno">07</span><div><h2>운동 마무리 · 입장명부</h2><p>하루가 끝나면 이 순서로 정리해요.</p></div></header><section class="step" id="fin-end" data-kw="오늘 종료 누르기 오늘 종료 하루 마무리"><header class="sh"><span class="sn">7.1</span><h3>오늘 종료 누르기</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead">맨 위 <b>종료</b>를 누르면 확인 창이 떠요.</p><div class="pair sd"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="오늘 종료 누르기 화면 크게 보기"><img src="g/endday.webp" width="800" height="261" alt="오늘 종료 누르기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>오늘 종료</strong><span>누르면 오늘 기록이 정리되고 입장명부가 정산돼요.</span></div></li></ol></div></div></section><section class="step" id="fin-ro" data-kw="입장명부 확인하고 올리기 입장명부 정산 합계 이미지 저장"><header class="sh"><span class="sn">7.2</span><h3>입장명부 확인하고 올리기</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead">명부에서 이름마다 입장료를 받았는지 확인하고, 합계를 단톡방에 공유해요.</p><div class="pair w"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="입장명부 확인하고 올리기 화면 크게 보기"><img src="g/rol.webp" width="1500" height="1004" alt="입장명부 확인하고 올리기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>합계</strong><span>오늘 입장료 합계예요. 회원 수 × 입장료로 계산돼요.</span></div></li><li><b class="n">2</b><div><strong>납입 표시</strong><span>이름 옆 <b>송금</b> 또는 현금 표시를 확인해요.</span></div></li><li><b class="n">3</b><div><strong>✕</strong><span>안 뛴 사람이면 빼요.</span></div></li><li><b class="n">4</b><div><strong>이미지 저장</strong><span>명부를 사진 한 장으로 만들어요.</span></div></li><li><b class="n">5</b><div><strong>보낼 글 복사</strong><span>단톡방에 붙여 넣을 글을 복사해요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p>안 뛴 사람은 자동으로 명부에서 빠져요.</p></div><div class="note warn"><b>꼭 확인</b><p>입장명부에는 <b>송금 계좌</b>가 함께 보일 수 있어요. 외부에 화면을 공유할 땐 계좌 부분을 가려 주세요.</p></div></section></article><article class="ch" id="record" data-ch="08 내 기록 보기"><header class="chh"><span class="cno">08</span><div><h2>내 기록 보기</h2><p>출석, 게임 수, 운동 시간이 자동으로 쌓여요.</p></div></header><section class="step" id="rec-open" data-kw="기록보관소 열기 기록보관소 기간 평균 시간 점수제별"><header class="sh"><span class="sn">8.1</span><h3>기록보관소 열기</h3><span class="chips"><i class="chip r2">공통</i></span></header><p class="lead">맨 위 <b>기록</b> 버튼을 누르면 기록보관소가 열려요.</p><div class="pair w"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="기록보관소 열기 화면 크게 보기"><img src="g/rec.webp" width="1500" height="845" alt="기록보관소 열기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>기간 탭</strong><span>오늘 · 주간 · 월간 · 연간 · 누적으로 기간을 바꿔요.</span></div></li><li><b class="n">2</b><div><strong>클럽 기록</strong><span>출석, 총 게임, 코트 사용 시간과 오늘의 열정왕이 나와요.</span></div></li><li><b class="n">3</b><div><strong>이름 검색</strong><span>내 이름을 쳐서 내 기록만 볼 수 있어요.</span></div></li><li><b class="n">4</b><div><strong>이미지 저장</strong><span>표를 사진 한 장으로 만들어요.</span></div></li><li><b class="n">5</b><div><strong>점수제별 평균</strong><span><b>25점제 평균</b>과 <b>21점제 평균</b> 시간을 따로 보여요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p>점수제별 기록은 <b>v4.83 이후</b> 끝난 게임부터 쌓여요. 그 전 날짜는 0게임으로 나와요.</p></div></section><section class="step" id="rec-find" data-kw="이름 · 초성으로 찾기 기록 검색 초성"><header class="sh"><span class="sn">8.2</span><h3>이름 · 초성으로 찾기</h3><span class="chips"><i class="chip r2">공통</i></span></header><p class="lead">이름 검색칸을 누르면 남성부 · 여성부 이름이 한눈에 떠요.</p><div class="pair w"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="이름 · 초성으로 찾기 화면 크게 보기"><img src="g/rq.webp" width="1300" height="804" alt="이름 · 초성으로 찾기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>검색칸</strong><span>이름이나 초성으로 찾아요.</span></div></li><li><b class="n">2</b><div><strong>적용</strong><span>여러 명을 골라 <b>적용</b>을 누르면 한꺼번에 볼 수 있어요.</span></div></li><li><b class="n">3</b><div><strong>선택 해제</strong><span>골라 둔 이름을 모두 지워요.</span></div></li></ol></div></div></section><section class="step" id="rec-img" data-kw="기록 이미지로 저장하기 기록 이미지 저장 공유"><header class="sh"><span class="sn">8.3</span><h3>기록 이미지로 저장하기</h3><span class="chips"><i class="chip r2">공통</i></span></header><p class="lead"><b>이미지 저장</b>을 누르면 표가 사진 한 장으로 만들어져요.</p><div class="pair sd"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="기록 이미지로 저장하기 화면 크게 보기"><img src="g/rimg.webp" width="800" height="831" alt="기록 이미지로 저장하기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>저장</strong><span>기기에 사진으로 저장해요.</span></div></li><li><b class="n">2</b><div><strong>복사</strong><span>복사해서 단톡방에 붙여 넣어요.</span></div></li><li><b class="n">3</b><div><strong>공유</strong><span>카카오톡 같은 앱으로 바로 보내요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p>표 맨 위에 <b>기간과 정렬 기준</b>이 함께 적혀요.</p></div></section></article><article class="ch" id="theme" data-ch="09 테마 바꾸기"><header class="chh"><span class="cno">09</span><div><h2>테마 바꾸기</h2><p>코트 모양과 글꼴, 소리를 취향대로 바꿔요.</p></div></header><section class="step" id="theme-set" data-kw="설정에서 바꾸기 테마 코트 글꼴"><header class="sh"><span class="sn">9.1</span><h3>설정에서 바꾸기</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead">맨 위 <b>설정 › 화면</b> 칸이에요.</p><div class="pair sd"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="설정에서 바꾸기 화면 크게 보기"><img src="g/set_scr.webp" width="700" height="1063" alt="설정에서 바꾸기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>코트 테마</strong><span>좌동 · 네이버 · 카카오 · 토스 중에 골라요.</span></div></li><li><b class="n">2</b><div><strong>글꼴 테마</strong><span>기본 · 단디 · 꾹꾹 중에 골라요.</span></div></li><li><b class="n">3</b><div><strong>테마 자동 교체</strong><span>켜 두면 코트와 글꼴이 주마다 바뀌어요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p>처음 설치하면 <b>카카오 코트 + 꾹꾹체</b>로 시작해요.</p></div></section><section class="step" id="theme-court" data-kw="코트 테마 4가지 코트 테마 좌동 네이버 카카오 토스"><header class="sh"><span class="sn">9.2</span><h3>코트 테마 4가지</h3><span class="chips"><i class="chip r2">공통</i></span></header><p class="lead">같은 화면을 4가지 코트 모양으로 볼 수 있어요.</p><div class="gal grid"><div class="gi"><figure class="shot"><button class="zoom" type="button" aria-label="좌동 화면 크게 보기"><img src="g/th_c4.webp" width="700" height="330" alt="좌동 화면" loading="lazy" decoding="async"></button></figure><span class="gc">좌동</span></div><div class="gi"><figure class="shot"><button class="zoom" type="button" aria-label="네이버 화면 크게 보기"><img src="g/th_c1.webp" width="700" height="330" alt="네이버 화면" loading="lazy" decoding="async"></button></figure><span class="gc">네이버</span></div><div class="gi"><figure class="shot"><button class="zoom" type="button" aria-label="카카오 화면 크게 보기"><img src="g/th_c3.webp" width="700" height="330" alt="카카오 화면" loading="lazy" decoding="async"></button></figure><span class="gc">카카오</span></div><div class="gi"><figure class="shot"><button class="zoom" type="button" aria-label="토스 화면 크게 보기"><img src="g/th_c2.webp" width="700" height="330" alt="토스 화면" loading="lazy" decoding="async"></button></figure><span class="gc">토스</span></div></div></section><section class="step" id="theme-font" data-kw="글꼴 테마 3가지 글꼴 기본 단디 꾹꾹"><header class="sh"><span class="sn">9.3</span><h3>글꼴 테마 3가지</h3><span class="chips"><i class="chip r2">공통</i></span></header><p class="lead">글자 모양만 바꿔도 분위기가 달라져요.</p><div class="gal grid3"><div class="gi"><figure class="shot"><button class="zoom" type="button" aria-label="기본 화면 크게 보기"><img src="g/th_f0.webp" width="700" height="456" alt="기본 화면" loading="lazy" decoding="async"></button></figure><span class="gc">기본</span></div><div class="gi"><figure class="shot"><button class="zoom" type="button" aria-label="단디 화면 크게 보기"><img src="g/th_f1.webp" width="700" height="456" alt="단디 화면" loading="lazy" decoding="async"></button></figure><span class="gc">단디</span></div><div class="gi"><figure class="shot"><button class="zoom" type="button" aria-label="꾹꾹 화면 크게 보기"><img src="g/th_f2.webp" width="700" height="456" alt="꾹꾹 화면" loading="lazy" decoding="async"></button></figure><span class="gc">꾹꾹</span></div></div></section><section class="step" id="theme-snd" data-kw="소리 · 음성 · 진동 소리 음량 음성 진동"><header class="sh"><span class="sn">9.4</span><h3>소리 · 음성 · 진동</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead">설정 맨 위 <b>소리·진동</b> 칸이에요.</p><div class="pair sd"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="소리 · 음성 · 진동 화면 크게 보기"><img src="g/set_snd.webp" width="700" height="1063" alt="소리 · 음성 · 진동 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>효과음</strong><span>종류를 고르고 켜고 꺼요.</span></div></li><li><b class="n">2</b><div><strong>음량</strong><span>슬라이더로 크기를 조절해요.</span></div></li><li><b class="n">3</b><div><strong>음성 안내</strong><span>예약이 끝나면 음성으로 알려 줘요. 속도도 바꿀 수 있어요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p>진동은 안드로이드 기기에서만 돼요.</p></div></section></article><article class="ch" id="more" data-ch="10 월례회 대진표 · 기타"><header class="chh"><span class="cno">10</span><div><h2>월례회 대진표 · 기타</h2><p>월례회 날의 대진표와 백업 · 업데이트 방법이에요.</p></div></header><section class="step" id="wl-on" data-kw="월례회 모드 켜기 월례회 켜기"><header class="sh"><span class="sn">10.1</span><h3>월례회 모드 켜기</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead"><b>설정</b> 맨 아래의 <b>월례회 모드 › 대진표</b>를 누르고 <b>대진표 열기</b>를 눌러요.</p><div class="pair w"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="월례회 모드 켜기 화면 크게 보기"><img src="g/wl_ask.webp" width="900" height="398" alt="월례회 모드 켜기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>대진표 열기</strong><span>지금 코트에서 하는 게임은 그대로 이어져요. 월례회 대진과 순위는 따로 보관돼요.</span></div></li></ol></div></div><div class="note tip"><b>TIP</b><p>다음 날이 되면 자동으로 일반 모드로 돌아와요.</p></div></section><section class="step" id="wl-set" data-kw="월례회 설정 고르기 월례회 설정 풀리그 토너먼트"><header class="sh"><span class="sn">10.2</span><h3>월례회 설정 고르기</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead"><b>설정</b> 탭에서 방식을 골라요.</p><div class="pair w"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="월례회 설정 고르기 화면 크게 보기"><img src="g/wl_set.webp" width="1000" height="833" alt="월례회 설정 고르기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>진행 방식</strong><span><b>풀리그</b>(모두와 대결) 또는 <b>토너먼트</b>(이기면 올라가는 방식)예요.</span></div></li><li><b class="n">2</b><div><strong>점수제</strong><span>11점 · 15점 · 21점 중에 골라요.</span></div></li><li><b class="n">3</b><div><strong>대관 시간</strong><span>체육관 빌린 시간과 한 게임 시간을 넣으면 초록 글씨로 라운드 수와 끝나는 시간이 나와요.</span></div></li></ol></div></div></section><section class="step" id="wl-make" data-kw="참가자 불러오고 대진표 만들기 월례회 참가자 대진표 만들기"><header class="sh"><span class="sn">10.3</span><h3>참가자 불러오고 대진표 만들기</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead">설정 맨 아래에서 참가자를 정하고 대진표를 만들어요.</p><div class="pair w"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="참가자 불러오고 대진표 만들기 화면 크게 보기"><img src="g/wl_make.webp" width="1000" height="833" alt="참가자 불러오고 대진표 만들기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>홈 출석 불러오기</strong><span>오늘 출석한 사람을 한 번에 참가자로 가져와요.</span></div></li><li><b class="n">2</b><div><strong>대진표 만들기</strong><span>누르면 일정과 대진표가 만들어져요.</span></div></li></ol></div></div></section><section class="step" id="wl-sched" data-kw="일정으로 진행하기 월례회 일정 입장 교체"><header class="sh"><span class="sn">10.4</span><h3>일정으로 진행하기</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead"><b>일정</b> 탭에서 경기를 차례로 진행해요.</p><div class="pair w"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="일정으로 진행하기 화면 크게 보기"><img src="g/wl_sched.webp" width="1000" height="833" alt="일정으로 진행하기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>입장</strong><span>코트가 비면 켜져요. 눌러서 코트로 보내요.</span></div></li><li><b class="n">2</b><div><strong>교체</strong><span>경기 전에 사람이 바뀌면 눌러요.</span></div></li><li><b class="n">3</b><div><strong>일정 이미지</strong><span>일정표를 사진 한 장으로 저장해요.</span></div></li></ol></div></div></section><section class="step" id="wl-br" data-kw="대진표 이미지 저장하기 월례회 대진표 이미지"><header class="sh"><span class="sn">10.5</span><h3>대진표 이미지 저장하기</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead"><b>대진표</b> 탭에서 이긴 팀이 선을 타고 올라가는 걸 볼 수 있어요.</p><div class="pair w"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="대진표 이미지 저장하기 화면 크게 보기"><img src="g/wl_bracket.webp" width="1000" height="833" alt="대진표 이미지 저장하기 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>대진표 이미지로 저장</strong><span>대진표를 사진 한 장으로 만들어 단톡방에 올려요.</span></div></li></ol></div></div></section><section class="step" id="wl-rank" data-kw="순위 보기와 마무리 월례회 순위 종료"><header class="sh"><span class="sn">10.6</span><h3>순위 보기와 마무리</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead"><b>순위</b> 탭에서 팀별 전적과 득실을 봐요.</p><div class="pair w"><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="순위 보기와 마무리 화면 크게 보기"><img src="g/wl_rank.webp" width="1000" height="833" alt="순위 보기와 마무리 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>월례회 종료</strong><span>다 끝나면 눌러서 일반 모드로 돌아와요.</span></div></li></ol></div></div></section><section class="step" id="bk" data-kw="백업 · 업데이트 백업 복원 업데이트 데이터"><header class="sh"><span class="sn">10.7</span><h3>백업 · 업데이트</h3><span class="chips"><i class="chip r1">당번</i></span></header><p class="lead"><b>설정</b> 아래쪽에 있어요.</p><div class="pair sd"><div class="pcap">백업</div><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="백업 · 업데이트 화면 크게 보기"><img src="g/set_dat.webp" width="700" height="1063" alt="백업 · 업데이트 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>데이터 백업</strong><span><b>백업 저장</b>으로 기록 · 회원명부 · 설정을 파일로 저장하고, <b>백업 복원</b>으로 되살려요.</span></div></li></ol></div></div><div class="pair sd"><div class="pcap">업데이트</div><div class="pf"><figure class="shot"><button class="zoom" type="button" aria-label="백업 · 업데이트 화면 크게 보기"><img src="g/set_app.webp" width="700" height="1063" alt="백업 · 업데이트 화면" loading="lazy" decoding="async"></button></figure></div><div class="pl"><ol class="lg"><li><b class="n">1</b><div><strong>업데이트 받기</strong><span>새 버전을 받아요. 받은 뒤 앱을 완전히 닫았다가 다시 열어요.</span></div></li></ol></div></div><div class="note warn"><b>꼭 확인</b><p>데이터는 <b>이 기기에만</b> 저장돼요. 브라우저의 <b>사이트 데이터 삭제</b>를 하면 출석과 게임 기록이 사라지니 절대 누르지 마세요. 얼굴 등록은 백업에 들어가지 않아요.</p></div></section></article>
+</main>
 
-</div>
-<div id="lb"><button class="x" id="lbx">닫기</button><img alt=""></div>
+<footer class="end"><div class="wrap">
+<h2>여기까지 오셨다면 끝!</h2>
+<p>모르는 건 당번에게 물어보세요. 궁금한 말은 <b>목차 · 찾기</b>에서 바로 찾을 수 있어요.</p>
+<a class="btn o" href="#top">맨 위로</a>
+<small>좌동배드민턴클럽 게임현황판 · v4.91 기준 · 2026.11 · 사진 속 이름은 모두 가상의 이름이에요.</small>
+</div></footer>
+
+<div class="sheet" id="sheet" aria-hidden="true"><div class="bg" data-x></div>
+<div class="pn" role="dialog" aria-label="목차"><div class="hd"><h2>목차 · 찾기</h2><button class="x" type="button" data-x aria-label="닫기">✕</button></div>
+<input class="q" id="q" type="search" placeholder="궁금한 말을 쳐 보세요 (예: 송금, 교체, 기록)" aria-label="검색">
+<div class="ls" id="ls"><div class="tg"><a class="tc" href="#home"><b>01</b>홈 화면 살펴보기</a><a class="ts" href="#home-all" data-kw="한눈에 보는 홈 화면 화면 구성 홈 코트 예약 출석 대기">한눈에 보는 홈 화면</a><a class="ts" href="#home-card" data-kw="코트와 예약 줄 읽는 법 코트 카드 예약 줄 게임 시간">코트와 예약 줄 읽는 법</a><a class="ts" href="#home-top" data-kw="위쪽 버튼 모음 상단 버튼 되돌리기 비우기 기록 설정 종료">위쪽 버튼 모음</a></div><div class="tg"><a class="tc" href="#attend"><b>02</b>출석 체크</a><a class="ts" href="#att-me" data-kw="내 이름으로 출석하기 출석 체크 회원명단 초성 검색 손님">내 이름으로 출석하기</a><a class="ts" href="#att-duty" data-kw="당번이 챙길 일 당번 선택 단골 출석 QR 얼굴 출석 회원명부">당번이 챙길 일</a></div><div class="tg"><a class="tc" href="#pay"><b>03</b>입장료 송금 확인</a><a class="ts" href="#pay-1" data-kw="송금 확인 창이 뜨면 송금 확인 입장료 QR 현금 완료 전체 취소">송금 확인 창이 뜨면</a></div><div class="tg"><a class="tc" href="#play"><b>04</b>게임하기</a><a class="ts" href="#play-res" data-kw="4명을 골라 예약하기 예약 4명 선택">4명을 골라 예약하기</a><a class="ts" href="#play-auto" data-kw="사람이 많을 땐 자동 편성 자동 편성 성별">사람이 많을 땐 자동 편성</a><a class="ts" href="#play-crit" data-kw="자동 편성의 기준 · 상향 / 초심 상향 초심 급수 자동 편성 기준">자동 편성의 기준 · 상향 / 초심</a><a class="ts" href="#play-go" data-kw="입장하기 입장 코트 비면">입장하기</a><a class="ts" href="#play-pts" data-kw="25점제 ↔ 21점제 바꾸기 점수제 21점제 25점제">25점제 ↔ 21점제 바꾸기</a><a class="ts" href="#play-end" data-kw="게임 끝내기 게임 종료 ✕">게임 끝내기</a><a class="ts" href="#play-score" data-kw="점수 입력 모드를 켠 경우 점수 입력 파트너">점수 입력 모드를 켠 경우</a></div><div class="tg"><a class="tc" href="#swap"><b>05</b>선수 교체 · 취소</a><a class="ts" href="#swap-court" data-kw="코트에서 선수 바꾸기 코트 선수 교체">코트에서 선수 바꾸기</a><a class="ts" href="#swap-q" data-kw="예약 줄에서 선수 바꾸기 예약 선수 교체 사유 그냥 빼기">예약 줄에서 선수 바꾸기</a><a class="ts" href="#swap-cancel" data-kw="예약 팀 통째로 취소하기 팀 취소 예약 취소 꾹">예약 팀 통째로 취소하기</a><a class="ts" href="#swap-move" data-kw="코트 자리 바꾸기 코트 이동 자리 바꾸기">코트 자리 바꾸기</a></div><div class="tg"><a class="tc" href="#rest"><b>06</b>쉬고 싶을 때</a><a class="ts" href="#rest-1" data-kw="이름을 꾹 눌러서 표시하기 휴식 레슨 운동끝 쉬기">이름을 꾹 눌러서 표시하기</a></div><div class="tg"><a class="tc" href="#finish"><b>07</b>운동 마무리 · 입장명부</a><a class="ts" href="#fin-end" data-kw="오늘 종료 누르기 오늘 종료 하루 마무리">오늘 종료 누르기</a><a class="ts" href="#fin-ro" data-kw="입장명부 확인하고 올리기 입장명부 정산 합계 이미지 저장">입장명부 확인하고 올리기</a></div><div class="tg"><a class="tc" href="#record"><b>08</b>내 기록 보기</a><a class="ts" href="#rec-open" data-kw="기록보관소 열기 기록보관소 기간 평균 시간 점수제별">기록보관소 열기</a><a class="ts" href="#rec-find" data-kw="이름 · 초성으로 찾기 기록 검색 초성">이름 · 초성으로 찾기</a><a class="ts" href="#rec-img" data-kw="기록 이미지로 저장하기 기록 이미지 저장 공유">기록 이미지로 저장하기</a></div><div class="tg"><a class="tc" href="#theme"><b>09</b>테마 바꾸기</a><a class="ts" href="#theme-set" data-kw="설정에서 바꾸기 테마 코트 글꼴">설정에서 바꾸기</a><a class="ts" href="#theme-court" data-kw="코트 테마 4가지 코트 테마 좌동 네이버 카카오 토스">코트 테마 4가지</a><a class="ts" href="#theme-font" data-kw="글꼴 테마 3가지 글꼴 기본 단디 꾹꾹">글꼴 테마 3가지</a><a class="ts" href="#theme-snd" data-kw="소리 · 음성 · 진동 소리 음량 음성 진동">소리 · 음성 · 진동</a></div><div class="tg"><a class="tc" href="#more"><b>10</b>월례회 대진표 · 기타</a><a class="ts" href="#wl-on" data-kw="월례회 모드 켜기 월례회 켜기">월례회 모드 켜기</a><a class="ts" href="#wl-set" data-kw="월례회 설정 고르기 월례회 설정 풀리그 토너먼트">월례회 설정 고르기</a><a class="ts" href="#wl-make" data-kw="참가자 불러오고 대진표 만들기 월례회 참가자 대진표 만들기">참가자 불러오고 대진표 만들기</a><a class="ts" href="#wl-sched" data-kw="일정으로 진행하기 월례회 일정 입장 교체">일정으로 진행하기</a><a class="ts" href="#wl-br" data-kw="대진표 이미지 저장하기 월례회 대진표 이미지">대진표 이미지 저장하기</a><a class="ts" href="#wl-rank" data-kw="순위 보기와 마무리 월례회 순위 종료">순위 보기와 마무리</a><a class="ts" href="#bk" data-kw="백업 · 업데이트 백업 복원 업데이트 데이터">백업 · 업데이트</a></div><div class="nores" id="nores">찾는 내용이 없어요. 다른 말로 쳐 보세요.</div></div></div></div>
+
+<div class="lb" id="lb"><button class="x" type="button" id="lbx" aria-label="닫기">✕</button><img alt=""><div class="hint">두 손가락으로 확대 · 바깥을 누르면 닫혀요</div></div>
+<button class="top" id="totop" type="button" aria-label="맨 위로">↑</button>
 
 <script>
 (function(){
-var COURSES={
-user:{name:'체육관 이용자',tag:'이용자',slides:[
- {t:'화면은 세 칸이에요',img:'main',s:'왼쪽은 <b>코트</b>, 가운데는 <b>대기</b>, 오른쪽은 <b>출석·쉬는 선수</b>예요.',tip:'이름 앞 <b>파란 점은 남자, 분홍 점은 여자</b>예요.',k:'화면 보는 법'},
- {t:'도착하면 출석부터',img:'att',s:'<b>이름 또는 초성</b>으로 찾아서 눌러요. 손님은 <b>손님</b> 필터에서 골라요.',tip:'초성만 쳐도 돼요. 예를 들어 <b>ㄱㅈㅇ</b>. 고르고 나면 검색칸은 저절로 비워져요.',k:'출석하기'},
- {t:'대기에 이름이 올라가면',img:'c_go',s:'대기 줄의 <b>곧 입장 · 약 N분 후</b>로 내 차례를 가늠해요. 코트가 비고 4명이 모이면 <b>입장</b> 버튼이 <b>빨갛게 깜빡여요</b>.',tip:'빨간 <b>입장</b>을 눌러서 코트로 가요.',k:'내 순서 보기'},
- {t:'입장료 송금 확인',img:'pay',s:'대기에 이름이 올라가면 <b>입장료 송금 확인</b> 창이 떠요. <b>QR을 찍어 송금</b>한 뒤 내 이름 옆 <b>송금 확인</b>을 눌러요.',tip:'<b>당번 · 수요일 · 월례회</b>는 무료예요. 현금은 <b>당번에게</b> 내면 돼요.',warn:'모두 확인되기 전에는 <b>완료</b>가 눌리지 않아요. 내 이름이 아니면 건드리지 마세요.',k:'입장료 송금'},
- {t:'게임이 끝나면 ✕',img:'c_end',s:'코트 오른쪽 위 <b>✕</b>를 누르고, 확인 창에서 <b>게임 종료</b>를 눌러요.',tip:'코트 시간은 노랑 → 주황 → 빨강으로 변해요. 빨강이 오래 친 코트예요.',warn:'안 누르면 시간이 계속 흘러가요. 5분 미만·25분 초과 게임은 기록에서 빠져요.',k:'게임 종료'},
- {t:'점수 입력 전, 파트너 정하기',img:'tm',s:'✕를 누르면 먼저 <b>파트너 정하기</b> 창이 떠요. <b>내 이름 → 내 파트너</b> 순서로 누르면 나머지 두 명이 <b>상대</b>로 정리돼요. 그다음 <b>다음</b>.',tip:'코트에 적힌 순서 그대로면 <b>코트 순서 그대로</b>를 눌러요.',k:'파트너 정하기'},
- {t:'점수 입력',img:'scm',s:'팀을 정했으면 <b>점수 입력</b> 창에서 숫자를 누르고 <b>저장하고 종료</b>. 모르면 <b>점수 없이 종료</b>(한 번 더 물어봐요).',tip:'맨 아래 <b>승 25</b>(또는 <b>승 21</b>) 키는 이긴 팀 점수를 한 번에 입력해요.',k:'점수 입력'},
- {t:'쉬고 싶을 땐 이름을 꾹',img:'status',s:'쉬는 선수 이름을 <b>길게 누르면</b> <b>레슨중 · 휴식중 · 운동끝</b>을 고를 수 있어요.',tip:'휴식중·운동끝이면 자동 편성에서 빠져요. 돌아오면 <b>표시 해제</b>!',k:'휴식·운동끝 표시'},
- {t:'내 기록 보기',img:'rec2',s:'맨 위 <b>기록</b> 버튼을 누르면 <b>기록보관소</b>가 열려요. 이름 검색칸에 내 이름을 치면 <b>출석·게임 수·운동 시간</b>이 한 줄로 나와요.',tip:'자세한 사용법은 <b>부가기능 › 기록보관소</b>에서 볼 수 있어요.',k:'내 기록 보기'}]},
-duty:{name:'당번',tag:'당번',slides:[
- {t:'당번의 하루 흐름',list:['출석 확인 · 손님 이름 적기','대기 만들기 (예약 · 자동 편성)','입장료 송금 확인','입장 · 게임 종료 챙기기','오늘 게임 종료 → 입장명부'],s:'이 순서만 기억하면 돼요. 하나씩 볼게요.',k:'당번 하루 흐름'},
- {t:'출석 챙기기',img:'att',s:'늦게 온 분은 <b>이름 또는 초성</b>으로 찾아 눌러요. 손님은 <b>손님</b> 필터에서 고르고, 손님 이름은 그날만 적어 둘 수 있어요.',tip:'같은 요일 단골은 설정의 <b>단골 출석 넣기</b> 한 번이면 돼요.',k:'출석 챙기기'},
- {t:'4명을 골라 예약',img:'pick_c',s:'<b>쉬는 선수</b> 이름을 누르면 ✓가 붙어요. 4명이 차면 <b>예약</b>을 눌러요.',tip:'잘못 골랐으면 <b>취소</b>로 처음부터.',k:'대기 만들기(예약)'},
- {t:'많을 땐 자동 편성',img:'auto',s:'대기 칸 위 노란 <b>자동 편성</b>. <b>같은 성별끼리</b> 또는 <b>성별 섞기</b> 중 고르면 4명씩 한꺼번에 들어가요.',tip:'마음에 안 들면 <b>되돌리기</b> 한 번!',k:'자동 편성'},
- {t:'자동 편성이 짝 맞추는 기준',img:'mem',s:'<b>급수와 나이</b>가 비슷한 사람끼리, <b>게임 수가 적은 사람</b>이 먼저 들어가요. 같은 급수·같은 나이 안에서 실력 차가 크면 회원명부의 <b>상향</b>(+0.5급) 또는 <b>초심</b>(−0.5급) 표시로 보정해요.',tip:'설정 › <b>회원명부 관리</b>에서 눌러요. 상향과 초심은 둘 중 하나만 켜져요.',k:'자동 편성 기준·상향/초심'},
- {t:'입장 확인',img:'c_go',s:'코트가 비고 4명이 모이면 줄 왼쪽에 <b>입장 가능</b>이 뜨고 <b>입장</b> 버튼이 <b>빨갛게 깜빡여요</b>. 눌러서 코트로 보내요.',k:'입장'},
- {t:'입장료 송금 확인 챙기기',img:'pay',s:'대기에 이름이 올라가면 <b>입장료 송금 확인</b> 창이 떠요. 본인이 <b>송금 확인</b>을 누르게 안내해 주세요. 빼야 하는 사람은 <b>✕</b>로 목록에서 빼요.',tip:'<b>전체 취소</b>는 두 번 눌러야 해요. 당번·수요일·월례회는 무료예요.',k:'송금 확인 창'},
- {t:'21점제로 바꿀 땐',img:'ptsys',s:'코트 위 <b>25점제</b> 칩을 누르면 선택 창이 열려요. <b>21점제</b>를 고르면 칩이 <b>빨갛게 깜빡여요</b>.',tip:'예약 완료 음성이 <b>"이십일점제 입니다"</b>도 함께 말해요. 기록보관소에서 점수제별 평균 시간도 따로 볼 수 있어요.',k:'21점제·25점제'},
- {t:'코트 자리 바꾸기',img:'cmv',s:'코트 카드를 <b>꾹 누르면</b> <b>○번 코트 이동</b> 창이 떠요. 게임 중인 다른 코트와 <b>자리 바꾸기</b>를 할 수 있어요.',tip:'빈 코트가 있으면 <b>빈 코트로 이동</b>도 보여요.',k:'코트 자리 바꾸기'},
- {t:'코트에서 사람 바꾸기',img:'swapc',s:'코트에서 <b>바꿀 이름</b>을 눌러요. <b>쉬는 선수</b> 중 한 명을 골라 <b>선수 교체</b>.',k:'코트 선수 교체'},
- {t:'대기 선수 교체',img:'swapq',s:'대기 줄의 <b>이름을 눌러요</b>. <b>사유</b>(레슨·휴식·운동끝·개인사정)를 고르고 <b>대기선수에서 고르기</b>로 대신할 사람을 정해요.',warn:'정당한 이유 없이 <b>그냥 빼기</b>를 하면 <b>순번이 한 칸 뒤로</b> 밀려요.',k:'대기 선수 교체'},
- {t:'대기 팀 통째로 취소',img:'qcx',s:'대기 줄의 <b>입장</b> 버튼을 <b>꾹 누르면</b> 버튼이 <b>취소</b>로 바뀌고, <b>"대기 N번 팀을 취소할까요?"</b> 창이 떠요. <b>팀 취소</b>를 누르면 그 줄이 비어요.',tip:'선수들은 쉬는 선수로 돌아가요. <b>되돌리기</b>로 취소할 수 있어요.',k:'대기 팀 취소'},
- {t:'잘못 눌렀어요',img:'c_top',s:'맨 위 <b>되돌리기</b>를 누르면 한 단계 취소돼요. <b>다시하기</b>는 되살리기, <b>비우기</b>는 코트·대기를 처음으로.',k:'되돌리기'},
- {t:'하루 마무리 · 입장명부',img:'ro2',s:'맨 위 <b>오늘 게임 종료</b> → <b>오늘 종료</b>를 누르면 입장명부가 열려요. 이름마다 <b>현금 / 송금</b>을 체크하고 맨 위 <b>합계</b>를 확인해요.',tip:'<b>이미지 저장</b>이나 <b>보낼 글 복사</b>로 단톡방에 올려요. 안 뛴 사람은 자동으로 빠져요.',warn:'입장명부에는 송금 계좌가 함께 보여요. 화면을 외부에 공유할 땐 계좌 부분을 가려 주세요.',k:'정산·입장명부'},
- {t:'소리 · 화면 설정',img:'set1',s:'<b>효과음 · 음량</b>, <b>진동</b>, <b>음성 안내</b>, <b>코트 테마</b>를 여기서 바꿔요.',tip:'진동은 안드로이드에서만 돼요.',k:'소리·화면 설정'},
- {t:'백업 · 업데이트',img:'set2',s:'<b>데이터 백업</b>, <b>기록 관리</b>(연습 모드·기록 삭제), <b>업데이트 받기</b>가 있어요.',warn:'기록 삭제는 되돌릴 수 없어요. 먼저 <b>백업 저장</b>! 데이터는 이 기기에만 저장돼요.',k:'백업·업데이트'}]},
-extra:{name:'부가기능',tag:'부가기능',slides:[
- {t:'기록보관소 열기',img:'rec2',s:'맨 위 <b>기록</b> 버튼. 위쪽 <b>오늘 · 주간 · 월간 · 연간 · 누적</b> 탭으로 기간을 바꿔요. 왼쪽은 클럽 전체 기록 카드, 오른쪽은 <b>선수 개인기록</b>이에요.',tip:'위쪽 칸에 <b>출석 · 1인 평균 · 총 게임 · 게임당 시간 · 코트 사용 시간</b>이 나와요.',k:'기록보관소 열기'},
- {t:'25점제 · 21점제 평균 시간',img:'rec2',s:'개인기록 위쪽 두 칸에 <b>25점제 평균</b>과 <b>21점제 평균</b> 시간이 따로 나와요. 몇 게임으로 낸 평균인지도 함께 보여요.',tip:'점수제별 기록은 <b>업데이트(v4.83) 이후</b> 끝난 게임부터 쌓여요. 그 전 날짜는 "0게임"이에요.',k:'점수제별 평균 시간'},
- {t:'이름 · 초성으로 검색',img:'rq',s:'이름 검색칸을 누르면 <b>남성부 · 여성부</b> 이름이 한눈에 떠요. 이름을 직접 치거나 <b>초성</b>으로 찾아도 돼요. <b>여러 명</b>을 골라 <b>적용</b>을 누르면 한꺼번에 볼 수 있어요.',tip:'선택을 모두 지우려면 <b>선택 해제</b>.',k:'기록 이름 검색'},
- {t:'기록 이미지 저장',img:'rimg',s:'검색칸 오른쪽 <b>이미지 저장</b>을 누르면 개인기록 표가 <b>사진 한 장</b>으로 만들어져요. 아래 <b>저장 · 복사 · 공유</b> 중 골라서 단톡방에 올려요.',tip:'표 맨 위에 <b>기간과 정렬 기준</b>(예: 오늘 · 총 게임 순)이 함께 적혀요.',k:'기록 이미지 저장'},
- {t:'월례회 모드 켜기',img:'wl1',s:'설정의 <b>월례회 모드 › 대진표</b>를 누르고 <b>대진표 열기</b>.',tip:'다음 날이 되면 자동으로 일반 모드로 돌아와요.',k:'월례회 켜기'},
- {t:'월례회 설정 고르기',img:'wl2',s:'<b>풀리그/토너먼트</b>, <b>팀 짜기</b>, <b>코트 수</b>, <b>점수제</b>, <b>대관 시간</b>을 고르면 초록 글씨로 끝나는 시간이 나와요.',tip:'참가자는 <b>홈 출석 불러오기</b>로 한 번에 가져와요.',k:'월례회 설정'},
- {t:'일정으로 진행해요',img:'wl_sched',s:'<b>대진표 만들기</b> 후 <b>일정</b> 탭. <b>입장</b>으로 코트에 보내고, 끝나면 점수를 입력해요.',tip:'경기 전 사람이 바뀌면 <b>교체</b> 버튼.',k:'월례회 일정'},
- {t:'대진표 이미지 저장',img:'wl_bracket',s:'<b>대진표</b> 탭 오른쪽 위 <b>이미지로 저장</b>. 이긴 팀이 선을 타고 올라가요.',k:'대진표 이미지'},
- {t:'순위 보기',img:'wl_rank',s:'<b>순위</b> 탭에서 팀별 전적과 득실을 봐요. 끝나면 <b>월례회 종료</b>.',k:'월례회 순위'}]}
-};
-var FIND=[];Object.keys(COURSES).forEach(function(c){COURSES[c].slides.forEach(function(s,i){FIND.push({c:c,i:i,k:s.k,tag:COURSES[c].tag})})});
-var hub=document.getElementById('hub'),pg=document.getElementById('pg'),fd=document.getElementById('fd'),track=document.getElementById('track'),dots=document.getElementById('dots'),cnt=document.getElementById('cnt'),prev=document.getElementById('prev'),next=document.getElementById('next');
-document.querySelectorAll('[data-n]').forEach(function(e){e.textContent=COURSES[e.dataset.n].slides.length+'장'});
-var cur=null,p=0,n=0;
-function esc(x){return x}
-function build(c){
- var C=COURSES[c];n=C.slides.length;track.innerHTML='';dots.innerHTML='';
- C.slides.forEach(function(s,i){
-  var d=document.createElement('div');d.className='sl';
-  var h='<div class="eb">'+C.name+' 코스 · '+(i+1)+' / '+n+'</div><h2>'+s.t+'</h2>';
-  if(s.list)h+='<ol class="list">'+s.list.map(function(x,k){return '<li><i>'+(k+1)+'</i>'+x+'</li>'}).join('')+'</ol>';
-  else if(s.img)h+='<div class="shot"><img src="img/'+s.img+'.jpg" alt="'+s.t+' 화면" loading="lazy"></div>';
-  h+='<p class="say">'+s.s+'</p>';
-  if(s.tip)h+='<div class="tip">'+s.tip+'</div>';
-  if(s.warn)h+='<div class="warn">'+s.warn+'</div>';
-  d.innerHTML=h;track.appendChild(d);
-  var b=document.createElement('button');b.setAttribute('aria-label',(i+1)+'쪽');b.onclick=function(){go(i)};dots.appendChild(b)});
-}
-function ui(){
- for(var i=0;i<n;i++)dots.children[i].className=i===p?'on':'';
- cnt.textContent=(p+1)+' / '+n;prev.disabled=p===0;
- next.textContent=p===n-1?'처음으로':'다음';
-}
-function go(i){p=Math.max(0,Math.min(n-1,i));track.scrollTo({left:p*track.clientWidth,behavior:'smooth'});ui()}
-var st;track.addEventListener('scroll',function(){clearTimeout(st);st=setTimeout(function(){var q=Math.round(track.scrollLeft/track.clientWidth);if(q!==p){p=q;ui()}},60)});
-prev.onclick=function(){go(p-1)};
-next.onclick=function(){if(p===n-1)route('');else go(p+1)};
-document.getElementById('home').onclick=function(){route('')};
-function route(h){if(location.hash.slice(1)===h){show()}else location.hash=h}
-function show(){
- var h=location.hash.slice(1);h=h.replace(/^(member|play)/,'user').replace(/^ops/,'extra');var m=h.match(/^(user|duty|extra)(?:-(\d+))?$/);
- hub.hidden=pg.hidden=fd.hidden=true;
- if(m){cur=m[1];build(cur);pg.hidden=false;var i=m[2]?+m[2]-1:0;p=Math.max(0,Math.min(n-1,i));track.scrollLeft=p*track.clientWidth;ui()}
- else if(h==='find'){fd.hidden=false}
- else{hub.hidden=false;hub.scrollTop=0}
-}
-window.addEventListener('hashchange',show);
-document.addEventListener('click',function(e){var t=e.target.closest('[data-go]');if(t){e.preventDefault();route(t.dataset.go)}});
-var g=document.getElementById('grid');
-FIND.forEach(function(f){var b=document.createElement('button');b.innerHTML='<b>'+f.k+'</b><span>'+f.tag+' 코스 '+(f.i+1)+'장</span>';b.onclick=function(){location.hash=f.c+'-'+(f.i+1)};g.appendChild(b)});
-var lb=document.getElementById('lb'),li=lb.querySelector('img');
-document.addEventListener('click',function(e){var t=e.target;if(t.closest&&t.closest('.shot')&&t.tagName==='IMG'){li.src=t.src;lb.classList.add('on');lb.scrollTop=0;lb.scrollLeft=0}else if(t===lb||t.id==='lbx'||t===li){lb.classList.remove('on')}});
-document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('on');if(!pg.hidden){if(e.key==='ArrowRight')go(p+1);if(e.key==='ArrowLeft')go(p-1)}});
-window.addEventListener('resize',function(){if(!pg.hidden)track.scrollLeft=p*track.clientWidth});
-show();
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+var sheet=$('#sheet'),q=$('#q'),ls=$('#ls');
+function open(){sheet.classList.add('on');sheet.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
+function close(){sheet.classList.remove('on');sheet.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+$('#menu').onclick=open;$('#menu2').onclick=open;
+$$('[data-x]',sheet).forEach(function(e){e.onclick=close});
+$$('a',ls).forEach(function(a){a.addEventListener('click',close)});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){close();lb.classList.remove('on')}});
+q.addEventListener('input',function(){var v=q.value.trim().toLowerCase(),any=false;
+ $$('.tg',ls).forEach(function(g){var hit=false;$$('.ts',g).forEach(function(a){var m=!v||(a.dataset.kw||'').toLowerCase().indexOf(v)>-1;a.style.display=m?'':'none';if(m)hit=true});
+  var c=$('.tc',g);var cm=!v||c.textContent.toLowerCase().indexOf(v)>-1;g.style.display=(hit||cm)?'':'none';if(cm&&v)$$('.ts',g).forEach(function(a){a.style.display=''});if(hit||cm)any=true});
+ $('#nores').style.display=any?'none':'block'});
+/* 라이트박스 */
+var lb=$('#lb'),li=$('img',lb);
+document.addEventListener('click',function(e){var z=e.target.closest&&e.target.closest('.zoom');if(z){li.src=z.querySelector('img').src;li.alt=z.querySelector('img').alt;lb.classList.add('on');lb.scrollTop=0;lb.scrollLeft=0;document.body.style.overflow='hidden';return}
+ if(lb.classList.contains('on')&&(e.target===lb||e.target.id==='lbx')){lb.classList.remove('on');document.body.style.overflow=''}});
+/* 스크롤 표시 */
+var chs=$$('.ch'),cur=$('#cur'),prog=$('#prog'),totop=$('#totop');
+function onS(){var y=window.scrollY,h=document.documentElement.scrollHeight-innerHeight;prog.style.width=(h>0?y/h*100:0)+'%';totop.classList.toggle('on',y>900);
+ var t='표지',line=innerHeight*.35;chs.forEach(function(c){if(c.getBoundingClientRect().top<line)t=c.dataset.ch});cur.textContent=t}
+addEventListener('scroll',onS,{passive:true});onS();
+totop.onclick=function(){scrollTo({top:0})};
+/* 옛 링크 호환 */
+var m={user:'attend',member:'attend',play:'play',duty:'home',ops:'record',extra:'record'};
+var h=location.hash.slice(1).replace(/-\d+$/,'');if(m[h]){history.replaceState(null,'','#'+m[h]);var t=document.getElementById(m[h]);if(t)setTimeout(function(){t.scrollIntoView()},50)}
 })();
 </script>
 </body>

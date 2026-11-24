@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>게임현황판 가이드북 · 좌동배드민턴클럽</title>
-<meta name="description" content="역할별로 골라 한 화면씩 넘겨 보는 좌동클럽 게임현황판 가이드북">
+<meta name="description" content="체육관 이용자 · 당번 · 부가기능(기록보관소·월례회 대진표)으로 나눠 한 화면씩 넘겨 보는 좌동클럽 게임현황판 가이드북">
 <meta property="og:title" content="좌동클럽 게임현황판 가이드북">
-<meta property="og:description" content="회원·당번·운영, 내 역할만 골라서 3~5분이면 끝">
-<meta property="og:type" content="website"><meta property="og:url" content="https://zelong2-star.github.io/jwadongclub/guide/full/"><meta property="og:image" content="https://zelong2-star.github.io/jwadongclub/guide/full/og.jpg?v=1"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://zelong2-star.github.io/jwadongclub/guide/full/og.jpg?v=1">
+<meta property="og:description" content="체육관 이용자 · 당번 · 부가기능, 내 역할만 골라서 한 화면씩">
+<meta property="og:type" content="website"><meta property="og:url" content="https://zelong2-star.github.io/jwadongclub/guide/full/"><meta property="og:image" content="https://zelong2-star.github.io/jwadongclub/guide/full/og.jpg?v=2"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://zelong2-star.github.io/jwadongclub/guide/full/og.jpg?v=2">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
 <style>
 :root{--bg:#F3F7FC;--card:#fff;--ink:#14213D;--ink2:#2A3650;--mu:#5B6780;--line:#D5DEEC;--ac:#0C50A1;--ac2:#E8F0FB;--red:#E53935;--grn:#0B7A3B;--ylw:#8A6A00}
@@ -85,8 +85,9 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family
     <p>한 화면에 한 가지씩, 옆으로 넘기면 끝나요.</p>
   </div>
   <div class="q">나는 어떤 일을 해요?</div>
-  <button class="role" data-go="play"><div class="ic" style="background:#0C50A1">회</div><div><b>회원 · 당번</b><span>출석 · 대기 · 입장 · 게임 종료 · 정산 · 내 기록</span></div><em data-n="play"></em></button>
-  <button class="role" data-go="ops"><div class="ic" style="background:#8A6A00">운</div><div><b>운영</b><span>월례회 대진표 · 설정 · 백업</span></div><em data-n="ops"></em></button>
+  <button class="role" data-go="user"><div class="ic" style="background:#0C50A1">이</div><div><b>체육관 이용자</b><span>출석 · 순서 · 입장료 · 게임 종료 · 점수</span></div><em data-n="user"></em></button>
+  <button class="role" data-go="duty"><div class="ic" style="background:#0B7A3B">당</div><div><b>당번</b><span>대기 편성 · 입장 · 교체 · 정산 · 설정</span></div><em data-n="duty"></em></button>
+  <button class="role" data-go="extra"><div class="ic" style="background:#8A6A00">부</div><div><b>부가기능</b><span>기록보관소 · 월례회 대진표</span></div><em data-n="extra"></em></button>
   <div class="sub"><button data-go="find">궁금한 것 찾아보기</button><a href="more.html">전체 설명 보기</a></div>
   <div class="foot">장 수는 한 화면씩 넘기는 분량이에요.<br>사진을 누르면 크게 볼 수 있어요.</div>
 </div>
@@ -111,28 +112,38 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family
 <script>
 (function(){
 var COURSES={
-play:{name:'회원·당번',tag:'회원·당번',slides:[
+user:{name:'체육관 이용자',tag:'이용자',slides:[
  {t:'화면은 세 칸이에요',img:'main',s:'왼쪽은 <b>코트</b>, 가운데는 <b>대기</b>, 오른쪽은 <b>출석·쉬는 선수</b>예요.',tip:'이름 앞 <b>파란 점은 남자, 분홍 점은 여자</b>예요.',k:'화면 보는 법'},
- {t:'하루는 이 순서예요',list:['출석 체크','대기 만들기 (예약·자동 편성)','입장','게임 종료 ✕','오늘 게임 종료'],s:'이 순서만 기억하면 돼요. 하나씩 볼게요.',k:'하루 흐름'},
- {t:'도착하면 출석부터',img:'att',s:'<b>이름 또는 초성</b>으로 찾아 누르거나, <b>회원명단</b>에서 골라 <b>불러오기</b>를 눌러요. 손님은 <b>손님</b> 필터에서 골라요.',tip:'초성만 쳐도 돼요. 예를 들어 <b>ㄱㅈㅇ</b>. 같은 요일 단골은 설정의 <b>단골 출석 넣기</b> 한 번이면 돼요.',k:'출석하기'},
+ {t:'도착하면 출석부터',img:'att',s:'<b>이름 또는 초성</b>으로 찾아서 눌러요. 손님은 <b>손님</b> 필터에서 골라요.',tip:'초성만 쳐도 돼요. 예를 들어 <b>ㄱㅈㅇ</b>. 고르고 나면 검색칸은 저절로 비워져요.',k:'출석하기'},
+ {t:'대기에 이름이 올라가면',img:'c_go',s:'대기 줄의 <b>곧 입장 · 약 N분 후</b>로 내 차례를 가늠해요. 코트가 비고 4명이 모이면 <b>입장</b> 버튼이 <b>빨갛게 깜빡여요</b>.',tip:'빨간 <b>입장</b>을 눌러서 코트로 가요.',k:'내 순서 보기'},
+ {t:'입장료 송금 확인',img:'pay',s:'대기에 이름이 올라가면 <b>입장료 송금 확인</b> 창이 떠요. <b>QR을 찍어 송금</b>한 뒤 내 이름 옆 <b>송금 확인</b>을 눌러요.',tip:'<b>당번 · 수요일 · 월례회</b>는 무료예요. 현금은 <b>당번에게</b> 내면 돼요.',warn:'모두 확인되기 전에는 <b>완료</b>가 눌리지 않아요. 내 이름이 아니면 건드리지 마세요.',k:'입장료 송금'},
+ {t:'게임이 끝나면 ✕',img:'c_end',s:'코트 오른쪽 위 <b>✕</b>를 누르고, 확인 창에서 <b>게임 종료</b>를 눌러요.',tip:'코트 시간은 노랑 → 주황 → 빨강으로 변해요. 빨강이 오래 친 코트예요.',warn:'안 누르면 시간이 계속 흘러가요. 5분 미만·25분 초과 게임은 기록에서 빠져요.',k:'게임 종료'},
+ {t:'점수 입력 전, 파트너 정하기',img:'tm',s:'✕를 누르면 먼저 <b>파트너 정하기</b> 창이 떠요. <b>내 이름 → 내 파트너</b> 순서로 누르면 나머지 두 명이 <b>상대</b>로 정리돼요. 그다음 <b>다음</b>.',tip:'코트에 적힌 순서 그대로면 <b>코트 순서 그대로</b>를 눌러요.',k:'파트너 정하기'},
+ {t:'점수 입력',img:'scm',s:'팀을 정했으면 <b>점수 입력</b> 창에서 숫자를 누르고 <b>저장하고 종료</b>. 모르면 <b>점수 없이 종료</b>(한 번 더 물어봐요).',tip:'맨 아래 <b>승 25</b>(또는 <b>승 21</b>) 키는 이긴 팀 점수를 한 번에 입력해요.',k:'점수 입력'},
+ {t:'쉬고 싶을 땐 이름을 꾹',img:'status',s:'쉬는 선수 이름을 <b>길게 누르면</b> <b>레슨중 · 휴식중 · 운동끝</b>을 고를 수 있어요.',tip:'휴식중·운동끝이면 자동 편성에서 빠져요. 돌아오면 <b>표시 해제</b>!',k:'휴식·운동끝 표시'},
+ {t:'내 기록 보기',img:'rec2',s:'맨 위 <b>기록</b> 버튼을 누르면 <b>기록보관소</b>가 열려요. 이름 검색칸에 내 이름을 치면 <b>출석·게임 수·운동 시간</b>이 한 줄로 나와요.',tip:'자세한 사용법은 <b>부가기능 › 기록보관소</b>에서 볼 수 있어요.',k:'내 기록 보기'}]},
+duty:{name:'당번',tag:'당번',slides:[
+ {t:'당번의 하루 흐름',list:['출석 확인 · 손님 이름 적기','대기 만들기 (예약 · 자동 편성)','입장료 송금 확인','입장 · 게임 종료 챙기기','오늘 게임 종료 → 입장명부'],s:'이 순서만 기억하면 돼요. 하나씩 볼게요.',k:'당번 하루 흐름'},
+ {t:'출석 챙기기',img:'att',s:'늦게 온 분은 <b>이름 또는 초성</b>으로 찾아 눌러요. 손님은 <b>손님</b> 필터에서 고르고, 손님 이름은 그날만 적어 둘 수 있어요.',tip:'같은 요일 단골은 설정의 <b>단골 출석 넣기</b> 한 번이면 돼요.',k:'출석 챙기기'},
  {t:'4명을 골라 예약',img:'pick_c',s:'<b>쉬는 선수</b> 이름을 누르면 ✓가 붙어요. 4명이 차면 <b>예약</b>을 눌러요.',tip:'잘못 골랐으면 <b>취소</b>로 처음부터.',k:'대기 만들기(예약)'},
  {t:'많을 땐 자동 편성',img:'auto',s:'대기 칸 위 노란 <b>자동 편성</b>. <b>같은 성별끼리</b> 또는 <b>성별 섞기</b> 중 고르면 4명씩 한꺼번에 들어가요.',tip:'마음에 안 들면 <b>되돌리기</b> 한 번!',k:'자동 편성'},
- {t:'내 순서를 기다려요',img:'c_go',s:'대기 줄에 이름이 올라가면 줄 옆의 <b>곧 입장 · 약 N분 후</b>를 보세요. 코트가 비고 4명이 모이면 줄 왼쪽에 <b>입장 가능</b>이 뜨고 <b>입장</b> 버튼이 <b>빨갛게 깜빡여요</b>.',tip:'빨간 <b>입장</b>을 눌러서 코트로 가요.',k:'순서·입장'},
- {t:'게임이 끝나면 ✕',img:'c_end',s:'코트 오른쪽 위 <b>✕</b>를 누르고, 확인 창에서 <b>게임 종료</b>를 눌러요.',tip:'코트 시간은 노랑 → 주황 → 빨강으로 변해요. 빨강이 오래 친 코트예요.',warn:'안 누르면 시간이 계속 흘러가요. 5분 미만·25분 초과 게임은 기록에서 빠져요.',k:'게임 종료'},
- {t:'점수 입력 전, 파트너 정하기',img:'tm',s:'✕를 누르면 먼저 <b>파트너 정하기</b> 창이 떠요. <b>내 이름 → 내 파트너</b> 순서로 누르면 나머지 두 명이 <b>상대</b>로 정리돼요. 그다음 <b>다음</b>.',tip:'코트에 적힌 순서 그대로면 <b>코트 순서 그대로</b>를 눌러요. 점수는 본인이 직접 와서 입력해요.',k:'파트너 정하기'},
- {t:'점수 입력 모드일 때',img:'scm',s:'팀을 정했으면 <b>점수 입력</b> 창에서 숫자를 누르고 <b>저장하고 종료</b>. 모르면 <b>점수 없이 종료</b>(한 번 더 물어봐요).',tip:'맨 아래 <b>승 25</b>(또는 <b>승 21</b>) 키는 이긴 팀 점수를 한 번에 입력해요.',k:'점수 입력'},
- {t:'21점제로 바꿀 땐',img:'ptsys',s:'코트 위 <b>25점제</b> 칩을 누르면 선택 창이 열려요. <b>21점제</b>를 고르면 칩이 <b>빨갛게 깜빡여요</b>.',tip:'예약 완료 음성이 <b>"이십일점제 입니다"</b>도 함께 말해요.',k:'21점제·25점제'},
+ {t:'자동 편성이 짝 맞추는 기준',img:'mem',s:'<b>급수와 나이</b>가 비슷한 사람끼리, <b>게임 수가 적은 사람</b>이 먼저 들어가요. 같은 급수·같은 나이 안에서 실력 차가 크면 회원명부의 <b>상향</b>(+0.5급) 또는 <b>초심</b>(−0.5급) 표시로 보정해요.',tip:'설정 › <b>회원명부 관리</b>에서 눌러요. 상향과 초심은 둘 중 하나만 켜져요.',k:'자동 편성 기준·상향/초심'},
+ {t:'입장 확인',img:'c_go',s:'코트가 비고 4명이 모이면 줄 왼쪽에 <b>입장 가능</b>이 뜨고 <b>입장</b> 버튼이 <b>빨갛게 깜빡여요</b>. 눌러서 코트로 보내요.',k:'입장'},
+ {t:'입장료 송금 확인 챙기기',img:'pay',s:'대기에 이름이 올라가면 <b>입장료 송금 확인</b> 창이 떠요. 본인이 <b>송금 확인</b>을 누르게 안내해 주세요. 빼야 하는 사람은 <b>✕</b>로 목록에서 빼요.',tip:'<b>전체 취소</b>는 두 번 눌러야 해요. 당번·수요일·월례회는 무료예요.',k:'송금 확인 창'},
+ {t:'21점제로 바꿀 땐',img:'ptsys',s:'코트 위 <b>25점제</b> 칩을 누르면 선택 창이 열려요. <b>21점제</b>를 고르면 칩이 <b>빨갛게 깜빡여요</b>.',tip:'예약 완료 음성이 <b>"이십일점제 입니다"</b>도 함께 말해요. 기록보관소에서 점수제별 평균 시간도 따로 볼 수 있어요.',k:'21점제·25점제'},
  {t:'코트 자리 바꾸기',img:'cmv',s:'코트 카드를 <b>꾹 누르면</b> <b>○번 코트 이동</b> 창이 떠요. 게임 중인 다른 코트와 <b>자리 바꾸기</b>를 할 수 있어요.',tip:'빈 코트가 있으면 <b>빈 코트로 이동</b>도 보여요.',k:'코트 자리 바꾸기'},
- {t:'쉬고 싶을 땐 이름을 꾹',img:'status',s:'쉬는 선수 이름을 <b>길게 누르면</b> <b>레슨중 · 휴식중 · 운동끝</b>을 고를 수 있어요.',tip:'휴식중·운동끝이면 자동 편성에서 빠져요. 돌아오면 <b>표시 해제</b>!',k:'휴식·운동끝 표시'},
  {t:'코트에서 사람 바꾸기',img:'swapc',s:'코트에서 <b>바꿀 이름</b>을 눌러요. <b>쉬는 선수</b> 중 한 명을 골라 <b>선수 교체</b>.',k:'코트 선수 교체'},
  {t:'대기 선수 교체',img:'swapq',s:'대기 줄의 <b>이름을 눌러요</b>. <b>사유</b>(레슨·휴식·운동끝·개인사정)를 고르고 <b>대기선수에서 고르기</b>로 대신할 사람을 정해요.',warn:'정당한 이유 없이 <b>그냥 빼기</b>를 하면 <b>순번이 한 칸 뒤로</b> 밀려요.',k:'대기 선수 교체'},
  {t:'대기 팀 통째로 취소',img:'qcx',s:'대기 줄의 <b>입장</b> 버튼을 <b>꾹 누르면</b> 버튼이 <b>취소</b>로 바뀌고, <b>"대기 N번 팀을 취소할까요?"</b> 창이 떠요. <b>팀 취소</b>를 누르면 그 줄이 비어요.',tip:'선수들은 쉬는 선수로 돌아가요. <b>되돌리기</b>로 취소할 수 있어요.',k:'대기 팀 취소'},
  {t:'잘못 눌렀어요',img:'c_top',s:'맨 위 <b>되돌리기</b>를 누르면 한 단계 취소돼요. <b>다시하기</b>는 되살리기, <b>비우기</b>는 코트·대기를 처음으로.',k:'되돌리기'},
- {t:'하루 마무리와 정산',img:'rol',s:'맨 위 <b>오늘 게임 종료</b> → <b>오늘 종료</b>. 입장명부가 열리면 이름마다 <b>현금 / 송금</b>을 체크해요.',tip:'<b>이미지 저장</b>이나 <b>보낼 글 복사</b>로 단톡방에 올려요. 안 뛴 사람은 자동으로 빠져요.',k:'정산·입장명부'},
- {t:'내 운동 기록 보기',img:'rec',s:'맨 위 <b>기록</b> 버튼을 눌러요. 오늘·주간·월간·연간·누적 <b>출석과 게임 수</b>가 나와요.',tip:'이름 검색 칸에 내 이름을 치면 한 줄로 볼 수 있어요.',k:'내 기록 보기'}]},
-ops:{name:'운영',tag:'운영',slides:[
- {t:'설정 위쪽',img:'set1',s:'<b>효과음 · 음량 · 효과음 종류</b>, <b>진동</b>, <b>음성 안내</b>, <b>코트 테마</b>를 여기서 바꿔요.',tip:'진동은 안드로이드에서만 돼요.',k:'소리·화면 설정'},
- {t:'설정 아래쪽',img:'set2',s:'<b>데이터 백업</b>, <b>기록 관리</b>(연습 모드·기록 삭제), <b>업데이트 받기</b>가 있어요.',warn:'기록 삭제는 되돌릴 수 없어요. 먼저 <b>백업 저장</b>!',k:'백업·업데이트'},
+ {t:'하루 마무리 · 입장명부',img:'ro2',s:'맨 위 <b>오늘 게임 종료</b> → <b>오늘 종료</b>를 누르면 입장명부가 열려요. 이름마다 <b>현금 / 송금</b>을 체크하고 맨 위 <b>합계</b>를 확인해요.',tip:'<b>이미지 저장</b>이나 <b>보낼 글 복사</b>로 단톡방에 올려요. 안 뛴 사람은 자동으로 빠져요.',warn:'입장명부에는 송금 계좌가 함께 보여요. 화면을 외부에 공유할 땐 계좌 부분을 가려 주세요.',k:'정산·입장명부'},
+ {t:'소리 · 화면 설정',img:'set1',s:'<b>효과음 · 음량</b>, <b>진동</b>, <b>음성 안내</b>, <b>코트 테마</b>를 여기서 바꿔요.',tip:'진동은 안드로이드에서만 돼요.',k:'소리·화면 설정'},
+ {t:'백업 · 업데이트',img:'set2',s:'<b>데이터 백업</b>, <b>기록 관리</b>(연습 모드·기록 삭제), <b>업데이트 받기</b>가 있어요.',warn:'기록 삭제는 되돌릴 수 없어요. 먼저 <b>백업 저장</b>! 데이터는 이 기기에만 저장돼요.',k:'백업·업데이트'}]},
+extra:{name:'부가기능',tag:'부가기능',slides:[
+ {t:'기록보관소 열기',img:'rec2',s:'맨 위 <b>기록</b> 버튼. 위쪽 <b>오늘 · 주간 · 월간 · 연간 · 누적</b> 탭으로 기간을 바꿔요. 왼쪽은 클럽 전체 기록 카드, 오른쪽은 <b>선수 개인기록</b>이에요.',tip:'위쪽 칸에 <b>출석 · 1인 평균 · 총 게임 · 게임당 시간 · 코트 사용 시간</b>이 나와요.',k:'기록보관소 열기'},
+ {t:'25점제 · 21점제 평균 시간',img:'rec2',s:'개인기록 위쪽 두 칸에 <b>25점제 평균</b>과 <b>21점제 평균</b> 시간이 따로 나와요. 몇 게임으로 낸 평균인지도 함께 보여요.',tip:'점수제별 기록은 <b>업데이트(v4.83) 이후</b> 끝난 게임부터 쌓여요. 그 전 날짜는 "0게임"이에요.',k:'점수제별 평균 시간'},
+ {t:'이름 · 초성으로 검색',img:'rq',s:'이름 검색칸을 누르면 <b>남성부 · 여성부</b> 이름이 한눈에 떠요. 이름을 직접 치거나 <b>초성</b>으로 찾아도 돼요. <b>여러 명</b>을 골라 <b>적용</b>을 누르면 한꺼번에 볼 수 있어요.',tip:'선택을 모두 지우려면 <b>선택 해제</b>.',k:'기록 이름 검색'},
+ {t:'기록 이미지 저장',img:'rimg',s:'검색칸 오른쪽 <b>이미지 저장</b>을 누르면 개인기록 표가 <b>사진 한 장</b>으로 만들어져요. 아래 <b>저장 · 복사 · 공유</b> 중 골라서 단톡방에 올려요.',tip:'표 맨 위에 <b>기간과 정렬 기준</b>(예: 오늘 · 총 게임 순)이 함께 적혀요.',k:'기록 이미지 저장'},
  {t:'월례회 모드 켜기',img:'wl1',s:'설정의 <b>월례회 모드 › 대진표</b>를 누르고 <b>대진표 열기</b>.',tip:'다음 날이 되면 자동으로 일반 모드로 돌아와요.',k:'월례회 켜기'},
  {t:'월례회 설정 고르기',img:'wl2',s:'<b>풀리그/토너먼트</b>, <b>팀 짜기</b>, <b>코트 수</b>, <b>점수제</b>, <b>대관 시간</b>을 고르면 초록 글씨로 끝나는 시간이 나와요.',tip:'참가자는 <b>홈 출석 불러오기</b>로 한 번에 가져와요.',k:'월례회 설정'},
  {t:'일정으로 진행해요',img:'wl_sched',s:'<b>대진표 만들기</b> 후 <b>일정</b> 탭. <b>입장</b>으로 코트에 보내고, 끝나면 점수를 입력해요.',tip:'경기 전 사람이 바뀌면 <b>교체</b> 버튼.',k:'월례회 일정'},
@@ -169,7 +180,7 @@ next.onclick=function(){if(p===n-1)route('');else go(p+1)};
 document.getElementById('home').onclick=function(){route('')};
 function route(h){if(location.hash.slice(1)===h){show()}else location.hash=h}
 function show(){
- var h=location.hash.slice(1);h=h.replace(/^(member|duty)/,'play');var m=h.match(/^(play|ops)(?:-(\d+))?$/);
+ var h=location.hash.slice(1);h=h.replace(/^(member|play)/,'user').replace(/^ops/,'extra');var m=h.match(/^(user|duty|extra)(?:-(\d+))?$/);
  hub.hidden=pg.hidden=fd.hidden=true;
  if(m){cur=m[1];build(cur);pg.hidden=false;var i=m[2]?+m[2]-1:0;p=Math.max(0,Math.min(n-1,i));track.scrollLeft=p*track.clientWidth;ui()}
  else if(h==='find'){fd.hidden=false}

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>좌동클럽 당번표</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:'Noto Sans KR',system-ui,sans-serif;color:#1b2733;background:#F4F7FA;line-height:1.5}
+button,input{font-family:inherit;color:inherit}
+button{cursor:pointer}
+.wrap{max-width:760px;margin:0 auto;padding:16px 12px 40px;display:flex;flex-direction:column;gap:12px}
+h1{margin:0;font-size:22px;font-weight:700;color:#1F4E79}
+.hide{display:none!important}
+.card{background:#fff;border:1px solid #cfd9e3;border-radius:14px;padding:14px 16px}
+.btn{min-height:44px;padding:0 14px;border:1px solid #b8c4cf;border-radius:10px;background:#fff;font-size:15px;font-weight:500}
+.btn.primary{background:#1F4E79;border-color:#1F4E79;color:#fff;font-weight:700}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.hello{font-size:17px;font-weight:700}
+.mine{font-size:14px;color:#33475b}
+.nav{display:flex;align-items:center;justify-content:center;gap:8px}
+.nav .label{min-width:120px;text-align:center;font-size:18px;font-weight:700}
+.status{padding:12px 14px;border-radius:12px;background:#FEF3E2;color:#7a3a05;font-size:15px;font-weight:500}
+.title{background:#1F4E79;color:#fff;text-align:center;padding:10px;font-size:17px;font-weight:700;border-radius:10px 10px 0 0}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-left:1px solid #b8c4cf;background:#fff}
+.dow{background:#D9EAF7;text-align:center;padding:6px 0;font-size:13px;font-weight:700;border-right:1px solid #b8c4cf}
+.dow.we{background:#B3261E;color:#fff}
+.cell{min-height:104px;padding:3px;border-right:1px solid #b8c4cf;border-bottom:1px solid #b8c4cf;display:flex;flex-direction:column;gap:3px;min-width:0}
+.cell.we{background:#F5F9FD}
+.num{font-size:12px;font-weight:500;padding-left:2px}
+.cell.we .num{color:#B3261E}
+.chip{width:100%;min-height:44px;border-radius:8px;border:1px solid #8fa3b5;background:#fff;font-size:13px;font-weight:500;padding:0 1px;text-align:center;min-width:0}
+.chip:disabled{border-color:#d5dde5;color:#6b7b8a;background:transparent;cursor:default}
+.chip.me{background:#FEF3E2;border:2px solid #B45309;color:#5c2a02;font-weight:700}
+.chip.sel{background:#B45309;border-color:#B45309;color:#fff}
+.chip.tgt{background:#1F4E79;border-color:#1F4E79;color:#fff}
+pre{margin:0;padding:14px;border-radius:12px;background:#EAF2F9;font-family:inherit;font-size:15px;line-height:1.7;white-space:pre-wrap;user-select:text}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row .btn{flex:1 1 auto}
+.names{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.search{width:100%;min-height:44px;padding:0 12px;border:1px solid #b8c4cf;border-radius:10px;font-size:16px;margin:8px 0}
+.cap{font-size:13px;color:#5a6b7b}
+.btn:focus-visible,.chip:focus-visible,.search:focus-visible{outline:3px solid #E8710A;outline-offset:2px}
+@media (max-width:520px){.chip{font-size:12px}.cell{min-height:100px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>좌동클럽 당번표</h1>
+
+  <section id="picker" class="card hide" aria-label="이름 선택">
+    <div class="hello">내 이름을 선택하세요</div>
+    <div class="cap">한 번만 고르면 이 폰에 기억돼요. 언제든 바꿀 수 있습니다.</div>
+    <label class="cap" for="search">이름 검색</label>
+    <input class="search" id="search" type="text" autocomplete="off">
+    <div class="names" id="names"></div>
+  </section>
+
+  <section id="app" class="hide">
+    <div class="card top">
+      <div>
+        <div class="hello" id="hello"></div>
+        <div class="mine" id="mine"></div>
+      </div>
+      <button class="btn" id="changeMe">이름 바꾸기</button>
+    </div>
+    <div class="nav" style="margin-top:12px">
+      <button class="btn" id="prev" aria-label="이전 달">이전 달</button>
+      <div class="label" id="monthLabel" aria-live="polite"></div>
+      <button class="btn" id="next" aria-label="다음 달">다음 달</button>
+    </div>
+    <div class="status" id="status" role="status" style="margin-top:12px"></div>
+    <div style="margin-top:12px">
+      <div class="title" id="calTitle"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+    <div class="card" id="req" style="margin-top:12px" hidden>
+      <div class="cap">교환방에 붙여넣을 문구</div>
+      <pre id="reqText"></pre>
+      <div class="row" style="margin-top:10px">
+        <button class="btn primary" id="copy">문구 복사</button>
+        <button class="btn" id="reset">처음부터 다시</button>
+      </div>
+    </div>
+    <div class="cap" id="foot" style="margin-top:12px"></div>
+  </section>
+
+  <div class="card hide" id="err">당번표를 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침해 주세요.</div>
+</div>
+<script>
+(function () {
+  'use strict';
+  var DOW = ['월', '화', '수', '목', '금', '토', '일'];
+  var ME_KEY = 'jwadong-me-v1';
+  var data = null, me = null, keys = [], cur = null, mySel = null, target = null;
+  try { me = localStorage.getItem(ME_KEY); } catch (e) {}
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
+  function ym() { var p = cur.split('-'); return [parseInt(p[0], 10), parseInt(p[1], 10)]; }
+  function dowOf(y, m, d) { return DOW[(new Date(y, m - 1, d).getDay() + 6) % 7]; }
+  function label(d) { var p = ym(); return p[1] + '/' + d + '(' + dowOf(p[0], p[1], d) + ')'; }
+  function duties() { return (data.months[cur] && data.months[cur].duties) || {}; }
+  function isPast(day) {
+    var p = ym(), n = new Date();
+    return new Date(p[0], p[1] - 1, day) < new Date(n.getFullYear(), n.getMonth(), n.getDate());
+  }
+  function setStatus(t) { $('status').textContent = t; }
+
+  function allNames() {
+    var set = {};
+    keys.forEach(function (k) {
+      var ds = data.months[k].duties || {};
+      Object.keys(ds).forEach(function (d) { (ds[d] || []).forEach(function (n) { if (n) set[n] = 1; }); });
+    });
+    return Object.keys(set).sort(function (a, b) { return a.localeCompare(b, 'ko'); });
+  }
+
+  function showPicker() {
+    $('app').classList.add('hide');
+    $('picker').classList.remove('hide');
+    renderNames('');
+    $('search').value = '';
+  }
+  function renderNames(q) {
+    var box = $('names'); box.textContent = '';
+    allNames().filter(function (n) { return n.indexOf(q) >= 0; }).forEach(function (n) {
+      var b = el('button', 'btn', n); b.type = 'button';
+      b.addEventListener('click', function () {
+        me = n; try { localStorage.setItem(ME_KEY, n); } catch (e) {}
+        mySel = null; target = null; showApp();
+      });
+      box.appendChild(b);
+    });
+    if (!box.children.length) box.appendChild(el('div', 'cap', '일치하는 이름이 없어요. 총무에게 문의해 주세요.'));
+  }
+
+  function showApp() {
+    $('picker').classList.add('hide');
+    $('app').classList.remove('hide');
+    $('hello').textContent = me + ' 님, 안녕하세요';
+    (function () {
+      var now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      for (var i = 0; i < keys.length; i++) {
+        var pp = keys[i].split('-'), ds = data.months[keys[i]].duties || {};
+        var hit = Object.keys(ds).some(function (d) {
+          return (ds[d] || []).indexOf(me) >= 0 && new Date(parseInt(pp[0], 10), parseInt(pp[1], 10) - 1, parseInt(d, 10)) >= today;
+        });
+        if (hit) { cur = keys[i]; break; }
+      }
+    })();
+    $('foot').textContent = '당번표 기준일: ' + (data.updated || '-') + ' · 교환은 요청 후 상대 수락, 총무 확정이 되어야 반영됩니다.';
+    render();
+  }
+
+  function render() {
+    var p = ym(), y = p[0], m = p[1], ds = duties();
+    $('monthLabel').textContent = y + '년 ' + m + '월';
+    $('calTitle').textContent = y + '년 ' + m + '월 당번표';
+    var mine = Object.keys(ds).map(Number).sort(function (a, b) { return a - b; }).filter(function (d) { return (ds[d] || []).indexOf(me) >= 0; });
+    $('mine').textContent = mine.length ? '이 달 내 당번: ' + mine.map(label).join(', ') : '이 달에는 내 당번이 없어요.';
+    $('prev').disabled = keys.indexOf(cur) <= 0;
+    $('next').disabled = keys.indexOf(cur) >= keys.length - 1;
+
+    if (!mySel) setStatus('교환하고 싶은 내 당번(노란색 이름)을 누르세요.');
+    else if (!target) setStatus(label(mySel.day) + ' 당번을 바꿀 상대의 이름을 누르세요.');
+    else setStatus('요청 문구가 만들어졌어요. 복사해서 교환방에 올려 주세요.');
+
+    var grid = $('grid'); grid.textContent = '';
+    DOW.forEach(function (d, i) { grid.appendChild(el('div', 'dow' + (i >= 5 ? ' we' : ''), d)); });
+    var dim = new Date(y, m, 0).getDate();
+    var off = (new Date(y, m - 1, 1).getDay() + 6) % 7;
+    var total = Math.ceil((off + dim) / 7) * 7;
+    for (var k = 0; k < total; k++) {
+      (function (k) {
+        var day = k - off + 1;
+        var cell = el('div', 'cell' + ((k % 7) >= 5 ? ' we' : ''));
+        if (day >= 1 && day <= dim) {
+          cell.appendChild(el('div', 'num', String(day)));
+          var d = ds[day];
+          if (d) {
+            [0, 1].forEach(function (j) {
+              var name = d[j];
+              if (!name) return;
+              var isMe = name === me, past = isPast(day), enabled;
+              if (past) enabled = false;
+              else if (!mySel) enabled = isMe;
+              else enabled = isMe || day !== mySel.day;
+              var cls = 'chip';
+              if (isMe) cls += ' me';
+              if (mySel && mySel.day === day && mySel.j === j) cls += ' sel';
+              if (target && target.day === day && target.j === j) cls += ' tgt';
+              var b = el('button', cls, name); b.type = 'button';
+              b.disabled = !enabled;
+              b.setAttribute('aria-label', m + '월 ' + day + '일 ' + name + (isMe ? ' (내 당번)' : ''));
+              b.addEventListener('click', function () {
+                if (isMe) { mySel = { day: day, j: j }; target = null; }
+                else if (mySel) { target = { day: day, j: j }; }
+                render();
+              });
+              cell.appendChild(b);
+            });
+          }
+        }
+        grid.appendChild(cell);
+      })(k);
+    }
+
+    var req = $('req');
+    if (mySel && target) {
+      var t = duties()[target.day][target.j];
+      $('reqText').textContent = '[교환요청]\n요청자: ' + me + '\n내 당번: ' + label(mySel.day) + '\n상대 당번: ' + label(target.day) + ' ' + t + '님\n사유: ';
+      req.hidden = false;
+    } else { req.hidden = true; }
+  }
+
+  $('prev').addEventListener('click', function () { var i = keys.indexOf(cur); if (i > 0) { cur = keys[i - 1]; mySel = null; target = null; render(); } });
+  $('next').addEventListener('click', function () { var i = keys.indexOf(cur); if (i < keys.length - 1) { cur = keys[i + 1]; mySel = null; target = null; render(); } });
+  $('reset').addEventListener('click', function () { mySel = null; target = null; render(); });
+  $('changeMe').addEventListener('click', showPicker);
+  $('search').addEventListener('input', function () { renderNames($('search').value.trim()); });
+  $('copy').addEventListener('click', function () {
+    var t = $('reqText').textContent;
+    function fallback() {
+      var r = document.createRange(); r.selectNodeContents($('reqText'));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      setStatus('복사 권한이 없어 글을 선택해 두었어요. 길게 눌러 복사해 주세요.');
+    }
+    try { navigator.clipboard.writeText(t).then(function () { setStatus('복사했어요. 카톡 교환방에 붙여넣어 주세요.'); }, fallback); }
+    catch (e) { fallback(); }
+  });
+
+  fetch('data.json?t=' + Date.now()).then(function (r) { if (!r.ok) throw new Error('x'); return r.json(); }).then(function (d) {
+    data = d;
+    keys = Object.keys(d.months || {}).sort();
+    if (!keys.length) throw new Error('empty');
+    var n = new Date(), nk = n.getFullYear() + '-' + (n.getMonth() < 9 ? '0' : '') + (n.getMonth() + 1);
+    cur = keys.indexOf(nk) >= 0 ? nk : keys[keys.length - 1];
+    if (me && allNames().indexOf(me) >= 0) showApp(); else showPicker();
+  }).catch(function () { $('err').classList.remove('hide'); });
+})();
+</script>
+</body>
+</html>

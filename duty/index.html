@@ -41,7 +41,12 @@ pre{margin:0;padding:14px;border-radius:12px;background:#EAF2F9;font-family:inhe
 .names{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .search{width:100%;min-height:44px;padding:0 12px;border:1px solid #b8c4cf;border-radius:10px;font-size:16px;margin:8px 0}
 .cap{font-size:13px;color:#5a6b7b}
-.btn:focus-visible,.chip:focus-visible,.search:focus-visible{outline:3px solid #E8710A;outline-offset:2px}
+.btn:focus-visible,.chip:focus-visible,.search:focus-visible,.tog:focus-visible,summary:focus-visible{outline:3px solid #E8710A;outline-offset:2px}
+.dowrow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:6px}
+.tog{min-height:44px;border:1px solid #8fa3b5;border-radius:8px;background:#fff;font-size:14px;font-weight:500;padding:0 2px}
+.tog[aria-pressed="true"]{background:#1E7D4F;border-color:#1E7D4F;color:#fff;font-weight:700}
+.cell.avail{background:#E6F4EC}
+summary{min-height:32px;font-size:15px;font-weight:700;cursor:pointer}
 @media (max-width:520px){.chip{font-size:12px}.cell{min-height:100px}}
 </style>
 </head>
@@ -71,6 +76,15 @@ pre{margin:0;padding:14px;border-radius:12px;background:#EAF2F9;font-family:inhe
       <button class="btn" id="next" aria-label="다음 달">다음 달</button>
     </div>
     <div class="status" id="status" role="status" style="margin-top:12px"></div>
+    <details class="card" id="availBox" style="margin-top:12px">
+      <summary id="availSummary">가능한 날 선택 (선택 사항)</summary>
+      <div class="cap" style="margin-top:8px">내가 당번을 설 수 있는 요일이나 날짜를 고르면, 그날 당번인 사람만 교환 상대로 눌립니다. 이 폰에만 저장돼요.</div>
+      <div class="cap" style="margin-top:10px">요일</div>
+      <div class="dowrow" id="dowRow"></div>
+      <div class="cap" style="margin-top:10px">날짜 (이 달에서 당번이 있는 날)</div>
+      <div class="names" id="dateRow" style="margin-top:6px"></div>
+      <button class="btn" id="availClear" style="margin-top:12px">가능한 날 초기화</button>
+    </details>
     <div style="margin-top:12px">
       <div class="title" id="calTitle"></div>
       <div class="grid" id="grid"></div>
@@ -95,6 +109,12 @@ pre{margin:0;padding:14px;border-radius:12px;background:#EAF2F9;font-family:inhe
   var ME_KEY = 'jwadong-me-v1';
   var data = null, me = null, keys = [], cur = null, mySel = null, target = null;
   try { me = localStorage.getItem(ME_KEY); } catch (e) {}
+  var AV_KEY = 'jwadong-avail-v1';
+  var avail = { dows: [], dates: [] };
+  try {
+    var av = JSON.parse(localStorage.getItem(AV_KEY));
+    if (av && Array.isArray(av.dows) && Array.isArray(av.dates)) avail = av;
+  } catch (e) {}
 
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
@@ -115,6 +135,46 @@ pre{margin:0;padding:14px;border-radius:12px;background:#EAF2F9;font-family:inhe
       Object.keys(ds).forEach(function (d) { (ds[d] || []).forEach(function (n) { if (n) set[n] = 1; }); });
     });
     return Object.keys(set).sort(function (a, b) { return a.localeCompare(b, 'ko'); });
+  }
+
+  function saveAvail() { try { localStorage.setItem(AV_KEY, JSON.stringify(avail)); } catch (e) {} }
+  function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+  function hasFilter() { return avail.dows.length > 0 || avail.dates.length > 0; }
+  function matches(y, m, d) {
+    if (!hasFilter()) return true;
+    var idx = (new Date(y, m - 1, d).getDay() + 6) % 7;
+    return avail.dows.indexOf(idx) >= 0 || avail.dates.indexOf(y + '-' + pad2(m) + '-' + pad2(d)) >= 0;
+  }
+  function toggle(arr, v) { var i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); else arr.push(v); }
+  function renderAvail() {
+    var p = ym(), y = p[0], m = p[1], ds = duties();
+    var row = $('dowRow'); row.textContent = '';
+    DOW.forEach(function (n, i) {
+      var b = el('button', 'tog', n); b.type = 'button';
+      b.setAttribute('aria-pressed', avail.dows.indexOf(i) >= 0 ? 'true' : 'false');
+      b.addEventListener('click', function () { toggle(avail.dows, i); saveAvail(); mySelKeep(); render(); });
+      row.appendChild(b);
+    });
+    var dr = $('dateRow'); dr.textContent = '';
+    Object.keys(ds).map(Number).sort(function (a, b) { return a - b; }).forEach(function (d) {
+      if (isPast(d)) return;
+      var key = y + '-' + pad2(m) + '-' + pad2(d);
+      var b = el('button', 'tog', label(d)); b.type = 'button';
+      b.setAttribute('aria-pressed', avail.dates.indexOf(key) >= 0 ? 'true' : 'false');
+      b.addEventListener('click', function () { toggle(avail.dates, key); saveAvail(); mySelKeep(); render(); });
+      dr.appendChild(b);
+    });
+    if (!dr.children.length) dr.appendChild(el('div', 'cap', '이 달에는 선택할 수 있는 날짜가 없어요.'));
+    var parts = avail.dows.slice().sort(function (a, b) { return a - b; }).map(function (i) { return DOW[i]; });
+    var t = parts.join('·');
+    if (avail.dates.length) t += (t ? ', ' : '') + '날짜 ' + avail.dates.length + '개';
+    $('availSummary').textContent = t ? '가능한 날: ' + t : '가능한 날 선택 (선택 사항)';
+  }
+  function mySelKeep() { /* 가능한 날을 바꿔도 선택한 내 당번과 상대는 유지하되, 상대가 조건에서 빠지면 해제 */
+    if (target) {
+      var p = ym();
+      if (!matches(p[0], p[1], target.day)) target = null;
+    }
   }
 
   function showPicker() {
@@ -167,6 +227,7 @@ pre{margin:0;padding:14px;border-radius:12px;background:#EAF2F9;font-family:inhe
     else if (!target) setStatus(label(mySel.day) + ' 당번을 바꿀 상대의 이름을 누르세요.');
     else setStatus('요청 문구가 만들어졌어요. 복사해서 교환방에 올려 주세요.');
 
+    var cnt = 0;
     var grid = $('grid'); grid.textContent = '';
     DOW.forEach(function (d, i) { grid.appendChild(el('div', 'dow' + (i >= 5 ? ' we' : ''), d)); });
     var dim = new Date(y, m, 0).getDate();
@@ -179,6 +240,7 @@ pre{margin:0;padding:14px;border-radius:12px;background:#EAF2F9;font-family:inhe
         if (day >= 1 && day <= dim) {
           cell.appendChild(el('div', 'num', String(day)));
           var d = ds[day];
+          if (d && mySel && hasFilter() && day !== mySel.day && !isPast(day) && matches(y, m, day)) cell.classList.add('avail');
           if (d) {
             [0, 1].forEach(function (j) {
               var name = d[j];
@@ -186,7 +248,8 @@ pre{margin:0;padding:14px;border-radius:12px;background:#EAF2F9;font-family:inhe
               var isMe = name === me, past = isPast(day), enabled;
               if (past) enabled = false;
               else if (!mySel) enabled = isMe;
-              else enabled = isMe || day !== mySel.day;
+              else enabled = isMe || (day !== mySel.day && matches(y, m, day));
+              if (enabled && !isMe && mySel) cnt++;
               var cls = 'chip';
               if (isMe) cls += ' me';
               if (mySel && mySel.day === day && mySel.j === j) cls += ' sel';
@@ -195,7 +258,7 @@ pre{margin:0;padding:14px;border-radius:12px;background:#EAF2F9;font-family:inhe
               b.disabled = !enabled;
               b.setAttribute('aria-label', m + '월 ' + day + '일 ' + name + (isMe ? ' (내 당번)' : ''));
               b.addEventListener('click', function () {
-                if (isMe) { mySel = { day: day, j: j }; target = null; }
+                if (isMe) { mySel = { day: day, j: j }; target = null; $('availBox').open = true; }
                 else if (mySel) { target = { day: day, j: j }; }
                 render();
               });
@@ -207,6 +270,10 @@ pre{margin:0;padding:14px;border-radius:12px;background:#EAF2F9;font-family:inhe
       })(k);
     }
 
+    if (mySel && !target) {
+      setStatus(label(mySel.day) + ' 당번을 바꿀 상대의 이름을 누르세요.' + (hasFilter() ? (cnt ? ' (가능한 날 기준 ' + cnt + '명)' : ' 가능한 날에 맞는 상대가 이 달에는 없어요.') : ''));
+    }
+    renderAvail();
     var req = $('req');
     if (mySel && target) {
       var t = duties()[target.day][target.j];
@@ -230,6 +297,8 @@ pre{margin:0;padding:14px;border-radius:12px;background:#EAF2F9;font-family:inhe
     try { navigator.clipboard.writeText(t).then(function () { setStatus('복사했어요. 카톡 교환방에 붙여넣어 주세요.'); }, fallback); }
     catch (e) { fallback(); }
   });
+
+  $('availClear').addEventListener('click', function () { avail = { dows: [], dates: [] }; saveAvail(); render(); });
 
   fetch('data.json?t=' + Date.now()).then(function (r) { if (!r.ok) throw new Error('x'); return r.json(); }).then(function (d) {
     data = d;

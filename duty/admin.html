@@ -277,7 +277,11 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <button class="btn" id="impLoad" style="width:100%;margin-top:10px">불러와서 비교하기</button>
         <div id="impBody"></div>
       </div>
-      <div class="card" id="memCard"><div id="memList"></div></div>
+      <div class="card" id="memCard">
+        <label class="srch" for="memSearch" style="display:flex;align-items:center;gap:6px;font-weight:800;font-size:15px;margin-bottom:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3182F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-4.3-4.3"/></svg><span>이름 검색</span></label>
+        <input class="field" id="memSearch" type="text" autocomplete="off" placeholder="이름 또는 초성 (예: ㄱㅎㄹ)" style="margin:0 0 6px">
+        <div id="memList"></div>
+      </div>
       <div class="card" id="admCard">
         <div class="hello">총무 전용 암호</div>
         <div class="cap" id="admState" style="margin-top:4px"></div>
@@ -313,6 +317,11 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <div class="cap" style="margin-top:8px">운영 요일에 가나다순으로 돌아가며 당번을 만들어요. 미리 본 뒤에 적용하고, 적용 전 당번표는 백업돼서 되돌릴 수 있어요.</div>
         <div id="autoBody"></div>
       </details>
+      <div class="card" id="invCard">
+        <div class="hello">회원 초대 링크</div>
+        <div class="cap" style="margin:6px 0 10px">이 링크로 들어오면 암호를 입력하지 않아도 돼요. 링크를 아는 사람은 누구나 들어올 수 있으니 단톡방에만 올려 주세요.</div>
+        <button class="btn" id="invCopy" type="button">초대 링크 복사</button>
+      </div>
       <details id="rstBox">
         <summary>당번표 초기화 (한 달 비우기)</summary>
         <div class="cap" style="margin-top:8px">고른 달의 당번을 모두 비워요. 비우기 전 당번표는 이 기기에 백업돼서, 바로 되돌릴 수 있어요.</div>
@@ -699,7 +708,9 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     }
     var box = $('memList'); box.textContent = '';
     if (!names.length) box.appendChild(el('div', 'cap', '회원이 없어요. 위에서 이름을 추가해 주세요.'));
-    names.forEach(function (n) {
+    else if (!names.some(function (n) { return C.nameMatch(n, $('memSearch').value); })) box.appendChild(el('div', 'cap', '일치하는 이름이 없어요.'));
+    var mq = $('memSearch').value;
+    names.filter(function (n) { return C.nameMatch(n, mq) || memEdit === n; }).forEach(function (n) {
       var row = el('div', 'mem'), up = upcomingOf(n), isP = paused.indexOf(n) >= 0;
       if (memEdit === n) {
         var inp = el('input', 'field'); inp.value = n; inp.maxLength = 10; inp.style.margin = '0'; inp.style.flex = '1 1 140px'; inp.setAttribute('aria-label', n + ' 새 이름');
@@ -1296,6 +1307,12 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       box.appendChild(ub);
     }
   }
+  $('memSearch').addEventListener('input', function () { memArm = null; renderMembers(); });
+  $('invCopy').addEventListener('click', function () {
+    if (!pin) { setStatus('암호를 먼저 입력해 주세요.'); return; }
+    var u = 'https://zelong2-star.github.io/jwadongclub/duty/#p=' + encodeURIComponent(pin);
+    try { navigator.clipboard.writeText(u).then(function () { setStatus('초대 링크를 복사했어요. 단톡방에 붙여넣어 주세요.'); }, function () { setStatus('복사 권한이 없어요.'); }); } catch (e) { setStatus('복사 권한이 없어요.'); }
+  });
   $('rstBox').addEventListener('toggle', function () { if ($('rstBox').open) renderReset(); });
 
   var started = false;

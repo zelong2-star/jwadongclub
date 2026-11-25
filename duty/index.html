@@ -31,6 +31,7 @@ h2{margin:0;font-size:20px;font-weight:800;line-height:1.35}
 .row{display:flex;gap:10px}.row>*{flex:1}
 .field{width:100%;min-height:54px;padding:0 16px;border:1.5px solid var(--line);border-radius:14px;font-size:17px;background:#fff}
 .field:focus{border-color:var(--blue);outline:0}
+.srch{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--ink)}.srch svg{width:20px;height:20px;color:var(--blue)}
 .names{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .names .btn{font-size:16px;padding:0 4px}
 .hero{background:var(--blue);color:#fff;border-radius:24px;padding:24px 22px;display:flex;flex-direction:column;gap:14px}
@@ -124,8 +125,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     <div class="card" style="display:flex;flex-direction:column;gap:12px">
       <h1>내 이름을 골라 주세요</h1>
       <div class="cap">한 번만 고르면 이 폰에 기억돼요. 설정에서 언제든 바꿀 수 있어요.</div>
-      <label class="cap" for="search">이름 검색</label>
-      <input class="field" id="search" type="text" autocomplete="off">
+      <label class="cap srch" id="searchLab" for="search"><span>이름 검색</span></label>
+      <input class="field" id="search" type="text" autocomplete="off" placeholder="이름 또는 초성 (예: ㄱㅎㄹ)">
       <div class="names" id="names"></div>
     </div>
   </section>
@@ -153,6 +154,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   var KAKAO_KEY = 'dc69bf31ed2b2b673a737561a98602c4', KAKAO_SDK = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js';
   var REASON = { locked: '이 달은 교환이 마감됐어요.', expired: '당번 하루 전까지만 가능한 요청이에요. 이미 지났어요.', past: '이미 지난 날짜는 바꿀 수 없어요.', self: '내가 올린 요청이에요.', cond: '조건에 맞지 않는 날이에요.', stale: '그 사이 당번이 바뀌어서 처리하지 못했어요.', dup: '이미 같은 날 당번이라 바꿀 수 없어요.', done: '이미 다른 분이 수락했거나 취소된 요청이에요.', gone: '요청이 사라졌어요.' };
   var STATUS_KO = { pending: '답을 기다리는 중', accepted: '수락됨 (반영 완료)', declined: '거절됨', cancelled: '취소함', stale: '당번이 바뀌어 처리되지 않음' };
+  try { var hm = /[#&]p=([^&]+)/.exec(location.hash || ''); if (hm) { localStorage.setItem(PIN_KEY, decodeURIComponent(hm[1])); history.replaceState(null, '', location.pathname + location.search); } } catch (e) {}
   try { pin = localStorage.getItem(PIN_KEY); me = localStorage.getItem(ME_KEY); var v = localStorage.getItem(VIEW_KEY); if (v === 'cal' || v === 'list') sv = v; } catch (e) {}
 
   function $(id) { return document.getElementById(id); }
@@ -297,7 +299,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function showPicker() { flow = null; show('picker'); $('search').value = ''; renderNames(''); }
   function renderNames(q) {
     var box = $('names'); box.textContent = '';
-    allNames().filter(function (n) { return n.indexOf(q) >= 0; }).forEach(function (n) {
+    allNames().filter(function (n) { return C.nameMatch(n, q); }).forEach(function (n) {
       box.appendChild(btn('btn out', n, function () { me = n; save(ME_KEY, n); flow = null; tab = 'home'; exTab = 'in'; selDay = null; enterApp(); }));
     });
     if (!box.children.length) box.appendChild(el('div', 'cap', '일치하는 이름이 없어요. 총무에게 문의해 주세요.'));
@@ -828,6 +830,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     $('gateMsg').textContent = ''; connect(v);
   });
   $('pin').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('enter').click(); });
+  $('searchLab').insertBefore(icon('M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-4.3-4.3'), $('searchLab').firstChild);
   $('search').addEventListener('input', function () { renderNames($('search').value.trim()); });
 
   var started = false;

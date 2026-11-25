@@ -129,6 +129,18 @@
     if (cond.mode === 'except') { var ex = cond.dates || []; return ex.length ? (ex.length <= 3 ? ex.slice().sort().map(function (s) { var q = s.split('-'); return parseInt(q[1], 10) + '/' + parseInt(q[2], 10); }).join(', ') : dl(ex)) + ' 빼고 언제든' : '언제든'; }
     return '';
   }
+  // 이름 검색: 글자 그대로 또는 초성(ㄱㅎㄹ)으로 찾기, 섞어서(김ㅎㄹ)도 가능
+  var CHO = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+  function cho(ch) { var c = ch.charCodeAt(0) - 0xAC00; return c >= 0 && c <= 11171 ? CHO.charAt(Math.floor(c / 588)) : ch; }
+  function nameMatch(name, q) {
+    q = String(q || '').replace(/\s+/g, ''); if (!q) return true;
+    for (var i = 0; i + q.length <= name.length; i++) {
+      var ok = true;
+      for (var j = 0; j < q.length; j++) { var nc = name.charAt(i + j), qc = q.charAt(j); if (nc !== qc && !(CHO.indexOf(qc) >= 0 && cho(nc) === qc)) { ok = false; break; } }
+      if (ok) return true;
+    }
+    return false;
+  }
   // ---- 달을 넘나드는 교환 ----
   // dm: {월키: duties}, a/b: {month,day,j,name}. 두 자리의 이름이 지금도 그대로일 때만 맞바꾼다.
   function swapX(dm, a, b) {
@@ -172,5 +184,5 @@
   }
   g.DutyCore = { DOW: DOW, pad: pad, parseKey: parseKey, dowOf: dowOf, label: label, md: md, isPast: isPast,
     swapDuties: swapDuties, noticeText: noticeText, parseNotice: parseNotice, hashPin: hashPin, adminHash: adminHash, newSalt: newSalt,
-    expired: expired, dkey: dkey, condOk: condOk, condText: condText, condShort: condShort, canAcceptOpen: canAcceptOpen, autoAssign: autoAssign, myOptions: myOptions, swapX: swapX };
+    expired: expired, dkey: dkey, condOk: condOk, condText: condText, nameMatch: nameMatch, condShort: condShort, canAcceptOpen: canAcceptOpen, autoAssign: autoAssign, myOptions: myOptions, swapX: swapX };
 })(window);

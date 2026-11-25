@@ -130,16 +130,19 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 .amt{font-size:19px;font-weight:800;text-align:center}.amb{margin:12px 0 18px;text-align:center;color:var(--sub);white-space:pre-line;line-height:1.6;font-size:15px}
 .amr{display:flex;gap:8px}.amr button{flex:1;min-height:52px;border:0;border-radius:14px;font-size:16px;font-weight:800}
 .amno{background:var(--gray);color:#333D4B}.amyes{background:var(--blue);color:#fff}
+.swr{position:relative;overflow:hidden;border-radius:14px}
+.swa{position:absolute;right:0;top:0;bottom:0;width:84px;border:0;background:var(--red);color:#fff;font-size:16px;font-weight:800}
+.swr:last-child .item{border-bottom:0}.swi{position:relative;background:#fff;touch-action:pan-y;user-select:none;-webkit-user-select:none}
 </style>
 <script>(function(){function u(){var f=window.DutyFx;if(!f)return;var g=f.get();var s=document.getElementById('fxS'),h=document.getElementById('fxH');if(!s)return;s.textContent='효과음 '+(g.sound?'켬':'끔');h.textContent='진동 '+(g.haptic?'켬':'끔');}
 document.addEventListener('DOMContentLoaded',function(){u();document.getElementById('fxS').onclick=function(){DutyFx.set({sound:!DutyFx.get().sound});u();DutyFx.ok();};document.getElementById('fxH').onclick=function(){DutyFx.set({haptic:!DutyFx.get().haptic});u();DutyFx.ok();};});})();</script>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125p"></script>
-<script src="cal-ocr.js?v=20261125p"></script>
-<script src="fx.js?v=20261125p"></script>
-<script src="notice-img.js?v=20261125p"></script>
+<script src="duty-core.js?v=20261125q"></script>
+<script src="cal-ocr.js?v=20261125q"></script>
+<script src="fx.js?v=20261125q"></script>
+<script src="notice-img.js?v=20261125q"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125p';
+import { makeApi } from './common.js?v=20261125q';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -510,6 +513,27 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     renderSel();
   }
 
+  // 왼쪽으로 밀면 빨간 삭제 칸이 나와요. onDel(done): done()을 부르면 원래 자리로 돌아와요.
+  function swipeDel(item, onDel) {
+    var W = 84, wrap = el('div', 'swr'), act = el('button', 'swa', '삭제'); act.type = 'button';
+    act.setAttribute('aria-label', '삭제');
+    item.classList.add('swi'); wrap.appendChild(act); wrap.appendChild(item);
+    var x0 = 0, y0 = 0, base = 0, cur = 0, drag = false, lock = '';
+    function set(v, anim) { cur = v; item.style.transition = anim ? 'transform .2s' : 'none'; item.style.transform = v ? 'translateX(' + v + 'px)' : ''; }
+    function done() { set(0, true); }
+    item.addEventListener('pointerdown', function (e) { if (e.pointerType === 'mouse' && e.button !== 0) return; x0 = e.clientX; y0 = e.clientY; base = cur; drag = true; lock = ''; });
+    item.addEventListener('pointermove', function (e) {
+      if (!drag) return; var dx = e.clientX - x0, dy = e.clientY - y0;
+      if (!lock) { if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) { lock = 'x'; try { item.setPointerCapture(e.pointerId); } catch (er) {} } else if (Math.abs(dy) > 8) { lock = 'y'; drag = false; return; } else return; }
+      set(Math.max(-W - 20, Math.min(0, base + dx)), false);
+    });
+    function end() { if (!drag) return; drag = false; if (lock === 'x') { set(cur < -W / 2 ? -W : 0, true); if (cur === -W && window.DutyFx) DutyFx.tap(); } }
+    item.addEventListener('pointerup', end); item.addEventListener('pointercancel', end);
+    item.addEventListener('click', function (e) { if (lock === 'x') { e.stopPropagation(); e.preventDefault(); lock = ''; } else if (cur) done(); }, true);
+    act.addEventListener('click', function () { onDel(done); });
+    return wrap;
+  }
+
   function renderLog() {
     var box = $('logList'); box.textContent = '';
     var list = logs.filter(function (l) { return (l.month === cur || l.month2 === cur) && l.kind === 'swap'; });
@@ -527,15 +551,12 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         });
         item.appendChild(u);
       }
-      var dl = el('button', 'btn', '내역 삭제'); dl.type = 'button';
-      dl.addEventListener('click', function () {
+      box.appendChild(swipeDel(item, function (done) {
         askModal({ title: '이 내역을 삭제할까요?', body: l.text + (l.undone ? '' : '\n\n되돌리기가 끝난 내역이 아니에요.\n삭제하면 이 교환은 되돌릴 수 없고\n카톡 이미지의 노란색 표시도 사라져요.') + '\n\n삭제하면 복구할 수 없어요.', yes: '삭제', no: '취소' }, function (ok) {
-          if (!ok) return; dl.disabled = true;
-          API.deleteLog(l.id).then(function () { setStatus('변경 내역을 삭제했어요.'); }).catch(function () { dl.disabled = false; setStatus('삭제하지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
+          if (!ok) { done(); return; }
+          API.deleteLog(l.id).then(function () { setStatus('변경 내역을 삭제했어요.'); }).catch(function () { done(); setStatus('삭제하지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
         });
-      });
-      item.appendChild(dl);
-      box.appendChild(item);
+      }));
     });
   }
 
@@ -1474,17 +1495,15 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           API.setRequestStatus(r.id, 'cancelled').then(function () { setStatus('요청을 취소했어요.'); }).catch(function () { b.disabled = false; setStatus('취소하지 못했어요.'); });
         });
         item.appendChild(b);
+        box.appendChild(item);
       } else {
-        var dr = el('button', 'btn', '요청 삭제'); dr.type = 'button';
-        dr.addEventListener('click', function () {
+        box.appendChild(swipeDel(item, function (done) {
           askModal({ title: '이 요청을 삭제할까요?', body: reqDesc(r) + '\n\n삭제하면 복구할 수 없어요.', yes: '삭제', no: '취소' }, function (ok) {
-            if (!ok) return; dr.disabled = true;
-            API.deleteRequest(r.id).then(function () { setStatus('요청을 삭제했어요.'); }).catch(function () { dr.disabled = false; setStatus('삭제하지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
+            if (!ok) { done(); return; }
+            API.deleteRequest(r.id).then(function () { setStatus('요청을 삭제했어요.'); }).catch(function () { done(); setStatus('삭제하지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
           });
-        });
-        item.appendChild(dr);
+        }));
       }
-      box.appendChild(item);
     });
   }
   function syncLock() {

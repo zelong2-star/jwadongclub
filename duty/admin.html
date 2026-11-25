@@ -150,12 +150,12 @@ nav.tabs button[aria-current="page"]{color:var(--amb)}
 <script>(function(){function u(){var f=window.DutyFx;if(!f)return;var g=f.get();var s=document.getElementById('fxS'),h=document.getElementById('fxH');if(!s)return;s.textContent='효과음 '+(g.sound?'켬':'끔');h.textContent='진동 '+(g.haptic?'켬':'끔');}
 document.addEventListener('DOMContentLoaded',function(){u();document.getElementById('fxS').onclick=function(){DutyFx.set({sound:!DutyFx.get().sound});u();DutyFx.ok();};document.getElementById('fxH').onclick=function(){DutyFx.set({haptic:!DutyFx.get().haptic});u();DutyFx.ok();};});})();</script>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125y"></script>
-<script src="cal-ocr.js?v=20261125y"></script>
-<script src="fx.js?v=20261125y"></script>
-<script src="notice-img.js?v=20261125y"></script>
+<script src="duty-core.js?v=20261125z"></script>
+<script src="cal-ocr.js?v=20261125z"></script>
+<script src="fx.js?v=20261125z"></script>
+<script src="notice-img.js?v=20261125z"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125y';
+import { makeApi } from './common.js?v=20261125z';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -1115,12 +1115,16 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       var done = false; function end(v) { if (!done) { done = true; res(v); } }
       setTimeout(function () { end(null); }, 5000);
       try {
-        var cv = document.createElement('canvas'); cv.width = 2000; cv.height = 400; var g = cv.getContext('2d');
-        g.fillStyle = '#3182F6'; g.fillRect(0, 0, 2000, 400);
-        g.fillStyle = '#fff'; g.beginPath(); g.arc(190, 200, 100, 0, 6.2832); g.fill();
-        g.strokeStyle = '#3182F6'; g.lineWidth = 14; g.lineCap = 'round';
-        g.strokeRect(140, 158, 100, 92); g.beginPath(); g.moveTo(140, 192); g.lineTo(240, 192); g.moveTo(166, 138); g.lineTo(166, 172); g.moveTo(214, 138); g.lineTo(214, 172); g.stroke();
-        g.fillStyle = '#fff'; g.textBaseline = 'middle'; g.font = '700 150px Pretendard, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif'; g.fillText(text, 350, 206);
+        // 카톡 카드는 이미지를 2:1로 가운데만 보여줘요 → 2:1(1000x500)로 만들고 글자는 안쪽 여백 안에 맞춰요
+        var cv = document.createElement('canvas'); cv.width = 1000; cv.height = 500; var g = cv.getContext('2d');
+        g.fillStyle = '#3182F6'; g.fillRect(0, 0, 1000, 500);
+        g.fillStyle = '#fff'; g.beginPath(); g.arc(500, 160, 78, 0, 6.2832); g.fill();
+        g.strokeStyle = '#3182F6'; g.lineWidth = 11; g.lineCap = 'round';
+        g.strokeRect(462, 132, 76, 70); g.beginPath(); g.moveTo(462, 158); g.lineTo(538, 158); g.moveTo(482, 116); g.lineTo(482, 142); g.moveTo(518, 116); g.lineTo(518, 142); g.stroke();
+        var F = '"Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif', fs = 110;
+        g.fillStyle = '#fff'; g.textBaseline = 'middle'; g.textAlign = 'center';
+        do { g.font = '700 ' + fs + 'px ' + F; fs -= 4; } while (g.measureText(text).width > 840 && fs > 40);
+        g.fillText(text, 500, 340);
         cv.toBlob(function (b) {
           if (!b) return end(null);
           try {
@@ -1142,7 +1146,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       if (card) {
         return (card.stamp ? bannerUrl(K, card.stamp) : Promise.resolve(null)).then(function (u) {
           var wide = card.banner === 'duty';
-          K.Share.sendDefault({ objectType: 'feed', content: { title: card.title, description: card.desc || '', imageUrl: u || URL_APP + 'kakao-' + card.banner + '.png', imageWidth: wide ? 2000 : 800, imageHeight: wide ? 400 : 400, link: link }, buttons: (card.buttons || ['요청 확인하기']).map(function (t) { return { title: t, link: link }; }) });
+          K.Share.sendDefault({ objectType: 'feed', content: { title: card.title, description: card.desc || '', imageUrl: u || URL_APP + 'kakao-' + card.banner + '.png', imageWidth: wide ? 1000 : 800, imageHeight: wide ? 500 : 400, link: link }, buttons: (card.buttons || ['요청 확인하기']).map(function (t) { return { title: t, link: link }; }) });
         });
       }
       K.Share.sendDefault({ objectType: 'text', text: text.replace(/\n?https?:\/\/\S+/g, '').slice(0, 200), link: link, buttonTitle: '수락하러 가기' });

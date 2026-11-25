@@ -138,12 +138,12 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 <script>(function(){function u(){var f=window.DutyFx;if(!f)return;var g=f.get();var s=document.getElementById('fxS'),h=document.getElementById('fxH');if(!s)return;s.textContent='효과음 '+(g.sound?'켬':'끔');h.textContent='진동 '+(g.haptic?'켬':'끔');}
 document.addEventListener('DOMContentLoaded',function(){u();document.getElementById('fxS').onclick=function(){DutyFx.set({sound:!DutyFx.get().sound});u();DutyFx.ok();};document.getElementById('fxH').onclick=function(){DutyFx.set({haptic:!DutyFx.get().haptic});u();DutyFx.ok();};});})();</script>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125r"></script>
-<script src="cal-ocr.js?v=20261125r"></script>
-<script src="fx.js?v=20261125r"></script>
-<script src="notice-img.js?v=20261125r"></script>
+<script src="duty-core.js?v=20261125s"></script>
+<script src="cal-ocr.js?v=20261125s"></script>
+<script src="fx.js?v=20261125s"></script>
+<script src="notice-img.js?v=20261125s"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125r';
+import { makeApi } from './common.js?v=20261125s';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -324,28 +324,22 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     </div>
 
     <div id="panel-tool" class="panel hide">
-      <div class="card" id="fxCard"><div class="hello">터치 소리·진동</div><div class="row" style="margin-top:10px"><button class="btn" id="fxS" type="button"></button><button class="btn" id="fxH" type="button"></button></div><div class="cap" style="margin-top:8px">아이폰은 진동을 지원하지 않아요.</div></div>
-      <details id="autoBox">
-        <summary>자동 배정 (가나다순 순환)</summary>
-        <div class="cap" style="margin-top:8px">운영 요일에 가나다순으로 돌아가며 당번을 만들어요. 미리 본 뒤에 적용하고, 적용 전 당번표는 백업돼서 되돌릴 수 있어요.</div>
-        <div id="autoBody"></div>
-      </details>
-      <div class="card" id="invCard">
-        <div class="hello">회원 초대 링크</div>
-        <div class="cap" style="margin:6px 0 10px">이 링크로 들어오면 암호를 입력하지 않아도 돼요. 링크를 아는 사람은 누구나 들어올 수 있으니 단톡방에만 올려 주세요.</div>
-        <button class="btn" id="invCopy" type="button">초대 링크 복사</button>
-      </div>
       <details id="rstBox">
         <summary>당번표 초기화 (한 달 비우기)</summary>
         <div class="cap" style="margin-top:8px">고른 달의 당번을 모두 비워요. 비우기 전 당번표는 이 기기에 백업돼서, 바로 되돌릴 수 있어요.</div>
         <div id="rstBody"></div>
       </details>
-      <details>
-        <summary>공지를 붙여넣어 이 달을 덮어쓰기</summary>
-        <label class="cap" for="paste">카톡 공지 문구를 그대로 붙여넣으세요</label>
-        <textarea id="paste" placeholder="12월 당번표&#10;12/1(화) 김종대·김석조&#10;..."></textarea>
-        <button class="btn" id="load">불러오기</button>
+      <details id="autoBox">
+        <summary>자동 배정 (가나다순 순환)</summary>
+        <div class="cap" style="margin-top:8px">운영 요일에 가나다순으로 돌아가며 당번을 만들어요. 미리 본 뒤에 적용하고, 적용 전 당번표는 백업돼서 되돌릴 수 있어요.</div>
+        <div id="autoBody"></div>
       </details>
+      <div class="card" id="fxCard"><div class="hello">터치 소리·진동</div><div class="row" style="margin-top:10px"><button class="btn" id="fxS" type="button"></button><button class="btn" id="fxH" type="button"></button></div><div class="cap" style="margin-top:8px">아이폰은 진동을 지원하지 않아요.</div></div>
+      <div class="card" id="invCard">
+        <div class="hello">회원 초대 링크</div>
+        <div class="cap" style="margin:6px 0 10px">이 링크로 들어오면 암호를 입력하지 않아도 돼요. 링크를 아는 사람은 누구나 들어올 수 있으니 단톡방에만 올려 주세요.</div>
+        <button class="btn" id="invCopy" type="button">초대 링크 복사</button>
+      </div>
       <div class="note">당번표는 모든 회원이 같은 저장소를 봅니다. 회원이 수락한 교환은 바로 반영되고, 이 화면에서 되돌릴 수 있어요. 암호를 바꾸려면 새 암호로 시작한 뒤 회원들에게 새 암호를 알려 주세요.</div>
     </div>
   </section>
@@ -624,12 +618,6 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   }
   $('selReq').addEventListener('click', function () { if (sel && window.__openAdminFlow) window.__openAdminFlow(sel); });
   $('selCancel').addEventListener('click', function () { sel = null; setStatus(defStatus()); renderCal(); });
-  arm('load', '불러오기', '이 달 내용을 덮어씁니다. 한 번 더 누르세요', function () {
-    var r = C.parseNotice($('paste').value || '', ym()[0]);
-    if (!r.found) { setStatus('당번 줄을 찾지 못했어요. "12/1(화) 이름·이름" 형식인지 확인해 주세요.'); return; }
-    var k = r.y + '-' + C.pad(r.m);
-    API.setMonth(k, r.duties).then(function () { cur = k; setStatus(r.m + '월 당번 ' + r.found + '일 치를 불러왔어요.'); }).catch(function () { setStatus('불러오지 못했어요.'); });
-  });
 
 
   // ---------- 당번 확인 현황 ----------

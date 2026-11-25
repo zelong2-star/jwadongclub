@@ -122,7 +122,8 @@ nav.tabs button[aria-current="page"]{color:var(--blue);font-weight:800}
 .cmp .ln{display:flex;justify-content:space-between;gap:10px;font-size:16px;padding:2px 0}.cmp .ln b{font-weight:800}
 pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-family:inherit;font-size:15px;line-height:1.7;white-space:pre-wrap;user-select:text}
 .chip.mine{background:var(--blue-soft);color:var(--blue)}
-.seg.two{flex-wrap:wrap}.seg.two button{flex:1 1 45%}
+.seg.two{flex-wrap:wrap}
+#inCard .opt{background:var(--gray)}#inCard details{background:var(--gray);padding:14px 16px}.seg.two button{flex:1 1 45%}
 .back:focus-visible,.opt:focus-visible,.tog:focus-visible,.fcal .c:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
@@ -170,12 +171,32 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <button id="next" aria-label="다음 달">다음</button>
       </div>
       <div class="row">
-        <button class="btn sm" id="newMonth">새 달 만들기</button>
+        <button class="btn sm primary" id="newMonth">당번 입력하기</button>
         <button class="btn sm lockon hide" id="lock" aria-pressed="true">이 달은 마감 상태예요 (풀기)</button>
       </div>
     </div>
 
     <div id="panel-cal" class="panel">
+      <div class="card hide" id="inCard">
+        <div class="row" style="justify-content:space-between;align-items:center;flex-wrap:nowrap">
+          <div class="hello" style="flex:1">당번 입력하기</div>
+          <button class="btn sm" id="inClose" style="flex:none">닫기</button>
+        </div>
+        <label class="cap" for="inMonth" style="display:block;margin-top:10px">어느 달 당번인가요?</label>
+        <select class="field" id="inMonth" style="margin:4px 0 10px"></select>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button class="opt" id="inSolo" type="button"><b>개별로 입력</b><span>달력 칸에 이름을 직접 입력해요</span></button>
+          <button class="opt" id="inImg" type="button"><b>당번표 이미지로 입력</b><span>달력 캡처 사진을 올리면 글자를 읽어서 채워 줘요</span></button>
+        </div>
+        <div id="inImgBox" class="hide" style="margin-top:10px">      <details id="imgBox">
+        <summary>당번표 이미지 올리기</summary>
+        <div class="drop" id="drop" tabindex="0" role="button" aria-label="이미지 선택">이미지를 여기에 끌어다 놓거나, 눌러서 여러 장 선택하세요.<br>복사한 이미지는 이 화면에서 붙여넣기(Ctrl+V)만 하면 돼요.</div>
+        <input type="file" id="files" accept="image/*" multiple hidden>
+        <div class="cap" id="ocrMsg" role="status">당번표 달력 캡처(월~일 7칸, 칸마다 날짜+이름 두 줄)를 읽어서 아래에 보여드려요. 확인하고 고친 뒤 &quot;저장&quot;을 누르면 반영됩니다.</div>
+        <div id="ocrOut"></div>
+      </details>
+</div>
+      </div>
       <div class="seg" role="group" aria-label="작업 모드">
         <button id="modeSwap" aria-pressed="true">교환</button>
         <button id="modeInput" aria-pressed="false">입력</button>
@@ -267,13 +288,6 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <summary>자동 배정 (가나다순 순환)</summary>
         <div class="cap" style="margin-top:8px">운영 요일에 가나다순으로 돌아가며 당번을 만들어요. 미리 본 뒤에 적용하고, 적용 전 당번표는 백업돼서 되돌릴 수 있어요.</div>
         <div id="autoBody"></div>
-      </details>
-      <details id="imgBox">
-        <summary>달력 이미지로 당번표 올리기</summary>
-        <div class="drop" id="drop" tabindex="0" role="button" aria-label="이미지 선택">이미지를 여기에 끌어다 놓거나, 눌러서 여러 장 선택하세요.<br>복사한 이미지는 이 화면에서 붙여넣기(Ctrl+V)만 하면 돼요.</div>
-        <input type="file" id="files" accept="image/*" multiple hidden>
-        <div class="cap" id="ocrMsg" role="status">당번표 달력 캡처(월~일 7칸, 칸마다 날짜+이름 두 줄)를 읽어서 아래에 보여드려요. 확인하고 고친 뒤 &quot;저장&quot;을 누르면 반영됩니다.</div>
-        <div id="ocrOut"></div>
       </details>
       <details>
         <summary>공지를 붙여넣어 이 달을 덮어쓰기</summary>
@@ -461,10 +475,25 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   });
   $('prev').addEventListener('click', function () { var i = keys.indexOf(cur); if (i > 0) { cur = keys[i - 1]; renderAll(); } });
   $('next').addEventListener('click', function () { var i = keys.indexOf(cur); if (i < keys.length - 1) { cur = keys[i + 1]; renderAll(); } });
-  $('newMonth').addEventListener('click', function () {
-    var nk = nextKey(keys[keys.length - 1]);
-    API.setMonth(nk, {}).then(function () { cur = nk; mode = 'input'; syncMode(); setStatus('새 달을 만들었어요. 이름을 입력하거나, 공지를 붙여넣어 불러오세요.'); }).catch(function () { setStatus('만들지 못했어요.'); });
+  function fillInMonths() {
+    var sel0 = $('inMonth'), nk = nextKey(keys[keys.length - 1]), keep = sel0.value; sel0.textContent = '';
+    keys.concat([nk]).forEach(function (k) { var p = C.parseKey(k); var o = el('option', '', p[0] + '년 ' + p[1] + '월' + (months[k] ? '' : ' (새 달)')); o.value = k; sel0.appendChild(o); });
+    sel0.value = keep && Array.prototype.some.call(sel0.options, function (o) { return o.value === keep; }) ? keep : cur;
+  }
+  function openInputSheet(kind) {
+    if (tab !== 'cal') showTab('cal');
+    $('inCard').classList.remove('hide'); fillInMonths();
+    if (kind === 'image') { $('inImgBox').classList.remove('hide'); $('imgBox').open = true; }
+    $('inCard').scrollIntoView && $('inCard').scrollIntoView({ block: 'nearest' });
+  }
+  $('newMonth').addEventListener('click', function () { if ($('inCard').classList.contains('hide')) openInputSheet(); else $('inCard').classList.add('hide'); });
+  $('inClose').addEventListener('click', function () { $('inCard').classList.add('hide'); $('inImgBox').classList.add('hide'); });
+  $('inSolo').addEventListener('click', function () {
+    var k = $('inMonth').value, p = C.parseKey(k);
+    function go() { cur = k; mode = 'input'; $('inCard').classList.add('hide'); $('inImgBox').classList.add('hide'); syncMode(); setStatus(p[1] + '월 당번 입력 중이에요. 날짜 칸에 이름을 입력하면 바로 저장돼요.'); }
+    if (months[k]) go(); else API.setMonth(k, {}).then(go).catch(function () { setStatus('새 달을 만들지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
   });
+  $('inImg').addEventListener('click', function () { $('inImgBox').classList.remove('hide'); $('imgBox').open = true; setStatus('달력 이미지를 올리면 글자를 읽어서 보여 드려요. 확인하고 고친 뒤 저장해 주세요.'); });
   function syncMode() {
     $('modeSwap').setAttribute('aria-pressed', mode === 'swap' ? 'true' : 'false');
     $('modeInput').setAttribute('aria-pressed', mode === 'input' ? 'true' : 'false');
@@ -1263,7 +1292,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function addFiles(files) {
     var imgs = Array.prototype.filter.call(files || [], function (f) { return f && /^image\//.test(f.type); });
     if (!imgs.length) return;
-    $('imgBox').open = true;
+    openInputSheet('image');
     imgs.forEach(function (f) { queue.push(f); });
     runQueue();
   }

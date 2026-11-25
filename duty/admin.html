@@ -150,12 +150,12 @@ nav.tabs button[aria-current="page"]{color:var(--amb)}
 <script>(function(){function u(){var f=window.DutyFx;if(!f)return;var g=f.get();var s=document.getElementById('fxS'),h=document.getElementById('fxH');if(!s)return;s.textContent='효과음 '+(g.sound?'켬':'끔');h.textContent='진동 '+(g.haptic?'켬':'끔');}
 document.addEventListener('DOMContentLoaded',function(){u();document.getElementById('fxS').onclick=function(){DutyFx.set({sound:!DutyFx.get().sound});u();DutyFx.ok();};document.getElementById('fxH').onclick=function(){DutyFx.set({haptic:!DutyFx.get().haptic});u();DutyFx.ok();};});})();</script>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125z"></script>
-<script src="cal-ocr.js?v=20261125z"></script>
-<script src="fx.js?v=20261125z"></script>
-<script src="notice-img.js?v=20261125z"></script>
+<script src="duty-core.js?v=20261125za"></script>
+<script src="cal-ocr.js?v=20261125za"></script>
+<script src="fx.js?v=20261125za"></script>
+<script src="notice-img.js?v=20261125za"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125z';
+import { makeApi } from './common.js?v=20261125za';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -1118,13 +1118,15 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         // 카톡 카드는 이미지를 2:1로 가운데만 보여줘요 → 2:1(1000x500)로 만들고 글자는 안쪽 여백 안에 맞춰요
         var cv = document.createElement('canvas'); cv.width = 1000; cv.height = 500; var g = cv.getContext('2d');
         g.fillStyle = '#3182F6'; g.fillRect(0, 0, 1000, 500);
-        g.fillStyle = '#fff'; g.beginPath(); g.arc(500, 160, 78, 0, 6.2832); g.fill();
-        g.strokeStyle = '#3182F6'; g.lineWidth = 11; g.lineCap = 'round';
-        g.strokeRect(462, 132, 76, 70); g.beginPath(); g.moveTo(462, 158); g.lineTo(538, 158); g.moveTo(482, 116); g.lineTo(482, 142); g.moveTo(518, 116); g.lineTo(518, 142); g.stroke();
-        var F = '"Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif', fs = 110;
-        g.fillStyle = '#fff'; g.textBaseline = 'middle'; g.textAlign = 'center';
-        do { g.font = '700 ' + fs + 'px ' + F; fs -= 4; } while (g.measureText(text).width > 840 && fs > 40);
-        g.fillText(text, 500, 340);
+        // 아이콘 + 글자를 한 줄로, 전체를 가운데에 (안쪽 여백 70px)
+        var F = '"Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif', fs = 96, R = 52, gap = 26, tw;
+        g.textBaseline = 'middle'; g.textAlign = 'left';
+        do { g.font = '700 ' + fs + 'px ' + F; tw = g.measureText(text).width; fs -= 4; } while (R * 2 + gap + tw > 860 && fs > 40);
+        var x0 = (1000 - (R * 2 + gap + tw)) / 2, cy = 250, cx = x0 + R;
+        g.fillStyle = '#fff'; g.beginPath(); g.arc(cx, cy, R, 0, 6.2832); g.fill();
+        g.strokeStyle = '#3182F6'; g.lineWidth = 8; g.lineCap = 'round';
+        g.strokeRect(cx - 25, cy - 16, 50, 46); g.beginPath(); g.moveTo(cx - 25, cy + 2); g.lineTo(cx + 25, cy + 2); g.moveTo(cx - 12, cy - 30); g.lineTo(cx - 12, cy - 12); g.moveTo(cx + 12, cy - 30); g.lineTo(cx + 12, cy - 12); g.stroke();
+        g.fillStyle = '#fff'; g.fillText(text, x0 + R * 2 + gap, cy + 4);
         cv.toBlob(function (b) {
           if (!b) return end(null);
           try {

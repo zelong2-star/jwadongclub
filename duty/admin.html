@@ -138,12 +138,12 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 <script>(function(){function u(){var f=window.DutyFx;if(!f)return;var g=f.get();var s=document.getElementById('fxS'),h=document.getElementById('fxH');if(!s)return;s.textContent='효과음 '+(g.sound?'켬':'끔');h.textContent='진동 '+(g.haptic?'켬':'끔');}
 document.addEventListener('DOMContentLoaded',function(){u();document.getElementById('fxS').onclick=function(){DutyFx.set({sound:!DutyFx.get().sound});u();DutyFx.ok();};document.getElementById('fxH').onclick=function(){DutyFx.set({haptic:!DutyFx.get().haptic});u();DutyFx.ok();};});})();</script>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125v"></script>
-<script src="cal-ocr.js?v=20261125v"></script>
-<script src="fx.js?v=20261125v"></script>
-<script src="notice-img.js?v=20261125v"></script>
+<script src="duty-core.js?v=20261125w"></script>
+<script src="cal-ocr.js?v=20261125w"></script>
+<script src="fx.js?v=20261125w"></script>
+<script src="notice-img.js?v=20261125w"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125v';
+import { makeApi } from './common.js?v=20261125w';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -631,16 +631,26 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var back = document.createElement('div'); back.id = 'askModal'; back.className = 'amback';
     var box = document.createElement('div'); box.className = 'ambox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-labelledby', 'amT');
     var h = document.createElement('div'); h.id = 'amT'; h.className = 'amt'; h.textContent = '누구 대신 요청을 보낼까요?';
-    var p = document.createElement('div'); p.className = 'amb'; p.textContent = '고른 회원의 이름으로 교환 요청이 올라가요.';
-    var sl = document.createElement('select'); sl.className = 'field'; sl.setAttribute('aria-label', '회원 선택'); sl.style.margin = '0 0 14px';
-    roster().slice().sort(function (x, y) { return x.localeCompare(y, 'ko'); }).forEach(function (n) { var o = document.createElement('option'); o.value = n; o.textContent = n; sl.appendChild(o); });
+    var p = document.createElement('div'); p.className = 'amb'; p.textContent = '이름을 누르면 그 회원의 이름으로 요청을 보내요.';
+    var sw = document.createElement('div'); sw.style.cssText = 'position:relative;margin:0 0 8px';
+    sw.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3182F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-4.3-4.3"/></svg>';
+    var sl = document.createElement('input'); sl.className = 'field'; sl.setAttribute('aria-label', '이름 또는 초성 검색'); sl.placeholder = '이름 또는 초성 (예: ㄱㅇㄱ)'; sl.style.cssText = 'margin:0;padding-left:44px'; sl.autocomplete = 'off';
+    sw.appendChild(sl);
+    var lst = document.createElement('div'); lst.style.cssText = 'max-height:240px;overflow:auto;margin-bottom:12px;display:flex;flex-direction:column;gap:6px';
+    var all = roster().slice().sort(function (x, y) { return x.localeCompare(y, 'ko'); });
+    function pickName(n) { close(); if (n && window.__openAdminFlowAs) window.__openAdminFlowAs(n); }
+    function fill() {
+      lst.textContent = '';
+      var q = sl.value.trim(), ms = all.filter(function (n) { return !q || C.nameMatch(n, q); });
+      if (!ms.length) { var e = document.createElement('div'); e.className = 'cap'; e.style.textAlign = 'center'; e.textContent = '일치하는 이름이 없어요.'; lst.appendChild(e); return; }
+      ms.slice(0, 40).forEach(function (n) { var b = document.createElement('button'); b.type = 'button'; b.className = 'amno'; b.style.cssText = 'min-height:46px;border:0;border-radius:12px;font-size:16px;font-weight:700;background:var(--gray)'; b.textContent = n; b.addEventListener('click', function () { pickName(n); }); lst.appendChild(b); });
+    }
+    sl.addEventListener('input', fill); fill();
     var r = document.createElement('div'); r.className = 'amr';
     function close() { document.removeEventListener('keydown', onKey); back.remove(); }
     function onKey(e) { if (e.key === 'Escape') close(); }
     var no = document.createElement('button'); no.type = 'button'; no.className = 'amno'; no.textContent = '취소'; no.onclick = close;
-    var yes = document.createElement('button'); yes.type = 'button'; yes.className = 'amyes'; yes.textContent = '다음';
-    yes.onclick = function () { var n = sl.value; close(); if (n && window.__openAdminFlowAs) window.__openAdminFlowAs(n); };
-    r.appendChild(no); r.appendChild(yes); box.appendChild(h); box.appendChild(p); box.appendChild(sl); box.appendChild(r); back.appendChild(box); document.body.appendChild(back);
+    r.appendChild(no); box.appendChild(h); box.appendChild(p); box.appendChild(sw); box.appendChild(lst); box.appendChild(r); back.appendChild(box); document.body.appendChild(back);
     document.addEventListener('keydown', onKey); sl.focus();
   });
 

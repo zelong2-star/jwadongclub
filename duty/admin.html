@@ -75,7 +75,7 @@ summary{min-height:32px;font-size:17px;font-weight:800;cursor:pointer}
 .mem:last-child{border-bottom:0}
 .mem .nm{flex:1 1 120px;font-size:17px;font-weight:700;min-width:0}
 .mem .nm small{display:block;font-size:13px;font-weight:500;color:var(--sub)}
-.mem .acts{display:flex;gap:6px;flex-wrap:wrap}#panel-mem .mem .acts{flex-wrap:nowrap}#panel-mem .mem .acts .btn{flex:1 1 0;min-width:0;padding:0 4px;white-space:nowrap}#panel-mem .mem .acts .btn.star{flex:0 0 52px;font-size:22px;color:#B0B8C1}#panel-mem .mem .acts .btn.star.on{color:#F5A400;background:var(--amber)}#todayList .mem .acts .btn{white-space:nowrap;padding:0 12px}
+.mem .acts{display:flex;gap:6px;flex-wrap:wrap}#panel-mem .mem .acts{display:grid;grid-template-columns:1fr 1fr 48px 1fr;gap:6px;margin-top:8px;width:100%}#panel-mem .mem .acts .btn{min-width:0;width:100%;padding:0 2px;white-space:nowrap;font-size:14px;min-height:44px;justify-content:center}#panel-mem .mem .acts .btn.star{font-size:22px;color:#B0B8C1}#panel-mem .mem .acts .btn.star.on{color:#F5A400;background:var(--amber)}#panel-mem .mem .acts .btn.del{color:#C2362B}#todayList .mem .acts .btn{white-space:nowrap;padding:0 12px}
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:#fff;border-top:1px solid var(--gray);padding-bottom:env(safe-area-inset-bottom)}
 nav.tabs .in{max-width:760px;margin:0 auto;display:flex;height:72px}
 nav.tabs button{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:13px;font-weight:500;color:#6B7684;position:relative}
@@ -150,12 +150,12 @@ nav.tabs button[aria-current="page"]{color:var(--amb)}
 <script>(function(){function u(){var f=window.DutyFx;if(!f)return;var g=f.get();var s=document.getElementById('fxS'),h=document.getElementById('fxH');if(!s)return;s.textContent='효과음 '+(g.sound?'켬':'끔');h.textContent='진동 '+(g.haptic?'켬':'끔');}
 document.addEventListener('DOMContentLoaded',function(){u();document.getElementById('fxS').onclick=function(){DutyFx.set({sound:!DutyFx.get().sound});u();DutyFx.ok();};document.getElementById('fxH').onclick=function(){DutyFx.set({haptic:!DutyFx.get().haptic});u();DutyFx.ok();};});})();</script>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125zb"></script>
-<script src="cal-ocr.js?v=20261125zb"></script>
-<script src="fx.js?v=20261125zb"></script>
-<script src="notice-img.js?v=20261125zb"></script>
+<script src="duty-core.js?v=20261125zc"></script>
+<script src="cal-ocr.js?v=20261125zc"></script>
+<script src="fx.js?v=20261125zc"></script>
+<script src="notice-img.js?v=20261125zc"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125zb';
+import { makeApi } from './common.js?v=20261125zc';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -834,7 +834,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       var b2 = el('button', 'btn sm', isP ? '쉼 해제' : '쉼'); b2.type = 'button';
       b2.addEventListener('click', function () { var p2 = isP ? paused.filter(function (x) { return x !== n; }) : paused.concat([n]); saveRoster(roster(), p2).then(function () { memMsg(''); }).catch(memFail); });
       var armed2 = memArm === n;
-      var b3 = el('button', 'btn sm' + (armed2 ? ' lockon' : ''), armed2 ? '정말 삭제' : '삭제'); b3.type = 'button';
+      var b3 = el('button', 'btn sm' + (armed2 ? ' lockon' : ' del'), armed2 ? '정말 삭제' : '삭제'); b3.type = 'button';
       b3.addEventListener('click', function () {
         if (memArm !== n) { memArm = n; clearTimeout(memArmT); memArmT = setTimeout(function () { memArm = null; memMsg(''); renderMembers(); }, 4000); renderMembers(); memMsg(up.length ? n + ' 님은 앞으로 당번 ' + up.length + '건이 남아 있어요. 그래도 삭제하려면 한 번 더 누르세요.' : ''); return; }
         clearTimeout(memArmT); memArm = null;

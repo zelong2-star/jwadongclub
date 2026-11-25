@@ -53,11 +53,25 @@ summary{min-height:32px;font-size:15px;font-weight:700;cursor:pointer}
 .item{padding:10px 0;border-bottom:1px solid #e6edf3;display:flex;flex-direction:column;gap:8px;font-size:14px}
 .item:last-child{border-bottom:0}
 .note{padding:12px 16px;border-radius:12px;background:#EAF2F9;font-size:13px;color:#33475b}
+.drop{margin:10px 0;padding:22px 12px;border:2px dashed #8fa3b5;border-radius:12px;text-align:center;font-size:15px;font-weight:500;color:#33475b;background:#F5F9FD;cursor:pointer}
+.drop.over{background:#EAF2F9;border-color:#1F4E79}
+.drop:focus-visible{outline:3px solid #E8710A;outline-offset:2px}
+.ocrcard{border:1px solid #cfd9e3;border-radius:12px;padding:12px;margin:10px 0;background:#fff;display:flex;flex-direction:column;gap:8px}
+.ocrcard .hd{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ocrcard .num2{width:84px;min-height:44px;padding:0 8px;border:1px solid #b8c4cf;border-radius:10px;font-size:16px}
+.ocrrow{display:grid;grid-template-columns:64px 1fr 1fr;gap:6px;align-items:center}
+.ocrrow.warn{background:#FEF3E2;border-radius:8px;padding:2px}
+.ocrrow .in{min-height:40px}
+.ocrrow .d{font-size:14px;font-weight:700}
+.ocrrow .d.we{color:#B3261E}
+.wbox{padding:8px 12px;border-radius:10px;background:#FEF3E2;color:#7a3a05;font-size:13px}
+.addrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .btn:focus-visible,.chip:focus-visible,.in:focus-visible,.seg button:focus-visible,summary:focus-visible,textarea:focus-visible,.field:focus-visible{outline:3px solid #E8710A;outline-offset:2px}
 @media (max-width:520px){.chip{font-size:13px}.cell{min-height:112px;padding:3px}h1{font-size:22px}}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
 <script src="duty-core.js"></script>
+<script src="cal-ocr.js"></script>
 <script type="module">
 import { makeApi } from './common.js';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
@@ -105,6 +119,13 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       </div>
     </div>
     <div class="status" id="status" role="status"></div>
+    <details id="imgBox">
+      <summary>📷 달력 이미지로 당번표 올리기</summary>
+      <div class="drop" id="drop" tabindex="0" role="button" aria-label="이미지 선택">이미지를 여기에 끌어다 놓거나, 눌러서 여러 장 선택하세요.<br>복사한 이미지는 이 화면에서 붙여넣기(Ctrl+V)만 하면 돼요.</div>
+      <input type="file" id="files" accept="image/*" multiple hidden>
+      <div class="cap" id="ocrMsg" role="status">당번표 달력 캡처(월~일 7칸, 칸마다 날짜+이름 두 줄)를 읽어서 아래에 보여드려요. 확인하고 고친 뒤 &quot;저장&quot;을 누르면 반영됩니다.</div>
+      <div id="ocrOut"></div>
+    </details>
     <div class="main">
       <section class="cal" aria-label="당번 달력">
         <div class="title" id="calTitle"></div>
@@ -329,6 +350,169 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   });
 
   var started = false;
+
+  /* ===== 이미지로 당번표 올리기 (브라우저 안에서 글자 읽기) ===== */
+  var TESS_URL = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+  var LANG_URL = 'https://cdn.jsdelivr.net/npm/@tesseract.js-data/kor/4.0.0_best_int';
+  var ocrWorker = null, ocrBusy = false, queue = [], ocrResults = [], ocrSeq = 0;
+  function loadScript(src) {
+    return new Promise(function (ok, bad) {
+      if (window.Tesseract) { ok(); return; }
+      var s = document.createElement('script'); s.src = src; s.onload = function () { ok(); }; s.onerror = function () { bad(new Error('script')); };
+      document.head.appendChild(s);
+    });
+  }
+  function getWorker() {
+    if (ocrWorker) return ocrWorker;
+    ocrWorker = loadScript(TESS_URL).then(function () { return window.Tesseract.createWorker('kor', 1, { langPath: LANG_URL }); });
+    ocrWorker.catch(function () { ocrWorker = null; });
+    return ocrWorker;
+  }
+  function toCanvas(im) { var c = document.createElement('canvas'); c.width = im.width; c.height = im.height; c.getContext('2d').putImageData(new ImageData(im.data, im.width, im.height), 0, 0); return c; }
+  function makeEngine(w) {
+    var mode = '';
+    function setMode(m) {
+      if (mode === m) return Promise.resolve(); mode = m;
+      return w.setParameters({ tessedit_pageseg_mode: '7', tessedit_char_whitelist: m === 'digits' ? '0123456789' : '' });
+    }
+    return {
+      digits: function (im) { return setMode('digits').then(function () { return w.recognize(toCanvas(im)); }).then(function (r) { return r.data.text; }); },
+      text: function (im) { return setMode('text').then(function () { return w.recognize(toCanvas(im)); }).then(function (r) { return r.data.text; }); }
+    };
+  }
+  function fileToImage(file) {
+    return new Promise(function (ok, bad) {
+      var url = URL.createObjectURL(file), im = new Image();
+      im.onload = function () {
+        var sc = 900 / im.naturalWidth, W = 900, H = Math.max(1, Math.round(im.naturalHeight * sc));
+        var c = document.createElement('canvas'); c.width = W; c.height = H;
+        var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, W, H); x.drawImage(im, 0, 0, W, H);
+        URL.revokeObjectURL(url); ok(x.getImageData(0, 0, W, H));
+      };
+      im.onerror = function () { URL.revokeObjectURL(url); bad(new Error('img')); };
+      im.src = url;
+    });
+  }
+  function knownNames() {
+    var set = {}; Object.keys(months).forEach(function (k) { var d = (months[k] && months[k].duties) || {}; Object.keys(d).forEach(function (day) { (d[day] || []).forEach(function (n) { if (n) set[n] = 1; }); }); });
+    return Object.keys(set);
+  }
+  function ocrMsg(t) { $('ocrMsg').textContent = t; }
+  function addFiles(files) {
+    var imgs = Array.prototype.filter.call(files || [], function (f) { return f && /^image\//.test(f.type); });
+    if (!imgs.length) return;
+    $('imgBox').open = true;
+    imgs.forEach(function (f) { queue.push(f); });
+    runQueue();
+  }
+  function runQueue() {
+    if (ocrBusy || !queue.length) return;
+    ocrBusy = true;
+    var total = queue.length, idx = 0;
+    ocrMsg('글자 읽는 도구를 준비하는 중이에요. 처음 한 번은 1~2분 걸릴 수 있어요…');
+    getWorker().then(function (w) {
+      var eng = makeEngine(w);
+      function next() {
+        if (!queue.length) { ocrBusy = false; ocrMsg('다 읽었어요. 아래 내용을 확인하고 고친 뒤 저장하세요.'); return; }
+        var f = queue.shift(); idx++;
+        var label = (idx) + '/' + (idx + queue.length) + '번째 이미지';
+        ocrMsg(label + ' 읽는 중…');
+        return fileToImage(f).then(function (im) {
+          return window.CalOcr.readImage(im, eng, { known: knownNames(), progress: function (d, t) { ocrMsg(label + ' 읽는 중… ' + d + '/' + t); } });
+        }).then(function (r) { addResult(f.name || '붙여넣은 이미지', r); }, function () { ocrMsg(label + '는 읽지 못했어요. 달력 캡처가 맞는지 확인해 주세요.'); }).then(next);
+      }
+      return next();
+    }).catch(function () { ocrBusy = false; queue = []; ocrMsg('글자 읽는 도구를 불러오지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요.'); });
+  }
+  function addResult(name, r) {
+    var n = new Date(), t = r.title || {};
+    var cm = ym();
+    var res = { id: ++ocrSeq, name: name, year: t.year || (cm && cm[0]) || n.getFullYear(), month: t.month || (cm && cm[1]) || (n.getMonth() + 1),
+      titleFound: !!r.title, offset: r.offset, duties: {}, rawWarn: r.warnings || [], applied: false };
+    Object.keys(r.duties).forEach(function (d) { var a = r.duties[d]; res.duties[d] = [a[0] || '', a[1] || '']; });
+    if (r.offset === null) res.rawWarn = ['날짜 숫자를 읽지 못했어요. 이미지가 달력 모양이 맞는지 확인해 주세요.'];
+    ocrResults.push(res); renderOcr();
+  }
+  function monthKeyOf(r) { return r.year + '-' + C.pad(r.month); }
+  function dayWarn(r, day, known) {
+    var a = r.duties[day] || [], w = [];
+    var filled = a.filter(Boolean);
+    if (filled.length < 2) w.push('이름 ' + filled.length + '명');
+    filled.forEach(function (x) { if (known.length && known.indexOf(x) < 0) w.push('"' + x + '" 처음 보는 이름'); });
+    if (filled.length === 2 && filled[0] === filled[1]) w.push('같은 사람이 두 칸');
+    return w;
+  }
+  function renderOcr() {
+    var box = $('ocrOut'); box.textContent = '';
+    var known = knownNames();
+    ocrResults.forEach(function (r) {
+      var card = el('div', 'ocrcard');
+      var hd = el('div', 'hd');
+      var yi = document.createElement('input'); yi.type = 'number'; yi.className = 'num2'; yi.value = r.year; yi.setAttribute('aria-label', '연도');
+      var mi = document.createElement('input'); mi.type = 'number'; mi.className = 'num2'; mi.value = r.month; mi.min = 1; mi.max = 12; mi.setAttribute('aria-label', '월');
+      function chg() { r.year = parseInt(yi.value, 10) || r.year; r.month = Math.min(12, Math.max(1, parseInt(mi.value, 10) || r.month)); renderOcr(); }
+      yi.addEventListener('change', chg); mi.addEventListener('change', chg);
+      hd.appendChild(yi); hd.appendChild(el('span', '', '년')); hd.appendChild(mi); hd.appendChild(el('span', '', '월'));
+      hd.appendChild(el('span', 'cap', r.name));
+      var cl = el('button', 'btn', '닫기'); cl.addEventListener('click', function () { ocrResults = ocrResults.filter(function (x) { return x !== r; }); renderOcr(); });
+      hd.appendChild(cl);
+      card.appendChild(hd);
+      var msgs = [];
+      if (!r.titleFound) msgs.push('제목에서 연·월을 읽지 못해 현재 화면의 달로 맞췄어요. 위 숫자를 확인하세요.');
+      if (r.offset !== null && r.offset !== window.CalOcr.expectedOffset(r.year, r.month)) msgs.push(r.year + '년 ' + r.month + '월의 요일 배치와 이미지가 달라요. 연·월이 맞는지 확인하세요.');
+      msgs = msgs.concat(r.rawWarn.filter(function (x) { return /날짜 숫자/.test(x); }));
+      if (msgs.length) card.appendChild(el('div', 'wbox', '⚠ ' + msgs.join(' ')));
+      var days = Object.keys(r.duties).map(Number).sort(function (a, b) { return a - b; });
+      var bad = 0;
+      days.forEach(function (day) {
+        var w = dayWarn(r, day, known), row = el('div', 'ocrrow' + (w.length ? ' warn' : ''));
+        if (w.length) bad++;
+        var dw = new Date(r.year, r.month - 1, day).getDay();
+        row.appendChild(el('div', 'd' + (dw === 0 || dw === 6 ? ' we' : ''), day + '일(' + '일월화수목금토'[dw] + ')'));
+        [0, 1].forEach(function (j) {
+          var inp = document.createElement('input'); inp.className = 'in'; inp.value = r.duties[day][j] || ''; inp.setAttribute('aria-label', day + '일 ' + (j + 1) + '번째 이름');
+          inp.addEventListener('change', function () { r.duties[day][j] = inp.value.trim(); if (!r.duties[day][0] && !r.duties[day][1]) delete r.duties[day]; renderOcr(); });
+          row.appendChild(inp);
+        });
+        card.appendChild(row);
+        if (w.length) card.appendChild(el('div', 'cap', '↑ ' + w.join(', ')));
+      });
+      if (!days.length) card.appendChild(el('div', 'cap', '읽힌 당번이 없어요.'));
+      var add = el('div', 'addrow');
+      var ai = document.createElement('input'); ai.type = 'number'; ai.min = 1; ai.max = 31; ai.className = 'num2'; ai.placeholder = '날짜'; ai.setAttribute('aria-label', '추가할 날짜');
+      var ab = el('button', 'btn', '날짜 추가');
+      ab.addEventListener('click', function () { var d = parseInt(ai.value, 10); if (d >= 1 && d <= 31 && !r.duties[d]) { r.duties[d] = ['', '']; renderOcr(); } });
+      add.appendChild(ai); add.appendChild(ab); card.appendChild(add);
+      var key = monthKeyOf(r), ex = months[key] && Object.keys(months[key].duties || {}).length;
+      var sv = el('button', 'btn primary', '');
+      sv.textContent = r.applied ? '저장했어요 ✓' : ((bad ? '(주의 ' + bad + '일) ' : '') + r.year + '년 ' + r.month + '월 ' + days.length + '일 저장');
+      sv.disabled = r.applied || !days.length;
+      var armedSv = 0;
+      sv.addEventListener('click', function () {
+        if (ex && !armedSv) { sv.textContent = '이미 ' + ex + '일 치가 있어요. 덮어쓰려면 한 번 더'; armedSv = setTimeout(function () { armedSv = 0; sv.textContent = (bad ? '(주의 ' + bad + '일) ' : '') + r.year + '년 ' + r.month + '월 ' + days.length + '일 저장'; }, 4000); return; }
+        clearTimeout(armedSv); sv.disabled = true;
+        var out = {}; Object.keys(r.duties).forEach(function (d) { if (r.duties[d][0] || r.duties[d][1]) out[d] = [r.duties[d][0] || '', r.duties[d][1] || '']; });
+        API.setMonth(key, out).then(function () { r.applied = true; cur = key; sel = null; setStatus(r.year + '년 ' + r.month + '월 당번 ' + Object.keys(out).length + '일 치를 저장했어요.'); renderOcr(); renderAll(); })
+          .catch(function () { sv.disabled = false; setStatus('저장하지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
+      });
+      card.appendChild(sv);
+      box.appendChild(card);
+    });
+  }
+  var dz = $('drop'), fi = $('files');
+  dz.addEventListener('click', function () { fi.click(); });
+  dz.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fi.click(); } });
+  fi.addEventListener('change', function () { addFiles(fi.files); fi.value = ''; });
+  ['dragenter', 'dragover'].forEach(function (t) { dz.addEventListener(t, function (e) { e.preventDefault(); dz.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (t) { dz.addEventListener(t, function (e) { e.preventDefault(); dz.classList.remove('over'); }); });
+  dz.addEventListener('drop', function (e) { addFiles(e.dataTransfer && e.dataTransfer.files); });
+  document.addEventListener('paste', function (e) {
+    if (!connected) return;
+    var fs = []; var items = (e.clipboardData && e.clipboardData.items) || [];
+    for (var i = 0; i < items.length; i++) if (items[i].kind === 'file' && /^image\//.test(items[i].type)) { var f = items[i].getAsFile(); if (f) fs.push(f); }
+    if (fs.length) { e.preventDefault(); addFiles(fs); }
+  });
+
   window.dutyApiReady.then(function (api) {
     started = true; API = api;
     if (pin) connect(pin); else show('gate');

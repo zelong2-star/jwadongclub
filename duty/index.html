@@ -331,7 +331,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   }
 
   // ---------- 내 당번 캘린더에 넣기 (.ics) ----------
-  function icsEsc(t) { return String(t).replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\n/g, '\\n'); }
+  function icsEsc(t) { return String(t).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n'); }
   function ymd(k, d) { var p = C.parseKey(k); return p[0] + C.pad(p[1]) + C.pad(d); }
   function ymdNext(k, d) { var p = C.parseKey(k), t = new Date(p[0], p[1] - 1, d + 1); return t.getFullYear() + C.pad(t.getMonth() + 1) + C.pad(t.getDate()); }
   function buildIcs() {
@@ -353,7 +353,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     if (!r.n) { toast('앞으로 예정된 내 당번이 없어요.'); return; }
     try {
       var blob = new Blob([r.text], { type: 'text/calendar;charset=utf-8' }), url = URL.createObjectURL(blob);
-      var a = document.createElement('a'); a.href = url; a.download = '좌동클럽-내당번.ics'; document.body.appendChild(a); a.click(); a.remove();
+      var a = document.createElement('a'); a.href = url; a.download = 'jwadong-duty.ics'; document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
       toast('내 당번 ' + r.n + '건 파일을 받았어요. 열어서 캘린더에 추가해 주세요.');
     } catch (e) { toast('파일을 만들지 못했어요.'); }
@@ -442,7 +442,15 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       it.appendChild(b2); list.appendChild(it);
     });
     card.appendChild(list);
-    if (up.length) { var cb = btn('btn out', '내 당번 캘린더에 넣기', addToCalendar); cb.style.marginTop = '14px'; card.appendChild(cb); card.appendChild(el('div', 'cap', '전날 오전 9시와 당일 오전 9시에 폰이 알려 줘요.')); card.lastChild.style.marginTop = '6px'; }
+    if (up.length) { var cb = btn('btn out', '내 당번 캘린더에 넣기', addToCalendar); cb.style.marginTop = '14px'; card.appendChild(cb); card.appendChild(el('div', 'cap', '전날 오전 9시와 당일 오전 9시에 폰이 알려 줘요.')); card.lastChild.style.marginTop = '6px';
+      var gb = btn('btn out', '구글 캘린더로 하나씩 추가', function () { gl.style.display = gl.style.display === 'none' ? 'block' : 'none'; }); gb.style.marginTop = '10px'; card.appendChild(gb);
+      var gl = el('div'); gl.style.display = 'none'; gl.style.marginTop = '8px';
+      up.forEach(function (s) {
+        var a = document.createElement('a'); a.target = '_blank'; a.rel = 'noopener'; a.textContent = lab(s.month, s.day) + ' 추가';
+        a.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent('좌동클럽 당번') + '&dates=' + ymd(s.month, s.day) + '/' + ymdNext(s.month, s.day) + '&details=' + encodeURIComponent('함께하는 당번: ' + (others(s.month, s.day).join(', ') || '없음'));
+        a.style.cssText = 'display:block;padding:10px 0;border-top:1px solid #eee;color:#3182f6;font-weight:600;text-decoration:none'; gl.appendChild(a);
+      });
+      card.appendChild(gl); }
     m.appendChild(card);
   }
 

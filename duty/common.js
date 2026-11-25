@@ -83,6 +83,15 @@ export function makeApi() {
     subscribeAcks: (cb, err) => onSnapshot(query(col('acks'), orderBy('at', 'desc'), limit(400)), (s) => {
       const o = []; s.forEach((d) => { const v = d.data(); v.id = d.id; o.push(v); }); cb(o);
     }, err),
+    // 회원 명단 (문서 하나: meta/roster). 없으면 앱이 당번표 이름으로 대신함
+    subscribeRoster: (cb, err) => onSnapshot(ref('meta', 'roster'), (s) => { cb(s.exists() ? s.data() : null); }, err),
+    setRoster: (names, paused) => setDoc(ref('meta', 'roster'), { names: names, paused: paused, updated: Date.now() }),
+    // 클럽 공지 (삭제 없이 '내리기'로 숨김)
+    subscribeNotices: (cb, err) => onSnapshot(query(col('notices'), orderBy('at', 'desc'), limit(60)), (s) => {
+      const o = []; s.forEach((d) => { const v = d.data(); v.id = d.id; o.push(v); }); cb(o);
+    }, err),
+    addNotice: (n) => addDoc(col('notices'), { title: n.title || '', body: n.body, pinned: !!n.pinned, hidden: false, at: Date.now() }),
+    updateNotice: (id, patch) => updateDoc(ref('notices', id), patch),
     createRequest: (r) => addDoc(col('requests'), Object.assign({}, r, { status: 'pending', at: Date.now() })),
     setRequestStatus: (id, status) => updateDoc(ref('requests', id), { status: status, resolvedAt: Date.now() }),
 

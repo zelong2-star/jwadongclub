@@ -142,7 +142,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   var C = window.DutyCore, DOW = C.DOW;
   var API = null, pin = null, me = null;
   var months = {}, requests = [], logs = [], acks = [], keys = [], cur = null;
-  var tab = 'home', sv = 'cal', selDay = null, exTab = 'in', flow = null;
+  var roster = null, notices = [], tab = 'home', sv = 'cal', selDay = null, exTab = 'in', flow = null;
   var unsubs = [], connected = false, toastT = 0;
   var PIN_KEY = 'jwadong-pin-v1', ME_KEY = 'jwadong-me-v1', VIEW_KEY = 'jwadong-view-v2';
   var URL_APP = 'https://zelong2-star.github.io/jwadongclub/duty/';
@@ -159,7 +159,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function toast(t) { var n = $('toast'); n.textContent = t; n.classList.remove('hide'); clearTimeout(toastT); toastT = setTimeout(function () { n.classList.add('hide'); }, 4500); }
   function toggle(arr, v) { var i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); else arr.push(v); }
   function icon(d) { var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('width', '22'); s.setAttribute('height', '22'); s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '2'); s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round'); s.setAttribute('aria-hidden', 'true'); var p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('d', d); s.appendChild(p); return s; }
-  var I = { swap: 'M7 7h12l-3-3M17 17H5l3 3', home: 'M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z', cal: 'M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM8 3v4M16 3v4M4 10h16', gear: 'M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1', l: 'M15 6l-6 6 6 6', r: 'M9 6l6 6-6 6' };
+  var I = { swap: 'M7 7h12l-3-3M17 17H5l3 3', home: 'M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z', cal: 'M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM8 3v4M16 3v4M4 10h16', bell: 'M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 21h4', gear: 'M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1', l: 'M15 6l-6 6 6 6', r: 'M9 6l6 6-6 6' };
 
   function duties(k) { var m = months[k]; return (m && m.duties) || {}; }
   function isLocked(k) { return !!(months[k] && months[k].locked); }
@@ -171,6 +171,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function others(k, d) { return (duties(k)[d] || []).filter(function (n) { return n && n !== me; }); }
   function namesOf(k, d) { return (duties(k)[d] || []).filter(Boolean); }
   function allNames() {
+    if (roster && Array.isArray(roster.names) && roster.names.length) return roster.names.slice().sort(function (a, b) { return a.localeCompare(b, 'ko'); });
     var set = {};
     keys.forEach(function (k) { var ds = duties(k); Object.keys(ds).forEach(function (d) { (ds[d] || []).forEach(function (n) { if (n) set[n] = 1; }); }); });
     return Object.keys(set).sort(function (a, b) { return a.localeCompare(b, 'ko'); });
@@ -267,6 +268,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           connected = true;
           unsubs.push(API.subscribeRequests(function (rs) { requests = rs; if (connected) renderAll(); }, onErr));
           unsubs.push(API.subscribeLog(function (ls) { logs = ls; if (connected) renderAll(); }, onErr));
+          if (API.subscribeNotices) unsubs.push(API.subscribeNotices(function (ns) { notices = ns; if (connected) renderAll(); }, function () {}));
+          if (API.subscribeRoster) unsubs.push(API.subscribeRoster(function (r) { roster = r; if (connected) { renderAll(); if (!$('picker').classList.contains('hide')) renderNames($('search').value || ''); } }, function () {}));
           if (API.subscribeAcks) unsubs.push(API.subscribeAcks(function (as) { acks = as; if (connected) renderAll(); }, function () {}));
           if (me && allNames().indexOf(me) >= 0) enterApp(); else showPicker();
         } else if (connected) {
@@ -308,19 +311,51 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function renderNav() {
     var inN = inboxList().length + openList().length;
     var box = $('navin'); box.textContent = '';
-    [['home', '홈', I.home], ['sched', '당번표', I.cal], ['swap', '교환', I.swap], ['set', '설정', I.gear]].forEach(function (x) {
+    [['home', '홈', I.home], ['sched', '당번표', I.cal], ['swap', '교환', I.swap], ['notice', '공지', I.bell], ['set', '설정', I.gear]].forEach(function (x) {
       var b = btn('', '', function () { tab = x[0]; renderAll(); window.scrollTo(0, 0); });
       b.appendChild(icon(x[2])); b.appendChild(el('span', '', x[1]));
       if (tab === x[0]) b.setAttribute('aria-current', 'page');
       if (x[0] === 'swap' && inN) b.appendChild(el('span', 'dotb', String(inN)));
+      if (x[0] === 'notice' && unreadN()) b.appendChild(el('span', 'dotb', String(unreadN())));
       box.appendChild(b);
     });
   }
   function renderMain() {
     var m = $('main'); m.textContent = '';
-    if (tab === 'home') homeView(m); else if (tab === 'sched') schedView(m); else if (tab === 'swap') swapView(m); else setView(m);
+    if (tab === 'home') homeView(m); else if (tab === 'sched') schedView(m); else if (tab === 'swap') swapView(m); else if (tab === 'notice') noticeView(m); else setView(m);
   }
 
+  // ---------- 공지 ----------
+  var SEEN_KEY = 'jwadong-notice-seen-v1';
+  function seenAt() { try { return parseInt(localStorage.getItem(SEEN_KEY), 10) || 0; } catch (e) { return 0; } }
+  function shownNotices() { return notices.filter(function (n) { return !n.hidden; }).sort(function (a, b) { return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || b.at - a.at; }); }
+  function unreadN() { var s = seenAt(); return notices.filter(function (n) { return !n.hidden && n.at > s; }).length; }
+  function noticeDate(t) { var d = new Date(t); return d.getFullYear() + '.' + (d.getMonth() + 1) + '.' + d.getDate(); }
+  function noticeView(m) {
+    m.appendChild(el('h1', '', '클럽 공지'));
+    var list = shownNotices();
+    if (!list.length) m.appendChild(el('div', 'card cap', '아직 올라온 공지가 없어요.'));
+    list.forEach(function (n) {
+      var c = el('div', 'card'); c.style.display = 'flex'; c.style.flexDirection = 'column'; c.style.gap = '8px';
+      var top = el('div'); if (n.pinned) { top.appendChild(el('span', 'tag', '고정')); top.appendChild(document.createTextNode(' ')); }
+      if (n.at > seenAt()) { top.appendChild(el('span', 'tag', '새 글')); top.lastChild.style.background = 'var(--blue-soft)'; top.lastChild.style.color = 'var(--blue)'; }
+      if (top.childNodes.length) c.appendChild(top);
+      if (n.title) c.appendChild(el('div', 'lead', n.title));
+      var body = el('div', '', n.body); body.style.whiteSpace = 'pre-wrap'; body.style.wordBreak = 'keep-all'; c.appendChild(body);
+      c.appendChild(el('div', 'cap', noticeDate(n.at)));
+      m.appendChild(c);
+    });
+    var latest = notices.reduce(function (a, n) { return Math.max(a, n.at || 0); }, 0);
+    if (latest > seenAt()) { try { localStorage.setItem(SEEN_KEY, String(latest)); } catch (e) {} setTimeout(function () { if (tab === 'notice') renderNav(); }, 1500); }
+  }
+  function noticeCard(m) {
+    var list = shownNotices(); if (!list.length) return;
+    var n = list[0], un = unreadN();
+    var b = btn('opt', '', function () { tab = 'notice'; renderAll(); window.scrollTo(0, 0); });
+    var t = el('b', '', (un ? '새 공지 · ' : '공지 · ') + (n.title || n.body.split('\n')[0].slice(0, 30)));
+    b.appendChild(t); b.appendChild(el('span', '', noticeDate(n.at) + (list.length > 1 ? ' · 공지 ' + list.length + '개 보기' : ' · 눌러서 보기')));
+    m.appendChild(b);
+  }
   // ---------- 홈 ----------
   function homeView(m) {
     var head = el('div'); head.appendChild(el('div', 'cap', '좌동클럽 당번')); head.appendChild(el('h1', '', '안녕하세요, ' + me + '님')); m.appendChild(head);
@@ -340,6 +375,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       hero.appendChild(el('div', '', '새 당번표가 올라오면 여기에 보여요.'));
     }
     m.appendChild(hero);
+    noticeCard(m);
     var st = el('div', 'stats');
     var a = btn('stat', '', function () { tab = 'swap'; exTab = 'in'; renderAll(); window.scrollTo(0, 0); });
     a.appendChild(el('span', 'cap', '받은 교환 요청')); a.appendChild(el('b', '', inboxList().length + '건')); a.firstChild.nextSibling.style.color = 'var(--blue)';

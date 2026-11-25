@@ -5,72 +5,83 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <title>좌동클럽 당번표 (총무용)</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:'Noto Sans KR',system-ui,sans-serif;color:#1b2733;background:#F4F7FA;line-height:1.5}
-button,input,textarea{font-family:inherit;color:inherit}
-button{cursor:pointer}
-button:disabled{cursor:default;opacity:.5}
-.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 48px;display:flex;flex-direction:column;gap:16px}
-h1{margin:0;font-size:26px;font-weight:700;color:#1F4E79}
-.sub{margin:0;font-size:14px;color:#5a6b7b}
-.hide{display:none!important}
-.card{background:#fff;border:1px solid #cfd9e3;border-radius:14px;padding:14px 16px}
-.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
-.nav{display:flex;align-items:center;gap:8px}
-.nav .label{min-width:120px;text-align:center;font-size:18px;font-weight:700}
-.btn{min-height:44px;padding:0 14px;border:1px solid #b8c4cf;border-radius:10px;background:#fff;font-size:15px;font-weight:500}
-.btn.primary{background:#1F4E79;border-color:#1F4E79;color:#fff;font-weight:700}
-.seg{display:flex;border:1px solid #1F4E79;border-radius:10px;overflow:hidden}
-.seg button{min-height:44px;padding:0 16px;border:0;background:#fff;color:#1F4E79;font-size:15px;font-weight:700}
-.seg button[aria-pressed="true"]{background:#1F4E79;color:#fff}
-.status{padding:12px 16px;border-radius:12px;background:#FEF3E2;color:#7a3a05;font-size:15px;font-weight:500}
-.main{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
-.cal{flex:1 1 560px;min-width:0}
-.title{background:#1F4E79;color:#fff;text-align:center;padding:12px;font-size:18px;font-weight:700;border-radius:10px 10px 0 0}
-.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-left:1px solid #b8c4cf;background:#fff}
-.dow{background:#D9EAF7;text-align:center;padding:8px 0;font-size:14px;font-weight:700;border-right:1px solid #b8c4cf}
-.dow.we{background:#B3261E;color:#fff}
-.cell{min-height:120px;padding:4px;border-right:1px solid #b8c4cf;border-bottom:1px solid #b8c4cf;display:flex;flex-direction:column;gap:4px;min-width:0}
-.cell.we{background:#F5F9FD}
-.num{font-size:12px;font-weight:500;padding-left:2px}
-.cell.we .num{color:#B3261E}
-.chip,.in{width:100%;min-height:44px;border-radius:8px;border:1px solid #8fa3b5;background:#fff;font-size:14px;font-weight:500;padding:0 2px;text-align:center;min-width:0}
-.chip.sel{background:#1F4E79;border:2px solid #1F4E79;color:#fff}
-.in{font-size:16px}
-.panel{flex:0 1 420px;min-width:min(100%,300px);display:flex;flex-direction:column;gap:12px}
-.row{display:flex;flex-wrap:wrap;gap:8px}
-.row .btn{flex:1 1 auto}
-.cap{font-size:13px;color:#5a6b7b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--blue:#205BDF;--blue-soft:#EAF0FD;--bg:#F6F7F9;--ink:#191F28;--sub:#5B6572;--line:#E5E8EB;--gray:#EEF0F3;--red:#E5484D;--green:#12A150;--amber:#FFF4D6}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:Pretendard,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;font-size:16px;line-height:1.5;color:var(--ink);background:var(--bg)}
+button,input,textarea,select{font-family:inherit;color:inherit;font-size:inherit}
+button{cursor:pointer}button:disabled{cursor:default;opacity:.45}
+.hide,[hidden]{display:none!important}
+.wrap{max-width:760px;margin:0 auto;padding:24px 20px 120px;display:flex;flex-direction:column;gap:14px}
+h1{margin:0;font-size:22px;font-weight:800}
+h2{margin:0;font-size:20px;font-weight:800;line-height:1.35}
+.sub{margin:0;font-size:14px;color:var(--sub)}
+.card{background:#fff;border-radius:20px;padding:20px}
+.cap{font-size:14px;color:var(--sub)}
 .hello{font-size:17px;font-weight:700}
-.field{width:100%;min-height:44px;padding:0 12px;border:1px solid #b8c4cf;border-radius:10px;font-size:16px;margin:8px 0}
-.err{color:#B3261E;font-size:14px;font-weight:500}
-pre{margin:0;padding:16px;border-radius:14px;background:#fff;border:1px solid #cfd9e3;font-family:inherit;font-size:14px;line-height:1.6;white-space:pre-wrap;user-select:text;word-break:keep-all}
-textarea{width:100%;min-height:140px;margin:8px 0;padding:10px;border:1px solid #b8c4cf;border-radius:10px;font-size:16px}
-details{background:#fff;border:1px solid #cfd9e3;border-radius:14px;padding:12px 16px}
-summary{min-height:32px;font-size:15px;font-weight:700;cursor:pointer}
-.item{padding:10px 0;border-bottom:1px solid #e6edf3;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.err{color:var(--red);font-size:15px;font-weight:600}
+.btn{min-height:54px;padding:0 16px;border:0;border-radius:14px;background:var(--gray);color:#333D4B;font-size:16px;font-weight:700}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.sm{min-height:44px;padding:0 14px;font-size:15px;border-radius:12px}
+.btn.lockon{background:var(--red);color:#fff}
+.field{width:100%;min-height:54px;padding:0 16px;border:1.5px solid var(--line);border-radius:14px;font-size:17px;background:#fff;margin:8px 0}
+.field:focus{border-color:var(--blue);outline:0}
+.row{display:flex;flex-wrap:wrap;gap:10px}.row .btn{flex:1 1 auto}
+.seg{display:flex;background:var(--gray);border-radius:14px;padding:4px;gap:4px}
+.seg button{flex:1;min-height:44px;border:0;border-radius:11px;background:transparent;font-size:16px;font-weight:600;color:var(--sub);padding:0 12px}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);font-weight:800;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.mnav{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mnav .label{font-size:20px;font-weight:800;text-align:center;flex:1}
+.mnav button{min-width:56px;min-height:48px;border:0;border-radius:14px;background:#fff;font-size:15px;font-weight:700;color:var(--ink)}
+.status{padding:14px 18px;border-radius:16px;background:var(--amber);color:#7a4a00;font-size:15px;font-weight:600}
+.cal{min-width:0}
+.title{display:none}
+.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;background:#fff;border-radius:20px;padding:12px}
+.dow{text-align:center;padding:4px 0;font-size:14px;font-weight:700;color:var(--sub)}
+.dow.we{color:var(--red)}
+.cell{min-height:104px;padding:5px 3px;border-radius:12px;background:var(--gray);display:flex;flex-direction:column;gap:4px;min-width:0}
+.cell.we{background:#F1F3F8}
+.num{font-size:13px;font-weight:700;padding-left:2px}
+.cell.we .num{color:var(--red)}
+.chip,.in{width:100%;min-height:44px;border-radius:10px;border:0;background:#fff;font-size:14px;font-weight:600;padding:0 2px;text-align:center;min-width:0}
+.chip.sel{background:var(--blue);color:#fff;font-weight:800}
+.in{font-size:16px;border:1.5px solid var(--line)}.in:focus{border-color:var(--blue);outline:0}
+.panel{display:flex;flex-direction:column;gap:14px}
+pre{margin:0;padding:18px;border-radius:20px;background:#fff;font-family:inherit;font-size:15px;line-height:1.65;white-space:pre-wrap;user-select:text;word-break:keep-all}
+textarea{width:100%;min-height:140px;margin:8px 0;padding:12px;border:1.5px solid var(--line);border-radius:14px;font-size:16px}
+details{background:#fff;border-radius:20px;padding:16px 20px}
+summary{min-height:32px;font-size:17px;font-weight:800;cursor:pointer}
+.item{padding:12px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px;font-size:15px}
 .item:last-child{border-bottom:0}
-.note{padding:12px 16px;border-radius:12px;background:#EAF2F9;font-size:13px;color:#33475b}
-.drop{margin:10px 0;padding:22px 12px;border:2px dashed #8fa3b5;border-radius:12px;text-align:center;font-size:15px;font-weight:500;color:#33475b;background:#F5F9FD;cursor:pointer}
-.drop.over{background:#EAF2F9;border-color:#1F4E79}
-.drop:focus-visible{outline:3px solid #E8710A;outline-offset:2px}
-.ocrcard{border:1px solid #cfd9e3;border-radius:12px;padding:12px;margin:10px 0;background:#fff;display:flex;flex-direction:column;gap:8px}
+.note{padding:14px 16px;border-radius:14px;background:var(--blue-soft);font-size:14px;color:#33475b}
+.drop{margin:10px 0;padding:24px 12px;border:2px dashed #B0B8C1;border-radius:16px;text-align:center;font-size:15px;font-weight:600;color:var(--sub);background:#fff;cursor:pointer}
+.drop.over{background:var(--blue-soft);border-color:var(--blue)}
+.ocrcard{border:1.5px solid var(--line);border-radius:16px;padding:14px;margin:10px 0;background:#fff;display:flex;flex-direction:column;gap:8px}
 .ocrcard .hd{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.ocrcard .num2{width:84px;min-height:44px;padding:0 8px;border:1px solid #b8c4cf;border-radius:10px;font-size:16px}
+.ocrcard .num2{width:84px;min-height:44px;padding:0 8px;border:1.5px solid var(--line);border-radius:12px;font-size:16px}
 .ocrrow{display:grid;grid-template-columns:64px 1fr 1fr;gap:6px;align-items:center}
-.ocrrow.warn{background:#FEF3E2;border-radius:8px;padding:2px}
+.ocrrow.warn{background:var(--amber);border-radius:10px;padding:2px}
 .ocrrow .in{min-height:40px}
-.ocrrow .d{font-size:14px;font-weight:700}
-.ocrrow .d.we{color:#B3261E}
-.wbox{padding:8px 12px;border-radius:10px;background:#FEF3E2;color:#7a3a05;font-size:13px}
+.ocrrow .d{font-size:14px;font-weight:700}.ocrrow .d.we{color:var(--red)}
+.wbox{padding:10px 14px;border-radius:12px;background:var(--amber);color:#7a4a00;font-size:14px}
 .addrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.lockon{background:#B3261E;border-color:#B3261E;color:#fff;font-weight:700}
-.tag{display:inline-block;padding:0 8px;border-radius:10px;font-size:12px;font-weight:700;background:#EAF2F9;color:#1F4E79}
-.tag.p{background:#FEF3E2;color:#7a3a05}.tag.ok{background:#E6F4EC;color:#1E7D4F}
-.btn:focus-visible,.chip:focus-visible,.in:focus-visible,.seg button:focus-visible,summary:focus-visible,textarea:focus-visible,.field:focus-visible{outline:3px solid #E8710A;outline-offset:2px}
-@media (max-width:520px){.chip{font-size:13px}.cell{min-height:112px;padding:3px}h1{font-size:22px}}
+.tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:13px;font-weight:700;background:var(--gray);color:var(--sub)}
+.tag.p{background:var(--amber);color:#7a4a00}.tag.ok{background:#E3F5EB;color:var(--green)}
+.mem{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.mem:last-child{border-bottom:0}
+.mem .nm{flex:1 1 120px;font-size:17px;font-weight:700;min-width:0}
+.mem .nm small{display:block;font-size:13px;font-weight:500;color:var(--sub)}
+.mem .acts{display:flex;gap:6px;flex-wrap:wrap}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:#fff;border-top:1px solid var(--gray);padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs .in{max-width:760px;margin:0 auto;display:flex;height:72px}
+nav.tabs button{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:13px;font-weight:500;color:#6B7684;position:relative}
+nav.tabs button .ic{font-size:22px;line-height:1}
+nav.tabs button[aria-current="page"]{color:var(--blue);font-weight:800}
+.dotb{position:absolute;top:8px;left:calc(50% + 6px);min-width:20px;height:20px;border-radius:10px;background:var(--red);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.btn:focus-visible,.chip:focus-visible,.in:focus-visible,.seg button:focus-visible,summary:focus-visible,textarea:focus-visible,.field:focus-visible,nav.tabs button:focus-visible,.mnav button:focus-visible,.drop:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
+@media (max-width:520px){.chip{font-size:13px}.cell{min-height:96px;padding:3px 2px}.wrap{padding:20px 14px 120px}}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
 <script src="duty-core.js"></script>
@@ -84,8 +95,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
 <body>
 <div class="wrap">
   <div>
-    <h1>좌동클럽 당번표 (총무용)</h1>
-    <p class="sub">교환을 직접 반영하고, 카톡 공지 문구를 만들고, 잘못된 교환을 되돌립니다.</p>
+    <h1>좌동클럽 총무</h1>
+    <p class="sub">당번표 · 교환 · 회원 명단을 관리해요.</p>
   </div>
 
   <section id="wait" class="card">불러오는 중이에요…</section>
@@ -109,91 +120,131 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     </div>
   </section>
 
-  <section id="app" class="hide" style="display:flex;flex-direction:column;gap:16px">
-    <div class="bar">
-      <div class="nav">
-        <button class="btn" id="prev" aria-label="이전 달">이전 달</button>
+  <section id="app" class="hide" style="display:flex;flex-direction:column;gap:14px">
+    <div id="monthBar" style="display:flex;flex-direction:column;gap:10px">
+      <div class="mnav">
+        <button id="prev" aria-label="이전 달">이전</button>
         <div class="label" id="monthLabel" aria-live="polite"></div>
-        <button class="btn" id="next" aria-label="다음 달">다음 달</button>
-        <button class="btn" id="newMonth">새 달 만들기</button>
-        <button class="btn" id="lock" aria-pressed="false">이 달 교환 마감</button>
+        <button id="next" aria-label="다음 달">다음</button>
       </div>
+      <div class="row">
+        <button class="btn sm" id="newMonth">새 달 만들기</button>
+        <button class="btn sm" id="lock" aria-pressed="false">이 달 교환 마감</button>
+      </div>
+    </div>
+
+    <div id="panel-cal" class="panel">
       <div class="seg" role="group" aria-label="작업 모드">
         <button id="modeSwap" aria-pressed="true">교환</button>
         <button id="modeInput" aria-pressed="false">입력</button>
       </div>
-    </div>
-    <div class="status" id="status" role="status"></div>
-    <details id="imgBox">
-      <summary>📷 달력 이미지로 당번표 올리기</summary>
-      <div class="drop" id="drop" tabindex="0" role="button" aria-label="이미지 선택">이미지를 여기에 끌어다 놓거나, 눌러서 여러 장 선택하세요.<br>복사한 이미지는 이 화면에서 붙여넣기(Ctrl+V)만 하면 돼요.</div>
-      <input type="file" id="files" accept="image/*" multiple hidden>
-      <div class="cap" id="ocrMsg" role="status">당번표 달력 캡처(월~일 7칸, 칸마다 날짜+이름 두 줄)를 읽어서 아래에 보여드려요. 확인하고 고친 뒤 &quot;저장&quot;을 누르면 반영됩니다.</div>
-      <div id="ocrOut"></div>
-    </details>
-    <details id="autoBox">
-      <summary>🗓 자동 배정 (가나다순 순환)</summary>
-      <div class="cap" style="margin-top:8px">운영 요일에 가나다순으로 돌아가며 당번을 만들어요. 미리 본 뒤에 적용하고, 적용 전 당번표는 백업돼서 되돌릴 수 있어요.</div>
-      <div id="autoBody"></div>
-    </details>
-    <div class="main">
+      <div class="status" id="status" role="status"></div>
       <section class="cal" aria-label="당번 달력">
         <div class="title" id="calTitle"></div>
         <div class="grid" id="grid"></div>
       </section>
-      <aside class="panel">
-        <div class="row">
-          <button class="btn primary" id="copy">공지 문구 복사</button>
-          <button class="btn" id="cancel">선택 취소</button>
+      <div class="row">
+        <button class="btn" id="cancel">선택 취소</button>
+      </div>
+      <button class="btn primary" id="mkImg" style="width:100%">카톡용 당번표 이미지 만들기</button>
+      <div class="card hide" id="imgCard">
+        <div class="cap" id="imgMsg" role="status">이미지를 복사한 뒤 카톡 대화창에 붙여넣거나(Ctrl+V), 저장해서 올리세요.</div>
+        <img id="noticeImg" alt="당번표 이미지" style="width:100%;border:1px solid var(--line);border-radius:12px;margin-top:8px">
+        <div class="row" style="margin-top:8px">
+          <button class="btn primary sm" id="imgCopy">이미지 복사</button>
+          <button class="btn sm" id="imgSave">이미지 저장</button>
+          <button class="btn sm" id="imgShare">공유</button>
+          <button class="btn sm" id="imgClose">닫기</button>
         </div>
-        <button class="btn primary" id="mkImg" style="width:100%">📷 카톡용 당번표 이미지 만들기</button>
-        <div class="card hide" id="imgCard">
-          <div class="cap" id="imgMsg" role="status">이미지를 복사한 뒤 카톡 대화창에 붙여넣거나(Ctrl+V), 저장해서 올리세요.</div>
-          <img id="noticeImg" alt="당번표 이미지" style="width:100%;border:1px solid #cfd9e3;border-radius:8px;margin-top:8px">
-          <div class="row" style="margin-top:8px">
-            <button class="btn primary" id="imgCopy">이미지 복사</button>
-            <button class="btn" id="imgSave">이미지 저장</button>
-            <button class="btn" id="imgShare">공유</button>
-            <button class="btn" id="imgClose">닫기</button>
-          </div>
+      </div>
+    </div>
+
+    <div id="panel-ex" class="panel hide">
+      <div class="card" id="proxyCard">
+        <div class="hello">회원 대신 교환 요청 보내기</div>
+        <div class="cap" style="margin-top:4px">회원을 고르고, 바꿀 당번과 상대를 고르면 그 회원 이름으로 요청이 올라가요. 상대가 앱에서 수락하면 바로 바뀌어요.</div>
+        <div id="proxyBody"></div>
+      </div>
+      <details class="card" id="reqBox" open>
+        <summary id="reqSummary">교환 요청 현황</summary>
+        <div class="seg" role="group" aria-label="요청 보기" style="margin-top:8px">
+          <button id="rfPending" aria-pressed="true">대기 중</button>
+          <button id="rfAll" aria-pressed="false">전체</button>
         </div>
-        <details class="card" id="ackBox" open>
-          <summary id="ackSummary">당번 확인 현황</summary>
-          <div class="cap" style="margin-top:6px">앞으로 2주 안의 당번을 회원이 앱에서 &quot;확인했어요&quot;로 눌렀는지 보여 줘요.</div>
-          <div id="ackList"></div>
-          <button class="btn" id="ackCopy" style="margin-top:8px;width:100%">미확인 안내 문구 복사</button>
-        </details>
-        <details class="card" id="reqBox" open>
-          <summary id="reqSummary">교환 요청 현황</summary>
-          <div class="seg" role="group" aria-label="요청 보기" style="margin-top:8px">
-            <button id="rfPending" aria-pressed="true">대기 중</button>
-            <button id="rfAll" aria-pressed="false">전체</button>
-          </div>
-          <div id="reqList"></div>
-        </details>
-        <div class="cap">카톡 공지 미리보기</div>
-        <pre id="notice"></pre>
-        <div class="card">
-          <div class="hello">이 달 교환 내역</div>
-          <div id="logList"></div>
+        <div id="reqList"></div>
+      </details>
+      <details class="card" id="ackBox" open>
+        <summary id="ackSummary">당번 확인 현황</summary>
+        <div class="cap" style="margin-top:6px">앞으로 2주 안의 당번을 회원이 앱에서 &quot;확인했어요&quot;로 눌렀는지 보여 줘요.</div>
+        <div id="ackList"></div>
+        <button class="btn" id="ackCopy" style="margin-top:8px;width:100%">미확인 안내 문구 복사</button>
+      </details>
+      <div class="card">
+        <div class="hello">이 달 교환 내역</div>
+        <div id="logList"></div>
+      </div>
+    </div>
+
+    <div id="panel-mem" class="panel hide">
+      <div class="card">
+        <div class="hello" id="memTitle">회원 명단</div>
+        <div class="cap" id="memNote" style="margin-top:4px"></div>
+        <div class="addrow" style="margin-top:12px">
+          <input class="field" id="memNew" style="flex:1 1 160px;margin:0" placeholder="새 회원 이름" autocomplete="off" maxlength="10" aria-label="새 회원 이름">
+          <button class="btn primary" id="memAdd">추가</button>
         </div>
-        <details>
-          <summary>공지를 붙여넣어 이 달을 덮어쓰기</summary>
-          <label class="cap" for="paste">카톡 공지 문구를 그대로 붙여넣으세요</label>
-          <textarea id="paste" placeholder="📌 12월 당번표&#10;12/1(화) 김종대·김석조&#10;..."></textarea>
-          <button class="btn" id="load">불러오기</button>
-        </details>
-        <div class="note">당번표는 모든 회원이 같은 저장소를 봅니다. 회원이 수락한 교환은 바로 반영되고, 이 화면에서 되돌릴 수 있어요. 암호를 바꾸려면 새 암호로 시작한 뒤 회원들에게 새 암호를 알려 주세요.</div>
-      </aside>
+        <div class="err" id="memMsg" role="alert" style="margin-top:6px"></div>
+      </div>
+      <div class="card" id="memCard"><div id="memList"></div></div>
+      <div class="note">명단에 있는 분이 회원 앱의 이름 선택 화면에 나와요. 이름을 바꾸면 모든 달의 당번표 이름도 같이 바뀌고, 그 이름으로 걸린 대기 중 교환 요청은 자동으로 정리돼요. &quot;쉼&quot;으로 해 둔 분은 자동 배정에서 빠지지만 앱에서는 그대로 쓸 수 있어요.</div>
+    </div>
+
+    <div id="panel-notice" class="panel hide">
+      <div class="card">
+        <div class="hello">클럽 공지 올리기</div>
+        <div class="cap" style="margin-top:4px">올리면 회원 앱의 &quot;공지&quot; 탭과 홈에 바로 보여요.</div>
+        <label class="cap" for="ntTitle" style="display:block;margin-top:10px">제목 (비워도 돼요)</label>
+        <input class="field" id="ntTitle" maxlength="60" autocomplete="off" style="margin:4px 0 0">
+        <label class="cap" for="ntBody" style="display:block;margin-top:10px">내용</label>
+        <textarea id="ntBody" maxlength="1500" placeholder="예) 12월 29일부터 1월 2일까지는 휴관합니다."></textarea>
+        <label class="cap" style="display:flex;align-items:center;gap:8px;min-height:44px"><input type="checkbox" id="ntPin" style="width:22px;height:22px"> 맨 위에 고정</label>
+        <div class="err" id="ntMsg" role="alert"></div>
+        <button class="btn primary" id="ntSend" style="width:100%;margin-top:6px">공지 올리기</button>
+      </div>
+      <div class="card"><div class="hello">올린 공지</div><div id="ntList"></div></div>
+    </div>
+
+    <div id="panel-tool" class="panel hide">
+      <details id="autoBox">
+        <summary>자동 배정 (가나다순 순환)</summary>
+        <div class="cap" style="margin-top:8px">운영 요일에 가나다순으로 돌아가며 당번을 만들어요. 미리 본 뒤에 적용하고, 적용 전 당번표는 백업돼서 되돌릴 수 있어요.</div>
+        <div id="autoBody"></div>
+      </details>
+      <details id="imgBox">
+        <summary>달력 이미지로 당번표 올리기</summary>
+        <div class="drop" id="drop" tabindex="0" role="button" aria-label="이미지 선택">이미지를 여기에 끌어다 놓거나, 눌러서 여러 장 선택하세요.<br>복사한 이미지는 이 화면에서 붙여넣기(Ctrl+V)만 하면 돼요.</div>
+        <input type="file" id="files" accept="image/*" multiple hidden>
+        <div class="cap" id="ocrMsg" role="status">당번표 달력 캡처(월~일 7칸, 칸마다 날짜+이름 두 줄)를 읽어서 아래에 보여드려요. 확인하고 고친 뒤 &quot;저장&quot;을 누르면 반영됩니다.</div>
+        <div id="ocrOut"></div>
+      </details>
+      <details>
+        <summary>공지를 붙여넣어 이 달을 덮어쓰기</summary>
+        <label class="cap" for="paste">카톡 공지 문구를 그대로 붙여넣으세요</label>
+        <textarea id="paste" placeholder="12월 당번표&#10;12/1(화) 김종대·김석조&#10;..."></textarea>
+        <button class="btn" id="load">불러오기</button>
+      </details>
+      <div class="note">당번표는 모든 회원이 같은 저장소를 봅니다. 회원이 수락한 교환은 바로 반영되고, 이 화면에서 되돌릴 수 있어요. 암호를 바꾸려면 새 암호로 시작한 뒤 회원들에게 새 암호를 알려 주세요.</div>
     </div>
   </section>
 
   <div class="card hide" id="err">연결하지 못했어요. 인터넷 연결을 확인하고 새로고침해 주세요.</div>
 </div>
+<nav class="tabs hide" id="tabs" aria-label="메뉴"><div class="in" id="tabin"></div></nav>
 <script>
 (function () {
   'use strict';
   var C = window.DutyCore, DOW = C.DOW;
+  var notices = [], rosterDoc = null, tab = 'cal', memEdit = null, memArm = null, memArmT = 0, proxy = { from: '', slot: '', target: '', msg: '', nudge: '' };
   var API = null, pin = null, months = {}, logs = [], requests = [], acks = [], reqFilter = 'pending', keys = [], cur = null;
   var mode = 'swap', sel = null, unsubs = [], connected = false, armed = {};
   var PIN_KEY = 'jwadong-admin-pin-v1';
@@ -201,7 +252,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
 
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
-  function show(id) { ['wait', 'gate', 'setup', 'app', 'err'].forEach(function (s) { $(s).classList.toggle('hide', s !== id); }); }
+  function show(id) { ['wait', 'gate', 'setup', 'app', 'err'].forEach(function (s) { $(s).classList.toggle('hide', s !== id); }); $('tabs').classList.toggle('hide', id !== 'app'); }
   function setStatus(t) { $('status').textContent = t; }
   function ym() { return C.parseKey(cur); }
   function duties() { var m = months[cur]; return (m && m.duties) || {}; }
@@ -231,6 +282,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           unsubs.push(API.subscribeLog(function (ls) { logs = ls; if (connected) renderAll(); }, onErr));
           unsubs.push(API.subscribeRequests(function (rs) { requests = rs; if (connected) renderAll(); }, onErr));
           if (API.subscribeAcks) unsubs.push(API.subscribeAcks(function (as) { acks = as; if (connected) renderAll(); }, function () {}));
+          if (API.subscribeNotices) unsubs.push(API.subscribeNotices(function (ns) { notices = ns; if (connected) renderAll(); }, function () {}));
+          if (API.subscribeRoster) unsubs.push(API.subscribeRoster(function (r) { rosterDoc = r; if (connected) renderAll(); }, function () {}));
           show('app'); setStatus(defStatus()); renderAll();
         } else {
           if (keys.indexOf(cur) < 0) cur = keys[keys.length - 1];
@@ -249,8 +302,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     return logs.filter(function (l) { return (l.month === cur || l.month2 === cur) && (l.kind === 'swap' || l.kind === 'undo'); })
       .slice().sort(function (a, b) { return a.at - b.at; }).map(function (l) { return l.text; });
   }
-  function renderNotice() { $('notice').textContent = C.noticeText(cur, duties(), noticeLines(), today()); }
-
+  
   function pick(day, j) {
     var d = duties();
     if (!sel) { sel = { month: cur, day: day, j: j, name: d[day][j] }; setStatus(sel.name + ' 님(' + C.label(cur, day) + ') 선택됨. 바꿀 상대를 누르세요. 다른 달 당번과도 바꿀 수 있어요(달을 넘겨서 선택).'); renderCal(); return; }
@@ -258,7 +310,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var a = sel, b = { month: cur, day: day, j: j, name: d[day][j] };
     sel = null; setStatus('반영하는 중이에요…');
     API.swapSlots({ month: a.month, day: a.day, j: a.j, name: a.name }, b, '총무').then(function (res) {
-      setStatus(res.ok ? a.name + ' 님과 ' + b.name + ' 님의 당번을 바꿨어요. 공지 문구를 복사해 카톡에 올려 주세요.' : '그 사이 당번이 바뀌어서 처리하지 못했어요. 다시 시도해 주세요.');
+      setStatus(res.ok ? a.name + ' 님과 ' + b.name + ' 님의 당번을 바꿨어요. 당번표 이미지를 만들어 카톡에 올려 주세요.' : '그 사이 당번이 바뀌어서 처리하지 못했어요. 다시 시도해 주세요.');
     }).catch(function () { setStatus('반영하지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
     renderCal();
   }
@@ -324,7 +376,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         u.addEventListener('click', function () {
           u.disabled = true;
           API.undoSwap(l.id).then(function (res) {
-            setStatus(res.ok ? '되돌렸어요. 공지 문구를 다시 복사해 카톡에 올려 주세요.' : res.reason === 'stale' ? '그 뒤에 다른 교환이 있어서 되돌릴 수 없어요.' : '이미 처리된 내역이에요.');
+            setStatus(res.ok ? '되돌렸어요. 당번표 이미지를 다시 만들어 카톡에 올려 주세요.' : res.reason === 'stale' ? '그 뒤에 다른 교환이 있어서 되돌릴 수 없어요.' : '이미 처리된 내역이에요.');
           }).catch(function () { u.disabled = false; setStatus('되돌리지 못했어요.'); });
         });
         item.appendChild(u);
@@ -337,7 +389,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var ae = document.activeElement;
     var typing = mode === 'input' && ae && ae.classList && ae.classList.contains('in');
     if (!typing) renderCal();
-    renderNotice(); renderLog(); renderReqs(); syncLock(); renderAcks(); if ($('autoBox').open) renderAuto();
+    renderLog(); renderReqs(); syncLock(); renderAcks(); renderMembers(); renderProxy(); renderNotices(); renderTabs(); if ($('autoBox').open) renderAuto();
   }
 
   function nextKey(k) { var p = C.parseKey(k), y = p[0], m = p[1] + 1; if (m > 12) { m = 1; y++; } return y + '-' + C.pad(m); }
@@ -370,15 +422,6 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   $('modeSwap').addEventListener('click', function () { mode = 'swap'; syncMode(); setStatus(defStatus()); });
   $('modeInput').addEventListener('click', function () { mode = 'input'; syncMode(); setStatus(defStatus()); });
   $('cancel').addEventListener('click', function () { sel = null; setStatus(defStatus()); renderCal(); });
-  $('copy').addEventListener('click', function () {
-    var t = $('notice').textContent;
-    function fb() {
-      var r = document.createRange(); r.selectNodeContents($('notice'));
-      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
-      setStatus('복사 권한이 없어 글을 선택해 두었어요. 길게 눌러 복사해 주세요.');
-    }
-    try { navigator.clipboard.writeText(t).then(function () { setStatus('공지 문구를 복사했어요. 카톡에 붙여넣어 주세요.'); }, fb); } catch (e) { fb(); }
-  });
   arm('load', '불러오기', '이 달 내용을 덮어씁니다. 한 번 더 누르세요', function () {
     var r = C.parseNotice($('paste').value || '', ym()[0]);
     if (!r.found) { setStatus('당번 줄을 찾지 못했어요. "12/1(화) 이름·이름" 형식인지 확인해 주세요.'); return; }
@@ -423,17 +466,233 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     try { navigator.clipboard.writeText(t).then(function () { setStatus('미확인 안내 문구를 복사했어요. 카톡에 붙여넣어 주세요.'); }, function () { setStatus('복사 권한이 없어요.'); }); } catch (e) { setStatus('복사 권한이 없어요.'); }
   });
 
+
+  // ---------- 탭 ----------
+  function icon(d) { var sv = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); sv.setAttribute('width', '22'); sv.setAttribute('height', '22'); sv.setAttribute('viewBox', '0 0 24 24'); sv.setAttribute('fill', 'none'); sv.setAttribute('stroke', 'currentColor'); sv.setAttribute('stroke-width', '2'); sv.setAttribute('stroke-linecap', 'round'); sv.setAttribute('stroke-linejoin', 'round'); sv.setAttribute('aria-hidden', 'true'); var p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('d', d); sv.appendChild(p); return sv; }
+  var IC = { cal: 'M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM8 3v4M16 3v4M4 10h16', swap: 'M7 7h12l-3-3M17 17H5l3 3', mem: 'M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 19c0-3 2.7-5 6-5s6 2 6 5M16 6a3 3 0 0 1 0 5M18 14c1.800.6 3 2.100 3 5', notice: 'M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 21h4', tool: 'M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1' };
+  var TABS = [['cal', '당번표', IC.cal], ['ex', '교환', IC.swap], ['mem', '명단', IC.mem], ['notice', '공지', IC.notice], ['tool', '도구', IC.tool]];
+  function showTab(t) { tab = t; renderTabs(); window.scrollTo && window.scrollTo(0, 0); }
+  function renderTabs() {
+    var box = $('tabin');
+    if (!box.children.length) TABS.forEach(function (x) {
+      var b = el('button'); b.type = 'button'; b.setAttribute('data-tab', x[0]);
+      b.appendChild(icon(x[2])); b.appendChild(el('span', '', x[1]));
+      b.addEventListener('click', function () { showTab(x[0]); });
+      box.appendChild(b);
+    });
+    var pend = requests.filter(function (r) { return reqState(r) === 'pending'; }).length;
+    [].forEach.call(box.children, function (b) {
+      var t = b.getAttribute('data-tab');
+      if (t === tab) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+      var old = b.querySelector('.dotb'); if (old) old.remove();
+      if (t === 'ex' && pend) b.appendChild(el('span', 'dotb', String(pend)));
+    });
+    TABS.forEach(function (x) { $('panel-' + x[0]).classList.toggle('hide', x[0] !== tab); });
+    $('monthBar').classList.toggle('hide', tab !== 'cal' && tab !== 'ex');
+  }
+
+  // ---------- 회원 명단 ----------
+  function nameOk(n) { return /^[가-힣A-Za-z0-9]{1,10}$/.test(n); }
+  function upcomingOf(n) {
+    var out = [];
+    keys.forEach(function (k) { Object.keys(duties2(k)).map(Number).sort(function (a, b) { return a - b; }).forEach(function (d) { if (duties2(k)[d].indexOf(n) >= 0 && !C.isPast(k, d)) out.push({ k: k, d: d }); }); });
+    return out;
+  }
+  function duties2(k) { return (months[k] && months[k].duties) || {}; }
+  function memMsg(t) { $('memMsg').textContent = t || ''; }
+  function saveRoster(names, paused) {
+    var uniq = {}; names.forEach(function (n) { uniq[n] = 1; });
+    var nn = Object.keys(uniq).sort(function (a, b) { return a.localeCompare(b, 'ko'); });
+    return API.setRoster(nn, paused.filter(function (n) { return uniq[n]; }));
+  }
+  function memFail() { memMsg('저장하지 못했어요. 잠시 뒤 다시 시도해 주세요.'); }
+  function renameMember(oldN, newN) {
+    if (!nameOk(newN)) { memMsg('이름은 한글·영문·숫자 1~10자로 입력해 주세요.'); return; }
+    if (newN === oldN) { memEdit = null; renderMembers(); return; }
+    if (roster().indexOf(newN) >= 0) { memMsg('이미 있는 이름이에요.'); return; }
+    var jobs = [];
+    keys.forEach(function (k) {
+      var ds = duties2(k), changed = false, nd = JSON.parse(JSON.stringify(ds));
+      Object.keys(nd).forEach(function (d) { nd[d] = (nd[d] || []).map(function (x) { if (x === oldN) { changed = true; return newN; } return x; }); });
+      if (changed) jobs.push([k, nd]);
+    });
+    memMsg('바꾸는 중이에요…');
+    var names = roster().map(function (n) { return n === oldN ? newN : n; }), paused = pausedList().map(function (n) { return n === oldN ? newN : n; });
+    var chain = Promise.resolve();
+    jobs.forEach(function (j) { chain = chain.then(function () { return API.setMonth(j[0], j[1]); }); });
+    chain.then(function () { return saveRoster(names, paused); }).then(function () {
+      var i = auto.excl.indexOf(oldN); if (i >= 0) auto.excl[i] = newN;
+      memEdit = null; memMsg(''); setStatus(oldN + ' → ' + newN + ' 이름을 바꿨어요(당번표 ' + jobs.length + '개 달).'); renderAll();
+    }).catch(memFail);
+  }
+  function renderMembers() {
+    if (tab !== 'mem' && $('memList').children.length) return;
+    var ae = document.activeElement; if (ae && ae.id === 'memNew') return;
+    var names = roster(), paused = pausedList();
+    $('memTitle').textContent = '회원 명단 · ' + names.length + '명';
+    var note = $('memNote'); note.textContent = '';
+    if (hasRoster()) note.appendChild(document.createTextNode('명단에 있는 분이 회원 앱 이름 선택 화면에 나와요.'));
+    else {
+      note.appendChild(document.createTextNode('아직 명단을 저장하지 않았어요. 지금 목록은 당번표에 있는 이름이에요. 맞다면 확정해 주세요. '));
+      var sv0 = el('button', 'btn sm primary', '이 명단으로 확정'); sv0.type = 'button'; sv0.style.marginTop = '8px';
+      sv0.addEventListener('click', function () { sv0.disabled = true; saveRoster(derivedNames(), []).then(function () { memMsg(''); setStatus('회원 명단을 저장했어요.'); }).catch(function () { sv0.disabled = false; memFail(); }); });
+      note.appendChild(document.createElement('br')); note.appendChild(sv0);
+    }
+    var box = $('memList'); box.textContent = '';
+    if (!names.length) box.appendChild(el('div', 'cap', '회원이 없어요. 위에서 이름을 추가해 주세요.'));
+    names.forEach(function (n) {
+      var row = el('div', 'mem'), up = upcomingOf(n), isP = paused.indexOf(n) >= 0;
+      if (memEdit === n) {
+        var inp = el('input', 'field'); inp.value = n; inp.maxLength = 10; inp.style.margin = '0'; inp.style.flex = '1 1 140px'; inp.setAttribute('aria-label', n + ' 새 이름');
+        row.appendChild(inp);
+        var ok = el('button', 'btn sm primary', '저장'); ok.type = 'button'; ok.addEventListener('click', function () { renameMember(n, inp.value.trim()); });
+        var no = el('button', 'btn sm', '취소'); no.type = 'button'; no.addEventListener('click', function () { memEdit = null; memMsg(''); renderMembers(); });
+        inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') ok.click(); });
+        row.appendChild(ok); row.appendChild(no); box.appendChild(row); return;
+      }
+      var nm = el('div', 'nm', n); if (isP) { nm.appendChild(document.createTextNode(' ')); nm.appendChild(el('span', 'tag p', '쉼')); }
+      nm.appendChild(el('small', '', up.length ? '앞으로 당번 ' + up.length + '건 · 다음 ' + C.label(up[0].k, up[0].d) : '앞으로 당번 없음'));
+      row.appendChild(nm);
+      var acts = el('div', 'acts');
+      var b1 = el('button', 'btn sm', '이름 변경'); b1.type = 'button'; b1.addEventListener('click', function () { memEdit = n; memMsg(''); renderMembers(); });
+      var b2 = el('button', 'btn sm', isP ? '쉼 해제' : '쉼'); b2.type = 'button';
+      b2.addEventListener('click', function () { var p2 = isP ? paused.filter(function (x) { return x !== n; }) : paused.concat([n]); saveRoster(roster(), p2).then(function () { memMsg(''); }).catch(memFail); });
+      var armed2 = memArm === n;
+      var b3 = el('button', 'btn sm' + (armed2 ? ' lockon' : ''), armed2 ? (up.length ? '당번 ' + up.length + '건 남아 있어요. 그래도 빼기' : '정말 빼기') : '명단에서 빼기'); b3.type = 'button';
+      b3.addEventListener('click', function () {
+        if (memArm !== n) { memArm = n; clearTimeout(memArmT); memArmT = setTimeout(function () { memArm = null; renderMembers(); }, 4000); renderMembers(); return; }
+        clearTimeout(memArmT); memArm = null;
+        saveRoster(roster().filter(function (x) { return x !== n; }), paused).then(function () { memMsg(''); setStatus(n + ' 님을 명단에서 뺐어요. 당번표에 남은 당번은 그대로예요.'); }).catch(memFail);
+      });
+      acts.appendChild(b1); acts.appendChild(b2); acts.appendChild(b3); row.appendChild(acts); box.appendChild(row);
+    });
+  }
+  $('memAdd').addEventListener('click', function () {
+    var n = $('memNew').value.trim();
+    if (!nameOk(n)) { memMsg('이름은 한글·영문·숫자 1~10자로 입력해 주세요(공백·점 없이).'); return; }
+    if (roster().indexOf(n) >= 0) { memMsg('이미 있는 이름이에요.'); return; }
+    $('memAdd').disabled = true;
+    saveRoster(roster().concat([n]), pausedList()).then(function () { $('memNew').value = ''; memMsg(''); setStatus(n + ' 님을 명단에 추가했어요.'); $('memAdd').disabled = false; renderMembers(); }).catch(function () { $('memAdd').disabled = false; memFail(); });
+  });
+  $('memNew').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('memAdd').click(); });
+
+
+  // ---------- 클럽 공지 ----------
+  function ntMsg(t) { $('ntMsg').textContent = t || ''; }
+  function ntDate(t) { var d = new Date(t); return d.getFullYear() + '.' + (d.getMonth() + 1) + '.' + d.getDate(); }
+  function renderNotices() {
+    var box = $('ntList'); box.textContent = '';
+    var list = notices.slice().sort(function (a, b) { return b.at - a.at; });
+    if (!list.length) { box.appendChild(el('div', 'cap', '아직 올린 공지가 없어요.')); return; }
+    list.forEach(function (n) {
+      var it = el('div', 'item');
+      var top = el('div');
+      if (n.pinned && !n.hidden) top.appendChild(el('span', 'tag', '고정 '));
+      top.appendChild(el('span', 'tag' + (n.hidden ? ' p' : ' ok'), n.hidden ? '내림' : '게시 중'));
+      top.appendChild(document.createTextNode(' ' + ntDate(n.at)));
+      it.appendChild(top);
+      if (n.title) it.appendChild(el('div', 'hello', n.title));
+      var b0 = el('div', '', n.body); b0.style.whiteSpace = 'pre-wrap'; it.appendChild(b0);
+      var r = el('div', 'row');
+      var h = el('button', 'btn sm', n.hidden ? '다시 올리기' : '내리기'); h.type = 'button';
+      h.addEventListener('click', function () { h.disabled = true; API.updateNotice(n.id, { hidden: !n.hidden }).catch(function () { h.disabled = false; ntMsg('바꾸지 못했어요. 잠시 뒤 다시 시도해 주세요.'); }); });
+      var p = el('button', 'btn sm', n.pinned ? '고정 해제' : '맨 위에 고정'); p.type = 'button';
+      p.addEventListener('click', function () { p.disabled = true; API.updateNotice(n.id, { pinned: !n.pinned }).catch(function () { p.disabled = false; ntMsg('바꾸지 못했어요. 잠시 뒤 다시 시도해 주세요.'); }); });
+      r.appendChild(h); r.appendChild(p); it.appendChild(r); box.appendChild(it);
+    });
+  }
+  $('ntSend').addEventListener('click', function () {
+    var body = $('ntBody').value.trim(), title = $('ntTitle').value.trim();
+    if (!body) { ntMsg('내용을 입력해 주세요.'); return; }
+    $('ntSend').disabled = true; ntMsg('');
+    API.addNotice({ title: title, body: body, pinned: $('ntPin').checked }).then(function () {
+      $('ntBody').value = ''; $('ntTitle').value = ''; $('ntPin').checked = false; $('ntSend').disabled = false; setStatus('공지를 올렸어요. 회원 앱에 바로 보여요.');
+    }).catch(function () { $('ntSend').disabled = false; ntMsg('올리지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
+  });
+
+  // ---------- 회원 대신 교환 요청 ----------
+  var APP_URL = 'https://zelong2-star.github.io/jwadongclub/duty/';
+  function isLocked(k) { return !!(months[k] && months[k].locked); }
+  function dmAll() { var o = {}; keys.forEach(function (k) { o[k] = duties2(k); }); return o; }
+  function slotKey(k, d, j) { return k + '|' + d + '|' + j; }
+  function parseSlot(v) { if (!v) return null; var q = v.split('|'); var k = q[0], d = parseInt(q[1], 10), j = parseInt(q[2], 10); return { month: k, day: d, j: j, name: (duties2(k)[d] || [])[j] }; }
+  function proxyOk(from, t) {
+    if (!from || !t || !t.name || !from.name || t.name === from.name) return false;
+    if (C.isPast(t.month, t.day) || C.isPast(from.month, from.day) || isLocked(t.month) || isLocked(from.month)) return false;
+    if (t.month === from.month && t.day === from.day) return false;
+    if ((duties2(t.month)[t.day] || []).indexOf(from.name) >= 0) return false;
+    if ((duties2(from.month)[from.day] || []).indexOf(t.name) >= 0) return false;
+    return C.swapX(dmAll(), from, t).ok;
+  }
+  function renderProxy() {
+    var ae = document.activeElement; if (ae && ae.closest && ae.closest('#proxyCard') && ae.tagName === 'SELECT') return;
+    var box = $('proxyBody'); box.textContent = '';
+    function sel(id, label, opts, val, onchg) {
+      var lab0 = el('label', 'cap', label); lab0.setAttribute('for', id); lab0.style.display = 'block'; lab0.style.marginTop = '10px';
+      var s0 = el('select', 'field'); s0.id = id; s0.style.margin = '4px 0 0';
+      opts.forEach(function (o) { var op = el('option', '', o[1]); op.value = o[0]; if (o[0] === val) op.selected = true; s0.appendChild(op); });
+      s0.addEventListener('change', function () { onchg(s0.value); });
+      box.appendChild(lab0); box.appendChild(s0);
+    }
+    var names = roster();
+    sel('pxFrom', '1. 요청하는 회원', [['', '회원을 고르세요']].concat(names.map(function (n) { return [n, n]; })), proxy.from, function (v) { proxy.from = v; proxy.slot = ''; proxy.target = ''; proxy.msg = ''; proxy.nudge = ''; renderProxy(); });
+    if (proxy.from) {
+      var mine = upcomingOf(proxy.from).filter(function (x) { return !isLocked(x.k); });
+      var mineOpts = [['', mine.length ? '바꿀 당번을 고르세요' : '바꿀 수 있는 당번이 없어요']];
+      mine.forEach(function (x) { var j = duties2(x.k)[x.d].indexOf(proxy.from); mineOpts.push([slotKey(x.k, x.d, j), C.label(x.k, x.d)]); });
+      sel('pxSlot', '2. ' + proxy.from + ' 님이 넘길 당번', mineOpts, proxy.slot, function (v) { proxy.slot = v; proxy.target = ''; proxy.msg = ''; proxy.nudge = ''; renderProxy(); });
+    }
+    var from = parseSlot(proxy.slot);
+    if (from) {
+      var tOpts = [['', '상대 당번을 고르세요']];
+      C_days2().forEach(function (x) {
+        (duties2(x.k)[x.d] || []).forEach(function (nm, j) { var t = { month: x.k, day: x.d, j: j, name: nm }; if (nm && proxyOk(from, t)) tOpts.push([slotKey(x.k, x.d, j), C.label(x.k, x.d) + '  ' + nm]); });
+      });
+      if (tOpts.length === 1) tOpts[0][1] = '바꿀 수 있는 상대 당번이 없어요';
+      sel('pxTarget', '3. 바꿀 상대의 당번', tOpts, proxy.target, function (v) { proxy.target = v; proxy.msg = ''; proxy.nudge = ''; renderProxy(); });
+    }
+    var tg = parseSlot(proxy.target);
+    if (from && tg) {
+      var pv = el('div', 'note'); pv.style.marginTop = '12px';
+      pv.textContent = from.name + ' ' + C.label(from.month, from.day) + ' ↔ ' + tg.name + ' ' + C.label(tg.month, tg.day) + ' · ' + tg.name + ' 님이 앱에서 수락하면 바뀌어요.';
+      box.appendChild(pv);
+      var go = el('button', 'btn primary', '요청 보내기'); go.type = 'button'; go.style.width = '100%'; go.style.marginTop = '10px';
+      go.addEventListener('click', function () {
+        var r = { month: from.month, toMonth: tg.month, fromDay: from.day, fromJ: from.j, fromName: from.name, toDay: tg.day, toJ: tg.j, toName: tg.name };
+        var dup = requests.some(function (x) { return x.status === 'pending' && x.type !== 'open' && x.fromName === r.fromName && x.month === r.month && (x.toMonth || x.month) === r.toMonth && x.fromDay === r.fromDay && x.fromJ === r.fromJ && x.toDay === r.toDay && x.toJ === r.toJ; });
+        if (dup) { proxy.msg = '같은 요청이 이미 대기 중이에요.'; renderProxy(); return; }
+        go.disabled = true;
+        API.createRequest(r).then(function () {
+          proxy.msg = from.name + ' 님 이름으로 ' + tg.name + ' 님께 요청을 보냈어요.';
+          proxy.nudge = '[교환요청] ' + tg.name + '님, ' + C.label(r.month, r.fromDay) + ' ' + from.name + ' ↔ ' + C.label(r.toMonth, r.toDay) + ' ' + tg.name + ' 교환을 요청했어요. 당번표 앱의 "교환" 메뉴에서 수락해 주세요.\n' + APP_URL;
+          proxy.slot = ''; proxy.target = ''; renderProxy(); setStatus(proxy.msg);
+        }).catch(function () { go.disabled = false; proxy.msg = '요청을 보내지 못했어요. 잠시 뒤 다시 눌러 주세요.'; renderProxy(); });
+      });
+      box.appendChild(go);
+    }
+    if (proxy.msg) { var m0 = el('div', 'note', proxy.msg); m0.style.marginTop = '10px'; box.appendChild(m0); }
+    if (proxy.nudge) {
+      var cp = el('button', 'btn', '받는 분께 보낼 카톡 문구 복사'); cp.type = 'button'; cp.style.width = '100%'; cp.style.marginTop = '8px';
+      cp.addEventListener('click', function () { try { navigator.clipboard.writeText(proxy.nudge).then(function () { setStatus('문구를 복사했어요. 카톡에 붙여넣어 주세요.'); }, function () { setStatus('복사 권한이 없어요.'); }); } catch (e) { setStatus('복사 권한이 없어요.'); } });
+      box.appendChild(cp);
+    }
+  }
+  function C_days2() { var out = []; keys.forEach(function (k) { Object.keys(duties2(k)).map(Number).sort(function (a, b) { return a - b; }).forEach(function (d) { if (!C.isPast(k, d)) out.push({ k: k, d: d }); }); }); return out; }
+
   // ---------- 자동 배정 ----------
   var AUTO_KEY = 'jwadong-auto-v1', BK_KEY = 'jwadong-auto-backup-v1';
   var auto = { month: null, dows: [1, 2, 3, 5, 6], per: 2, off: [], excl: [], start: 'cont', preview: null };
   try { var sv = JSON.parse(localStorage.getItem(AUTO_KEY)); if (sv) { if (Array.isArray(sv.dows)) auto.dows = sv.dows; if (sv.per) auto.per = sv.per; if (Array.isArray(sv.excl)) auto.excl = sv.excl; } } catch (e) {}
   function autoSave() { save(AUTO_KEY, JSON.stringify({ dows: auto.dows, per: auto.per, excl: auto.excl })); }
   function prevKey(k) { var p = C.parseKey(k), y = p[0], m = p[1] - 1; if (m < 1) { m = 12; y--; } return y + '-' + C.pad(m); }
-  function roster() {
+  function derivedNames() {
     var set = {};
     keys.forEach(function (k) { var ds = (months[k] && months[k].duties) || {}; Object.keys(ds).forEach(function (d) { (ds[d] || []).forEach(function (n) { if (n) set[n] = 1; }); }); });
     return Object.keys(set).sort(function (a, b) { return a.localeCompare(b, 'ko'); });
   }
+  function hasRoster() { return !!(rosterDoc && Array.isArray(rosterDoc.names) && rosterDoc.names.length); }
+  function roster() { return hasRoster() ? rosterDoc.names.slice().sort(function (a, b) { return a.localeCompare(b, 'ko'); }) : derivedNames(); }
+  function pausedList() { return (rosterDoc && Array.isArray(rosterDoc.paused)) ? rosterDoc.paused : []; }
   function prevLast(month) {
     var ds = (months[prevKey(month)] && months[prevKey(month)].duties) || {};
     var days = Object.keys(ds).map(Number).sort(function (a, b) { return a - b; });
@@ -441,7 +700,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     return null;
   }
   function autoOpts() {
-    var pool = roster().filter(function (n) { return auto.excl.indexOf(n) < 0; });
+    var pool = roster().filter(function (n) { return auto.excl.indexOf(n) < 0 && pausedList().indexOf(n) < 0; });
     return { month: auto.month, dows: auto.dows, per: auto.per, off: auto.off, pool: pool, start: auto.start === 'cont' ? prevLast(auto.month) : null };
   }
   function tgl(arr, v) { var i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); else arr.push(v); }

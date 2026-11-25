@@ -139,6 +139,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   var unsubs = [], connected = false, toastT = 0;
   var PIN_KEY = 'jwadong-pin-v1', ME_KEY = 'jwadong-me-v1', VIEW_KEY = 'jwadong-view-v1';
   var URL_APP = 'https://zelong2-star.github.io/jwadongclub/duty/';
+  var KAKAO_KEY = 'dc69bf31ed2b2b673a737561a98602c4', KAKAO_SDK = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js';
   var REASON = { locked: '이 달은 교환이 마감됐어요.', expired: '당번 하루 전까지만 가능한 요청이에요. 이미 지났어요.', past: '이미 지난 날짜는 바꿀 수 없어요.', self: '내가 올린 요청이에요.', cond: '조건에 맞지 않는 날이에요.', stale: '그 사이 당번이 바뀌어서 처리하지 못했어요.', dup: '이미 같은 날 당번이라 바꿀 수 없어요.', done: '이미 다른 분이 수락했거나 취소된 요청이에요.', gone: '요청이 사라졌어요.' };
   var STATUS_KO = { pending: '답을 기다리는 중', accepted: '수락됨 (반영 완료)', declined: '거절됨', cancelled: '취소함', stale: '당번이 바뀌어 처리되지 않음' };
   try { pin = localStorage.getItem(PIN_KEY); me = localStorage.getItem(ME_KEY); var v = localStorage.getItem(VIEW_KEY); if (v === 'cal' || v === 'list') sv = v; } catch (e) {}
@@ -206,6 +207,29 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function copyText(t) {
     function fb() { toast('복사 권한이 없어요. 글을 길게 눌러 직접 복사해 주세요.'); }
     try { navigator.clipboard.writeText(t).then(function () { toast('복사했어요. 카톡에 붙여넣어 주세요.'); }, fb); } catch (e) { fb(); }
+  }
+
+  // 카카오톡 공유: 실패하면 공유 시트 → 문구 복사 순서로 대신해요
+  function loadKakao() {
+    return new Promise(function (res, rej) {
+      if (window.Kakao) return res(window.Kakao);
+      var s = document.createElement('script'); s.src = KAKAO_SDK; s.async = true;
+      s.onload = function () { window.Kakao ? res(window.Kakao) : rej(new Error('nokakao')); };
+      s.onerror = function () { rej(new Error('load')); };
+      document.head.appendChild(s);
+      setTimeout(function () { rej(new Error('timeout')); }, 6000);
+    });
+  }
+  function shareKakao(text) {
+    function fallback() {
+      if (navigator.share) { navigator.share({ text: text }).catch(function () { copyText(text); }); toast('카톡 연결이 안 돼서 공유 창을 열었어요.'); }
+      else { copyText(text); }
+    }
+    loadKakao().then(function (K) {
+      if (!K.isInitialized()) K.init(KAKAO_KEY);
+      var link = { mobileWebUrl: URL_APP, webUrl: URL_APP };
+      K.Share.sendDefault({ objectType: 'text', text: text.replace(/\n?https?:\/\/\S+/g, '').slice(0, 200), link: link, buttonTitle: '수락하러 가기' });
+    }).catch(fallback);
   }
 
   // ---------- 연결 ----------
@@ -464,7 +488,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         c.appendChild(el('div', 'lead', lab(r.month, r.fromDay) + ' ↔ ' + lab(r.toMonth || r.month, r.toDay) + ' ' + r.toName + ' 님'));
       }
       var tg = el('span', 'tag ' + (r.status === 'accepted' ? 'green' : r.status === 'pending' ? 'blue' : ''), stt); var w = el('div'); w.appendChild(tg); c.appendChild(w);
-      if (r.status === 'pending') { var cb = btn('btn out', '요청 취소하기', function () { cb.disabled = true; API.setRequestStatus(r.id, 'cancelled').then(function () { toast('요청을 취소했어요.'); }).catch(function () { cb.disabled = false; toast('취소하지 못했어요.'); }); }); c.appendChild(cb); }
+      if (r.status === 'pending') { var kb = btn('btn pri', '카카오톡으로 다시 알리기', function () { shareKakao(nudgeFor(r.type === 'open' ? 'open' : 'p', r)); }); c.appendChild(kb); var cb = btn('btn out', '요청 취소하기', function () { cb.disabled = true; API.setRequestStatus(r.id, 'cancelled').then(function () { toast('요청을 취소했어요.'); }).catch(function () { cb.disabled = false; toast('취소하지 못했어요.'); }); }); c.appendChild(cb); }
       m.appendChild(c);
     });
   }
@@ -615,8 +639,9 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     w.appendChild(el('div', '', r.body));
     w.appendChild(el('div', 'cap', '상대가 알아차리도록 카톡으로도 알려 주세요.'));
     w.appendChild(el('pre', 'say', r.nudge));
-    w.appendChild(btn('btn', '카톡 문구 복사', function () { copyText(r.nudge); }));
-    w.appendChild(btn('btn pri', '확인', function () { tab = 'swap'; exTab = 'out'; closeFlow(); }));
+    w.appendChild(btn('btn pri', '카카오톡으로 보내기', function () { shareKakao(r.nudge); }));
+    w.appendChild(btn('btn', '문구만 복사', function () { copyText(r.nudge); }));
+    w.appendChild(btn('btn out', '확인', function () { tab = 'swap'; exTab = 'out'; closeFlow(); }));
   }
   function sendPersonal() {
     var f = flow.from, t = flow.target;

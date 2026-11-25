@@ -612,14 +612,14 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
 
   // ---------- 총무 전용 암호 / 총무 지정 ----------
   var ADM_KEY = 'jwadong-admin-ok-v1';
-  function admOk() { try { return sessionStorage.getItem(ADM_KEY) === (adminDoc && adminDoc.hash); } catch (e) { return false; } }
+  function admOk() { try { return localStorage.getItem(ADM_KEY) === (adminDoc && adminDoc.hash); } catch (e) { return false; } }
   function needAdminPw() { return !!(adminDoc && adminDoc.hash) && !admOk(); }
   $('apwGo').addEventListener('click', function () {
     var v = $('apwIn').value; if (!v) { $('apwMsg').textContent = '암호를 입력해 주세요.'; return; }
     $('apwGo').disabled = true; $('apwMsg').textContent = '';
     C.adminHash(v, adminDoc.salt).then(function (h) {
       $('apwGo').disabled = false;
-      if (h === adminDoc.hash) { try { sessionStorage.setItem(ADM_KEY, h); } catch (e) {} $('apwIn').value = ''; show('app'); setStatus(defStatus()); renderAll(); }
+      if (h === adminDoc.hash) { try { localStorage.setItem(ADM_KEY, h); } catch (e) {} $('apwIn').value = ''; show('app'); setStatus(defStatus()); renderAll(); }
       else $('apwMsg').textContent = '암호가 맞지 않아요.';
     }).catch(function () { $('apwGo').disabled = false; $('apwMsg').textContent = '확인하지 못했어요. 다시 시도해 주세요.'; });
   });
@@ -638,7 +638,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     if (a !== b) { admMsg('두 칸이 서로 달라요.'); return; }
     $('admSet').disabled = true; admMsg('');
     var salt = C.newSalt();
-    C.adminHash(a, salt).then(function (h) { return saveAdmin(adminList(), salt, h).then(function () { try { sessionStorage.setItem(ADM_KEY, h); } catch (e) {} return h; }); })
+    C.adminHash(a, salt).then(function (h) { return saveAdmin(adminList(), salt, h).then(function () { try { localStorage.setItem(ADM_KEY, h); } catch (e) {} return h; }); })
       .then(function () { $('admPw1').value = ''; $('admPw2').value = ''; $('admSet').disabled = false; admMsg(''); setStatus('총무 전용 암호를 저장했어요. 총무로 지정한 분께만 알려 주세요.'); })
       .catch(function () { $('admSet').disabled = false; admMsg('저장하지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
   });

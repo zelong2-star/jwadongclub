@@ -579,7 +579,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   // ---------- 총무 화면 (총무로 지정된 회원만, 총무 전용 암호 확인 후) ----------
   var ADM_KEY = 'jwadong-admin-ok-v1';
   function isAdminMe() { return !!(adminDoc && Array.isArray(adminDoc.admins) && adminDoc.admins.indexOf(me) >= 0); }
-  function admOk() { try { return !!adminDoc && !!adminDoc.hash && sessionStorage.getItem(ADM_KEY) === adminDoc.hash; } catch (e) { return false; } }
+  function admOk() { try { return !!adminDoc && !!adminDoc.hash && localStorage.getItem(ADM_KEY) === adminDoc.hash; } catch (e) { return false; } }
   function openAdmin() {
     var box = $('adm'); box.textContent = ''; box.classList.remove('hide'); document.body.style.overflow = 'hidden';
     var top = el('div', 'top'); var bk = btn('back', '', closeAdmin); bk.appendChild(icon(I.l)); bk.appendChild(document.createTextNode('회원 화면으로')); top.appendChild(bk); box.appendChild(top);
@@ -598,7 +598,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       if (!inp.value) { msg.textContent = '암호를 입력해 주세요.'; return; }
       go.disabled = true; msg.textContent = '';
       C.adminHash(inp.value, adminDoc.salt).then(function (h) {
-        if (h === adminDoc.hash) { try { sessionStorage.setItem(ADM_KEY, h); } catch (e) {} admPrompt = false; renderAll(); openAdmin(); }
+        if (h === adminDoc.hash) { try { localStorage.setItem(ADM_KEY, h); } catch (e) {} admPrompt = false; renderAll(); openAdmin(); }
         else { go.disabled = false; msg.textContent = '암호가 맞지 않아요.'; }
       }).catch(function () { go.disabled = false; msg.textContent = '확인하지 못했어요. 다시 시도해 주세요.'; });
     });

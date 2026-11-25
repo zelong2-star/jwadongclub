@@ -3,60 +3,89 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#F6F7F9">
 <title>좌동클럽 당번표</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:'Noto Sans KR',system-ui,sans-serif;color:#1b2733;background:#F4F7FA;line-height:1.5}
-button,input{font-family:inherit;color:inherit}
-button{cursor:pointer}
-button:disabled{cursor:default}
-.wrap{max-width:760px;margin:0 auto;padding:16px 12px 40px;display:flex;flex-direction:column;gap:12px}
-h1{margin:0;font-size:22px;font-weight:700;color:#1F4E79}
-.hide{display:none!important}
-.card{background:#fff;border:1px solid #cfd9e3;border-radius:14px;padding:14px 16px}
-.btn{min-height:44px;padding:0 14px;border:1px solid #b8c4cf;border-radius:10px;background:#fff;font-size:15px;font-weight:500}
-.btn.primary{background:#1F4E79;border-color:#1F4E79;color:#fff;font-weight:700}
-.btn.ok{background:#1E7D4F;border-color:#1E7D4F;color:#fff;font-weight:700}
-.btn:disabled{opacity:.5}
-.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-.hello{font-size:17px;font-weight:700}
-.mine{font-size:14px;color:#33475b}
-.nav{display:flex;align-items:center;justify-content:center;gap:8px}
-.nav .label{min-width:120px;text-align:center;font-size:18px;font-weight:700}
-.status{padding:12px 14px;border-radius:12px;background:#FEF3E2;color:#7a3a05;font-size:15px;font-weight:500}
-.title{background:#1F4E79;color:#fff;text-align:center;padding:10px;font-size:17px;font-weight:700;border-radius:10px 10px 0 0}
-.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-left:1px solid #b8c4cf;background:#fff}
-.dow{background:#D9EAF7;text-align:center;padding:6px 0;font-size:13px;font-weight:700;border-right:1px solid #b8c4cf}
-.dow.we{background:#B3261E;color:#fff}
-.cell{min-height:104px;padding:3px;border-right:1px solid #b8c4cf;border-bottom:1px solid #b8c4cf;display:flex;flex-direction:column;gap:3px;min-width:0}
-.cell.we{background:#F5F9FD}
-.cell.avail{background:#E6F4EC}
-.num{font-size:12px;font-weight:500;padding-left:2px}
-.cell.we .num{color:#B3261E}
-.chip{width:100%;min-height:44px;border-radius:8px;border:1px solid #8fa3b5;background:#fff;font-size:13px;font-weight:500;padding:0 1px;text-align:center;min-width:0}
-.chip:disabled{border-color:#d5dde5;color:#6b7b8a;background:transparent}
-.chip.me{background:#FEF3E2;border:2px solid #B45309;color:#5c2a02;font-weight:700}
-.chip.sel{background:#B45309;border-color:#B45309;color:#fff}
-.chip.tgt{background:#1F4E79;border-color:#1F4E79;color:#fff}
-pre{margin:0;padding:14px;border-radius:12px;background:#EAF2F9;font-family:inherit;font-size:15px;line-height:1.7;white-space:pre-wrap;user-select:text}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.row .btn{flex:1 1 auto}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--blue:#205BDF;--blue-soft:#EAF0FD;--bg:#F6F7F9;--ink:#191F28;--sub:#5B6572;--line:#E5E8EB;--gray:#EEF0F3;--red:#E5484D;--green:#12A150;--amber:#FFF4D6}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:Pretendard,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;font-size:16px;line-height:1.5;color:var(--ink);background:var(--bg)}
+button,input{font-family:inherit;color:inherit;font-size:inherit}
+button{cursor:pointer}button:disabled{cursor:default}
+.hide,[hidden]{display:none!important}
+.wrap{max-width:480px;margin:0 auto;padding:24px 20px 120px;display:flex;flex-direction:column;gap:14px}
+.card{background:#fff;border-radius:20px;padding:20px}
+h1{margin:0;font-size:22px;font-weight:800}
+h2{margin:0;font-size:20px;font-weight:800;line-height:1.35}
+.cap{font-size:14px;color:var(--sub)}
+.lead{font-size:17px;font-weight:700}
+.err{color:var(--red);font-size:15px;font-weight:600}
+.btn{width:100%;min-height:54px;padding:0 16px;border:0;border-radius:14px;background:var(--gray);color:#333D4B;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn.pri{background:var(--blue);color:#fff}
+.btn.wht{background:#fff;color:var(--blue)}
+.btn.out{background:#fff;border:1.5px solid var(--line)}
+.btn.sm{width:auto;min-height:44px;padding:0 16px;font-size:15px;border-radius:12px}
+.btn:disabled{opacity:.45}
+.btn svg{flex:none}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.field{width:100%;min-height:54px;padding:0 16px;border:1.5px solid var(--line);border-radius:14px;font-size:17px;background:#fff}
+.field:focus{border-color:var(--blue);outline:0}
 .names{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.field{width:100%;min-height:44px;padding:0 12px;border:1px solid #b8c4cf;border-radius:10px;font-size:16px;margin:8px 0}
-.cap{font-size:13px;color:#5a6b7b}
-.err{color:#B3261E;font-size:14px;font-weight:500}
-.item{padding:10px 0;border-bottom:1px solid #e6edf3;display:flex;flex-direction:column;gap:8px}
-.item:last-child{border-bottom:0}
-.dowrow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:6px}
-.tog{min-height:44px;border:1px solid #8fa3b5;border-radius:8px;background:#fff;font-size:14px;font-weight:500;padding:0 2px}
-.tog[aria-pressed="true"]{background:#1E7D4F;border-color:#1E7D4F;color:#fff;font-weight:700}
-summary{min-height:32px;font-size:15px;font-weight:700;cursor:pointer}
-.badge{display:inline-block;min-width:22px;padding:0 7px;border-radius:11px;background:#B3261E;color:#fff;font-size:13px;font-weight:700;text-align:center}
-.tog3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}
-.tog3 .tog{min-height:48px;font-size:13px}
-.btn:focus-visible,.chip:focus-visible,.field:focus-visible,.tog:focus-visible,summary:focus-visible{outline:3px solid #E8710A;outline-offset:2px}
-@media (max-width:520px){.chip{font-size:12px}.cell{min-height:100px}}
+.names .btn{font-size:16px;padding:0 4px}
+.hero{background:var(--blue);color:#fff;border-radius:24px;padding:24px 22px;display:flex;flex-direction:column;gap:14px}
+.hero .top{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:600}
+.dday{background:#fff;color:var(--blue);font-weight:800;font-size:15px;padding:4px 12px;border-radius:999px}
+.big{font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1.25}
+.stats{display:flex;gap:12px}
+.stat{flex:1;border:0;text-align:left;background:#fff;border-radius:20px;padding:16px 18px}
+.stat b{display:block;font-size:26px;font-weight:800;margin-top:2px}
+.stat .cap{display:block}
+.list>.it{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}
+.list>.it:last-child{border-bottom:0;padding-bottom:0}.list>.it:first-child{padding-top:0}
+.it .d{font-size:17px;font-weight:700}.it .n{font-size:15px;color:var(--sub)}
+.it .me{color:var(--blue);font-weight:800}
+.tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:13px;font-weight:700;background:var(--gray);color:var(--sub)}
+.tag.blue{background:var(--blue-soft);color:var(--blue)}.tag.red{background:#FDECEC;color:var(--red)}.tag.green{background:#E3F6EB;color:var(--green)}
+.seg{display:flex;background:var(--gray);border-radius:14px;padding:4px;gap:4px}
+.seg button{flex:1;min-height:44px;border:0;border-radius:11px;background:transparent;font-size:16px;font-weight:600;color:var(--sub)}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);font-weight:800;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.mnav{display:flex;align-items:center;justify-content:space-between}
+.mnav .t{font-size:20px;font-weight:800}
+.mnav button{width:48px;height:48px;border:0;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center}
+.mnav button:disabled{opacity:.35}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal .h{text-align:center;font-size:14px;font-weight:700;color:var(--sub);padding:4px 0}
+.cal .h.we{color:var(--red)}
+.cal .c{min-height:52px;border:0;border-radius:12px;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:16px;font-weight:600;padding:0}
+.cal .c.has{background:var(--gray)}.cal .c.mine{background:var(--blue-soft);color:var(--blue);font-weight:800}
+.cal .c.on{outline:2px solid var(--blue)}.cal .c.we{color:var(--red)}.cal .c.mine.we{color:var(--blue)}
+.dots{display:flex;gap:3px;height:6px}.dots i{width:6px;height:6px;border-radius:50%;background:#B0B8C1}.dots i.m{background:var(--blue)}
+nav.bar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:#fff;border-top:1px solid var(--gray);padding-bottom:env(safe-area-inset-bottom)}
+nav.bar .in{max-width:480px;margin:0 auto;display:flex;height:72px}
+nav.bar button{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:13px;font-weight:500;color:#6B7684;position:relative}
+nav.bar button[aria-current="page"]{color:var(--blue);font-weight:800}
+.dotb{position:absolute;top:8px;left:calc(50% + 6px);min-width:20px;height:20px;border-radius:10px;background:var(--red);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px}
+#toast{position:fixed;left:16px;right:16px;bottom:88px;z-index:40;max-width:448px;margin:0 auto;background:#191F28;color:#fff;border-radius:14px;padding:14px 18px;font-size:15px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+#flow{position:fixed;inset:0;z-index:30;background:var(--bg);overflow:auto}
+#flow .wrap{padding-bottom:40px}
+.back{align-self:flex-start;min-height:44px;border:0;background:transparent;font-size:16px;font-weight:600;color:var(--sub);padding:0;display:flex;align-items:center;gap:4px}
+.opt{width:100%;text-align:left;border:0;border-radius:20px;background:#fff;padding:20px;display:flex;flex-direction:column;gap:4px}
+.opt b{font-size:18px;font-weight:800}.opt span{font-size:15px;color:var(--sub)}
+.tog{min-height:52px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:16px;font-weight:600;padding:0 4px}
+.tog[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:800}
+.tog:disabled{opacity:.4}
+.dowrow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.dates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cmp{display:flex;flex-direction:column;gap:8px}
+.cmp .blk{border-radius:16px;padding:14px 16px}
+.cmp .now{background:var(--gray)}.cmp .after{background:var(--blue-soft)}
+.cmp .k{font-size:14px;font-weight:700;color:var(--sub);margin-bottom:6px}.cmp .after .k{color:var(--blue)}
+.cmp .ln{display:flex;justify-content:space-between;gap:10px;font-size:16px;padding:2px 0}
+.cmp .ln b{font-weight:800}
+pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-family:inherit;font-size:15px;line-height:1.7;white-space:pre-wrap;user-select:text}
+.btn:focus-visible,.tog:focus-visible,.stat:focus-visible,.opt:focus-visible,.seg button:focus-visible,.cal .c:focus-visible,nav.bar button:focus-visible,.back:focus-visible,.mnav button:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
+@media (prefers-reduced-motion:no-preference){.btn,.tog,.opt,.stat{transition:transform .1s}.btn:active:not(:disabled),.opt:active,.stat:active{transform:scale(.98)}}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
 <script src="duty-core.js"></script>
@@ -66,171 +95,117 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
 </script>
 </head>
 <body>
-<div class="wrap">
-  <h1>좌동클럽 당번표</h1>
-
+<div class="wrap" id="boot">
   <section id="wait" class="card">불러오는 중이에요…</section>
 
-  <section id="gate" class="card hide" aria-label="클럽 암호">
-    <div class="hello">클럽 암호를 입력하세요</div>
-    <div class="cap">단톡방에 공지된 암호예요. 한 번만 입력하면 이 폰에 기억됩니다.</div>
-    <label class="cap" for="pin">클럽 암호</label>
-    <input class="field" id="pin" type="password" autocomplete="off">
-    <div class="err" id="gateMsg" role="alert"></div>
-    <button class="btn primary" id="enter" style="margin-top:8px;width:100%">들어가기</button>
+  <section id="gate" class="hide" aria-label="클럽 암호">
+    <div class="card" style="display:flex;flex-direction:column;gap:12px">
+      <h1>좌동클럽 당번표</h1>
+      <div class="lead">클럽 암호를 입력해 주세요</div>
+      <div class="cap">단톡방에 공지된 암호예요. 한 번만 입력하면 이 폰에 기억돼요.</div>
+      <label class="cap" for="pin">클럽 암호</label>
+      <input class="field" id="pin" type="password" autocomplete="off">
+      <div class="err" id="gateMsg" role="alert"></div>
+      <button class="btn pri" id="enter">들어가기</button>
+    </div>
   </section>
 
-  <section id="picker" class="card hide" aria-label="이름 선택">
-    <div class="hello">내 이름을 선택하세요</div>
-    <div class="cap">한 번만 고르면 이 폰에 기억돼요. 언제든 바꿀 수 있습니다.</div>
-    <label class="cap" for="search">이름 검색</label>
-    <input class="field" id="search" type="text" autocomplete="off">
-    <div class="names" id="names"></div>
-  </section>
-
-  <section id="app" class="hide">
-    <div class="card top">
-      <div>
-        <div class="hello" id="hello"></div>
-        <div class="mine" id="mine"></div>
-      </div>
-      <button class="btn" id="changeMe">이름 바꾸기</button>
-    </div>
-
-    <div class="card" id="inboxCard" style="margin-top:12px">
-      <div class="hello">받은 교환 요청 <span class="badge hide" id="inboxCount">0</span></div>
-      <div id="inbox"></div>
-    </div>
-
-    <div class="card" id="openListCard" style="margin-top:12px">
-      <div class="hello">나와 바꿀 수 있는 공개 요청 <span class="badge hide" id="openCount">0</span></div>
-      <div class="cap">조건이 내 당번과 맞는 요청만 보여요.</div>
-      <div id="openList"></div>
-    </div>
-
-    <div class="nav" style="margin-top:12px">
-      <button class="btn" id="prev" aria-label="이전 달">이전 달</button>
-      <div class="label" id="monthLabel" aria-live="polite"></div>
-      <button class="btn" id="next" aria-label="다음 달">다음 달</button>
-    </div>
-    <div class="status" id="status" role="status" style="margin-top:12px"></div>
-
-    <details class="card" id="availBox" style="margin-top:12px">
-      <summary id="availSummary">가능한 날 선택 (선택 사항)</summary>
-      <div class="cap" style="margin-top:8px">내가 당번을 설 수 있는 요일이나 날짜를 고르면, 그날 당번인 사람만 교환 상대로 눌립니다. 이 폰에만 저장돼요.</div>
-      <div class="cap" style="margin-top:10px">요일</div>
-      <div class="dowrow" id="dowRow"></div>
-      <div class="cap" style="margin-top:10px">날짜 (당번이 나와 있는 날 전체)</div>
-      <div class="names" id="dateRow" style="margin-top:6px"></div>
-      <button class="btn" id="availClear" style="margin-top:12px">가능한 날 초기화</button>
-    </details>
-
-    <div style="margin-top:12px">
-      <div class="title" id="calTitle"></div>
-      <div class="grid" id="grid"></div>
-    </div>
-
-    <div class="card" id="req" style="margin-top:12px" hidden>
-      <div class="cap">보낼 교환 요청</div>
-      <pre id="reqText"></pre>
-      <div class="row" style="margin-top:10px">
-        <button class="btn primary" id="send">요청 보내기</button>
-        <button class="btn" id="reset">처음부터 다시</button>
-      </div>
-    </div>
-
-    <details class="card" id="openCard" style="margin-top:12px" hidden>
-      <summary>또는 &quot;공개 요청&quot;으로 올리기 (조건만 정하면 누구든 수락)</summary>
-      <div class="cap" id="openFor" style="margin-top:8px"></div>
-      <div class="tog3" role="group" aria-label="교환 조건 방식">
-        <button class="tog" type="button" id="omDow">요일로 정하기</button>
-        <button class="tog" type="button" id="omDates">날짜로 정하기</button>
-        <button class="tog" type="button" id="omExcept">이 날짜만 빼고 언제든</button>
-      </div>
-      <div class="dowrow" id="oDow"></div>
-      <div class="names" id="oDates" style="margin-top:8px"></div>
-      <pre id="oText" style="margin-top:10px"></pre>
-      <button class="btn primary" id="oSend" style="margin-top:10px;width:100%">공개 요청 올리기</button>
-    </details>
-
-    <div class="card hide" id="nudgeCard" style="margin-top:12px">
-      <div class="cap">상대가 알아차리도록 카톡으로도 알려 주세요</div>
-      <pre id="nudgeText"></pre>
-      <div class="row" style="margin-top:10px">
-        <button class="btn" id="copyNudge">문구 복사</button>
-      </div>
-    </div>
-
-    <div class="card" id="sentCard" style="margin-top:12px">
-      <div class="hello">내가 보낸 요청</div>
-      <div id="sent"></div>
-    </div>
-
-    <div class="card" style="margin-top:12px">
-      <div class="hello">최근 교환</div>
-      <div id="recent"></div>
+  <section id="picker" class="hide" aria-label="이름 선택">
+    <div class="card" style="display:flex;flex-direction:column;gap:12px">
+      <h1>내 이름을 골라 주세요</h1>
+      <div class="cap">한 번만 고르면 이 폰에 기억돼요. 설정에서 언제든 바꿀 수 있어요.</div>
+      <label class="cap" for="search">이름 검색</label>
+      <input class="field" id="search" type="text" autocomplete="off">
+      <div class="names" id="names"></div>
     </div>
   </section>
 
   <div class="card hide" id="err">연결하지 못했어요. 인터넷 연결을 확인하고 새로고침해 주세요.</div>
 </div>
+
+<section id="app" class="hide">
+  <main class="wrap" id="main"></main>
+  <nav class="bar" aria-label="메뉴"><div class="in" id="navin"></div></nav>
+  <div id="flow" class="hide" role="dialog" aria-modal="true" aria-label="당번 교환"></div>
+  <div id="toast" role="status" aria-live="polite" class="hide"></div>
+</section>
 <script>
 (function () {
   'use strict';
   var C = window.DutyCore, DOW = C.DOW;
   var API = null, pin = null, me = null;
   var months = {}, requests = [], logs = [], keys = [], cur = null;
-  var mySel = null, target = null, nudge = '';
-  var unsubs = [], connected = false;
-  var PIN_KEY = 'jwadong-pin-v1', ME_KEY = 'jwadong-me-v1', AV_KEY = 'jwadong-avail-v1';
-  var avail = { dows: [], dates: [] };
-  var oc = { mode: 'dow', dows: [], dates: [] };
+  var tab = 'home', sv = 'list', selDay = null, exTab = 'in', flow = null;
+  var unsubs = [], connected = false, toastT = 0;
+  var PIN_KEY = 'jwadong-pin-v1', ME_KEY = 'jwadong-me-v1', VIEW_KEY = 'jwadong-view-v1';
+  var URL_APP = 'https://zelong2-star.github.io/jwadongclub/duty/';
   var REASON = { locked: '이 달은 교환이 마감됐어요.', expired: '당번 하루 전까지만 가능한 요청이에요. 이미 지났어요.', past: '이미 지난 날짜는 바꿀 수 없어요.', self: '내가 올린 요청이에요.', cond: '조건에 맞지 않는 날이에요.', stale: '그 사이 당번이 바뀌어서 처리하지 못했어요.', dup: '이미 같은 날 당번이라 바꿀 수 없어요.', done: '이미 다른 분이 수락했거나 취소된 요청이에요.', gone: '요청이 사라졌어요.' };
-  function isLocked(k) { return !!(months[k] && months[k].locked); }
-  function dmAll() { var o = {}; keys.forEach(function (k) { o[k] = duties(k); }); return o; }
-  function isMy(k, d) { return !!mySel && mySel.month === k && mySel.day === d; }
-  function dutyDays() { var out = []; keys.forEach(function (k) { Object.keys(duties(k)).map(Number).sort(function (a, b) { return a - b; }).forEach(function (d) { if (!C.expired(k, d)) out.push({ k: k, d: d }); }); }); return out; }
-  try {
-    pin = localStorage.getItem(PIN_KEY); me = localStorage.getItem(ME_KEY);
-    var av = JSON.parse(localStorage.getItem(AV_KEY));
-    if (av && Array.isArray(av.dows) && Array.isArray(av.dates)) avail = av;
-  } catch (e) {}
+  var STATUS_KO = { pending: '답을 기다리는 중', accepted: '수락됨 (반영 완료)', declined: '거절됨', cancelled: '취소함', stale: '당번이 바뀌어 처리되지 않음' };
+  try { pin = localStorage.getItem(PIN_KEY); me = localStorage.getItem(ME_KEY); var v = localStorage.getItem(VIEW_KEY); if (v === 'cal' || v === 'list') sv = v; } catch (e) {}
 
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
-  function show(id) { ['wait', 'gate', 'picker', 'app', 'err'].forEach(function (s) { $(s).classList.toggle('hide', s !== id); }); }
-  function setStatus(t) { $('status').textContent = t; }
-  function ym() { return C.parseKey(cur); }
-  function duties(k) { var m = months[k || cur]; return (m && m.duties) || {}; }
-  function lab(k, d) { return C.label(k, d); }
+  function btn(cls, text, fn) { var b = el('button', cls, text); b.type = 'button'; if (fn) b.addEventListener('click', fn); return b; }
   function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-  function saveAvail() { save(AV_KEY, JSON.stringify(avail)); }
-  function hasFilter() { return avail.dows.length > 0 || avail.dates.length > 0; }
-  function matches(y, m, d) {
-    if (!hasFilter()) return true;
-    var idx = (new Date(y, m - 1, d).getDay() + 6) % 7;
-    return avail.dows.indexOf(idx) >= 0 || avail.dates.indexOf(y + '-' + C.pad(m) + '-' + C.pad(d)) >= 0;
-  }
+  function show(id) { ['wait', 'gate', 'picker', 'err'].forEach(function (s) { $(s).classList.toggle('hide', s !== id); }); $('boot').classList.toggle('hide', id === 'app'); $('app').classList.toggle('hide', id !== 'app'); }
+  function toast(t) { var n = $('toast'); n.textContent = t; n.classList.remove('hide'); clearTimeout(toastT); toastT = setTimeout(function () { n.classList.add('hide'); }, 4500); }
   function toggle(arr, v) { var i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); else arr.push(v); }
+  function icon(d) { var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('width', '22'); s.setAttribute('height', '22'); s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '2'); s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round'); s.setAttribute('aria-hidden', 'true'); var p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('d', d); s.appendChild(p); return s; }
+  var I = { swap: 'M7 7h12l-3-3M17 17H5l3 3', home: 'M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z', cal: 'M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM8 3v4M16 3v4M4 10h16', gear: 'M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1', l: 'M15 6l-6 6 6 6', r: 'M9 6l6 6-6 6' };
+
+  function duties(k) { var m = months[k]; return (m && m.duties) || {}; }
+  function isLocked(k) { return !!(months[k] && months[k].locked); }
+  function dmAll() { var o = {}; keys.forEach(function (k) { o[k] = duties(k); }); return o; }
+  function lab(k, d) { return C.label(k, d); }
+  function longLab(k, d) { var p = C.parseKey(k); return p[1] + '월 ' + d + '일 ' + C.dowOf(p[0], p[1], d) + '요일'; }
+  function sortedDays(k) { return Object.keys(duties(k)).map(Number).sort(function (a, b) { return a - b; }); }
+  function slotOf(k, d, j) { return { month: k, day: d, j: j, name: (duties(k)[d] || [])[j] }; }
+  function others(k, d) { return (duties(k)[d] || []).filter(function (n) { return n && n !== me; }); }
+  function namesOf(k, d) { return (duties(k)[d] || []).filter(Boolean); }
   function allNames() {
     var set = {};
-    keys.forEach(function (k) {
-      var ds = duties(k);
-      Object.keys(ds).forEach(function (d) { (ds[d] || []).forEach(function (n) { if (n) set[n] = 1; }); });
-    });
+    keys.forEach(function (k) { var ds = duties(k); Object.keys(ds).forEach(function (d) { (ds[d] || []).forEach(function (n) { if (n) set[n] = 1; }); }); });
     return Object.keys(set).sort(function (a, b) { return a.localeCompare(b, 'ko'); });
   }
-  function copyText(t, okMsg) {
-    function fallback() { setStatus('복사 권한이 없어요. 글을 길게 눌러 직접 복사해 주세요.'); }
-    try { navigator.clipboard.writeText(t).then(function () { setStatus(okMsg); }, fallback); } catch (e) { fallback(); }
+  // 내 앞으로의 당번 (지난 날 제외), 날짜순
+  function myUpcoming() {
+    var out = [];
+    keys.forEach(function (k) { sortedDays(k).forEach(function (d) { var ds = duties(k)[d] || []; var j = ds.indexOf(me); if (j >= 0 && !C.isPast(k, d)) out.push({ month: k, day: d, j: j, name: me }); }); });
+    return out;
   }
-  function sameSlots(a, b) {
-    return a.month === b.month && (a.toMonth || a.month) === (b.toMonth || b.month) && a.fromDay === b.fromDay && a.fromJ === b.fromJ && a.toDay === b.toDay && a.toJ === b.toJ;
-  }
+  function dayDiff(k, d) { var p = C.parseKey(k), n = new Date(), t = new Date(n.getFullYear(), n.getMonth(), n.getDate()); return Math.round((new Date(p[0], p[1] - 1, d) - t) / 864e5); }
+  function sameSlots(a, b) { return a.month === b.month && (a.toMonth || a.month) === (b.toMonth || b.month) && a.fromDay === b.fromDay && a.fromJ === b.fromJ && a.toDay === b.toDay && a.toJ === b.toJ; }
   function reqValid(r) {
     var tm = r.toMonth || r.month;
     var res = C.swapX(dmAll(), { month: r.month, day: r.fromDay, j: r.fromJ, name: r.fromName }, { month: tm, day: r.toDay, j: r.toJ, name: r.toName });
     return res.ok && !C.isPast(r.month, r.fromDay) && !C.isPast(tm, r.toDay);
+  }
+  // 내 당번(from)과 상대 칸(t)을 맞바꿀 수 있는지
+  function canPair(from, t) {
+    if (!t.name || t.name === me) return false;
+    if (C.isPast(t.month, t.day) || isLocked(t.month) || isLocked(from.month)) return false;
+    if (t.month === from.month && t.day === from.day) return false;
+    if (namesOf(t.month, t.day).indexOf(me) >= 0) return false;
+    if (namesOf(from.month, from.day).indexOf(t.name) >= 0) return false;
+    return C.swapX(dmAll(), from, t).ok;
+  }
+  function inboxList() { return requests.filter(function (r) { return r.type !== 'open' && r.status === 'pending' && r.toName === me && reqValid(r); }); }
+  function openList() {
+    var out = [];
+    requests.forEach(function (r) {
+      if (r.type !== 'open' || r.status !== 'pending' || r.fromName === me || !months[r.month] || C.expired(r.month, r.fromDay)) return;
+      var opts = C.myOptions(dmAll(), r, me, isLocked);
+      if (opts.length) out.push({ r: r, opts: opts });
+    });
+    return out;
+  }
+  function nudgeFor(kind, r) {
+    if (kind === 'open') return '[교환요청(공개)] ' + me + '님이 ' + lab(r.month, r.fromDay) + ' 당번을 바꿀 분을 찾아요. 조건: ' + C.condText(r.cond) + '\n당번표 앱의 "교환" 메뉴에서 수락해 주세요.\n' + URL_APP;
+    return '[교환요청] ' + r.toName + '님, ' + lab(r.month, r.fromDay) + ' ' + me + ' ↔ ' + lab(r.toMonth, r.toDay) + ' ' + r.toName + ' 교환을 요청했어요. 당번표 앱의 "교환" 메뉴에서 수락해 주세요.\n' + URL_APP;
+  }
+  function copyText(t) {
+    function fb() { toast('복사 권한이 없어요. 글을 길게 눌러 직접 복사해 주세요.'); }
+    try { navigator.clipboard.writeText(t).then(function () { toast('복사했어요. 카톡에 붙여넣어 주세요.'); }, fb); } catch (e) { fb(); }
   }
 
   // ---------- 연결 ----------
@@ -267,273 +242,407 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function onErr(err) {
     var code = err && err.code ? err.code : '';
     if (!connected) { $('gateMsg').textContent = '연결하지 못했어요. ' + code; show('gate'); }
-    else setStatus('연결이 잠시 불안정해요. 새로고침해 보세요. ' + code);
+    else toast('연결이 잠시 불안정해요. 새로고침해 보세요. ' + code);
   }
-
-  // ---------- 이름 선택 ----------
-  function showPicker() { show('picker'); $('search').value = ''; renderNames(''); }
+  function showPicker() { flow = null; show('picker'); $('search').value = ''; renderNames(''); }
   function renderNames(q) {
     var box = $('names'); box.textContent = '';
     allNames().filter(function (n) { return n.indexOf(q) >= 0; }).forEach(function (n) {
-      var b = el('button', 'btn', n); b.type = 'button';
-      b.addEventListener('click', function () { me = n; save(ME_KEY, n); mySel = null; target = null; enterApp(); });
-      box.appendChild(b);
+      box.appendChild(btn('btn out', n, function () { me = n; save(ME_KEY, n); flow = null; tab = 'home'; exTab = 'in'; selDay = null; enterApp(); }));
     });
     if (!box.children.length) box.appendChild(el('div', 'cap', '일치하는 이름이 없어요. 총무에게 문의해 주세요.'));
   }
   function enterApp() {
     show('app');
-    $('hello').textContent = me + ' 님, 안녕하세요';
-    var now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    for (var i = 0; i < keys.length; i++) {
-      var pp = keys[i].split('-'), ds = duties(keys[i]);
-      var hit = Object.keys(ds).some(function (d) {
-        return (ds[d] || []).indexOf(me) >= 0 && new Date(parseInt(pp[0], 10), parseInt(pp[1], 10) - 1, parseInt(d, 10)) >= today;
-      });
-      if (hit) { cur = keys[i]; break; }
-    }
+    var up = myUpcoming(); if (up.length) cur = up[0].month;
     renderAll();
   }
 
-  // ---------- 그리기 ----------
+  // ---------- 공통 그리기 ----------
   function renderAll() {
     if ($('app').classList.contains('hide') || !cur) return;
-    if (mySel) {
-      var d0 = duties(mySel.month)[mySel.day];
-      if (!d0 || d0[mySel.j] !== me) { mySel = null; target = null; }
+    if (flow && flow.step !== 'done') {
+      var f = flow.from;
+      if (f) { var d0 = duties(f.month)[f.day]; if (!d0 || d0[f.j] !== me) { flow = null; toast('그 사이 당번이 바뀌었어요. 처음부터 다시 해 주세요.'); } }
+      if (flow && flow.target) { var t = flow.target, d1 = duties(t.month)[t.day]; if (!d1 || d1[t.j] !== t.name) { flow.target = null; if (flow.step === 'confirm') { flow.step = 'who'; toast('상대 당번이 바뀌어서 다시 골라야 해요.'); } } }
     }
-    if (target) {
-      var d1 = duties(target.month)[target.day];
-      if (!d1 || d1[target.j] !== target.name) target = null;
-    }
-    renderCal(); renderInbox(); renderOpenList(); renderSent(); renderRecent();
+    renderNav(); renderMain(); renderFlow();
+  }
+  function renderNav() {
+    var inN = inboxList().length + openList().length;
+    var box = $('navin'); box.textContent = '';
+    [['home', '홈', I.home], ['sched', '당번표', I.cal], ['swap', '교환', I.swap], ['set', '설정', I.gear]].forEach(function (x) {
+      var b = btn('', '', function () { tab = x[0]; renderAll(); window.scrollTo(0, 0); });
+      b.appendChild(icon(x[2])); b.appendChild(el('span', '', x[1]));
+      if (tab === x[0]) b.setAttribute('aria-current', 'page');
+      if (x[0] === 'swap' && inN) b.appendChild(el('span', 'dotb', String(inN)));
+      box.appendChild(b);
+    });
+  }
+  function renderMain() {
+    var m = $('main'); m.textContent = '';
+    if (tab === 'home') homeView(m); else if (tab === 'sched') schedView(m); else if (tab === 'swap') swapView(m); else setView(m);
   }
 
-  function renderCal() {
-    var p = ym(), y = p[0], m = p[1], ds = duties();
-    $('monthLabel').textContent = y + '년 ' + m + '월';
-    $('calTitle').textContent = y + '년 ' + m + '월 당번표';
-    var mine = Object.keys(ds).map(Number).sort(function (a, b) { return a - b; }).filter(function (d) { return (ds[d] || []).indexOf(me) >= 0; });
-    $('mine').textContent = mine.length ? '이 달 내 당번: ' + mine.map(function (d) { return lab(cur, d); }).join(', ') : '이 달에는 내 당번이 없어요.';
-    $('prev').disabled = keys.indexOf(cur) <= 0;
-    $('next').disabled = keys.indexOf(cur) >= keys.length - 1;
-    var cnt = 0;
-    var grid = $('grid'); grid.textContent = '';
-    DOW.forEach(function (d, i) { grid.appendChild(el('div', 'dow' + (i >= 5 ? ' we' : ''), d)); });
-    var dim = new Date(y, m, 0).getDate();
-    var off = (new Date(y, m - 1, 1).getDay() + 6) % 7;
-    var total = Math.ceil((off + dim) / 7) * 7;
-    for (var k = 0; k < total; k++) {
-      (function (k) {
+  // ---------- 홈 ----------
+  function homeView(m) {
+    var head = el('div'); head.appendChild(el('div', 'cap', '좌동클럽 당번')); head.appendChild(el('h1', '', '안녕하세요, ' + me + '님')); m.appendChild(head);
+    var up = myUpcoming(), nx = up[0];
+    var hero = el('div', 'hero');
+    if (nx) {
+      var dd = dayDiff(nx.month, nx.day);
+      var top = el('div', 'top'); top.appendChild(el('span', '', '나의 다음 당번')); top.appendChild(el('span', 'dday', dd === 0 ? '오늘' : 'D-' + dd)); hero.appendChild(top);
+      hero.appendChild(el('div', 'big', longLab(nx.month, nx.day)));
+      var ot = others(nx.month, nx.day);
+      hero.appendChild(el('div', '', ot.length ? '함께하는 당번  ' + ot.join(', ') + ' 님' : '함께하는 당번이 아직 없어요'));
+      var b = btn('btn wht', '', function () { openFlow(nx); }); b.appendChild(icon(I.swap)); b.appendChild(document.createTextNode('당번 교환하기'));
+      if (isLocked(nx.month)) { b.disabled = true; b.lastChild.textContent = '이 달은 교환이 마감됐어요'; }
+      hero.appendChild(b);
+    } else {
+      hero.appendChild(el('div', 'lead', '앞으로 예정된 내 당번이 없어요'));
+      hero.appendChild(el('div', '', '새 당번표가 올라오면 여기에 보여요.'));
+    }
+    m.appendChild(hero);
+    var st = el('div', 'stats');
+    var a = btn('stat', '', function () { tab = 'swap'; exTab = 'in'; renderAll(); window.scrollTo(0, 0); });
+    a.appendChild(el('span', 'cap', '받은 교환 요청')); a.appendChild(el('b', '', inboxList().length + '건')); a.firstChild.nextSibling.style.color = 'var(--blue)';
+    var c = btn('stat', '', function () { tab = 'swap'; exTab = 'in'; renderAll(); window.scrollTo(0, 0); });
+    c.appendChild(el('span', 'cap', '바꿀 수 있는 당번')); c.appendChild(el('b', '', openList().length + '건'));
+    st.appendChild(a); st.appendChild(c); m.appendChild(st);
+    var card = el('div', 'card'); card.appendChild(el('div', 'lead', '앞으로 내 당번')); card.lastChild.style.marginBottom = '12px';
+    var list = el('div', 'list');
+    if (!up.length) list.appendChild(el('div', 'cap', '예정된 당번이 없어요.'));
+    up.slice(0, 6).forEach(function (s) {
+      var it = el('div', 'it'); var l = el('div');
+      l.appendChild(el('div', 'd', lab(s.month, s.day))); l.appendChild(el('div', 'n', others(s.month, s.day).join(', ') || '혼자'));
+      it.appendChild(l);
+      var b2 = btn('btn sm', '교환', function () { openFlow(s); }); b2.setAttribute('aria-label', lab(s.month, s.day) + ' 당번 교환하기');
+      if (isLocked(s.month)) { b2.disabled = true; b2.textContent = '마감'; }
+      it.appendChild(b2); list.appendChild(it);
+    });
+    card.appendChild(list); m.appendChild(card);
+  }
+
+  // ---------- 당번표 ----------
+  function monthNav(m, onChange) {
+    var i = keys.indexOf(cur), p = C.parseKey(cur);
+    var n = el('div', 'mnav');
+    var pb = btn('', '', function () { cur = keys[i - 1]; selDay = null; renderAll(); }); pb.appendChild(icon(I.l)); pb.disabled = i <= 0; pb.setAttribute('aria-label', '이전 달');
+    var nb = btn('', '', function () { cur = keys[i + 1]; selDay = null; renderAll(); }); nb.appendChild(icon(I.r)); nb.disabled = i >= keys.length - 1; nb.setAttribute('aria-label', '다음 달');
+    var t = el('div', 't', p[1] + '월 당번표'); t.setAttribute('aria-live', 'polite');
+    n.appendChild(pb); n.appendChild(t); n.appendChild(nb); m.appendChild(n);
+    if (isLocked(cur)) { var l = el('div', 'cap'); l.appendChild(el('span', 'tag red', '교환 마감')); l.appendChild(document.createTextNode(' 이 달은 바꿀 수 없어요. 총무에게 문의해 주세요.')); m.appendChild(l); }
+  }
+  function schedView(m) {
+    monthNav(m);
+    var sg = el('div', 'seg'); sg.setAttribute('role', 'group'); sg.setAttribute('aria-label', '보기 방식');
+    [['list', '목록으로 보기'], ['cal', '달력으로 보기']].forEach(function (x) { var b = btn('', x[1], function () { sv = x[0]; save(VIEW_KEY, sv); renderAll(); }); b.setAttribute('aria-pressed', sv === x[0] ? 'true' : 'false'); sg.appendChild(b); });
+    m.appendChild(sg);
+    var ds = duties(cur), p = C.parseKey(cur);
+    if (sv === 'list') {
+      var card = el('div', 'card'), list = el('div', 'list');
+      var days = sortedDays(cur);
+      if (!days.length) list.appendChild(el('div', 'cap', '이 달 당번이 없어요.'));
+      days.forEach(function (d) {
+        var it = el('div', 'it'), l = el('div');
+        var past = C.isPast(cur, d);
+        l.appendChild(el('div', 'd', lab(cur, d).replace(/^\d+\//, '') ));
+        var nm = el('div', 'n');
+        (ds[d] || []).forEach(function (n, k) { if (!n) return; if (k && nm.childNodes.length) nm.appendChild(document.createTextNode(' · ')); nm.appendChild(el('span', n === me ? 'me' : '', n === me ? n + '(나)' : n)); });
+        l.appendChild(nm); if (past) l.style.opacity = '.5';
+        it.appendChild(l);
+        var j = (ds[d] || []).indexOf(me);
+        if (j >= 0 && !past) { var b = btn('btn sm', '교환', function () { openFlow(slotOf(cur, d, j)); }); b.setAttribute('aria-label', lab(cur, d) + ' 당번 교환하기'); if (isLocked(cur)) { b.disabled = true; b.textContent = '마감'; } it.appendChild(b); }
+        list.appendChild(it);
+      });
+      card.appendChild(list); m.appendChild(card);
+    } else {
+      var card2 = el('div', 'card'), g = el('div', 'cal');
+      DOW.forEach(function (n, i) { g.appendChild(el('div', 'h' + (i >= 5 ? ' we' : ''), n)); });
+      var dim = new Date(p[0], p[1], 0).getDate(), off = (new Date(p[0], p[1] - 1, 1).getDay() + 6) % 7, total = Math.ceil((off + dim) / 7) * 7;
+      for (var k = 0; k < total; k++) {
         var day = k - off + 1;
-        var cell = el('div', 'cell' + ((k % 7) >= 5 ? ' we' : ''));
-        if (day >= 1 && day <= dim) {
-          cell.appendChild(el('div', 'num', String(day)));
-          var d = ds[day];
-          if (d && mySel && hasFilter() && !isMy(cur, day) && !C.isPast(cur, day) && matches(y, m, day)) cell.classList.add('avail');
-          if (d) {
-            [0, 1].forEach(function (j) {
-              var name = d[j];
-              if (!name) return;
-              var isMe = name === me, past = C.isPast(cur, day), enabled;
-              if (past || isLocked(cur)) enabled = false;
-              else if (!mySel) enabled = isMe;
-              else enabled = isMe || (!isMy(cur, day) && matches(y, m, day));
-              if (enabled && !isMe && mySel) cnt++;
-              var cls = 'chip';
-              if (isMe) cls += ' me';
-              if (mySel && mySel.month === cur && mySel.day === day && mySel.j === j) cls += ' sel';
-              if (target && target.month === cur && target.day === day && target.j === j) cls += ' tgt';
-              var b = el('button', cls, name); b.type = 'button';
-              b.disabled = !enabled;
-              b.setAttribute('aria-label', m + '월 ' + day + '일 ' + name + (isMe ? ' (내 당번)' : ''));
-              b.addEventListener('click', function () {
-                if (isMe) { mySel = { month: cur, day: day, j: j }; target = null; $('availBox').open = true; }
-                else if (mySel) { target = { month: cur, day: day, j: j, name: name }; }
-                renderCal();
-              });
-              cell.appendChild(b);
-            });
-          }
-        }
-        grid.appendChild(cell);
-      })(k);
+        if (day < 1 || day > dim) { g.appendChild(el('div')); continue; }
+        (function (day, k) {
+          var has = !!ds[day], mine = has && ds[day].indexOf(me) >= 0;
+          var c = btn('c' + (has ? ' has' : '') + (mine ? ' mine' : '') + ((k % 7) >= 5 ? ' we' : '') + (selDay === day ? ' on' : ''), String(day), function () { selDay = selDay === day ? null : day; renderAll(); });
+          c.setAttribute('aria-label', p[1] + '월 ' + day + '일' + (has ? ' 당번 ' + namesOf(cur, day).join(', ') : ' 당번 없음'));
+          if (has) { var dots = el('span', 'dots'); namesOf(cur, day).forEach(function (n) { dots.appendChild(el('i', n === me ? 'm' : '')); }); c.appendChild(dots); }
+          g.appendChild(c);
+        })(day, k);
+      }
+      card2.appendChild(g); m.appendChild(card2);
+      var dc = el('div', 'card');
+      if (selDay && ds[selDay]) {
+        dc.appendChild(el('div', 'lead', longLab(cur, selDay)));
+        var nn = el('div'); nn.style.margin = '6px 0 0';
+        namesOf(cur, selDay).forEach(function (n, i) { if (i) nn.appendChild(document.createTextNode(' · ')); nn.appendChild(el('b', n === me ? 'me' : '', n === me ? n + '(나)' : n)); nn.lastChild.style.color = n === me ? 'var(--blue)' : ''; });
+        dc.appendChild(nn);
+        var jj = ds[selDay].indexOf(me);
+        if (jj >= 0 && !C.isPast(cur, selDay)) { var bb = btn('btn pri', '이 당번 교환하기', function () { openFlow(slotOf(cur, selDay, jj)); }); bb.style.marginTop = '14px'; if (isLocked(cur)) { bb.disabled = true; bb.textContent = '교환 마감'; } dc.appendChild(bb); }
+      } else dc.appendChild(el('div', 'cap', selDay ? '이 날은 당번이 없어요.' : '날짜를 누르면 그날 당번을 볼 수 있어요. 파란색이 내 당번이에요.'));
+      m.appendChild(dc);
     }
-    if (!mySel) setStatus('교환하고 싶은 내 당번(노란색 이름)을 누르세요.');
-    else if (!target) setStatus(lab(mySel.month, mySel.day) + ' 당번을 바꿀 상대의 이름을 누르세요. (다음·이전 달로 넘겨서도 고를 수 있어요)' + (hasFilter() ? (cnt ? ' (가능한 날 기준 ' + cnt + '명)' : ' 가능한 날에 맞는 상대가 이 달에는 없어요.') : ''));
-    else setStatus('아래 내용으로 요청을 보낼까요?');
-    if (isLocked(cur)) setStatus('이 달은 교환이 마감됐어요. 바꾸려면 총무에게 문의해 주세요.');
-    renderAvail(); renderOpenForm();
-    var req = $('req');
-    if (mySel && target && !isLocked(mySel.month) && !isLocked(target.month)) {
-      $('reqText').textContent = '내 당번: ' + lab(mySel.month, mySel.day) + '\n상대 당번: ' + lab(target.month, target.day) + ' ' + target.name + ' 님\n\n상대가 앱에서 수락하면 바로 바뀝니다.';
-      req.hidden = false;
-    } else req.hidden = true;
   }
 
-  function renderAvail() {
-    var p = ym(), y = p[0], m = p[1], ds = duties();
-    var row = $('dowRow'); row.textContent = '';
-    DOW.forEach(function (n, i) {
-      var b = el('button', 'tog', n); b.type = 'button';
-      b.setAttribute('aria-pressed', avail.dows.indexOf(i) >= 0 ? 'true' : 'false');
-      b.addEventListener('click', function () { toggle(avail.dows, i); saveAvail(); target = null; renderCal(); });
-      row.appendChild(b);
-    });
-    var dr = $('dateRow'); dr.textContent = '';
-    dutyDays().forEach(function (x) {
-      var key = C.dkey(x.k, x.d);
-      var b = el('button', 'tog', lab(x.k, x.d)); b.type = 'button';
-      b.setAttribute('aria-pressed', avail.dates.indexOf(key) >= 0 ? 'true' : 'false');
-      b.addEventListener('click', function () { toggle(avail.dates, key); saveAvail(); target = null; renderCal(); });
-      dr.appendChild(b);
-    });
-    if (!dr.children.length) dr.appendChild(el('div', 'cap', '선택할 수 있는 날짜가 없어요.'));
-    var parts = avail.dows.slice().sort(function (a, b) { return a - b; }).map(function (i) { return DOW[i]; });
-    var t = parts.join('·');
-    if (avail.dates.length) t += (t ? ', ' : '') + '날짜 ' + avail.dates.length + '개';
-    $('availSummary').textContent = t ? '가능한 날: ' + t : '가능한 날 선택 (선택 사항)';
+  // ---------- 교환 메뉴 ----------
+  function cmpBlock(kind, rows) {
+    var b = el('div', 'blk ' + (kind === 'now' ? 'now' : 'after')); b.appendChild(el('div', 'k', kind === 'now' ? '지금' : '바뀐 뒤'));
+    rows.forEach(function (r) { var l = el('div', 'ln'); l.appendChild(el('span', '', r[0])); l.appendChild(el('b', '', r[1])); b.appendChild(l); });
+    return b;
   }
-
-  function renderInbox() {
-    var box = $('inbox'); box.textContent = '';
-    var list = requests.filter(function (r) { return r.status === 'pending' && r.toName === me && reqValid(r); });
-    var badge = $('inboxCount');
-    badge.textContent = String(list.length); badge.classList.toggle('hide', !list.length);
-    if (!list.length) { box.appendChild(el('div', 'cap', '지금 받은 요청이 없어요.')); return; }
-    list.forEach(function (r) {
-      var item = el('div', 'item');
-      item.appendChild(el('div', '', r.fromName + ' 님이 교환을 요청했어요. ' + lab(r.month, r.fromDay) + ' 당번을 맡고, 내 ' + lab(r.toMonth || r.month, r.toDay) + ' 당번을 넘기는 교환입니다.'));
+  function swapView(m) {
+    m.appendChild(el('h1', '', '교환'));
+    var inN = inboxList().length + openList().length;
+    var sg = el('div', 'seg'); sg.setAttribute('role', 'group'); sg.setAttribute('aria-label', '교환 메뉴');
+    [['in', '받은 요청' + (inN ? ' ' + inN : '')], ['out', '보낸 요청'], ['log', '교환 내역']].forEach(function (x) { var b = btn('', x[1], function () { exTab = x[0]; renderAll(); }); b.setAttribute('aria-pressed', exTab === x[0] ? 'true' : 'false'); sg.appendChild(b); });
+    m.appendChild(sg);
+    var nb = btn('btn pri', '', function () { openFlow(null); }); nb.appendChild(icon(I.swap)); nb.appendChild(document.createTextNode('새 교환 요청')); m.appendChild(nb);
+    if (exTab === 'in') inView(m); else if (exTab === 'out') outView(m); else logView(m);
+  }
+  function inView(m) {
+    var ib = inboxList(), ol = openList();
+    if (!ib.length && !ol.length) m.appendChild(el('div', 'card cap', '지금 받은 요청이 없어요.'));
+    ib.forEach(function (r) {
+      var c = el('div', 'card'); c.style.display = 'flex'; c.style.flexDirection = 'column'; c.style.gap = '12px';
+      c.appendChild(el('div', 'lead', r.fromName + ' 님의 요청'));
+      var mk = r.toMonth || r.month, cmp = el('div', 'cmp');
+      cmp.appendChild(cmpBlock('now', [['내 당번', lab(mk, r.toDay)], [r.fromName + ' 님', lab(r.month, r.fromDay)]]));
+      cmp.appendChild(cmpBlock('after', [['내 당번', lab(r.month, r.fromDay)], [r.fromName + ' 님', lab(mk, r.toDay)]]));
+      c.appendChild(cmp); c.appendChild(el('div', 'cap', '수락하면 두 분의 당번표가 바로 바뀌어요.'));
       var row = el('div', 'row');
-      var no = el('button', 'btn', '거절'); no.type = 'button';
-      var yes = el('button', 'btn ok', '수락'); yes.type = 'button';
+      var no = btn('btn', '거절'), yes = btn('btn pri', '수락하기');
       yes.addEventListener('click', function () {
         yes.disabled = true; no.disabled = true;
         API.acceptRequest(r.id).then(function (res) {
-          if (res.ok) setStatus('수락했어요. 당번표가 바뀌었습니다.');
-          else if (res.reason === 'locked') setStatus('이 달은 교환이 마감됐어요.');
-          else if (res.reason === 'stale') setStatus('그 사이 당번이 바뀌어서 처리하지 못했어요.');
-          else setStatus('이미 처리된 요청이에요.');
-        }).catch(function () { yes.disabled = false; no.disabled = false; setStatus('처리하지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
+          if (res.ok) toast('수락했어요. 당번표가 바뀌었어요.'); else { toast(REASON[res.reason] || '이미 처리된 요청이에요.'); }
+        }).catch(function () { yes.disabled = false; no.disabled = false; toast('처리하지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
       });
       no.addEventListener('click', function () {
         yes.disabled = true; no.disabled = true;
-        API.setRequestStatus(r.id, 'declined').then(function () { setStatus('요청을 거절했어요.'); })
-          .catch(function () { yes.disabled = false; no.disabled = false; setStatus('처리하지 못했어요.'); });
+        API.setRequestStatus(r.id, 'declined').then(function () { toast('요청을 거절했어요.'); }).catch(function () { yes.disabled = false; no.disabled = false; toast('처리하지 못했어요.'); });
       });
-      row.appendChild(no); row.appendChild(yes);
-      item.appendChild(row);
-      box.appendChild(item);
+      row.appendChild(no); row.appendChild(yes); c.appendChild(row); m.appendChild(c);
     });
-  }
-
-  var STATUS_KO = { pending: '답을 기다리는 중', accepted: '수락됨 (반영 완료)', declined: '거절됨', cancelled: '취소함', stale: '당번이 바뀌어 처리되지 않음' };
-  function renderSent() {
-    var box = $('sent'); box.textContent = '';
-    var list = requests.filter(function (r) { return r.fromName === me; }).slice(0, 6);
-    if (!list.length) { box.appendChild(el('div', 'cap', '보낸 요청이 없어요.')); return; }
-    list.forEach(function (r) {
-      var item = el('div', 'item');
-      var txt = r.type === 'open'
-        ? '공개 요청 ' + lab(r.month, r.fromDay) + ' · ' + C.condText(r.cond) + ' · ' + (r.status === 'accepted' && r.toName ? r.toName + ' 님이 ' + lab(r.toMonth || r.month, r.toDay) + '로 수락' : (r.status === 'pending' && C.expired(r.month, r.fromDay) ? '기간 지남' : (STATUS_KO[r.status] || r.status)))
-        : lab(r.month, r.fromDay) + ' ↔ ' + lab(r.toMonth || r.month, r.toDay) + ' ' + r.toName + ' 님 · ' + (STATUS_KO[r.status] || r.status);
-      item.appendChild(el('div', '', txt));
-      if (r.status === 'pending') {
-        var c = el('button', 'btn', '요청 취소'); c.type = 'button';
-        c.addEventListener('click', function () { c.disabled = true; API.setRequestStatus(r.id, 'cancelled').catch(function () { c.disabled = false; }); });
-        item.appendChild(c);
-      }
-      box.appendChild(item);
-    });
-  }
-  function renderRecent() {
-    var box = $('recent'); box.textContent = '';
-    var list = logs.filter(function (l) { return l.kind === 'swap' || l.kind === 'undo'; }).slice(0, 6);
-    if (!list.length) { box.appendChild(el('div', 'cap', '아직 교환 내역이 없어요.')); return; }
-    list.forEach(function (l) { var d = el('div', 'item', l.text); box.appendChild(d); });
-  }
-
-  // ---------- 공개 요청 ----------
-  function omSync() {
-    [['omDow', 'dow'], ['omDates', 'dates'], ['omExcept', 'except']].forEach(function (p) { $(p[0]).setAttribute('aria-pressed', oc.mode === p[1] ? 'true' : 'false'); });
-  }
-  function ocCond() { return { mode: oc.mode, dows: oc.mode === 'dow' ? oc.dows.slice().sort() : [], dates: oc.mode === 'dow' ? [] : oc.dates.slice().sort() }; }
-  function ocReady() { return oc.mode === 'except' || (oc.mode === 'dow' ? oc.dows.length > 0 : oc.dates.length > 0); }
-  function renderOpenForm() {
-    var box = $('openCard');
-    box.hidden = !mySel;
-    if (!mySel) return;
-    $('openFor').textContent = lab(mySel.month, mySel.day) + ' 당번을 내놓고, 아래 조건이 맞는 분과 바꿔요.';
-    omSync();
-    var dr = $('oDow'); dr.textContent = ''; dr.hidden = oc.mode !== 'dow';
-    DOW.forEach(function (n, i) {
-      var b = el('button', 'tog', n); b.type = 'button';
-      b.setAttribute('aria-pressed', oc.dows.indexOf(i) >= 0 ? 'true' : 'false');
-      b.addEventListener('click', function () { toggle(oc.dows, i); renderOpenForm(); });
-      dr.appendChild(b);
-    });
-    var dd = $('oDates'); dd.textContent = ''; dd.hidden = oc.mode === 'dow';
-    dutyDays().forEach(function (x) {
-      if (isMy(x.k, x.d)) return;
-      var key = C.dkey(x.k, x.d);
-      var b = el('button', 'tog', lab(x.k, x.d)); b.type = 'button';
-      b.setAttribute('aria-pressed', oc.dates.indexOf(key) >= 0 ? 'true' : 'false');
-      b.addEventListener('click', function () { toggle(oc.dates, key); renderOpenForm(); });
-      dd.appendChild(b);
-    });
-    $('oText').textContent = '내놓는 당번: ' + lab(mySel.month, mySel.day) + '\n조건: ' + (ocReady() ? C.condText(ocCond()) : '(위에서 고르세요)') + '\n\n조건에 맞는 분이 앱에서 수락하면 바로 바뀝니다.';
-    $('oSend').disabled = !ocReady() || isLocked(mySel.month);
-  }
-  function renderOpenList() {
-    var box = $('openList'); box.textContent = '';
-    var shown = 0;
-    requests.filter(function (r) { return r.type === 'open' && r.status === 'pending' && r.fromName !== me && months[r.month] && !C.expired(r.month, r.fromDay); }).forEach(function (r) {
-      var opts = C.myOptions(dmAll(), r, me, isLocked);
-      if (!opts.length) return;
-      shown++;
-      var item = el('div', 'item');
-      item.appendChild(el('div', '', r.fromName + ' 님이 ' + lab(r.month, r.fromDay) + ' 당번을 내놓았어요. 조건: ' + C.condText(r.cond)));
-      var p = C.parseKey(r.month);
-      if (hasFilter() && !matches(p[0], p[1], r.fromDay)) item.appendChild(el('div', 'cap', '※ 내가 고른 "가능한 날"에는 해당하지 않는 날이에요.'));
-      var row = el('div', 'row');
-      opts.forEach(function (o) {
-        var b = el('button', 'btn ok', '내 ' + lab(o.month, o.day) + '와 바꾸기'); b.type = 'button';
-        var armed = 0;
-        b.addEventListener('click', function () {
-          if (!armed) { b.textContent = '정말 바꿀까요? 한 번 더'; armed = setTimeout(function () { armed = 0; b.textContent = '내 ' + lab(o.month, o.day) + '와 바꾸기'; }, 4000); return; }
-          clearTimeout(armed); b.disabled = true;
-          API.acceptOpen(r.id, o).then(function (res) {
-            if (res.ok) setStatus('교환했어요. ' + lab(r.month, r.fromDay) + ' 당번이 내 당번이 되었어요.');
-            else { b.disabled = false; setStatus(REASON[res.reason] || '처리하지 못했어요.'); }
-          }).catch(function () { b.disabled = false; setStatus('처리하지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
+    if (ol.length) {
+      var h = el('div', 'lead', '나와 바꿀 수 있는 당번 ' + ol.length + '건'); h.style.margin = '6px 2px 0'; m.appendChild(h);
+      ol.forEach(function (x) {
+        var r = x.r, c = el('div', 'card'); c.style.display = 'flex'; c.style.flexDirection = 'column'; c.style.gap = '12px';
+        c.appendChild(el('div', 'lead', r.fromName + ' 님이 ' + lab(r.month, r.fromDay) + ' 당번을 내놓았어요'));
+        c.appendChild(el('div', 'cap', '조건: ' + C.condText(r.cond) + ' · 내 당번 중 하나와 바꿀 수 있어요.'));
+        x.opts.forEach(function (o) {
+          var base = '내 ' + lab(o.month, o.day) + ' ↔ ' + lab(r.month, r.fromDay);
+          var cmp = el('div', 'cmp');
+          cmp.appendChild(cmpBlock('now', [['내 당번', lab(o.month, o.day)]]));
+          cmp.appendChild(cmpBlock('after', [['내 당번', lab(r.month, r.fromDay)]]));
+          c.appendChild(cmp);
+          var b = btn('btn pri', base + ' 바꾸기'), armed = 0;
+          b.addEventListener('click', function () {
+            if (!armed) { b.textContent = '정말 바꿀까요? 한 번 더 눌러 주세요'; armed = setTimeout(function () { armed = 0; b.textContent = base + ' 바꾸기'; }, 4000); return; }
+            clearTimeout(armed); b.disabled = true;
+            API.acceptOpen(r.id, o).then(function (res) {
+              if (res.ok) toast('교환했어요. ' + lab(r.month, r.fromDay) + ' 당번이 내 당번이 되었어요.'); else { b.disabled = false; toast(REASON[res.reason] || '처리하지 못했어요.'); }
+            }).catch(function () { b.disabled = false; toast('처리하지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
+          });
+          c.appendChild(b);
         });
-        row.appendChild(b);
+        m.appendChild(c);
       });
-      item.appendChild(row);
-      box.appendChild(item);
+    }
+  }
+  function outView(m) {
+    var list = requests.filter(function (r) { return r.fromName === me; }).slice(0, 10);
+    if (!list.length) { m.appendChild(el('div', 'card cap', '보낸 요청이 없어요.')); return; }
+    list.forEach(function (r) {
+      var c = el('div', 'card'); c.style.display = 'flex'; c.style.flexDirection = 'column'; c.style.gap = '10px';
+      var stt = r.type === 'open' && r.status === 'pending' && C.expired(r.month, r.fromDay) ? '기간 지남' : (STATUS_KO[r.status] || r.status);
+      if (r.type === 'open') {
+        c.appendChild(el('div', 'lead', '공개 요청 · ' + lab(r.month, r.fromDay)));
+        c.appendChild(el('div', 'cap', '조건: ' + C.condText(r.cond)));
+        if (r.status === 'accepted' && r.toName) c.appendChild(el('div', '', r.toName + ' 님이 ' + lab(r.toMonth || r.month, r.toDay) + '로 수락했어요'));
+      } else {
+        c.appendChild(el('div', 'lead', lab(r.month, r.fromDay) + ' ↔ ' + lab(r.toMonth || r.month, r.toDay) + ' ' + r.toName + ' 님'));
+      }
+      var tg = el('span', 'tag ' + (r.status === 'accepted' ? 'green' : r.status === 'pending' ? 'blue' : ''), stt); var w = el('div'); w.appendChild(tg); c.appendChild(w);
+      if (r.status === 'pending') { var cb = btn('btn out', '요청 취소하기', function () { cb.disabled = true; API.setRequestStatus(r.id, 'cancelled').then(function () { toast('요청을 취소했어요.'); }).catch(function () { cb.disabled = false; toast('취소하지 못했어요.'); }); }); c.appendChild(cb); }
+      m.appendChild(c);
     });
-    var badge = $('openCount'); badge.textContent = String(shown); badge.classList.toggle('hide', !shown);
-    if (!shown) box.appendChild(el('div', 'cap', '지금 나와 바꿀 수 있는 공개 요청이 없어요.'));
+  }
+  function logView(m) {
+    var list = logs.filter(function (l) { return l.kind === 'swap' || l.kind === 'undo'; }).slice(0, 20);
+    if (!list.length) { m.appendChild(el('div', 'card cap', '아직 교환 내역이 없어요.')); return; }
+    var c = el('div', 'card'), l = el('div', 'list');
+    list.forEach(function (x) { var it = el('div', 'it'); it.appendChild(el('div', 'n', x.text)); l.appendChild(it); });
+    c.appendChild(l); m.appendChild(c);
+  }
+
+  // ---------- 설정 ----------
+  function setView(m) {
+    m.appendChild(el('h1', '', '설정'));
+    var c = el('div', 'card'); c.style.display = 'flex'; c.style.flexDirection = 'column'; c.style.gap = '12px';
+    c.appendChild(el('div', 'cap', '내 이름')); c.appendChild(el('div', 'lead', me + ' 님'));
+    c.appendChild(btn('btn', '이름 바꾸기', showPicker));
+    m.appendChild(c);
+    var c2 = el('div', 'card'); c2.style.display = 'flex'; c2.style.flexDirection = 'column'; c2.style.gap = '6px';
+    c2.appendChild(el('div', 'lead', '안내'));
+    c2.appendChild(el('div', 'cap', '당번은 하루 전까지 바꿀 수 있어요. 마감된 달은 총무에게 문의해 주세요.'));
+    c2.appendChild(el('div', 'cap', '요청을 보낸 뒤에는 카톡으로도 한 번 알려 주세요.'));
+    m.appendChild(c2);
+  }
+
+  // ---------- 교환 흐름 ----------
+  function openFlow(from) {
+    flow = { from: from || null, fixed: !!from, step: from ? 'how' : 'pick', target: null, tm: from ? from.month : cur, oc: { mode: 'dow', dows: [], dates: [] }, busy: false, result: null };
+    renderFlow();
+  }
+  function closeFlow() { flow = null; renderFlow(); renderAll(); }
+  function renderFlow() {
+    var box = $('flow');
+    if (!flow) { box.classList.add('hide'); box.textContent = ''; document.body.style.overflow = ''; return; }
+    box.classList.remove('hide'); box.textContent = ''; document.body.style.overflow = 'hidden';
+    var w = el('div', 'wrap');
+    var top = el('div', 'row'); top.style.justifyContent = 'space-between'; top.style.alignItems = 'center';
+    var prev = { how: flow.fixed ? null : 'pick', who: 'how', cond: 'how', confirm: 'who' }[flow.step] || null;
+    var bk = btn('back', '', function () { if (prev) { flow.step = prev; if (prev === 'pick') flow.from = null; renderFlow(); } else closeFlow(); });
+    bk.appendChild(icon(I.l)); bk.appendChild(document.createTextNode(prev ? '이전' : '닫기'));
+    top.appendChild(bk);
+    if (prev) { var cl = btn('back', '닫기', closeFlow); cl.style.flex = 'none'; top.appendChild(cl); }
+    w.appendChild(top);
+    ({ pick: flowPick, how: flowHow, who: flowWho, cond: flowCond, confirm: flowConfirm, done: flowDone })[flow.step](w);
+    box.appendChild(w); box.scrollTop = 0;
+  }
+  function flowPick(w) {
+    w.appendChild(el('h2', '', '어떤 당번을 바꿀까요?'));
+    var up = myUpcoming().filter(function (s) { return !isLocked(s.month); });
+    if (!up.length) { w.appendChild(el('div', 'card cap', '지금 바꿀 수 있는 내 당번이 없어요.')); return; }
+    up.forEach(function (s) {
+      var b = btn('opt', '', function () { flow.from = s; flow.step = 'how'; flow.tm = s.month; renderFlow(); });
+      b.appendChild(el('b', '', longLab(s.month, s.day))); b.appendChild(el('span', '', '함께하는 당번  ' + (others(s.month, s.day).join(', ') || '없음')));
+      w.appendChild(b);
+    });
+  }
+  function flowHow(w) {
+    var f = flow.from;
+    w.appendChild(el('h2', '', '어떻게 바꿀까요?'));
+    w.appendChild(el('div', 'cap', '바꾸려는 당번: ' + longLab(f.month, f.day)));
+    var a = btn('opt', '', function () { flow.step = 'who'; flow.tm = f.month; renderFlow(); });
+    a.appendChild(el('b', '', '특정 회원에게 요청')); a.appendChild(el('span', '', '바꾸고 싶은 분을 직접 골라 요청해요'));
+    var b = btn('opt', '', function () { flow.step = 'cond'; renderFlow(); });
+    b.appendChild(el('b', '', '교환 가능한 회원 찾기')); b.appendChild(el('span', '', '내가 가능한 날을 알려 주면, 맞는 분이 수락해요'));
+    w.appendChild(a); w.appendChild(b);
+  }
+  function flowWho(w) {
+    var f = flow.from;
+    w.appendChild(el('h2', '', '누구와 바꿀까요?'));
+    w.appendChild(el('div', 'cap', longLab(f.month, f.day) + ' 당번을 넘기고, 고른 분의 당번을 받아요.'));
+    var i = keys.indexOf(flow.tm), p = C.parseKey(flow.tm);
+    var n = el('div', 'mnav');
+    var pb = btn('', '', function () { flow.tm = keys[i - 1]; renderFlow(); }); pb.appendChild(icon(I.l)); pb.disabled = i <= 0; pb.setAttribute('aria-label', '이전 달');
+    var nb = btn('', '', function () { flow.tm = keys[i + 1]; renderFlow(); }); nb.appendChild(icon(I.r)); nb.disabled = i >= keys.length - 1; nb.setAttribute('aria-label', '다음 달');
+    n.appendChild(pb); n.appendChild(el('div', 't', p[1] + '월')); n.appendChild(nb); w.appendChild(n);
+    if (isLocked(flow.tm)) { w.appendChild(el('div', 'card cap', '이 달은 교환이 마감됐어요.')); return; }
+    var card = el('div', 'card'), list = el('div', 'list'), cnt = 0;
+    sortedDays(flow.tm).forEach(function (d) {
+      if (C.isPast(flow.tm, d)) return;
+      var ds = duties(flow.tm)[d] || [];
+      if (flow.tm === f.month && d === f.day) return;
+      var it = el('div', 'it'); it.style.flexDirection = 'column'; it.style.alignItems = 'stretch';
+      var hasMe = ds.indexOf(me) >= 0;
+      it.appendChild(el('div', 'd', lab(flow.tm, d)));
+      var row = el('div', 'row'); row.style.flexWrap = 'wrap';
+      ds.forEach(function (name, j) {
+        if (!name || name === me) return;
+        var t = slotOf(flow.tm, d, j), ok = canPair(f, t);
+        var b = btn('tog', name, function () { flow.target = t; flow.step = 'confirm'; renderFlow(); });
+        b.style.flex = '1 1 40%'; b.disabled = !ok; b.setAttribute('aria-label', lab(flow.tm, d) + ' ' + name + ' 님과 교환');
+        if (ok) cnt++; row.appendChild(b);
+      });
+      if (hasMe) it.appendChild(el('div', 'cap', '내가 이미 당번인 날이에요.')); else if (row.children.length) it.appendChild(row); else return;
+      list.appendChild(it);
+    });
+    if (!list.children.length) list.appendChild(el('div', 'cap', '이 달에는 바꿀 수 있는 당번이 없어요. 다른 달을 눌러 보세요.'));
+    card.appendChild(list); w.appendChild(card);
+  }
+  function ocCond() { var o = flow.oc; return { mode: o.mode, dows: o.mode === 'dow' ? o.dows.slice().sort() : [], dates: o.mode === 'dow' ? [] : o.dates.slice().sort() }; }
+  function ocReady() { var o = flow.oc; return o.mode === 'except' || (o.mode === 'dow' ? o.dows.length > 0 : o.dates.length > 0); }
+  function flowCond(w) {
+    var f = flow.from, o = flow.oc;
+    w.appendChild(el('h2', '', '언제 당번을 서면 괜찮으세요?'));
+    w.appendChild(el('div', 'cap', longLab(f.month, f.day) + ' 당번을 넘기고, 아래 조건의 날과 바꿔요.'));
+    var sg = el('div', 'seg'); sg.setAttribute('role', 'group'); sg.setAttribute('aria-label', '조건 방식');
+    [['dow', '요일로'], ['dates', '날짜로'], ['except', '이 날만 빼고']].forEach(function (x) { var b = btn('', x[1], function () { o.mode = x[0]; renderFlow(); }); b.setAttribute('aria-pressed', o.mode === x[0] ? 'true' : 'false'); sg.appendChild(b); });
+    w.appendChild(sg);
+    var card = el('div', 'card'); card.style.display = 'flex'; card.style.flexDirection = 'column'; card.style.gap = '12px';
+    if (o.mode === 'dow') {
+      card.appendChild(el('div', 'lead', '가능한 요일 (여러 개 선택)'));
+      var dr = el('div', 'dowrow');
+      DOW.forEach(function (nm, i) { var b = btn('tog', nm, function () { toggle(o.dows, i); renderFlow(); }); b.setAttribute('aria-pressed', o.dows.indexOf(i) >= 0 ? 'true' : 'false'); dr.appendChild(b); });
+      card.appendChild(dr);
+    } else {
+      card.appendChild(el('div', 'lead', o.mode === 'dates' ? '가능한 날짜 (여러 개 선택)' : '안 되는 날짜 (여러 개 선택)'));
+      var dd = el('div', 'dates');
+      C_days().forEach(function (x) {
+        if (x.k === f.month && x.d === f.day) return;
+        var key = C.dkey(x.k, x.d), b = btn('tog', lab(x.k, x.d), function () { toggle(o.dates, key); renderFlow(); });
+        b.setAttribute('aria-pressed', o.dates.indexOf(key) >= 0 ? 'true' : 'false'); dd.appendChild(b);
+      });
+      if (!dd.children.length) dd.appendChild(el('div', 'cap', '선택할 수 있는 날짜가 없어요.'));
+      card.appendChild(dd);
+    }
+    w.appendChild(card);
+    var sm = el('div', 'card cap', ocReady() ? '조건: ' + C.condText(ocCond()) + ' · 맞는 분이 앱에서 수락하면 바로 바뀌어요.' : '위에서 조건을 골라 주세요.'); w.appendChild(sm);
+    var go = btn('btn pri', '교환 가능한 회원 찾기', sendOpen); go.disabled = !ocReady() || isLocked(f.month) || flow.busy; w.appendChild(go);
+  }
+  function C_days() { var out = []; keys.forEach(function (k) { sortedDays(k).forEach(function (d) { if (!C.expired(k, d)) out.push({ k: k, d: d }); }); }); return out; }
+  function flowConfirm(w) {
+    var f = flow.from, t = flow.target;
+    w.appendChild(el('h2', '', t.name + ' 님께 이렇게 요청할까요?'));
+    var cmp = el('div', 'cmp');
+    var fn = namesOf(f.month, f.day), tn = namesOf(t.month, t.day);
+    var swapN = function (arr, a, b) { return arr.map(function (x) { return x === a ? b : x; }); };
+    function nm(arr) { return arr.map(function (x) { return x === me ? '나' : x; }).join(' · '); }
+    cmp.appendChild(cmpBlock('now', [[lab(f.month, f.day), nm(fn)], [lab(t.month, t.day), nm(tn)]]));
+    cmp.appendChild(cmpBlock('after', [[lab(f.month, f.day), nm(swapN(fn, me, t.name))], [lab(t.month, t.day), nm(swapN(tn, t.name, me))]]));
+    w.appendChild(cmp);
+    w.appendChild(el('div', 'cap', '상대가 수락하기 전까지는 지금 당번이 그대로예요.'));
+    var row = el('div', 'row');
+    var go = btn('btn pri', '요청 보내기', sendPersonal); go.disabled = flow.busy || isLocked(f.month) || isLocked(t.month);
+    row.appendChild(btn('btn', '취소', closeFlow)); row.appendChild(go); w.appendChild(row);
+  }
+  function flowDone(w) {
+    var r = flow.result;
+    w.appendChild(el('h2', '', r.title));
+    w.appendChild(el('div', '', r.body));
+    w.appendChild(el('div', 'cap', '상대가 알아차리도록 카톡으로도 알려 주세요.'));
+    w.appendChild(el('pre', 'say', r.nudge));
+    w.appendChild(btn('btn', '카톡 문구 복사', function () { copyText(r.nudge); }));
+    w.appendChild(btn('btn pri', '확인', function () { tab = 'swap'; exTab = 'out'; closeFlow(); }));
+  }
+  function sendPersonal() {
+    var f = flow.from, t = flow.target;
+    if (isLocked(f.month) || isLocked(t.month)) { toast('마감된 달의 당번은 교환할 수 없어요.'); return; }
+    var r = { month: f.month, toMonth: t.month, fromDay: f.day, fromJ: f.j, fromName: me, toDay: t.day, toJ: t.j, toName: t.name };
+    if (requests.some(function (x) { return x.status === 'pending' && x.fromName === me && sameSlots(x, r); })) { toast('같은 요청이 이미 대기 중이에요.'); return; }
+    flow.busy = true; renderFlow();
+    API.createRequest(r).then(function () {
+      flow.busy = false; flow.step = 'done';
+      flow.result = { title: '요청을 보냈어요', body: t.name + ' 님이 앱에서 수락하면 바로 바뀌어요.', nudge: nudgeFor('p', r) };
+      renderFlow();
+    }).catch(function () { flow.busy = false; renderFlow(); toast('요청을 보내지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
+  }
+  function sendOpen() {
+    var f = flow.from; if (!ocReady() || isLocked(f.month)) return;
+    if (requests.some(function (x) { return x.type === 'open' && x.status === 'pending' && x.fromName === me && x.month === f.month && x.fromDay === f.day && x.fromJ === f.j; })) { toast('이 당번의 공개 요청이 이미 올라가 있어요. 먼저 취소해 주세요.'); return; }
+    var r = { month: f.month, fromDay: f.day, fromJ: f.j, fromName: me, cond: ocCond() };
+    flow.busy = true; renderFlow();
+    API.createOpenRequest(r).then(function () {
+      flow.busy = false; flow.step = 'done';
+      flow.result = { title: '찾는 중이에요', body: '조건에 맞는 분이 앱에서 수락하면 바로 바뀌어요.', nudge: nudgeFor('open', r) };
+      renderFlow();
+    }).catch(function () { flow.busy = false; renderFlow(); toast('올리지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
   }
 
   // ---------- 이벤트 ----------
-  $('omDow').addEventListener('click', function () { oc.mode = 'dow'; renderOpenForm(); });
-  $('omDates').addEventListener('click', function () { oc.mode = 'dates'; renderOpenForm(); });
-  $('omExcept').addEventListener('click', function () { oc.mode = 'except'; renderOpenForm(); });
-  $('oSend').addEventListener('click', function () {
-    if (!mySel || !ocReady() || isLocked(mySel.month)) return;
-    var cond = ocCond();
-    var dup = requests.some(function (x) { return x.type === 'open' && x.status === 'pending' && x.fromName === me && x.month === mySel.month && x.fromDay === mySel.day && x.fromJ === mySel.j; });
-    if (dup) { setStatus('이 당번의 공개 요청이 이미 올라가 있어요. 먼저 취소해 주세요.'); return; }
-    var btn = $('oSend'); btn.disabled = true;
-    var r = { month: mySel.month, fromDay: mySel.day, fromJ: mySel.j, fromName: me, cond: cond };
-    API.createOpenRequest(r).then(function () {
-      nudge = '[교환요청(공개)] ' + me + '님이 ' + lab(r.month, r.fromDay) + ' 당번을 바꿀 분을 찾아요. 조건: ' + C.condText(cond) + '\n당번표 앱의 "나와 바꿀 수 있는 공개 요청"에서 수락해 주세요.\nhttps://zelong2-star.github.io/jwadongclub/duty/';
-      $('nudgeText').textContent = nudge; $('nudgeCard').classList.remove('hide');
-      mySel = null; target = null; oc = { mode: oc.mode, dows: [], dates: [] }; renderCal();
-      setStatus('공개 요청을 올렸어요. 조건에 맞는 분이 수락하면 바로 바뀝니다. 카톡에도 알려 주세요.');
-    }).catch(function () { btn.disabled = false; setStatus('올리지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
-  });
   $('enter').addEventListener('click', function () {
     var v = $('pin').value.trim();
     if (!v) { $('gateMsg').textContent = '암호를 입력해 주세요.'; return; }
@@ -541,28 +650,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   });
   $('pin').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('enter').click(); });
   $('search').addEventListener('input', function () { renderNames($('search').value.trim()); });
-  $('changeMe').addEventListener('click', showPicker);
-  $('prev').addEventListener('click', function () { var i = keys.indexOf(cur); if (i > 0) { cur = keys[i - 1]; renderAll(); } });
-  $('next').addEventListener('click', function () { var i = keys.indexOf(cur); if (i < keys.length - 1) { cur = keys[i + 1]; renderAll(); } });
-  $('reset').addEventListener('click', function () { mySel = null; target = null; renderCal(); });
-  $('availClear').addEventListener('click', function () { avail = { dows: [], dates: [] }; saveAvail(); target = null; renderCal(); });
-  $('copyNudge').addEventListener('click', function () { copyText(nudge, '문구를 복사했어요. 카톡에 붙여넣어 주세요.'); });
-  $('send').addEventListener('click', function () {
-    if (!mySel || !target) return;
-    if (isLocked(mySel.month) || isLocked(target.month)) { setStatus('마감된 달의 당번은 교환할 수 없어요.'); return; }
-    var r = { month: mySel.month, toMonth: target.month, fromDay: mySel.day, fromJ: mySel.j, fromName: me, toDay: target.day, toJ: target.j, toName: target.name };
-    var dup = requests.some(function (x) { return x.status === 'pending' && x.fromName === me && sameSlots(x, r); });
-    if (dup) { setStatus('같은 요청이 이미 대기 중이에요.'); return; }
-    var btn = $('send'); btn.disabled = true;
-    API.createRequest(r).then(function () {
-      nudge = '[교환요청] ' + target.name + '님, ' + lab(r.month, r.fromDay) + ' ' + me + ' ↔ ' + lab(r.toMonth, r.toDay) + ' ' + target.name + ' 교환을 요청했어요. 당번표 앱에서 수락해 주세요.\nhttps://zelong2-star.github.io/jwadongclub/duty/';
-      $('nudgeText').textContent = nudge; $('nudgeCard').classList.remove('hide');
-      mySel = null; target = null; btn.disabled = false; renderCal();
-      setStatus('요청을 보냈어요. 상대가 앱에서 수락하면 바로 바뀝니다. 카톡으로도 알려 주세요.');
-    }).catch(function () { btn.disabled = false; setStatus('요청을 보내지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
-  });
 
-  // ---------- 시작 ----------
   var started = false;
   window.dutyApiReady.then(function (api) {
     started = true; API = api;

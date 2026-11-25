@@ -81,7 +81,7 @@ nav.tabs button .ic{font-size:22px;line-height:1}
 nav.tabs button[aria-current="page"]{color:var(--blue);font-weight:800}
 .dotb{position:absolute;top:8px;left:calc(50% + 6px);min-width:20px;height:20px;border-radius:10px;background:var(--red);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px}
 .btn:focus-visible,.chip:focus-visible,.in:focus-visible,.seg button:focus-visible,summary:focus-visible,textarea:focus-visible,.field:focus-visible,nav.tabs button:focus-visible,.mnav button:focus-visible,.drop:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
-@media (max-width:520px){.chip{font-size:12px;letter-spacing:-.02em;padding:0 1px;white-space:normal;word-break:break-all;line-height:1.15;overflow:hidden}.grid{padding:6px;gap:3px}.cell{min-height:96px;padding:3px 2px}.wrap{padding:20px 8px 120px}}
+@media (max-width:520px){.chip,.in{font-size:11px;letter-spacing:-.05em;padding:0;white-space:normal;word-break:break-all;line-height:1.15;overflow:hidden}.in{white-space:nowrap}.grid{padding:4px;gap:2px}.cell{min-height:96px;padding:3px 1px;gap:3px}.num{font-size:12px;padding-left:3px}.wrap{padding:20px 6px 120px}}
 
 #toast{position:fixed;left:16px;right:16px;bottom:88px;z-index:40;max-width:448px;margin:0 auto;background:#191F28;color:#fff;border-radius:14px;padding:14px 18px;font-size:15px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 #flow{position:fixed;inset:0;z-index:30;background:var(--bg);overflow:auto}
@@ -127,11 +127,11 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 .back:focus-visible,.opt:focus-visible,.tog:focus-visible,.fcal .c:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125h"></script>
-<script src="cal-ocr.js?v=20261125h"></script>
-<script src="notice-img.js?v=20261125h"></script>
+<script src="duty-core.js?v=20261125i"></script>
+<script src="cal-ocr.js?v=20261125i"></script>
+<script src="notice-img.js?v=20261125i"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125h';
+import { makeApi } from './common.js?v=20261125i';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>

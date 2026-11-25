@@ -40,11 +40,11 @@ h2{margin:0;font-size:20px;font-weight:800;line-height:1.35}
 .title{display:none}
 .grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;background:#fff;border-radius:20px;padding:12px}
 .dow{text-align:center;padding:4px 0;font-size:14px;font-weight:700;color:var(--sub)}
-.dow.we{color:var(--red)}
+.dow.we{color:var(--red)}.dow.sat{color:var(--blue)}
 .cell{min-height:104px;padding:5px 3px;border-radius:12px;background:var(--gray);display:flex;flex-direction:column;gap:4px;min-width:0}
 .cell.we{background:#F1F3F8}
 .num{font-size:13px;font-weight:700;padding-left:2px}
-.cell.we .num{color:var(--red)}
+.cell.we .num{color:var(--red)}.cell.sat .num{color:var(--blue)}
 .chip,.in{width:100%;min-height:44px;border-radius:10px;border:0;background:#fff;font-size:14px;font-weight:600;padding:0 2px;text-align:center;min-width:0}
 .chip.sel{background:var(--blue);color:#fff;font-weight:800}
 .in{font-size:16px;border:1.5px solid var(--line)}.in:focus{border-color:var(--blue);outline:0}
@@ -64,7 +64,7 @@ summary{min-height:32px;font-size:17px;font-weight:800;cursor:pointer}
 .ocrrow{display:grid;grid-template-columns:64px 1fr 1fr;gap:6px;align-items:center}
 .ocrrow.warn{background:var(--amber);border-radius:10px;padding:2px}
 .ocrrow .in{min-height:40px}
-.ocrrow .d{font-size:14px;font-weight:700}.ocrrow .d.we{color:var(--red)}
+.ocrrow .d{font-size:14px;font-weight:700}.ocrrow .d.we{color:var(--red)}.ocrrow .d.sat{color:var(--blue)}
 .wbox{padding:10px 14px;border-radius:12px;background:var(--amber);color:#7a4a00;font-size:14px}
 .addrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:13px;font-weight:700;background:var(--gray);color:var(--sub)}
@@ -108,7 +108,7 @@ nav.tabs button[aria-current="page"]{color:var(--blue);font-weight:800}
 .fcal .h{text-align:center;font-size:14px;font-weight:700;color:var(--sub);padding:4px 0}.fcal .h.we{color:var(--red)}
 .fcal .c{min-height:46px;border:0;border-radius:10px;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:6px 1px 4px;gap:2px;font-size:16px;font-weight:600}
 .fcal .c.has{background:var(--gray);min-height:78px}.fcal .c.mine{background:var(--blue-soft);color:var(--blue);font-weight:800}
-.fcal .c.on{outline:2px solid var(--blue)}.fcal .c.we{color:var(--red)}.fcal .c.mine.we{color:var(--blue)}
+.fcal .c.on{outline:2px solid var(--blue)}.fcal .c.we{color:var(--red)}.fcal .c.mine.we{color:var(--blue)}.fcal .h.sat,.fcal .c.sat{color:var(--blue)}
 .fcal .c .dn{font-size:14px;font-weight:700}
 .fcal .c .nn{font-size:12px;font-weight:600;line-height:1.25;color:var(--ink);max-width:100%;overflow:hidden;white-space:nowrap}
 .fcal .c.mine .nn{color:var(--blue);font-weight:800}.fcal .c:disabled{opacity:.35}
@@ -127,11 +127,11 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 .back:focus-visible,.opt:focus-visible,.tog:focus-visible,.fcal .c:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125i"></script>
-<script src="cal-ocr.js?v=20261125i"></script>
-<script src="notice-img.js?v=20261125i"></script>
+<script src="duty-core.js?v=20261125j"></script>
+<script src="cal-ocr.js?v=20261125j"></script>
+<script src="notice-img.js?v=20261125j"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125i';
+import { makeApi } from './common.js?v=20261125j';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -427,14 +427,14 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     $('prev').disabled = keys.indexOf(cur) <= 0;
     $('next').disabled = keys.indexOf(cur) >= keys.length - 1;
     var grid = $('grid'); grid.textContent = '';
-    DOW.forEach(function (d, i) { grid.appendChild(el('div', 'dow' + (i >= 5 ? ' we' : ''), d)); });
+    DOW.forEach(function (d, i) { grid.appendChild(el('div', 'dow' + (i >= 5 ? (i === 5 ? ' we sat' : ' we') : ''), d)); });
     var dim = new Date(y, m, 0).getDate();
     var off = (new Date(y, m - 1, 1).getDay() + 6) % 7;
     var total = Math.ceil((off + dim) / 7) * 7;
     for (var k = 0; k < total; k++) {
       (function (k) {
         var day = k - off + 1;
-        var cell = el('div', 'cell' + ((k % 7) >= 5 ? ' we' : ''));
+        var cell = el('div', 'cell' + ((k % 7) >= 5 ? ((k % 7) === 5 ? ' we sat' : ' we') : ''));
         if (day >= 1 && day <= dim) {
           cell.appendChild(el('div', 'num', String(day)));
           var d = ds[day];
@@ -1202,14 +1202,14 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
 
   function calGrid(k, o) {
     var p = C.parseKey(k), ds = duties(k), g = el('div', 'fcal nm');
-    DOW.forEach(function (n, i) { g.appendChild(el('div', 'h' + (i >= 5 ? ' we' : ''), n)); });
+    DOW.forEach(function (n, i) { g.appendChild(el('div', 'h' + (i >= 5 ? (i === 5 ? ' we sat' : ' we') : ''), n)); });
     var dim = new Date(p[0], p[1], 0).getDate(), off = (new Date(p[0], p[1] - 1, 1).getDay() + 6) % 7, total = Math.ceil((off + dim) / 7) * 7;
     for (var q = 0; q < total; q++) {
       var day = q - off + 1;
       if (day < 1 || day > dim) { g.appendChild(el('div')); continue; }
       (function (day, q) {
         var has = !!ds[day], mine = has && ds[day].indexOf(me) >= 0, names = has ? namesOf(k, day) : [];
-        var c = btn('c' + (has ? ' has' : '') + (mine ? ' mine' : '') + ((q % 7) >= 5 ? ' we' : '') + (o.sel === day ? ' on' : ''), '', function () { o.pick(day); });
+        var c = btn('c' + (has ? ' has' : '') + (mine ? ' mine' : '') + ((q % 7) >= 5 ? ((q % 7) === 5 ? ' we sat' : ' we') : '') + (o.sel === day ? ' on' : ''), '', function () { o.pick(day); });
         c.appendChild(el('span', 'dn', String(day)));
         names.forEach(function (n) { c.appendChild(el('span', 'nn', n)); });
         c.setAttribute('aria-label', p[1] + '월 ' + day + '일' + (has ? ' 당번 ' + names.join(', ') : ' 당번 없음'));
@@ -1592,7 +1592,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         var w = dayWarn(r, day, known), row = el('div', 'ocrrow' + (w.length ? ' warn' : ''));
         if (w.length) bad++;
         var dw = new Date(r.year, r.month - 1, day).getDay();
-        row.appendChild(el('div', 'd' + (dw === 0 || dw === 6 ? ' we' : ''), day + '일(' + '일월화수목금토'[dw] + ')'));
+        row.appendChild(el('div', 'd' + (dw === 6 ? ' we sat' : dw === 0 ? ' we' : ''), day + '일(' + '일월화수목금토'[dw] + ')'));
         [0, 1].forEach(function (j) {
           var inp = document.createElement('input'); inp.className = 'in'; inp.value = r.duties[day][j] || ''; inp.setAttribute('aria-label', day + '일 ' + (j + 1) + '번째 이름');
           inp.addEventListener('change', function () { r.duties[day][j] = inp.value.trim(); if (!r.duties[day][0] && !r.duties[day][1]) delete r.duties[day]; renderOcr(); });

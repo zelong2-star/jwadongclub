@@ -67,7 +67,7 @@ h2{margin:0;font-size:20px;font-weight:800;line-height:1.35}
 .cal.nm .c:not(.has){min-height:46px}
 .cal.nm .c.mine .nn{color:var(--blue);font-weight:800}
 .cal.nm .c:disabled{opacity:.35}
-.cal .c.on{outline:2px solid var(--blue)}.cal .c.we{color:var(--red)}.cal .c.mine.we{color:var(--blue)}
+.cal .c.on{outline:2px solid var(--blue)}.cal .c.we{color:var(--red)}.cal .c.mine.we{color:var(--blue)}.cal .h.sat,.cal .c.sat{color:var(--blue)}
 .dots{display:flex;gap:3px;height:6px}.dots i{width:6px;height:6px;border-radius:50%;background:#B0B8C1}.dots i.m{background:var(--blue)}
 nav.bar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:#fff;border-top:1px solid var(--gray);padding-bottom:env(safe-area-inset-bottom)}
 nav.bar .in{max-width:480px;margin:0 auto;display:flex;height:72px}
@@ -99,9 +99,9 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 @media (prefers-reduced-motion:no-preference){.btn,.tog,.opt,.stat{transition:transform .1s}.btn:active:not(:disabled),.opt:active,.stat:active{transform:scale(.98)}}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125i"></script>
+<script src="duty-core.js?v=20261125j"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125i';
+import { makeApi } from './common.js?v=20261125j';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -438,14 +438,14 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   }
   function calGrid(k, o) {
     var p = C.parseKey(k), ds = duties(k), g = el('div', 'cal nm');
-    DOW.forEach(function (n, i) { g.appendChild(el('div', 'h' + (i >= 5 ? ' we' : ''), n)); });
+    DOW.forEach(function (n, i) { g.appendChild(el('div', 'h' + (i >= 5 ? (i === 5 ? ' we sat' : ' we') : ''), n)); });
     var dim = new Date(p[0], p[1], 0).getDate(), off = (new Date(p[0], p[1] - 1, 1).getDay() + 6) % 7, total = Math.ceil((off + dim) / 7) * 7;
     for (var q = 0; q < total; q++) {
       var day = q - off + 1;
       if (day < 1 || day > dim) { g.appendChild(el('div')); continue; }
       (function (day, q) {
         var has = !!ds[day], mine = has && ds[day].indexOf(me) >= 0, names = has ? namesOf(k, day) : [];
-        var c = btn('c' + (has ? ' has' : '') + (mine ? ' mine' : '') + ((q % 7) >= 5 ? ' we' : '') + (o.sel === day ? ' on' : ''), '', function () { o.pick(day); });
+        var c = btn('c' + (has ? ' has' : '') + (mine ? ' mine' : '') + ((q % 7) >= 5 ? ((q % 7) === 5 ? ' we sat' : ' we') : '') + (o.sel === day ? ' on' : ''), '', function () { o.pick(day); });
         c.appendChild(el('span', 'dn', String(day)));
         names.forEach(function (n) { c.appendChild(el('span', 'nn', n)); });
         c.setAttribute('aria-label', p[1] + '월 ' + day + '일' + (has ? ' 당번 ' + names.join(', ') : ' 당번 없음'));

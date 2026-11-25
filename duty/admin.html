@@ -803,7 +803,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     return lead + ' ' + C.label(x.k, x.d) + ' ' + x.names.join(' · ') + ' 님, ' + when + ' 당번이에요. 못 나오면 당번표 앱에서 교환 요청해 주세요.\n' + APP_URL2;
   }
   function todayKakao(x, off) {
-    var when = off === 0 ? '오늘(' + C.parseKey(x.k)[1] + '/' + x.d + ')' : off === 1 ? '내일(' + C.parseKey(x.k)[1] + '/' + x.d + ')' : C.label(x.k, x.d);
+    var when = off === 0 ? '오늘' : off === 1 ? '내일' : C.label(x.k, x.d);
     return { banner: 'duty', stamp: C.label(x.k, x.d) + ' 당번 안내', title: x.names.join(' · ') + ' 님, ' + when + ' 당번이에요', desc: '바닥 청소 및 전원 관리(냉·난방기, 조명) 신경 써 주세요.', buttons: ['당번표 열기', '교환 요청하기'] };
   }
   function renderToday() {

@@ -325,6 +325,35 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     if (tab === 'home') homeView(m); else if (tab === 'sched') schedView(m); else if (tab === 'swap') swapView(m); else if (tab === 'notice') noticeView(m); else setView(m);
   }
 
+  // ---------- 내 당번 캘린더에 넣기 (.ics) ----------
+  function icsEsc(t) { return String(t).replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\n/g, '\\n'); }
+  function ymd(k, d) { var p = C.parseKey(k); return p[0] + C.pad(p[1]) + C.pad(d); }
+  function ymdNext(k, d) { var p = C.parseKey(k), t = new Date(p[0], p[1] - 1, d + 1); return t.getFullYear() + C.pad(t.getMonth() + 1) + C.pad(t.getDate()); }
+  function buildIcs() {
+    var up = myUpcoming(), n = new Date(), stamp = n.getUTCFullYear() + C.pad(n.getUTCMonth() + 1) + C.pad(n.getUTCDate()) + 'T' + C.pad(n.getUTCHours()) + C.pad(n.getUTCMinutes()) + C.pad(n.getUTCSeconds()) + 'Z';
+    var L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//jwadongclub//duty//KO', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:좌동클럽 내 당번'];
+    up.forEach(function (s) {
+      var ot = others(s.month, s.day);
+      L.push('BEGIN:VEVENT', 'UID:jwadong-duty-' + s.month + '-' + s.day + '@jwadongclub', 'DTSTAMP:' + stamp,
+        'DTSTART;VALUE=DATE:' + ymd(s.month, s.day), 'DTEND;VALUE=DATE:' + ymdNext(s.month, s.day),
+        'SUMMARY:' + icsEsc('좌동클럽 당번'), 'DESCRIPTION:' + icsEsc('함께하는 당번: ' + (ot.join(', ') || '없음') + '\n교환: ' + URL_APP),
+        'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + icsEsc('내일 좌동클럽 당번이에요'), 'TRIGGER:-PT15H', 'END:VALARM',
+        'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + icsEsc('오늘 좌동클럽 당번이에요'), 'TRIGGER:PT9H', 'END:VALARM', 'END:VEVENT');
+    });
+    L.push('END:VCALENDAR');
+    return { text: L.join('\r\n') + '\r\n', n: up.length };
+  }
+  function addToCalendar() {
+    var r = buildIcs();
+    if (!r.n) { toast('앞으로 예정된 내 당번이 없어요.'); return; }
+    try {
+      var blob = new Blob([r.text], { type: 'text/calendar;charset=utf-8' }), url = URL.createObjectURL(blob);
+      var a = document.createElement('a'); a.href = url; a.download = '좌동클럽-내당번.ics'; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+      toast('내 당번 ' + r.n + '건 파일을 받았어요. 열어서 캘린더에 추가해 주세요.');
+    } catch (e) { toast('파일을 만들지 못했어요.'); }
+  }
+
   // ---------- 공지 ----------
   var SEEN_KEY = 'jwadong-notice-seen-v1';
   function seenAt() { try { return parseInt(localStorage.getItem(SEEN_KEY), 10) || 0; } catch (e) { return 0; } }
@@ -407,7 +436,9 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       if (isLocked(s.month)) { b2.disabled = true; b2.textContent = '마감'; }
       it.appendChild(b2); list.appendChild(it);
     });
-    card.appendChild(list); m.appendChild(card);
+    card.appendChild(list);
+    if (up.length) { var cb = btn('btn out', '내 당번 캘린더에 넣기', addToCalendar); cb.style.marginTop = '14px'; card.appendChild(cb); card.appendChild(el('div', 'cap', '전날 오전 9시와 당일 오전 9시에 폰이 알려 줘요.')); card.lastChild.style.marginTop = '6px'; }
+    m.appendChild(card);
   }
 
   // ---------- 당번표 ----------
@@ -580,6 +611,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     c2.appendChild(el('div', 'lead', '안내'));
     c2.appendChild(el('div', 'cap', '당번은 하루 전까지 바꿀 수 있어요. 마감된 달은 총무에게 문의해 주세요.'));
     c2.appendChild(el('div', 'cap', '요청을 보낸 뒤에는 카톡으로도 한 번 알려 주세요.'));
+    c2.appendChild(el('div', 'cap', '당번이 교환으로 바뀌면 "내 당번 캘린더에 넣기"를 다시 받아 주세요. 같은 날짜는 갱신되고, 빠진 날짜는 캘린더에서 직접 지워야 해요.'));
     m.appendChild(c2);
   }
 

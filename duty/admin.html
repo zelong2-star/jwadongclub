@@ -202,6 +202,10 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <button id="modeInput" aria-pressed="false">입력</button>
       </div>
       <div class="status" id="status" role="status"></div>
+      <div class="card hide" id="todayCard">
+        <div class="hello">단톡방 당번 안내</div>
+        <div id="todayList"></div>
+      </div>
       <div class="card hide" id="selCard">
         <div class="lead" id="selTitle"></div>
         <div class="cap" id="selHint" style="margin-top:4px"></div>
@@ -454,7 +458,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var ae = document.activeElement;
     var typing = mode === 'input' && ae && ae.classList && ae.classList.contains('in');
     if (!typing) renderCal();
-    renderLog(); renderReqs(); syncLock(); renderAcks(); renderMembers(); renderNotices(); renderTabs(); if ($('autoBox').open) renderAuto();
+    renderLog(); renderReqs(); syncLock(); renderAcks(); renderMembers(); renderNotices(); renderToday(); renderTabs(); if ($('autoBox').open) renderAuto();
   }
 
   function nextKey(k) { var p = C.parseKey(k), y = p[0], m = p[1] + 1; if (m > 12) { m = 1; y++; } return y + '-' + C.pad(m); }
@@ -712,6 +716,44 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       imp = { active: (d.active || []).filter(nameOk) }; b.disabled = false; renderImp();
     }).catch(function () { b.disabled = false; memMsg('게임현황판 명단을 불러오지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
   });
+
+
+  // ---------- 오늘/내일 당번 단톡방 안내 ----------
+  var APP_URL2 = 'https://zelong2-star.github.io/jwadongclub/duty/';
+  function dayInfo(offset) {
+    var t = new Date(); t.setDate(t.getDate() + offset);
+    var k = t.getFullYear() + '-' + C.pad(t.getMonth() + 1), d = t.getDate();
+    var ns = ((months[k] && months[k].duties) || {})[d];
+    ns = (ns || []).filter(Boolean);
+    return ns.length ? { k: k, d: d, names: ns } : null;
+  }
+  function nextDutyInfo() {
+    for (var i = 2; i <= 14; i++) { var x = dayInfo(i); if (x) return { info: x, off: i }; }
+    return null;
+  }
+  function todayText(x, off) {
+    var lead = off === 0 ? '[오늘 당번]' : off === 1 ? '[내일 당번]' : '[당번 안내]';
+    var when = off === 0 ? '오늘' : off === 1 ? '내일' : C.label(x.k, x.d);
+    return lead + ' ' + C.label(x.k, x.d) + ' ' + x.names.join(' · ') + ' 님, ' + when + ' 당번이에요. 못 나오면 당번표 앱에서 교환 요청해 주세요.\n' + APP_URL2;
+  }
+  function renderToday() {
+    var card = $('todayCard'), box = $('todayList'); box.textContent = '';
+    var rows = [[0, dayInfo(0)], [1, dayInfo(1)]].filter(function (r) { return r[1]; });
+    if (!rows.length) { var nx = nextDutyInfo(); if (nx) rows.push([nx.off, nx.info]); }
+    if (!rows.length) { card.classList.add('hide'); return; }
+    card.classList.remove('hide');
+    rows.forEach(function (r) {
+      var off = r[0], x = r[1], it = el('div', 'mem');
+      var nm = el('div', 'nm', (off === 0 ? '오늘 ' : off === 1 ? '내일 ' : '다음 ') + C.label(x.k, x.d)); nm.appendChild(el('small', '', x.names.join(' · ')));
+      it.appendChild(nm);
+      var acts = el('div', 'acts');
+      var b = el('button', 'btn sm primary', '카톡으로 안내'); b.type = 'button';
+      b.addEventListener('click', function () { if (window.__shareKakao) window.__shareKakao(todayText(x, off)); });
+      var c = el('button', 'btn sm', '문구 복사'); c.type = 'button';
+      c.addEventListener('click', function () { try { navigator.clipboard.writeText(todayText(x, off)).then(function () { setStatus('안내 문구를 복사했어요. 단톡방에 붙여넣어 주세요.'); }, function () { setStatus('복사 권한이 없어요.'); }); } catch (e) { setStatus('복사 권한이 없어요.'); } });
+      acts.appendChild(b); acts.appendChild(c); it.appendChild(acts); box.appendChild(it);
+    });
+  }
 
   // ---------- 클럽 공지 ----------
   function ntMsg(t) { $('ntMsg').textContent = t || ''; }
@@ -1025,6 +1067,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function ocCond() { var o = flow.oc, wd = o.mode === 'dow' || o.mode === 'both'; return { mode: o.mode, dows: wd ? o.dows.slice().sort() : [], dates: o.mode === 'dow' ? [] : o.dates.slice().sort() }; }
   function ocReady() { var o = flow.oc; return o.mode === 'except' || (o.mode === 'dow' ? o.dows.length > 0 : o.mode === 'both' ? (o.dows.length > 0 && o.dates.length > 0) : o.dates.length > 0); }
   function C_days() { var out = []; keys.forEach(function (k) { sortedDays(k).forEach(function (d) { if (!C.expired(k, d)) out.push({ k: k, d: d }); }); }); return out; }
+    window.__shareKakao = shareKakao;
     window.__openAdminFlow = function (s) { me = s.name; openFlow({ month: s.month, day: s.day, j: s.j, name: s.name }); };
   })();
 

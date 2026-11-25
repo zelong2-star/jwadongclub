@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
-import { getFirestore, collection, doc, onSnapshot, runTransaction, addDoc, updateDoc, query, orderBy, limit }
+import { getFirestore, collection, doc, onSnapshot, runTransaction, addDoc, updateDoc, query, orderBy, limit, where, getDocs }
   from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -42,6 +42,31 @@ export function makeApi() {
     Object.keys(months).forEach((k) => tx.set(rd.refs[k], { duties: months[k], updated: now, locked: rd.locked[k] }));
   }
 
+  // 당번표가 바뀐 뒤, 더는 성립하지 않는 '대기 중' 요청을 '당번이 바뀌어 처리되지 않음(stale)'으로 정리한다.
+  // 정리에 실패해도 화면은 성립하는 요청만 보여 주므로 안전하다(기록을 깨끗이 남기기 위한 작업).
+  async function sweep() {
+    try {
+      const ms = await getDocs(col('months'));
+      const dm = {}; ms.forEach((d) => { dm[d.id] = (d.data() || {}).duties || {}; });
+      const ps = await getDocs(query(col('requests'), where('status', '==', 'pending')));
+      const now = Date.now(), jobs = [];
+      ps.forEach((d) => {
+        const r = d.data();
+        let ok;
+        if (r.type === 'open') {
+          const f = (dm[r.month] || {})[r.fromDay];
+          ok = !!f && f[r.fromJ] === r.fromName;
+        } else {
+          const tm = r.toMonth || r.month;
+          ok = C.swapX(dm, { month: r.month, day: r.fromDay, j: r.fromJ, name: r.fromName }, { month: tm, day: r.toDay, j: r.toJ, name: r.toName }).ok;
+        }
+        if (!ok) jobs.push(updateDoc(d.ref, { status: 'stale', resolvedAt: now }));
+      });
+      await Promise.all(jobs);
+    } catch (e) { /* 정리 실패는 무시 */ }
+  }
+  const after = (p) => p.then((res) => { return sweep().then(() => res, () => res); });
+
   return {
     setPin: async (pin) => { h = await C.hashPin(pin); },
     subscribeMonths: (cb, err) => onSnapshot(col('months'), (s) => {
@@ -56,7 +81,7 @@ export function makeApi() {
     createRequest: (r) => addDoc(col('requests'), Object.assign({}, r, { status: 'pending', at: Date.now() })),
     setRequestStatus: (id, status) => updateDoc(ref('requests', id), { status: status, resolvedAt: Date.now() }),
 
-    acceptRequest: (id) => runTransaction(db, async (tx) => {
+    acceptRequest: (id) => after(runTransaction(db, async (tx) => {
       const rRef = ref('requests', id);
       const rs = await tx.get(rRef);
       if (!rs.exists()) return { ok: false, reason: 'gone' };
@@ -74,9 +99,9 @@ export function makeApi() {
       tx.update(rRef, { status: 'accepted', resolvedAt: now });
       tx.set(doc(col('log')), logDoc(now, a, b, r.toName + ' 수락'));
       return { ok: true };
-    }),
+    })),
 
-    swapSlots: (a, b, by) => runTransaction(db, async (tx) => {
+    swapSlots: (a, b, by) => after(runTransaction(db, async (tx) => {
       const rd = await readMonths(tx, [a.month, b.month]);
       const res = C.swapX(rd.dm, a, b);
       if (!res.ok) return { ok: false, reason: 'stale' };
@@ -84,9 +109,9 @@ export function makeApi() {
       writeMonths(tx, rd, res.months, now);
       tx.set(doc(col('log')), logDoc(now, a, b, by || '총무'));
       return { ok: true };
-    }),
+    })),
 
-    undoSwap: (logId) => runTransaction(db, async (tx) => {
+    undoSwap: (logId) => after(runTransaction(db, async (tx) => {
       const lRef = ref('log', logId);
       const ls = await tx.get(lRef);
       if (!ls.exists()) return { ok: false, reason: 'gone' };
@@ -104,23 +129,23 @@ export function makeApi() {
         text: C.md(now) + ' (되돌림) ' + C.label(am, l.a.day) + ' ' + l.a.name + ' ⇄ ' + C.label(bm, l.b.day) + ' ' + l.b.name
       });
       return { ok: true };
-    }),
+    })),
 
-    setDuty: (month, day, names) => runTransaction(db, async (tx) => {
+    setDuty: (month, day, names) => after(runTransaction(db, async (tx) => {
       const mRef = ref('months', month);
       const ms = await tx.get(mRef);
       const duties = ms.exists() ? JSON.parse(JSON.stringify(ms.data().duties || {})) : {};
       if (names) duties[day] = names; else delete duties[day];
       tx.set(mRef, { duties: duties, updated: Date.now(), locked: !!(ms.exists() && ms.data().locked) });
       return { ok: true };
-    }),
+    })),
 
-    setMonth: (month, duties) => runTransaction(db, async (tx) => {
+    setMonth: (month, duties) => after(runTransaction(db, async (tx) => {
       const mRef = ref('months', month);
       const ms = await tx.get(mRef);
       tx.set(mRef, { duties: duties, updated: Date.now(), locked: !!(ms.exists() && ms.data().locked) });
       return { ok: true };
-    }),
+    })),
 
     // 달별 교환 마감(회원 수락만 막음. 총무 직접 교환·입력은 그대로 가능)
     setLock: (month, locked) => runTransaction(db, async (tx) => {
@@ -133,7 +158,7 @@ export function makeApi() {
 
     // 공개 요청: 내 당번 하나를 내놓고 조건을 건다
     createOpenRequest: (r) => addDoc(col('requests'), Object.assign({}, r, { type: 'open', status: 'pending', at: Date.now() })),
-    acceptOpen: (id, acc) => runTransaction(db, async (tx) => {
+    acceptOpen: (id, acc) => after(runTransaction(db, async (tx) => {
       const rRef = ref('requests', id);
       const rs = await tx.get(rRef);
       if (!rs.exists()) return { ok: false, reason: 'gone' };
@@ -150,6 +175,6 @@ export function makeApi() {
       tx.update(rRef, { status: 'accepted', resolvedAt: now, toName: acc.name, toDay: acc.day, toJ: acc.j, toMonth: am });
       tx.set(doc(col('log')), logDoc(now, a, b, acc.name + ' 수락(공개 요청)'));
       return { ok: true };
-    })
+    }))
   };
 }

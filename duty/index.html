@@ -190,6 +190,11 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     if (namesOf(from.month, from.day).indexOf(t.name) >= 0) return false;
     return C.swapX(dmAll(), from, t).ok;
   }
+  // 같은 당번으로 내가 올린 대기 요청 (openOnly면 공개 요청만)
+  function myPendingOn(f, openOnly) {
+    return requests.filter(function (x) { return x.status === 'pending' && x.fromName === me && x.month === f.month && x.fromDay === f.day && x.fromJ === f.j && (!openOnly || x.type === 'open'); });
+  }
+  function cancelAll(list) { return Promise.all(list.map(function (x) { return API.setRequestStatus(x.id, 'cancelled').catch(function () {}); })); }
   function inboxList() { return requests.filter(function (r) { return r.type !== 'open' && r.status === 'pending' && r.toName === me && reqValid(r); }); }
   function openList() {
     var out = [];
@@ -614,6 +619,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       card.appendChild(dd);
     }
     w.appendChild(card);
+    var pp = myPendingOn(f, false).length;
+    if (pp) w.appendChild(el('div', 'card cap', '이 당번으로 보낸 기존 요청 ' + pp + '건은 새로 올리면 취소돼요.'));
     var sm = el('div', 'card cap', ocReady() ? '조건: ' + C.condText(ocCond()) + ' · 맞는 분이 앱에서 수락하면 바로 바뀌어요.' : '위에서 조건을 골라 주세요.'); w.appendChild(sm);
     var go = btn('btn pri', '교환 가능한 회원 찾기', sendOpen); go.disabled = !ocReady() || isLocked(f.month) || flow.busy; w.appendChild(go);
   }
@@ -629,6 +636,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     cmp.appendChild(cmpBlock('after', [[lab(f.month, f.day), nm(swapN(fn, me, t.name))], [lab(t.month, t.day), nm(swapN(tn, t.name, me))]]));
     w.appendChild(cmp);
     w.appendChild(el('div', 'cap', '상대가 수락하기 전까지는 지금 당번이 그대로예요.'));
+    var oo = myPendingOn(f, true).length;
+    if (oo) w.appendChild(el('div', 'card cap', '이 당번으로 올린 공개 요청 ' + oo + '건은 이 요청을 보내면 취소돼요.'));
     var row = el('div', 'row');
     var go = btn('btn pri', '요청 보내기', sendPersonal); go.disabled = flow.busy || isLocked(f.month) || isLocked(t.month);
     row.appendChild(btn('btn', '취소', closeFlow)); row.appendChild(go); w.appendChild(row);
@@ -649,20 +658,21 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var r = { month: f.month, toMonth: t.month, fromDay: f.day, fromJ: f.j, fromName: me, toDay: t.day, toJ: t.j, toName: t.name };
     if (requests.some(function (x) { return x.status === 'pending' && x.fromName === me && sameSlots(x, r); })) { toast('같은 요청이 이미 대기 중이에요.'); return; }
     flow.busy = true; renderFlow();
-    API.createRequest(r).then(function () {
+    var oldOpen = myPendingOn(f, true);
+    API.createRequest(r).then(function () { return cancelAll(oldOpen); }).then(function () {
       flow.busy = false; flow.step = 'done';
-      flow.result = { title: '요청을 보냈어요', body: t.name + ' 님이 앱에서 수락하면 바로 바뀌어요.', nudge: nudgeFor('p', r) };
+      flow.result = { title: '요청을 보냈어요', body: t.name + ' 님이 앱에서 수락하면 바로 바뀌어요.' + (oldOpen.length ? ' 이 당번의 공개 요청 ' + oldOpen.length + '건은 취소했어요.' : ''), nudge: nudgeFor('p', r) };
       renderFlow();
     }).catch(function () { flow.busy = false; renderFlow(); toast('요청을 보내지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
   }
   function sendOpen() {
     var f = flow.from; if (!ocReady() || isLocked(f.month)) return;
-    if (requests.some(function (x) { return x.type === 'open' && x.status === 'pending' && x.fromName === me && x.month === f.month && x.fromDay === f.day && x.fromJ === f.j; })) { toast('이 당번의 공개 요청이 이미 올라가 있어요. 먼저 취소해 주세요.'); return; }
     var r = { month: f.month, fromDay: f.day, fromJ: f.j, fromName: me, cond: ocCond() };
     flow.busy = true; renderFlow();
-    API.createOpenRequest(r).then(function () {
+    var oldAll = myPendingOn(f, false);
+    API.createOpenRequest(r).then(function () { return cancelAll(oldAll); }).then(function () {
       flow.busy = false; flow.step = 'done';
-      flow.result = { title: '찾는 중이에요', body: '조건에 맞는 분이 앱에서 수락하면 바로 바뀌어요.', nudge: nudgeFor('open', r) };
+      flow.result = { title: '찾는 중이에요', body: '조건에 맞는 분이 앱에서 수락하면 바로 바뀌어요.' + (oldAll.length ? ' 이 당번의 기존 요청 ' + oldAll.length + '건은 취소했어요.' : ''), nudge: nudgeFor('open', r) };
       renderFlow();
     }).catch(function () { flow.busy = false; renderFlow(); toast('올리지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
   }

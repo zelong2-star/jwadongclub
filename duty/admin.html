@@ -804,7 +804,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   }
   function todayKakao(x, off) {
     var when = off === 0 ? '오늘' : off === 1 ? '내일' : C.label(x.k, x.d);
-    return { banner: 'duty', title: x.names.join(' · ') + ' 님, ' + when + ' 당번이에요', desc: C.label(x.k, x.d) + ' · 못 나오면 앱에서 교환 요청해 주세요', button: '당번표 열기' };
+    return { banner: 'duty', title: x.names.join(' · ') + ' 님, ' + when + ' 당번이에요', desc: C.label(x.k, x.d) + ' · 못 나오면 앱에서 교환 요청해 주세요', buttons: ['당번표 열기', '교환 요청하기'] };
   }
   function renderToday() {
     var card = $('todayCard'), box = $('todayList'); box.textContent = '';
@@ -893,8 +893,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     return '[교환요청] ' + r.toName + '님, ' + lab(r.month, r.fromDay) + ' ' + me + ' ↔ ' + lab(r.toMonth, r.toDay) + ' ' + r.toName + ' 교환을 요청했어요. 당번표 앱의 "교환" 메뉴에서 수락해 주세요.\n' + URL_APP;
   }
   function cardFor(kind, r) {
-    if (kind === 'open') return { banner: 'swap', title: me + '님이 ' + lab(r.month, r.fromDay) + ' 당번 교환을 요청했어요', desc: C.condShort(r.cond), button: '수락하러 가기' };
-    return { banner: 'swap', title: r.toName + '님, ' + me + '님이 당번 교환을 요청했어요', desc: lab(r.month, r.fromDay) + ' ' + me + ' ↔ ' + lab(r.toMonth, r.toDay) + ' ' + r.toName, button: '수락하러 가기' };
+    if (kind === 'open') return { banner: 'swap', title: me + '님이 ' + lab(r.month, r.fromDay) + ' 당번 교환을 요청했어요', desc: C.condShort(r.cond), buttons: ['요청 확인하기', '당번표 열기'] };
+    return { banner: 'swap', title: r.toName + '님, ' + me + '님이 당번 교환을 요청했어요', desc: lab(r.month, r.fromDay) + ' ' + me + ' ↔ ' + lab(r.toMonth, r.toDay) + ' ' + r.toName, buttons: ['요청 확인하기', '당번표 열기'] };
   }
   function copyText(t) {
     function fb() { toast('복사 권한이 없어요. 글을 길게 눌러 직접 복사해 주세요.'); }
@@ -920,7 +920,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     loadKakao().then(function (K) {
       if (!K.isInitialized()) K.init(KAKAO_KEY);
       var link = { mobileWebUrl: URL_APP, webUrl: URL_APP };
-      if (card) K.Share.sendDefault({ objectType: 'feed', content: { title: card.title, description: card.desc || '', imageUrl: URL_APP + 'kakao-' + card.banner + '.png', imageWidth: 800, imageHeight: 400, link: link }, buttons: [{ title: card.button || '수락하러 가기', link: link }] });
+      if (card) K.Share.sendDefault({ objectType: 'feed', content: { title: card.title, description: card.desc || '', imageUrl: URL_APP + 'kakao-' + card.banner + '.png', imageWidth: 800, imageHeight: 400, link: link }, buttons: (card.buttons || ['요청 확인하기']).map(function (t) { return { title: t, link: link }; }) });
       else K.Share.sendDefault({ objectType: 'text', text: text.replace(/\n?https?:\/\/\S+/g, '').slice(0, 200), link: link, buttonTitle: '수락하러 가기' });
     }).catch(fallback);
   }

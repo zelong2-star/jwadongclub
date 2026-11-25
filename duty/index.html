@@ -49,6 +49,7 @@ h2{margin:0;font-size:20px;font-weight:800;line-height:1.35}
 .tag.blue{background:var(--blue-soft);color:var(--blue)}.tag.red{background:#FDECEC;color:var(--red)}.tag.green{background:#E3F6EB;color:var(--green)}
 .seg{display:flex;background:var(--gray);border-radius:14px;padding:4px;gap:4px}
 .seg button{flex:1;min-height:44px;border:0;border-radius:11px;background:transparent;font-size:16px;font-weight:600;color:var(--sub)}
+.seg.two button{flex:1 1 45%}
 .seg button[aria-pressed="true"]{background:#fff;color:var(--ink);font-weight:800;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .mnav{display:flex;align-items:center;justify-content:space-between}
 .mnav .t{font-size:20px;font-weight:800}
@@ -59,6 +60,12 @@ h2{margin:0;font-size:20px;font-weight:800;line-height:1.35}
 .cal .h.we{color:var(--red)}
 .cal .c{min-height:52px;border:0;border-radius:12px;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:16px;font-weight:600;padding:0}
 .cal .c.has{background:var(--gray)}.cal .c.mine{background:var(--blue-soft);color:var(--blue);font-weight:800}
+.cal.nm .c{min-height:78px;justify-content:flex-start;padding:6px 1px 4px;gap:2px;border-radius:10px}
+.cal.nm .c .dn{font-size:14px;font-weight:700}
+.cal.nm .c .nn{font-size:12px;font-weight:600;line-height:1.25;color:var(--ink);max-width:100%;overflow:hidden;text-overflow:clip;white-space:nowrap}
+.cal.nm .c:not(.has){min-height:46px}
+.cal.nm .c.mine .nn{color:var(--blue);font-weight:800}
+.cal.nm .c:disabled{opacity:.35}
 .cal .c.on{outline:2px solid var(--blue)}.cal .c.we{color:var(--red)}.cal .c.mine.we{color:var(--blue)}
 .dots{display:flex;gap:3px;height:6px}.dots i{width:6px;height:6px;border-radius:50%;background:#B0B8C1}.dots i.m{background:var(--blue)}
 nav.bar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:#fff;border-top:1px solid var(--gray);padding-bottom:env(safe-area-inset-bottom)}
@@ -135,9 +142,9 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   var C = window.DutyCore, DOW = C.DOW;
   var API = null, pin = null, me = null;
   var months = {}, requests = [], logs = [], acks = [], keys = [], cur = null;
-  var tab = 'home', sv = 'list', selDay = null, exTab = 'in', flow = null;
+  var tab = 'home', sv = 'cal', selDay = null, exTab = 'in', flow = null;
   var unsubs = [], connected = false, toastT = 0;
-  var PIN_KEY = 'jwadong-pin-v1', ME_KEY = 'jwadong-me-v1', VIEW_KEY = 'jwadong-view-v1';
+  var PIN_KEY = 'jwadong-pin-v1', ME_KEY = 'jwadong-me-v1', VIEW_KEY = 'jwadong-view-v2';
   var URL_APP = 'https://zelong2-star.github.io/jwadongclub/duty/';
   var KAKAO_KEY = 'dc69bf31ed2b2b673a737561a98602c4', KAKAO_SDK = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js';
   var REASON = { locked: '이 달은 교환이 마감됐어요.', expired: '당번 하루 전까지만 가능한 요청이에요. 이미 지났어요.', past: '이미 지난 날짜는 바꿀 수 없어요.', self: '내가 올린 요청이에요.', cond: '조건에 맞지 않는 날이에요.', stale: '그 사이 당번이 바뀌어서 처리하지 못했어요.', dup: '이미 같은 날 당번이라 바꿀 수 없어요.', done: '이미 다른 분이 수락했거나 취소된 요청이에요.', gone: '요청이 사라졌어요.' };
@@ -377,10 +384,29 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     n.appendChild(pb); n.appendChild(t); n.appendChild(nb); m.appendChild(n);
     if (isLocked(cur)) { var l = el('div', 'cap'); l.appendChild(el('span', 'tag red', '교환 마감')); l.appendChild(document.createTextNode(' 이 달은 바꿀 수 없어요. 총무에게 문의해 주세요.')); m.appendChild(l); }
   }
+  function calGrid(k, o) {
+    var p = C.parseKey(k), ds = duties(k), g = el('div', 'cal nm');
+    DOW.forEach(function (n, i) { g.appendChild(el('div', 'h' + (i >= 5 ? ' we' : ''), n)); });
+    var dim = new Date(p[0], p[1], 0).getDate(), off = (new Date(p[0], p[1] - 1, 1).getDay() + 6) % 7, total = Math.ceil((off + dim) / 7) * 7;
+    for (var q = 0; q < total; q++) {
+      var day = q - off + 1;
+      if (day < 1 || day > dim) { g.appendChild(el('div')); continue; }
+      (function (day, q) {
+        var has = !!ds[day], mine = has && ds[day].indexOf(me) >= 0, names = has ? namesOf(k, day) : [];
+        var c = btn('c' + (has ? ' has' : '') + (mine ? ' mine' : '') + ((q % 7) >= 5 ? ' we' : '') + (o.sel === day ? ' on' : ''), '', function () { o.pick(day); });
+        c.appendChild(el('span', 'dn', String(day)));
+        names.forEach(function (n) { c.appendChild(el('span', 'nn', n)); });
+        c.setAttribute('aria-label', p[1] + '월 ' + day + '일' + (has ? ' 당번 ' + names.join(', ') : ' 당번 없음'));
+        if (o.enabled && !o.enabled(day)) c.disabled = true;
+        g.appendChild(c);
+      })(day, q);
+    }
+    return g;
+  }
   function schedView(m) {
     monthNav(m);
     var sg = el('div', 'seg'); sg.setAttribute('role', 'group'); sg.setAttribute('aria-label', '보기 방식');
-    [['list', '목록으로 보기'], ['cal', '달력으로 보기']].forEach(function (x) { var b = btn('', x[1], function () { sv = x[0]; save(VIEW_KEY, sv); renderAll(); }); b.setAttribute('aria-pressed', sv === x[0] ? 'true' : 'false'); sg.appendChild(b); });
+    [['cal', '달력으로 보기'], ['list', '목록으로 보기']].forEach(function (x) { var b = btn('', x[1], function () { sv = x[0]; save(VIEW_KEY, sv); renderAll(); }); b.setAttribute('aria-pressed', sv === x[0] ? 'true' : 'false'); sg.appendChild(b); });
     m.appendChild(sg);
     var ds = duties(cur), p = C.parseKey(cur);
     if (sv === 'list') {
@@ -401,20 +427,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       });
       card.appendChild(list); m.appendChild(card);
     } else {
-      var card2 = el('div', 'card'), g = el('div', 'cal');
-      DOW.forEach(function (n, i) { g.appendChild(el('div', 'h' + (i >= 5 ? ' we' : ''), n)); });
-      var dim = new Date(p[0], p[1], 0).getDate(), off = (new Date(p[0], p[1] - 1, 1).getDay() + 6) % 7, total = Math.ceil((off + dim) / 7) * 7;
-      for (var k = 0; k < total; k++) {
-        var day = k - off + 1;
-        if (day < 1 || day > dim) { g.appendChild(el('div')); continue; }
-        (function (day, k) {
-          var has = !!ds[day], mine = has && ds[day].indexOf(me) >= 0;
-          var c = btn('c' + (has ? ' has' : '') + (mine ? ' mine' : '') + ((k % 7) >= 5 ? ' we' : '') + (selDay === day ? ' on' : ''), String(day), function () { selDay = selDay === day ? null : day; renderAll(); });
-          c.setAttribute('aria-label', p[1] + '월 ' + day + '일' + (has ? ' 당번 ' + namesOf(cur, day).join(', ') : ' 당번 없음'));
-          if (has) { var dots = el('span', 'dots'); namesOf(cur, day).forEach(function (n) { dots.appendChild(el('i', n === me ? 'm' : '')); }); c.appendChild(dots); }
-          g.appendChild(c);
-        })(day, k);
-      }
+      var card2 = el('div', 'card'), g = calGrid(cur, { sel: selDay, pick: function (day) { selDay = selDay === day ? null : day; renderAll(); } });
       card2.appendChild(g); m.appendChild(card2);
       var dc = el('div', 'card');
       if (selDay && ds[selDay]) {
@@ -581,10 +594,38 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     w.appendChild(el('div', 'cap', longLab(f.month, f.day) + ' 당번을 넘기고, 고른 분의 당번을 받아요.'));
     var i = keys.indexOf(flow.tm), p = C.parseKey(flow.tm);
     var n = el('div', 'mnav');
-    var pb = btn('', '', function () { flow.tm = keys[i - 1]; renderFlow(); }); pb.appendChild(icon(I.l)); pb.disabled = i <= 0; pb.setAttribute('aria-label', '이전 달');
-    var nb = btn('', '', function () { flow.tm = keys[i + 1]; renderFlow(); }); nb.appendChild(icon(I.r)); nb.disabled = i >= keys.length - 1; nb.setAttribute('aria-label', '다음 달');
+    var pb = btn('', '', function () { flow.tm = keys[i - 1]; flow.wd = null; renderFlow(); }); pb.appendChild(icon(I.l)); pb.disabled = i <= 0; pb.setAttribute('aria-label', '이전 달');
+    var nb = btn('', '', function () { flow.tm = keys[i + 1]; flow.wd = null; renderFlow(); }); nb.appendChild(icon(I.r)); nb.disabled = i >= keys.length - 1; nb.setAttribute('aria-label', '다음 달');
     n.appendChild(pb); n.appendChild(el('div', 't', p[1] + '월')); n.appendChild(nb); w.appendChild(n);
     if (isLocked(flow.tm)) { w.appendChild(el('div', 'card cap', '이 달은 교환이 마감됐어요.')); return; }
+    var wv = flow.wv || 'cal';
+    var sg = el('div', 'seg'); sg.setAttribute('role', 'group'); sg.setAttribute('aria-label', '보기 방식');
+    [['cal', '달력으로 보기'], ['list', '목록으로 보기']].forEach(function (x) { var b = btn('', x[1], function () { flow.wv = x[0]; renderFlow(); }); b.setAttribute('aria-pressed', wv === x[0] ? 'true' : 'false'); sg.appendChild(b); });
+    w.appendChild(sg);
+    if (wv === 'cal') {
+      var okDay = function (d) {
+        if (C.isPast(flow.tm, d) || (flow.tm === f.month && d === f.day)) return false;
+        var ds0 = duties(flow.tm)[d] || [];
+        return ds0.some(function (nm, j) { return nm && nm !== me && canPair(f, slotOf(flow.tm, d, j)); });
+      };
+      var cc = el('div', 'card');
+      cc.appendChild(calGrid(flow.tm, { sel: flow.wd, enabled: okDay, pick: function (d) { flow.wd = flow.wd === d ? null : d; renderFlow(); } }));
+      w.appendChild(cc);
+      var pc = el('div', 'card');
+      if (flow.wd && okDay(flow.wd)) {
+        pc.appendChild(el('div', 'lead', longLab(flow.tm, flow.wd) + ' · 누구와 바꿀까요?'));
+        var rw = el('div', 'row'); rw.style.flexWrap = 'wrap'; rw.style.marginTop = '10px';
+        (duties(flow.tm)[flow.wd] || []).forEach(function (name, j) {
+          if (!name || name === me) return;
+          var t = slotOf(flow.tm, flow.wd, j), ok = canPair(f, t);
+          var b = btn('tog', name, function () { flow.target = t; flow.step = 'confirm'; renderFlow(); });
+          b.style.flex = '1 1 40%'; b.disabled = !ok; b.setAttribute('aria-label', lab(flow.tm, flow.wd) + ' ' + name + ' 님과 교환'); rw.appendChild(b);
+        });
+        pc.appendChild(rw);
+      } else pc.appendChild(el('div', 'cap', '진하게 보이는 날짜를 누르면 그날 당번을 고를 수 있어요. 흐린 날은 바꿀 수 없는 날이에요.'));
+      w.appendChild(pc);
+      return;
+    }
     var card = el('div', 'card'), list = el('div', 'list'), cnt = 0;
     sortedDays(flow.tm).forEach(function (d) {
       if (C.isPast(flow.tm, d)) return;
@@ -607,30 +648,34 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     if (!list.children.length) list.appendChild(el('div', 'cap', '이 달에는 바꿀 수 있는 당번이 없어요. 다른 달을 눌러 보세요.'));
     card.appendChild(list); w.appendChild(card);
   }
-  function ocCond() { var o = flow.oc; return { mode: o.mode, dows: o.mode === 'dow' ? o.dows.slice().sort() : [], dates: o.mode === 'dow' ? [] : o.dates.slice().sort() }; }
-  function ocReady() { var o = flow.oc; return o.mode === 'except' || (o.mode === 'dow' ? o.dows.length > 0 : o.dates.length > 0); }
+  function dIdx(y, m, d) { return (new Date(y, m - 1, d).getDay() + 6) % 7; }
+  function ocCond() { var o = flow.oc, wd = o.mode === 'dow' || o.mode === 'both'; return { mode: o.mode, dows: wd ? o.dows.slice().sort() : [], dates: o.mode === 'dow' ? [] : o.dates.slice().sort() }; }
+  function ocReady() { var o = flow.oc; return o.mode === 'except' || (o.mode === 'dow' ? o.dows.length > 0 : o.mode === 'both' ? (o.dows.length > 0 && o.dates.length > 0) : o.dates.length > 0); }
   function flowCond(w) {
     var f = flow.from, o = flow.oc;
     w.appendChild(el('h2', '', '언제 당번을 서면 괜찮으세요?'));
     w.appendChild(el('div', 'cap', longLab(f.month, f.day) + ' 당번을 넘기고, 아래 조건의 날과 바꿔요.'));
-    var sg = el('div', 'seg'); sg.setAttribute('role', 'group'); sg.setAttribute('aria-label', '조건 방식');
-    [['dow', '요일로'], ['dates', '날짜로'], ['except', '이 날만 빼고']].forEach(function (x) { var b = btn('', x[1], function () { o.mode = x[0]; renderFlow(); }); b.setAttribute('aria-pressed', o.mode === x[0] ? 'true' : 'false'); sg.appendChild(b); });
+    var sg = el('div', 'seg'); sg.setAttribute('role', 'group'); sg.setAttribute('aria-label', '조건 방식'); sg.style.flexWrap = 'wrap'; sg.className = 'seg two';
+    [['dow', '요일로'], ['dates', '날짜로'], ['both', '요일+날짜'], ['except', '이 날만 빼고']].forEach(function (x) { var b = btn('', x[1], function () { o.mode = x[0]; renderFlow(); }); b.setAttribute('aria-pressed', o.mode === x[0] ? 'true' : 'false'); sg.appendChild(b); });
     w.appendChild(sg);
     var card = el('div', 'card'); card.style.display = 'flex'; card.style.flexDirection = 'column'; card.style.gap = '12px';
-    if (o.mode === 'dow') {
-      card.appendChild(el('div', 'lead', '가능한 요일 (여러 개 선택)'));
+    var wdOn = o.mode === 'dow' || o.mode === 'both';
+    if (wdOn) {
+      card.appendChild(el('div', 'lead', o.mode === 'both' ? '1) 가능한 요일 (여러 개 선택)' : '가능한 요일 (여러 개 선택)'));
       var dr = el('div', 'dowrow');
-      DOW.forEach(function (nm, i) { var b = btn('tog', nm, function () { toggle(o.dows, i); renderFlow(); }); b.setAttribute('aria-pressed', o.dows.indexOf(i) >= 0 ? 'true' : 'false'); dr.appendChild(b); });
+      DOW.forEach(function (nm, i) { var b = btn('tog', nm, function () { toggle(o.dows, i); if (o.mode === 'both') o.dates = o.dates.filter(function (key) { var q = key.split('-'); return o.dows.indexOf(dIdx(parseInt(q[0], 10), parseInt(q[1], 10), parseInt(q[2], 10))) >= 0; }); renderFlow(); }); b.setAttribute('aria-pressed', o.dows.indexOf(i) >= 0 ? 'true' : 'false'); dr.appendChild(b); });
       card.appendChild(dr);
-    } else {
-      card.appendChild(el('div', 'lead', o.mode === 'dates' ? '가능한 날짜 (여러 개 선택)' : '안 되는 날짜 (여러 개 선택)'));
+    }
+    if (o.mode !== 'dow') {
+      card.appendChild(el('div', 'lead', o.mode === 'dates' ? '가능한 날짜 (여러 개 선택)' : o.mode === 'both' ? '2) 그 요일 중 가능한 날짜 (여러 개 선택)' : '안 되는 날짜 (여러 개 선택)'));
       var dd = el('div', 'dates');
       C_days().forEach(function (x) {
         if (x.k === f.month && x.d === f.day) return;
+        if (o.mode === 'both' && o.dows.indexOf(dIdx.apply(null, C.parseKey(x.k).slice(0, 2).concat([x.d]))) < 0) return;
         var key = C.dkey(x.k, x.d), b = btn('tog', lab(x.k, x.d), function () { toggle(o.dates, key); renderFlow(); });
         b.setAttribute('aria-pressed', o.dates.indexOf(key) >= 0 ? 'true' : 'false'); dd.appendChild(b);
       });
-      if (!dd.children.length) dd.appendChild(el('div', 'cap', '선택할 수 있는 날짜가 없어요.'));
+      if (!dd.children.length) dd.appendChild(el('div', 'cap', o.mode === 'both' ? '먼저 위에서 요일을 골라 주세요.' : '선택할 수 있는 날짜가 없어요.'));
       card.appendChild(dd);
     }
     w.appendChild(card);

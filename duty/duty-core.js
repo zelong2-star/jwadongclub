@@ -96,6 +96,7 @@
     var p = parseKey(k), idx = (new Date(p[0], p[1] - 1, d).getDay() + 6) % 7, key = dkey(k, d);
     if (cond.mode === 'dow') return (cond.dows || []).indexOf(idx) >= 0;
     if (cond.mode === 'dates') return (cond.dates || []).indexOf(key) >= 0;
+    if (cond.mode === 'both') return (cond.dows || []).indexOf(idx) >= 0 && (cond.dates || []).indexOf(key) >= 0;
     if (cond.mode === 'except') return (cond.dates || []).indexOf(key) < 0;
     return false;
   }
@@ -104,6 +105,7 @@
     function dl(arr) { return arr.slice().sort().map(function (s) { var q = s.split('-'); return parseInt(q[1], 10) + '/' + parseInt(q[2], 10); }).join(', '); }
     if (cond.mode === 'dow') return (cond.dows || []).slice().sort(function (a, b) { return a - b; }).map(function (i) { return DOW[i]; }).join('·') + '요일 가능';
     if (cond.mode === 'dates') return dl(cond.dates || []) + ' 가능';
+    if (cond.mode === 'both') return (cond.dows || []).slice().sort(function (a, b) { return a - b; }).map(function (i) { return DOW[i]; }).join('·') + '요일 중 ' + dl(cond.dates || []) + ' 가능';
     if (cond.mode === 'except') return (cond.dates && cond.dates.length) ? dl(cond.dates) + ' 빼고 언제든' : '언제든';
     return '';
   }

@@ -127,11 +127,11 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 .back:focus-visible,.opt:focus-visible,.tog:focus-visible,.fcal .c:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125m"></script>
-<script src="cal-ocr.js?v=20261125m"></script>
-<script src="notice-img.js?v=20261125m"></script>
+<script src="duty-core.js?v=20261125n"></script>
+<script src="cal-ocr.js?v=20261125n"></script>
+<script src="notice-img.js?v=20261125n"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125m';
+import { makeApi } from './common.js?v=20261125n';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -211,10 +211,6 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <button id="modeInput" aria-pressed="false">입력</button>
       </div>
       <div class="status" id="status" role="status"></div>
-      <div class="card hide" id="todayCard">
-        <div class="hello">단톡방 당번 안내</div>
-        <div id="todayList"></div>
-      </div>
       <div class="card hide" id="selCard">
         <div class="lead" id="selTitle"></div>
         <div class="cap" id="selHint" style="margin-top:4px"></div>
@@ -238,6 +234,10 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           <button class="btn sm" id="imgShare">공유</button>
           <button class="btn sm" id="imgClose">닫기</button>
         </div>
+      </div>
+      <div class="card hide" id="todayCard">
+        <div class="hello">단톡방 당번 안내</div>
+        <div id="todayList"></div>
       </div>
     </div>
 

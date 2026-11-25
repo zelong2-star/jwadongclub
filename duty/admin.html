@@ -313,6 +313,11 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <div class="cap" style="margin-top:8px">운영 요일에 가나다순으로 돌아가며 당번을 만들어요. 미리 본 뒤에 적용하고, 적용 전 당번표는 백업돼서 되돌릴 수 있어요.</div>
         <div id="autoBody"></div>
       </details>
+      <details id="rstBox">
+        <summary>당번표 초기화 (한 달 비우기)</summary>
+        <div class="cap" style="margin-top:8px">고른 달의 당번을 모두 비워요. 비우기 전 당번표는 이 기기에 백업돼서, 바로 되돌릴 수 있어요.</div>
+        <div id="rstBody"></div>
+      </details>
       <details>
         <summary>공지를 붙여넣어 이 달을 덮어쓰기</summary>
         <label class="cap" for="paste">카톡 공지 문구를 그대로 붙여넣으세요</label>
@@ -1228,6 +1233,34 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     }
   }
   $('autoBox').addEventListener('toggle', function () { if ($('autoBox').open) renderAuto(); });
+
+  function renderReset() {
+    var box = $('rstBody'); box.textContent = '';
+    var ks = Object.keys(months).filter(function (k) { return Object.keys((months[k] && months[k].duties) || {}).length; }).sort();
+    if (!ks.length) { box.appendChild(el('div', 'cap', '비울 당번표가 없어요.')); }
+    else {
+      var sel = document.createElement('select'); sel.id = 'rstMonth'; sel.setAttribute('aria-label', '비울 달'); sel.style.cssText = 'width:100%;margin-top:8px';
+      ks.forEach(function (k) { var p = C.parseKey(k), o = el('option', '', p[0] + '년 ' + p[1] + '월 · ' + Object.keys(months[k].duties).length + '일 치'); o.value = k; if (k === cur) o.selected = true; sel.appendChild(o); });
+      box.appendChild(sel);
+      var rb = el('button', 'btn', '이 달 당번 비우기'); rb.type = 'button'; rb.id = 'rstGo'; rb.style.cssText = 'width:100%;margin-top:10px'; var armed = 0;
+      rb.addEventListener('click', function () {
+        var k = sel.value, p = C.parseKey(k);
+        if (!armed) { rb.textContent = p[1] + '월 당번을 모두 비울까요? 한 번 더'; armed = setTimeout(function () { armed = 0; rb.textContent = '이 달 당번 비우기'; }, 4000); return; }
+        clearTimeout(armed); armed = 0; rb.disabled = true;
+        var old = (months[k] && months[k].duties) || {};
+        save(BK_KEY, JSON.stringify({ month: k, duties: old, at: Date.now() }));
+        API.setMonth(k, {}).then(function () { setStatus(p[1] + '월 당번을 비웠어요. 되돌리려면 초기화 칸의 "직전 당번표로 되돌리기"를 누르세요.'); renderAll(); renderReset(); }).catch(function () { rb.disabled = false; setStatus('비우지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
+      });
+      box.appendChild(rb);
+    }
+    var bk = null; try { bk = JSON.parse(localStorage.getItem(BK_KEY)); } catch (e) {}
+    if (bk && bk.month && bk.duties && Object.keys(bk.duties).length) {
+      var ub = el('button', 'btn', '직전 당번표로 되돌리기 (' + C.parseKey(bk.month)[1] + '월)'); ub.type = 'button'; ub.id = 'rstUndo'; ub.style.cssText = 'width:100%;margin-top:10px';
+      ub.addEventListener('click', function () { ub.disabled = true; API.setMonth(bk.month, bk.duties).then(function () { save(BK_KEY, ''); setStatus('이전 당번표로 되돌렸어요.'); renderAll(); renderReset(); }).catch(function () { ub.disabled = false; setStatus('되돌리지 못했어요.'); }); });
+      box.appendChild(ub);
+    }
+  }
+  $('rstBox').addEventListener('toggle', function () { if ($('rstBox').open) renderReset(); });
 
   var started = false;
 

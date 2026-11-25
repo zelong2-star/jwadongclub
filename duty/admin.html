@@ -74,7 +74,7 @@ summary{min-height:32px;font-size:17px;font-weight:800;cursor:pointer}
 .mem:last-child{border-bottom:0}
 .mem .nm{flex:1 1 120px;font-size:17px;font-weight:700;min-width:0}
 .mem .nm small{display:block;font-size:13px;font-weight:500;color:var(--sub)}
-.mem .acts{display:flex;gap:6px;flex-wrap:wrap}
+.mem .acts{display:flex;gap:6px;flex-wrap:nowrap}.mem .acts .btn{flex:1 1 0;min-width:0;padding:0 4px;white-space:nowrap}.mem .acts .btn.star{flex:0 0 52px;font-size:22px;color:#B0B8C1}.mem .acts .btn.star.on{color:#F5A400;background:var(--amber)}
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:#fff;border-top:1px solid var(--gray);padding-bottom:env(safe-area-inset-bottom)}
 nav.tabs .in{max-width:760px;margin:0 auto;display:flex;height:72px}
 nav.tabs button{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:13px;font-weight:500;color:#6B7684;position:relative}
@@ -138,12 +138,12 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 <script>(function(){function u(){var f=window.DutyFx;if(!f)return;var g=f.get();var s=document.getElementById('fxS'),h=document.getElementById('fxH');if(!s)return;s.textContent='효과음 '+(g.sound?'켬':'끔');h.textContent='진동 '+(g.haptic?'켬':'끔');}
 document.addEventListener('DOMContentLoaded',function(){u();document.getElementById('fxS').onclick=function(){DutyFx.set({sound:!DutyFx.get().sound});u();DutyFx.ok();};document.getElementById('fxH').onclick=function(){DutyFx.set({haptic:!DutyFx.get().haptic});u();DutyFx.ok();};});})();</script>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125s"></script>
-<script src="cal-ocr.js?v=20261125s"></script>
-<script src="fx.js?v=20261125s"></script>
-<script src="notice-img.js?v=20261125s"></script>
+<script src="duty-core.js?v=20261125t"></script>
+<script src="cal-ocr.js?v=20261125t"></script>
+<script src="fx.js?v=20261125t"></script>
+<script src="notice-img.js?v=20261125t"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125s';
+import { makeApi } from './common.js?v=20261125t';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -303,7 +303,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <input class="field" id="admPw2" type="password" autocomplete="new-password" style="margin:4px 0 0">
         <div class="err" id="admMsg" role="alert" style="margin-top:6px"></div>
         <button class="btn primary" id="admSet" style="width:100%;margin-top:6px">암호 정하기</button>
-        <div class="cap" style="margin-top:10px">아래 명단에서 &quot;총무 지정&quot;을 누른 분은 회원 앱 설정에서 총무 화면을 열 수 있어요.</div>
+        <div class="cap" style="margin-top:10px">아래 명단에서 별(☆)을 눌러 ★로 만든 분은 회원 앱 설정에서 총무 화면을 열 수 있어요.</div>
       </div>
       <div class="note">명단에 있는 분이 회원 앱의 이름 선택 화면에 나와요. 이름을 바꾸면 모든 달의 당번표 이름도 같이 바뀌고, 그 이름으로 걸린 대기 중 교환 요청은 자동으로 정리돼요. &quot;쉼&quot;으로 해 둔 분은 자동 배정에서 빠지지만 앱에서는 그대로 쓸 수 있어요.</div>
     </div>
@@ -779,7 +779,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         row.appendChild(ok); row.appendChild(no); box.appendChild(row); return;
       }
       var isA = adminList().indexOf(n) >= 0;
-      var nm = el('div', 'nm', n); if (isP) { nm.appendChild(document.createTextNode(' ')); nm.appendChild(el('span', 'tag p', '쉼')); } if (isA) { nm.appendChild(document.createTextNode(' ')); nm.appendChild(el('span', 'tag ok', '총무')); }
+      var nm = el('div', 'nm', n); if (isP) { nm.appendChild(document.createTextNode(' ')); nm.appendChild(el('span', 'tag p', '쉼')); } 
       nm.appendChild(el('small', '', up.length ? '앞으로 당번 ' + up.length + '건 · 다음 ' + C.label(up[0].k, up[0].d) : '앞으로 당번 없음'));
       row.appendChild(nm);
       var acts = el('div', 'acts');
@@ -787,13 +787,13 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       var b2 = el('button', 'btn sm', isP ? '쉼 해제' : '쉼'); b2.type = 'button';
       b2.addEventListener('click', function () { var p2 = isP ? paused.filter(function (x) { return x !== n; }) : paused.concat([n]); saveRoster(roster(), p2).then(function () { memMsg(''); }).catch(memFail); });
       var armed2 = memArm === n;
-      var b3 = el('button', 'btn sm' + (armed2 ? ' lockon' : ''), armed2 ? (up.length ? '당번 ' + up.length + '건 남아 있어요. 그래도 빼기' : '정말 빼기') : '명단에서 빼기'); b3.type = 'button';
+      var b3 = el('button', 'btn sm' + (armed2 ? ' lockon' : ''), armed2 ? '정말 삭제' : '삭제'); b3.type = 'button';
       b3.addEventListener('click', function () {
-        if (memArm !== n) { memArm = n; clearTimeout(memArmT); memArmT = setTimeout(function () { memArm = null; renderMembers(); }, 4000); renderMembers(); return; }
+        if (memArm !== n) { memArm = n; clearTimeout(memArmT); memArmT = setTimeout(function () { memArm = null; memMsg(''); renderMembers(); }, 4000); renderMembers(); memMsg(up.length ? n + ' 님은 앞으로 당번 ' + up.length + '건이 남아 있어요. 그래도 삭제하려면 한 번 더 누르세요.' : ''); return; }
         clearTimeout(memArmT); memArm = null;
         saveRoster(roster().filter(function (x) { return x !== n; }), paused).then(function () { memMsg(''); setStatus(n + ' 님을 명단에서 뺐어요. 당번표에 남은 당번은 그대로예요.'); }).catch(memFail);
       });
-      var bA = el('button', 'btn sm', isA ? '총무 해제' : '총무 지정'); bA.type = 'button';
+      var bA = el('button', 'btn sm star' + (isA ? ' on' : ''), isA ? '★' : '☆'); bA.type = 'button'; bA.setAttribute('aria-label', isA ? '총무 해제' : '총무 지정'); bA.setAttribute('aria-pressed', isA ? 'true' : 'false'); bA.title = isA ? '총무 (눌러서 해제)' : '총무로 지정';
       bA.addEventListener('click', function () { bA.disabled = true; var l = adminList(), nl = isA ? l.filter(function (x) { return x !== n; }) : l.concat([n]); saveAdmin(nl).then(function () { memMsg(''); }).catch(function () { bA.disabled = false; memFail(); }); });
       acts.appendChild(b1); acts.appendChild(b2); acts.appendChild(bA); acts.appendChild(b3); row.appendChild(acts); box.appendChild(row);
     });

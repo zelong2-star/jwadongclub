@@ -109,10 +109,10 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 @media (prefers-reduced-motion:no-preference){.btn,.tog,.opt,.stat{transition:transform .1s}.btn:active:not(:disabled),.opt:active,.stat:active{transform:scale(.98)}}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="fx.js?v=20261125zc"></script>
-<script src="duty-core.js?v=20261125zc"></script>
+<script src="fx.js?v=20261125zd"></script>
+<script src="duty-core.js?v=20261125zd"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125zc';
+import { makeApi } from './common.js?v=20261125zd';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -256,7 +256,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   // 카톡 카드: 글자 헤더(제목 앞 아이콘) + 안내 두 줄 + 버튼. 문제가 생기면 예전 이미지 카드로 보내요
   function listCard(K, card, link) {
     var duty = card.banner === 'duty', ic = URL_APP + (duty ? 'kakao-duty-icon.png' : 'kakao-swap-icon.png');
-    return { objectType: 'list', headerTitle: (duty ? '📅 ' + (card.stamp || '당번 안내') : '🔄 당번 교환 요청'), headerLink: link,
+    return { objectType: 'list', headerTitle: (duty ? '📅 ' + (card.stamp || '당번 안내') : (card.stamp || '🔄 당번 교환 요청')), headerLink: link,
       contents: [{ title: card.title, description: '', imageUrl: ic, imageWidth: 240, imageHeight: 240, link: link }, { title: card.desc || '자세히 보기', description: '', imageUrl: ic, imageWidth: 240, imageHeight: 240, link: link }],
       buttons: (card.buttons || ['요청 확인하기']).map(function (t) { return { title: t, link: link }; }) };
   }
@@ -552,7 +552,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       yes.addEventListener('click', function () {
         yes.disabled = true; no.disabled = true;
         API.acceptRequest(r.id).then(function (res) {
-          if (res.ok) toast('수락했어요. 당번표가 바뀌었어요.'); else { toast(REASON[res.reason] || '이미 처리된 요청이에요.'); }
+          if (res.ok) openSwapped(doneInfo(me, lab(mk, r.toDay), lab(r.month, r.fromDay), r.fromName, lab(r.month, r.fromDay), lab(mk, r.toDay))); else { toast(REASON[res.reason] || '이미 처리된 요청이에요.'); }
         }).catch(function () { yes.disabled = false; no.disabled = false; toast('처리하지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
       });
       no.addEventListener('click', function () {
@@ -578,7 +578,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
             if (!armed) { b.textContent = '정말 바꿀까요? 한 번 더 눌러 주세요'; armed = setTimeout(function () { armed = 0; b.textContent = base + ' 바꾸기'; }, 4000); return; }
             clearTimeout(armed); b.disabled = true;
             API.acceptOpen(r.id, o).then(function (res) {
-              if (res.ok) toast('교환했어요. ' + lab(r.month, r.fromDay) + ' 당번이 내 당번이 되었어요.'); else { b.disabled = false; toast(REASON[res.reason] || '처리하지 못했어요.'); }
+              if (res.ok) openSwapped(doneInfo(me, lab(o.month, o.day), lab(r.month, r.fromDay), r.fromName, lab(r.month, r.fromDay), lab(o.month, o.day))); else { b.disabled = false; toast(REASON[res.reason] || '처리하지 못했어요.'); }
             }).catch(function () { b.disabled = false; toast('처리하지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
           });
           c.appendChild(b);
@@ -602,6 +602,10 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       }
       var tg = el('span', 'tag ' + (r.status === 'accepted' ? 'green' : r.status === 'pending' ? 'blue' : ''), stt); var w = el('div'); w.appendChild(tg); c.appendChild(w);
       if (r.status === 'pending') { var kb = btn('btn pri', '카카오톡으로 다시 알리기', function () { shareKakao(nudgeFor(r.type === 'open' ? 'open' : 'p', r), cardFor(r.type === 'open' ? 'open' : 'p', r)); }); c.appendChild(kb); var cb = btn('btn out', '요청 취소하기', function () { cb.disabled = true; API.setRequestStatus(r.id, 'cancelled').then(function () { toast('요청을 취소했어요.'); }).catch(function () { cb.disabled = false; toast('취소하지 못했어요.'); }); }); c.appendChild(cb); }
+      if (r.status === 'accepted' && r.toName && Date.now() - (r.resolvedAt || 0) < 7 * 864e5) {
+        var di = doneInfo(me, lab(r.month, r.fromDay), lab(r.toMonth || r.month, r.toDay), r.toName, lab(r.toMonth || r.month, r.toDay), lab(r.month, r.fromDay));
+        var nb2 = btn('btn', '총무에게 카톡으로 알리기', function () { shareKakao(di.nudge, di.card); }); nb2.style.background = '#FEE500'; nb2.style.color = '#3A1D1D'; nb2.style.fontWeight = '700'; c.appendChild(nb2);
+      }
       m.appendChild(c);
     });
   }
@@ -668,6 +672,27 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   }
 
   // ---------- 교환 흐름 ----------
+  function doneInfo(aN, aFrom, aTo, bN, bFrom, bTo) {
+    return { a: [aN, aFrom, aTo], b: [bN, bFrom, bTo],
+      nudge: '[당번 교환 완료] ' + aN + ' ' + aFrom + ' → ' + aTo + ' / ' + bN + ' ' + bFrom + ' → ' + bTo + '\n' + URL_APP,
+      card: { banner: 'swap', stamp: '✅ 당번 교환 완료', title: aN + ' ↔ ' + bN + ' 교환 완료', desc: aN + ' ' + aFrom + '→' + aTo + ' · ' + bN + ' ' + bFrom + '→' + bTo, buttons: ['당번표 보기'] } };
+  }
+  function openSwapped(info) {
+    if (window.DutyFx) DutyFx.ok();
+    flow = { from: null, fixed: true, step: 'swapped', target: null, tm: cur, oc: { mode: 'dow', dows: [], dates: [] }, busy: false, result: info };
+    renderFlow();
+  }
+  function flowSwapped(w) {
+    var r = flow.result;
+    w.appendChild(el('h2', '', '교환했어요'));
+    var cmp = el('div', 'cmp');
+    [r.a, r.b].forEach(function (x) { var b = el('div', 'blk now'); b.appendChild(el('div', 'k', x[0] === me ? x[0] + ' (나)' : x[0])); var l = el('div', 'ln'); l.appendChild(el('span', '', x[1] + ' →')); l.appendChild(el('b', '', x[2])); b.appendChild(l); cmp.appendChild(b); });
+    w.appendChild(cmp);
+    w.appendChild(el('div', 'cap', '총무가 알 수 있게 카톡으로 알려 주세요.'));
+    var kk = btn('btn', '총무에게 카톡으로 알리기', function () { shareKakao(r.nudge, r.card); });
+    kk.style.background = '#FEE500'; kk.style.color = '#3A1D1D'; kk.style.fontWeight = '700'; w.appendChild(kk);
+    w.appendChild(btn('btn out', '확인', closeFlow));
+  }
   function openFlow(from) {
     flow = { from: from || null, fixed: !!from, step: from ? 'how' : 'pick', target: null, tm: from ? from.month : cur, oc: { mode: 'dow', dows: [], dates: [] }, busy: false, result: null };
     renderFlow();
@@ -685,7 +710,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     top.appendChild(bk);
     if (prev) { var cl = btn('back', '닫기', closeFlow); cl.style.flex = 'none'; top.appendChild(cl); }
     w.appendChild(top);
-    ({ pick: flowPick, how: flowHow, who: flowWho, cond: flowCond, confirm: flowConfirm, done: flowDone })[flow.step](w);
+    ({ pick: flowPick, how: flowHow, who: flowWho, cond: flowCond, confirm: flowConfirm, done: flowDone, swapped: flowSwapped })[flow.step](w);
     box.appendChild(w); box.scrollTop = 0;
   }
   function flowPick(w) {

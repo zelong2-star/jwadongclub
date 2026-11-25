@@ -127,11 +127,11 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 .back:focus-visible,.opt:focus-visible,.tog:focus-visible,.fcal .c:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125l"></script>
-<script src="cal-ocr.js?v=20261125l"></script>
-<script src="notice-img.js?v=20261125l"></script>
+<script src="duty-core.js?v=20261125m"></script>
+<script src="cal-ocr.js?v=20261125m"></script>
+<script src="notice-img.js?v=20261125m"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125l';
+import { makeApi } from './common.js?v=20261125m';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -173,16 +173,16 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   </section>
 
   <section id="app" class="hide" style="display:flex;flex-direction:column;gap:14px">
-    <div id="monthBar" style="display:flex;flex-direction:column;gap:10px">
+    <div id="monthBar" style="display:flex;flex-direction:column;gap:10px;position:sticky;top:0;z-index:12;background:var(--bg);margin:-8px 0 -4px;padding:8px 0 6px">
       <div class="mnav">
         <button id="prev" aria-label="이전 달">이전</button>
         <div class="label" id="monthLabel" aria-live="polite"></div>
         <button id="next" aria-label="다음 달">다음</button>
       </div>
-      <div class="row">
-        <button class="btn sm primary" id="newMonth">당번 입력하기</button>
-        <button class="btn sm lockon hide" id="lock" aria-pressed="true">이 달은 마감 상태예요 (풀기)</button>
-      </div>
+    </div>
+    <div class="row" id="monthActs">
+      <button class="btn sm primary" id="newMonth">당번 입력하기</button>
+      <button class="btn sm lockon hide" id="lock" aria-pressed="true">이 달은 마감 상태예요 (풀기)</button>
     </div>
 
     <div id="panel-cal" class="panel">
@@ -620,7 +620,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       if (t === 'ex' && pend) b.appendChild(el('span', 'dotb', String(pend)));
     });
     TABS.forEach(function (x) { $('panel-' + x[0]).classList.toggle('hide', x[0] !== tab); });
-    $('monthBar').classList.toggle('hide', tab !== 'cal' && tab !== 'ex');
+    $('monthBar').classList.toggle('hide', tab !== 'cal' && tab !== 'ex'); $('monthActs').classList.toggle('hide', tab !== 'cal' && tab !== 'ex');
   }
 
 

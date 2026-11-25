@@ -120,7 +120,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       <div class="cap" style="margin-top:8px">내가 당번을 설 수 있는 요일이나 날짜를 고르면, 그날 당번인 사람만 교환 상대로 눌립니다. 이 폰에만 저장돼요.</div>
       <div class="cap" style="margin-top:10px">요일</div>
       <div class="dowrow" id="dowRow"></div>
-      <div class="cap" style="margin-top:10px">날짜 (이 달에서 당번이 있는 날)</div>
+      <div class="cap" style="margin-top:10px">날짜 (당번이 나와 있는 날 전체)</div>
       <div class="names" id="dateRow" style="margin-top:6px"></div>
       <button class="btn" id="availClear" style="margin-top:12px">가능한 날 초기화</button>
     </details>
@@ -187,6 +187,9 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   var oc = { mode: 'dow', dows: [], dates: [] };
   var REASON = { locked: '이 달은 교환이 마감됐어요.', expired: '당번 하루 전까지만 가능한 요청이에요. 이미 지났어요.', past: '이미 지난 날짜는 바꿀 수 없어요.', self: '내가 올린 요청이에요.', cond: '조건에 맞지 않는 날이에요.', stale: '그 사이 당번이 바뀌어서 처리하지 못했어요.', dup: '이미 같은 날 당번이라 바꿀 수 없어요.', done: '이미 다른 분이 수락했거나 취소된 요청이에요.', gone: '요청이 사라졌어요.' };
   function isLocked(k) { return !!(months[k] && months[k].locked); }
+  function dmAll() { var o = {}; keys.forEach(function (k) { o[k] = duties(k); }); return o; }
+  function isMy(k, d) { return !!mySel && mySel.month === k && mySel.day === d; }
+  function dutyDays() { var out = []; keys.forEach(function (k) { Object.keys(duties(k)).map(Number).sort(function (a, b) { return a - b; }).forEach(function (d) { if (!C.expired(k, d)) out.push({ k: k, d: d }); }); }); return out; }
   try {
     pin = localStorage.getItem(PIN_KEY); me = localStorage.getItem(ME_KEY);
     var av = JSON.parse(localStorage.getItem(AV_KEY));
@@ -222,11 +225,12 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     try { navigator.clipboard.writeText(t).then(function () { setStatus(okMsg); }, fallback); } catch (e) { fallback(); }
   }
   function sameSlots(a, b) {
-    return a.month === b.month && a.fromDay === b.fromDay && a.fromJ === b.fromJ && a.toDay === b.toDay && a.toJ === b.toJ;
+    return a.month === b.month && (a.toMonth || a.month) === (b.toMonth || b.month) && a.fromDay === b.fromDay && a.fromJ === b.fromJ && a.toDay === b.toDay && a.toJ === b.toJ;
   }
   function reqValid(r) {
-    var res = C.swapDuties(duties(r.month), { day: r.fromDay, j: r.fromJ, name: r.fromName }, { day: r.toDay, j: r.toJ, name: r.toName });
-    return res.ok && !C.isPast(r.month, r.fromDay) && !C.isPast(r.month, r.toDay);
+    var tm = r.toMonth || r.month;
+    var res = C.swapX(dmAll(), { month: r.month, day: r.fromDay, j: r.fromJ, name: r.fromName }, { month: tm, day: r.toDay, j: r.toJ, name: r.toName });
+    return res.ok && !C.isPast(r.month, r.fromDay) && !C.isPast(tm, r.toDay);
   }
 
   // ---------- 연결 ----------
@@ -295,11 +299,11 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function renderAll() {
     if ($('app').classList.contains('hide') || !cur) return;
     if (mySel) {
-      var d0 = duties()[mySel.day];
+      var d0 = duties(mySel.month)[mySel.day];
       if (!d0 || d0[mySel.j] !== me) { mySel = null; target = null; }
     }
     if (target) {
-      var d1 = duties()[target.day];
+      var d1 = duties(target.month)[target.day];
       if (!d1 || d1[target.j] !== target.name) target = null;
     }
     renderCal(); renderInbox(); renderOpenList(); renderSent(); renderRecent();
@@ -326,7 +330,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         if (day >= 1 && day <= dim) {
           cell.appendChild(el('div', 'num', String(day)));
           var d = ds[day];
-          if (d && mySel && hasFilter() && day !== mySel.day && !C.isPast(cur, day) && matches(y, m, day)) cell.classList.add('avail');
+          if (d && mySel && hasFilter() && !isMy(cur, day) && !C.isPast(cur, day) && matches(y, m, day)) cell.classList.add('avail');
           if (d) {
             [0, 1].forEach(function (j) {
               var name = d[j];
@@ -334,18 +338,18 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
               var isMe = name === me, past = C.isPast(cur, day), enabled;
               if (past || isLocked(cur)) enabled = false;
               else if (!mySel) enabled = isMe;
-              else enabled = isMe || (day !== mySel.day && matches(y, m, day));
+              else enabled = isMe || (!isMy(cur, day) && matches(y, m, day));
               if (enabled && !isMe && mySel) cnt++;
               var cls = 'chip';
               if (isMe) cls += ' me';
-              if (mySel && mySel.day === day && mySel.j === j) cls += ' sel';
-              if (target && target.day === day && target.j === j) cls += ' tgt';
+              if (mySel && mySel.month === cur && mySel.day === day && mySel.j === j) cls += ' sel';
+              if (target && target.month === cur && target.day === day && target.j === j) cls += ' tgt';
               var b = el('button', cls, name); b.type = 'button';
               b.disabled = !enabled;
               b.setAttribute('aria-label', m + '월 ' + day + '일 ' + name + (isMe ? ' (내 당번)' : ''));
               b.addEventListener('click', function () {
-                if (isMe) { mySel = { day: day, j: j }; target = null; $('availBox').open = true; }
-                else if (mySel) { target = { day: day, j: j, name: name }; }
+                if (isMe) { mySel = { month: cur, day: day, j: j }; target = null; $('availBox').open = true; }
+                else if (mySel) { target = { month: cur, day: day, j: j, name: name }; }
                 renderCal();
               });
               cell.appendChild(b);
@@ -356,13 +360,13 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       })(k);
     }
     if (!mySel) setStatus('교환하고 싶은 내 당번(노란색 이름)을 누르세요.');
-    else if (!target) setStatus(lab(cur, mySel.day) + ' 당번을 바꿀 상대의 이름을 누르세요.' + (hasFilter() ? (cnt ? ' (가능한 날 기준 ' + cnt + '명)' : ' 가능한 날에 맞는 상대가 이 달에는 없어요.') : ''));
+    else if (!target) setStatus(lab(mySel.month, mySel.day) + ' 당번을 바꿀 상대의 이름을 누르세요. (다음·이전 달로 넘겨서도 고를 수 있어요)' + (hasFilter() ? (cnt ? ' (가능한 날 기준 ' + cnt + '명)' : ' 가능한 날에 맞는 상대가 이 달에는 없어요.') : ''));
     else setStatus('아래 내용으로 요청을 보낼까요?');
     if (isLocked(cur)) setStatus('이 달은 교환이 마감됐어요. 바꾸려면 총무에게 문의해 주세요.');
     renderAvail(); renderOpenForm();
     var req = $('req');
-    if (mySel && target && !isLocked(cur)) {
-      $('reqText').textContent = '내 당번: ' + lab(cur, mySel.day) + '\n상대 당번: ' + lab(cur, target.day) + ' ' + target.name + ' 님\n\n상대가 앱에서 수락하면 바로 바뀝니다.';
+    if (mySel && target && !isLocked(mySel.month) && !isLocked(target.month)) {
+      $('reqText').textContent = '내 당번: ' + lab(mySel.month, mySel.day) + '\n상대 당번: ' + lab(target.month, target.day) + ' ' + target.name + ' 님\n\n상대가 앱에서 수락하면 바로 바뀝니다.';
       req.hidden = false;
     } else req.hidden = true;
   }
@@ -377,15 +381,14 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       row.appendChild(b);
     });
     var dr = $('dateRow'); dr.textContent = '';
-    Object.keys(ds).map(Number).sort(function (a, b) { return a - b; }).forEach(function (d) {
-      if (C.isPast(cur, d)) return;
-      var key = y + '-' + C.pad(m) + '-' + C.pad(d);
-      var b = el('button', 'tog', lab(cur, d)); b.type = 'button';
+    dutyDays().forEach(function (x) {
+      var key = C.dkey(x.k, x.d);
+      var b = el('button', 'tog', lab(x.k, x.d)); b.type = 'button';
       b.setAttribute('aria-pressed', avail.dates.indexOf(key) >= 0 ? 'true' : 'false');
       b.addEventListener('click', function () { toggle(avail.dates, key); saveAvail(); target = null; renderCal(); });
       dr.appendChild(b);
     });
-    if (!dr.children.length) dr.appendChild(el('div', 'cap', '이 달에는 선택할 수 있는 날짜가 없어요.'));
+    if (!dr.children.length) dr.appendChild(el('div', 'cap', '선택할 수 있는 날짜가 없어요.'));
     var parts = avail.dows.slice().sort(function (a, b) { return a - b; }).map(function (i) { return DOW[i]; });
     var t = parts.join('·');
     if (avail.dates.length) t += (t ? ', ' : '') + '날짜 ' + avail.dates.length + '개';
@@ -400,7 +403,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     if (!list.length) { box.appendChild(el('div', 'cap', '지금 받은 요청이 없어요.')); return; }
     list.forEach(function (r) {
       var item = el('div', 'item');
-      item.appendChild(el('div', '', r.fromName + ' 님이 교환을 요청했어요. ' + lab(r.month, r.fromDay) + ' 당번을 맡고, 내 ' + lab(r.month, r.toDay) + ' 당번을 넘기는 교환입니다.'));
+      item.appendChild(el('div', '', r.fromName + ' 님이 교환을 요청했어요. ' + lab(r.month, r.fromDay) + ' 당번을 맡고, 내 ' + lab(r.toMonth || r.month, r.toDay) + ' 당번을 넘기는 교환입니다.'));
       var row = el('div', 'row');
       var no = el('button', 'btn', '거절'); no.type = 'button';
       var yes = el('button', 'btn ok', '수락'); yes.type = 'button';
@@ -432,8 +435,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     list.forEach(function (r) {
       var item = el('div', 'item');
       var txt = r.type === 'open'
-        ? '공개 요청 ' + lab(r.month, r.fromDay) + ' · ' + C.condText(r.cond) + ' · ' + (r.status === 'accepted' && r.toName ? r.toName + ' 님이 ' + lab(r.month, r.toDay) + '로 수락' : (r.status === 'pending' && C.expired(r.month, r.fromDay) ? '기간 지남' : (STATUS_KO[r.status] || r.status)))
-        : lab(r.month, r.fromDay) + ' ↔ ' + lab(r.month, r.toDay) + ' ' + r.toName + ' 님 · ' + (STATUS_KO[r.status] || r.status);
+        ? '공개 요청 ' + lab(r.month, r.fromDay) + ' · ' + C.condText(r.cond) + ' · ' + (r.status === 'accepted' && r.toName ? r.toName + ' 님이 ' + lab(r.toMonth || r.month, r.toDay) + '로 수락' : (r.status === 'pending' && C.expired(r.month, r.fromDay) ? '기간 지남' : (STATUS_KO[r.status] || r.status)))
+        : lab(r.month, r.fromDay) + ' ↔ ' + lab(r.toMonth || r.month, r.toDay) + ' ' + r.toName + ' 님 · ' + (STATUS_KO[r.status] || r.status);
       item.appendChild(el('div', '', txt));
       if (r.status === 'pending') {
         var c = el('button', 'btn', '요청 취소'); c.type = 'button';
@@ -460,8 +463,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var box = $('openCard');
     box.hidden = !mySel;
     if (!mySel) return;
-    var p = ym(), y = p[0], m = p[1], ds = duties();
-    $('openFor').textContent = lab(cur, mySel.day) + ' 당번을 내놓고, 아래 조건이 맞는 분과 바꿔요.';
+    $('openFor').textContent = lab(mySel.month, mySel.day) + ' 당번을 내놓고, 아래 조건이 맞는 분과 바꿔요.';
     omSync();
     var dr = $('oDow'); dr.textContent = ''; dr.hidden = oc.mode !== 'dow';
     DOW.forEach(function (n, i) {
@@ -471,22 +473,22 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       dr.appendChild(b);
     });
     var dd = $('oDates'); dd.textContent = ''; dd.hidden = oc.mode === 'dow';
-    Object.keys(ds).map(Number).sort(function (a, b) { return a - b; }).forEach(function (d) {
-      if (C.expired(cur, d) || d === mySel.day) return;
-      var key = C.dkey(cur, d);
-      var b = el('button', 'tog', lab(cur, d)); b.type = 'button';
+    dutyDays().forEach(function (x) {
+      if (isMy(x.k, x.d)) return;
+      var key = C.dkey(x.k, x.d);
+      var b = el('button', 'tog', lab(x.k, x.d)); b.type = 'button';
       b.setAttribute('aria-pressed', oc.dates.indexOf(key) >= 0 ? 'true' : 'false');
       b.addEventListener('click', function () { toggle(oc.dates, key); renderOpenForm(); });
       dd.appendChild(b);
     });
-    $('oText').textContent = '내놓는 당번: ' + lab(cur, mySel.day) + '\n조건: ' + (ocReady() ? C.condText(ocCond()) : '(위에서 고르세요)') + '\n\n조건에 맞는 분이 앱에서 수락하면 바로 바뀝니다.';
-    $('oSend').disabled = !ocReady() || isLocked(cur);
+    $('oText').textContent = '내놓는 당번: ' + lab(mySel.month, mySel.day) + '\n조건: ' + (ocReady() ? C.condText(ocCond()) : '(위에서 고르세요)') + '\n\n조건에 맞는 분이 앱에서 수락하면 바로 바뀝니다.';
+    $('oSend').disabled = !ocReady() || isLocked(mySel.month);
   }
   function renderOpenList() {
     var box = $('openList'); box.textContent = '';
     var shown = 0;
     requests.filter(function (r) { return r.type === 'open' && r.status === 'pending' && r.fromName !== me && months[r.month] && !C.expired(r.month, r.fromDay); }).forEach(function (r) {
-      var opts = C.myOptions(duties(r.month), r, me, isLocked(r.month));
+      var opts = C.myOptions(dmAll(), r, me, isLocked);
       if (!opts.length) return;
       shown++;
       var item = el('div', 'item');
@@ -495,10 +497,10 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       if (hasFilter() && !matches(p[0], p[1], r.fromDay)) item.appendChild(el('div', 'cap', '※ 내가 고른 "가능한 날"에는 해당하지 않는 날이에요.'));
       var row = el('div', 'row');
       opts.forEach(function (o) {
-        var b = el('button', 'btn ok', '내 ' + lab(r.month, o.day) + '와 바꾸기'); b.type = 'button';
+        var b = el('button', 'btn ok', '내 ' + lab(o.month, o.day) + '와 바꾸기'); b.type = 'button';
         var armed = 0;
         b.addEventListener('click', function () {
-          if (!armed) { b.textContent = '정말 바꿀까요? 한 번 더'; armed = setTimeout(function () { armed = 0; b.textContent = '내 ' + lab(r.month, o.day) + '와 바꾸기'; }, 4000); return; }
+          if (!armed) { b.textContent = '정말 바꿀까요? 한 번 더'; armed = setTimeout(function () { armed = 0; b.textContent = '내 ' + lab(o.month, o.day) + '와 바꾸기'; }, 4000); return; }
           clearTimeout(armed); b.disabled = true;
           API.acceptOpen(r.id, o).then(function (res) {
             if (res.ok) setStatus('교환했어요. ' + lab(r.month, r.fromDay) + ' 당번이 내 당번이 되었어요.');
@@ -519,14 +521,14 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   $('omDates').addEventListener('click', function () { oc.mode = 'dates'; renderOpenForm(); });
   $('omExcept').addEventListener('click', function () { oc.mode = 'except'; renderOpenForm(); });
   $('oSend').addEventListener('click', function () {
-    if (!mySel || !ocReady() || isLocked(cur)) return;
+    if (!mySel || !ocReady() || isLocked(mySel.month)) return;
     var cond = ocCond();
-    var dup = requests.some(function (x) { return x.type === 'open' && x.status === 'pending' && x.fromName === me && x.month === cur && x.fromDay === mySel.day && x.fromJ === mySel.j; });
+    var dup = requests.some(function (x) { return x.type === 'open' && x.status === 'pending' && x.fromName === me && x.month === mySel.month && x.fromDay === mySel.day && x.fromJ === mySel.j; });
     if (dup) { setStatus('이 당번의 공개 요청이 이미 올라가 있어요. 먼저 취소해 주세요.'); return; }
     var btn = $('oSend'); btn.disabled = true;
-    var r = { month: cur, fromDay: mySel.day, fromJ: mySel.j, fromName: me, cond: cond };
+    var r = { month: mySel.month, fromDay: mySel.day, fromJ: mySel.j, fromName: me, cond: cond };
     API.createOpenRequest(r).then(function () {
-      nudge = '[교환요청(공개)] ' + me + '님이 ' + lab(cur, r.fromDay) + ' 당번을 바꿀 분을 찾아요. 조건: ' + C.condText(cond) + '\n당번표 앱의 "나와 바꿀 수 있는 공개 요청"에서 수락해 주세요.\nhttps://zelong2-star.github.io/jwadongclub/duty/';
+      nudge = '[교환요청(공개)] ' + me + '님이 ' + lab(r.month, r.fromDay) + ' 당번을 바꿀 분을 찾아요. 조건: ' + C.condText(cond) + '\n당번표 앱의 "나와 바꿀 수 있는 공개 요청"에서 수락해 주세요.\nhttps://zelong2-star.github.io/jwadongclub/duty/';
       $('nudgeText').textContent = nudge; $('nudgeCard').classList.remove('hide');
       mySel = null; target = null; oc = { mode: oc.mode, dows: [], dates: [] }; renderCal();
       setStatus('공개 요청을 올렸어요. 조건에 맞는 분이 수락하면 바로 바뀝니다. 카톡에도 알려 주세요.');
@@ -540,20 +542,20 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   $('pin').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('enter').click(); });
   $('search').addEventListener('input', function () { renderNames($('search').value.trim()); });
   $('changeMe').addEventListener('click', showPicker);
-  $('prev').addEventListener('click', function () { var i = keys.indexOf(cur); if (i > 0) { cur = keys[i - 1]; mySel = null; target = null; renderAll(); } });
-  $('next').addEventListener('click', function () { var i = keys.indexOf(cur); if (i < keys.length - 1) { cur = keys[i + 1]; mySel = null; target = null; renderAll(); } });
+  $('prev').addEventListener('click', function () { var i = keys.indexOf(cur); if (i > 0) { cur = keys[i - 1]; renderAll(); } });
+  $('next').addEventListener('click', function () { var i = keys.indexOf(cur); if (i < keys.length - 1) { cur = keys[i + 1]; renderAll(); } });
   $('reset').addEventListener('click', function () { mySel = null; target = null; renderCal(); });
   $('availClear').addEventListener('click', function () { avail = { dows: [], dates: [] }; saveAvail(); target = null; renderCal(); });
   $('copyNudge').addEventListener('click', function () { copyText(nudge, '문구를 복사했어요. 카톡에 붙여넣어 주세요.'); });
   $('send').addEventListener('click', function () {
     if (!mySel || !target) return;
-    if (isLocked(cur)) { setStatus('이 달은 교환이 마감됐어요.'); return; }
-    var r = { month: cur, fromDay: mySel.day, fromJ: mySel.j, fromName: me, toDay: target.day, toJ: target.j, toName: target.name };
+    if (isLocked(mySel.month) || isLocked(target.month)) { setStatus('마감된 달의 당번은 교환할 수 없어요.'); return; }
+    var r = { month: mySel.month, toMonth: target.month, fromDay: mySel.day, fromJ: mySel.j, fromName: me, toDay: target.day, toJ: target.j, toName: target.name };
     var dup = requests.some(function (x) { return x.status === 'pending' && x.fromName === me && sameSlots(x, r); });
     if (dup) { setStatus('같은 요청이 이미 대기 중이에요.'); return; }
     var btn = $('send'); btn.disabled = true;
     API.createRequest(r).then(function () {
-      nudge = '[교환요청] ' + target.name + '님, ' + lab(cur, r.fromDay) + ' ' + me + ' ↔ ' + lab(cur, r.toDay) + ' ' + target.name + ' 교환을 요청했어요. 당번표 앱에서 수락해 주세요.\nhttps://zelong2-star.github.io/jwadongclub/duty/';
+      nudge = '[교환요청] ' + target.name + '님, ' + lab(r.month, r.fromDay) + ' ' + me + ' ↔ ' + lab(r.toMonth, r.toDay) + ' ' + target.name + ' 교환을 요청했어요. 당번표 앱에서 수락해 주세요.\nhttps://zelong2-star.github.io/jwadongclub/duty/';
       $('nudgeText').textContent = nudge; $('nudgeCard').classList.remove('hide');
       mySel = null; target = null; btn.disabled = false; renderCal();
       setStatus('요청을 보냈어요. 상대가 앱에서 수락하면 바로 바뀝니다. 카톡으로도 알려 주세요.');

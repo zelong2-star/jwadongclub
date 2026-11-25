@@ -21,11 +21,25 @@ export function makeApi() {
   const ref = (n, id) => doc(db, 'c', h, n, id);
   const slot = (d, j, name) => ({ day: Number(d), j: j, name: name });
 
-  function logDoc(now, month, a, b, by) {
+  function logDoc(now, a, b, by) {
     return {
-      at: now, month: month, kind: 'swap', by: by, undone: false, a: a, b: b,
-      text: C.md(now) + ' ' + C.label(month, a.day) + ' ' + a.name + ' ⇄ ' + C.label(month, b.day) + ' ' + b.name
+      at: now, month: a.month, month2: b.month !== a.month ? b.month : null, kind: 'swap', by: by, undone: false, a: a, b: b,
+      text: C.md(now) + ' ' + C.label(a.month, a.day) + ' ' + a.name + ' ⇄ ' + C.label(b.month, b.day) + ' ' + b.name
     };
+  }
+  // 트랜잭션 안에서 여러 달 문서를 먼저 모두 읽기
+  async function readMonths(tx, keys) {
+    const dm = {}, locked = {}, refs = {};
+    for (const k of Array.from(new Set(keys))) {
+      refs[k] = ref('months', k);
+      const s = await tx.get(refs[k]);
+      dm[k] = s.exists() ? (s.data().duties || {}) : {};
+      locked[k] = !!(s.exists() && s.data().locked);
+    }
+    return { dm, locked, refs };
+  }
+  function writeMonths(tx, rd, months, now) {
+    Object.keys(months).forEach((k) => tx.set(rd.refs[k], { duties: months[k], updated: now, locked: rd.locked[k] }));
   }
 
   return {
@@ -48,29 +62,27 @@ export function makeApi() {
       if (!rs.exists()) return { ok: false, reason: 'gone' };
       const r = rs.data();
       if (r.status !== 'pending') return { ok: false, reason: 'done' };
-      const mRef = ref('months', r.month);
-      const ms = await tx.get(mRef);
-      if (ms.exists() && ms.data().locked) return { ok: false, reason: 'locked' };
-      const duties = ms.exists() ? (ms.data().duties || {}) : {};
+      const tm = r.toMonth || r.month;
+      const rd = await readMonths(tx, [r.month, tm]);
+      if (rd.locked[r.month] || rd.locked[tm]) return { ok: false, reason: 'locked' };
       const a = slot(r.fromDay, r.fromJ, r.fromName), b = slot(r.toDay, r.toJ, r.toName);
-      const res = C.swapDuties(duties, a, b);
+      a.month = r.month; b.month = tm;
+      const res = C.swapX(rd.dm, a, b);
       const now = Date.now();
       if (!res.ok) { tx.update(rRef, { status: 'stale', resolvedAt: now }); return { ok: false, reason: 'stale' }; }
-      tx.set(mRef, { duties: res.duties, updated: now, locked: !!(ms.exists() && ms.data().locked) });
+      writeMonths(tx, rd, res.months, now);
       tx.update(rRef, { status: 'accepted', resolvedAt: now });
-      tx.set(doc(col('log')), logDoc(now, r.month, a, b, r.toName + ' 수락'));
+      tx.set(doc(col('log')), logDoc(now, a, b, r.toName + ' 수락'));
       return { ok: true };
     }),
 
-    swapSlots: (month, a, b, by) => runTransaction(db, async (tx) => {
-      const mRef = ref('months', month);
-      const ms = await tx.get(mRef);
-      const duties = ms.exists() ? (ms.data().duties || {}) : {};
-      const res = C.swapDuties(duties, a, b);
+    swapSlots: (a, b, by) => runTransaction(db, async (tx) => {
+      const rd = await readMonths(tx, [a.month, b.month]);
+      const res = C.swapX(rd.dm, a, b);
       if (!res.ok) return { ok: false, reason: 'stale' };
       const now = Date.now();
-      tx.set(mRef, { duties: res.duties, updated: now, locked: !!(ms.exists() && ms.data().locked) });
-      tx.set(doc(col('log')), logDoc(now, month, a, b, by || '총무'));
+      writeMonths(tx, rd, res.months, now);
+      tx.set(doc(col('log')), logDoc(now, a, b, by || '총무'));
       return { ok: true };
     }),
 
@@ -80,17 +92,16 @@ export function makeApi() {
       if (!ls.exists()) return { ok: false, reason: 'gone' };
       const l = ls.data();
       if (l.undone || l.kind !== 'swap') return { ok: false, reason: 'done' };
-      const mRef = ref('months', l.month);
-      const ms = await tx.get(mRef);
-      const duties = ms.exists() ? (ms.data().duties || {}) : {};
-      const res = C.swapDuties(duties, slot(l.a.day, l.a.j, l.b.name), slot(l.b.day, l.b.j, l.a.name));
+      const am = l.a.month || l.month, bm = l.b.month || l.month2 || l.month;
+      const rd = await readMonths(tx, [am, bm]);
+      const res = C.swapX(rd.dm, { month: am, day: l.a.day, j: l.a.j, name: l.b.name }, { month: bm, day: l.b.day, j: l.b.j, name: l.a.name });
       if (!res.ok) return { ok: false, reason: 'stale' };
       const now = Date.now();
-      tx.set(mRef, { duties: res.duties, updated: now, locked: !!(ms.exists() && ms.data().locked) });
+      writeMonths(tx, rd, res.months, now);
       tx.update(lRef, { undone: true });
       tx.set(doc(col('log')), {
-        at: now, month: l.month, kind: 'undo', by: '총무', undone: true, a: l.a, b: l.b,
-        text: C.md(now) + ' (되돌림) ' + C.label(l.month, l.a.day) + ' ' + l.a.name + ' ⇄ ' + C.label(l.month, l.b.day) + ' ' + l.b.name
+        at: now, month: am, month2: bm !== am ? bm : null, kind: 'undo', by: '총무', undone: true, a: l.a, b: l.b,
+        text: C.md(now) + ' (되돌림) ' + C.label(am, l.a.day) + ' ' + l.a.name + ' ⇄ ' + C.label(bm, l.b.day) + ' ' + l.b.name
       });
       return { ok: true };
     }),
@@ -128,16 +139,16 @@ export function makeApi() {
       if (!rs.exists()) return { ok: false, reason: 'gone' };
       const r = rs.data();
       if (r.status !== 'pending' || r.type !== 'open') return { ok: false, reason: 'done' };
-      const mRef = ref('months', r.month);
-      const ms = await tx.get(mRef);
-      const duties = ms.exists() ? (ms.data().duties || {}) : {};
-      const res = C.canAcceptOpen(duties, r, acc, !!(ms.exists() && ms.data().locked));
+      const am = acc.month || r.month;
+      const rd = await readMonths(tx, [r.month, am]);
+      const res = C.canAcceptOpen(rd.dm, r, acc, (k) => !!rd.locked[k]);
       if (!res.ok) return { ok: false, reason: res.reason || 'stale' };
       const now = Date.now();
       const a = slot(r.fromDay, r.fromJ, r.fromName), b = slot(acc.day, acc.j, acc.name);
-      tx.set(mRef, { duties: res.duties, updated: now, locked: !!(ms.exists() && ms.data().locked) });
-      tx.update(rRef, { status: 'accepted', resolvedAt: now, toName: acc.name, toDay: acc.day, toJ: acc.j });
-      tx.set(doc(col('log')), logDoc(now, r.month, a, b, acc.name + ' 수락(공개 요청)'));
+      a.month = r.month; b.month = am;
+      writeMonths(tx, rd, res.months, now);
+      tx.update(rRef, { status: 'accepted', resolvedAt: now, toName: acc.name, toDay: acc.day, toJ: acc.j, toMonth: am });
+      tx.set(doc(col('log')), logDoc(now, a, b, acc.name + ' 수락(공개 요청)'));
       return { ok: true };
     })
   };

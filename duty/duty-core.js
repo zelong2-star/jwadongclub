@@ -82,28 +82,48 @@
     if (cond.mode === 'except') return (cond.dates && cond.dates.length) ? dl(cond.dates) + ' 빼고 언제든' : '언제든';
     return '';
   }
-  // 수락 가능 여부. acc: {day,j,name}. 순수 함수(저장소 트랜잭션과 화면에서 같이 사용)
-  function canAcceptOpen(duties, r, acc, locked) {
-    if (locked) return { ok: false, reason: 'locked' };
+  // ---- 달을 넘나드는 교환 ----
+  // dm: {월키: duties}, a/b: {month,day,j,name}. 두 자리의 이름이 지금도 그대로일 때만 맞바꾼다.
+  function swapX(dm, a, b) {
+    var ma = a.month, mb = b.month;
+    var da = dm[ma] && dm[ma][a.day], db = dm[mb] && dm[mb][b.day];
+    if (!da || !db || (ma === mb && String(a.day) === String(b.day))) return { ok: false };
+    if (da[a.j] !== a.name || db[b.j] !== b.name) return { ok: false };
+    var out = {}; out[ma] = JSON.parse(JSON.stringify(dm[ma]));
+    if (mb !== ma) out[mb] = JSON.parse(JSON.stringify(dm[mb]));
+    out[ma][a.day][a.j] = b.name;
+    out[mb][b.day][b.j] = a.name;
+    return { ok: true, months: out };
+  }
+  // 수락 가능 여부. acc: {month?,day,j,name}. lockedOf(month)->bool
+  function canAcceptOpen(dm, r, acc, lockedOf) {
+    lockedOf = lockedOf || function () { return false; };
+    var am = acc.month || r.month;
+    if (lockedOf(r.month) || lockedOf(am)) return { ok: false, reason: 'locked' };
     if (expired(r.month, r.fromDay)) return { ok: false, reason: 'expired' };
-    if (expired(r.month, acc.day)) return { ok: false, reason: 'past' };
+    if (expired(am, acc.day)) return { ok: false, reason: 'past' };
     if (acc.name === r.fromName) return { ok: false, reason: 'self' };
-    if (!condOk(r.cond, r.month, acc.day)) return { ok: false, reason: 'cond' };
-    var df = duties[r.fromDay] || [], da = duties[acc.day] || [];
+    if (!condOk(r.cond, am, acc.day)) return { ok: false, reason: 'cond' };
+    var df = (dm[r.month] || {})[r.fromDay] || [], da = (dm[am] || {})[acc.day] || [];
     if (df[r.fromJ] !== r.fromName || da[acc.j] !== acc.name) return { ok: false, reason: 'stale' };
     if (df.indexOf(acc.name) >= 0 || da.indexOf(r.fromName) >= 0) return { ok: false, reason: 'dup' };
-    return swapDuties(duties, { day: r.fromDay, j: r.fromJ, name: r.fromName }, acc);
+    var res = swapX(dm, { month: r.month, day: r.fromDay, j: r.fromJ, name: r.fromName }, { month: am, day: acc.day, j: acc.j, name: acc.name });
+    return res.ok ? res : { ok: false, reason: 'stale' };
   }
-  // 내가 이 요청을 수락할 수 있는 내 당번일 목록
-  function myOptions(duties, r, me, locked) {
+  // 내가 이 요청을 수락할 수 있는 내 당번일 목록(모든 달)
+  function myOptions(dm, r, me, lockedOf) {
     var out = [];
-    Object.keys(duties).map(Number).sort(function (a, b) { return a - b; }).forEach(function (d) {
-      var a = duties[d] || [];
-      a.forEach(function (n, j) { if (n === me && canAcceptOpen(duties, r, { day: d, j: j, name: me }, locked).ok) out.push({ day: d, j: j, name: me }); });
+    Object.keys(dm).sort().forEach(function (mk) {
+      var ds = dm[mk] || {};
+      Object.keys(ds).map(Number).sort(function (x, y) { return x - y; }).forEach(function (d) {
+        (ds[d] || []).forEach(function (n, j) {
+          if (n === me && canAcceptOpen(dm, r, { month: mk, day: d, j: j, name: me }, lockedOf).ok) out.push({ month: mk, day: d, j: j, name: me });
+        });
+      });
     });
     return out;
   }
   g.DutyCore = { DOW: DOW, pad: pad, parseKey: parseKey, dowOf: dowOf, label: label, md: md, isPast: isPast,
     swapDuties: swapDuties, noticeText: noticeText, parseNotice: parseNotice, hashPin: hashPin,
-    expired: expired, dkey: dkey, condOk: condOk, condText: condText, canAcceptOpen: canAcceptOpen, myOptions: myOptions };
+    expired: expired, dkey: dkey, condOk: condOk, condText: condText, canAcceptOpen: canAcceptOpen, myOptions: myOptions, swapX: swapX };
 })(window);

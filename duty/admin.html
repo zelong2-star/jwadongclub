@@ -75,6 +75,7 @@ summary{min-height:32px;font-size:15px;font-weight:700;cursor:pointer}
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
 <script src="duty-core.js"></script>
 <script src="cal-ocr.js"></script>
+<script src="notice-img.js"></script>
 <script type="module">
 import { makeApi } from './common.js';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
@@ -139,6 +140,17 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <div class="row">
           <button class="btn primary" id="copy">공지 문구 복사</button>
           <button class="btn" id="cancel">선택 취소</button>
+        </div>
+        <button class="btn primary" id="mkImg" style="width:100%">📷 카톡용 당번표 이미지 만들기</button>
+        <div class="card hide" id="imgCard">
+          <div class="cap" id="imgMsg" role="status">이미지를 복사한 뒤 카톡 대화창에 붙여넣거나(Ctrl+V), 저장해서 올리세요.</div>
+          <img id="noticeImg" alt="당번표 이미지" style="width:100%;border:1px solid #cfd9e3;border-radius:8px;margin-top:8px">
+          <div class="row" style="margin-top:8px">
+            <button class="btn primary" id="imgCopy">이미지 복사</button>
+            <button class="btn" id="imgSave">이미지 저장</button>
+            <button class="btn" id="imgShare">공유</button>
+            <button class="btn" id="imgClose">닫기</button>
+          </div>
         </div>
         <details class="card" id="reqBox" open>
           <summary id="reqSummary">교환 요청 현황</summary>
@@ -222,18 +234,18 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   }
 
   function noticeLines() {
-    return logs.filter(function (l) { return l.month === cur && (l.kind === 'swap' || l.kind === 'undo'); })
+    return logs.filter(function (l) { return (l.month === cur || l.month2 === cur) && (l.kind === 'swap' || l.kind === 'undo'); })
       .slice().sort(function (a, b) { return a.at - b.at; }).map(function (l) { return l.text; });
   }
   function renderNotice() { $('notice').textContent = C.noticeText(cur, duties(), noticeLines(), today()); }
 
   function pick(day, j) {
     var d = duties();
-    if (!sel) { sel = { day: day, j: j, name: d[day][j] }; setStatus(sel.name + ' 님(' + C.label(cur, day) + ') 선택됨. 바꿀 상대를 누르세요.'); renderCal(); return; }
-    if (sel.day === day) { sel = (sel.j === j) ? null : { day: day, j: j, name: d[day][j] }; setStatus(sel ? sel.name + ' 님 선택됨. 바꿀 상대를 누르세요.' : defStatus()); renderCal(); return; }
-    var a = sel, b = { day: day, j: j, name: d[day][j] };
+    if (!sel) { sel = { month: cur, day: day, j: j, name: d[day][j] }; setStatus(sel.name + ' 님(' + C.label(cur, day) + ') 선택됨. 바꿀 상대를 누르세요. 다른 달 당번과도 바꿀 수 있어요(달을 넘겨서 선택).'); renderCal(); return; }
+    if (sel.month === cur && sel.day === day) { sel = (sel.j === j) ? null : { month: cur, day: day, j: j, name: d[day][j] }; setStatus(sel ? sel.name + ' 님 선택됨. 바꿀 상대를 누르세요.' : defStatus()); renderCal(); return; }
+    var a = sel, b = { month: cur, day: day, j: j, name: d[day][j] };
     sel = null; setStatus('반영하는 중이에요…');
-    API.swapSlots(cur, { day: a.day, j: a.j, name: a.name }, { day: b.day, j: b.j, name: b.name }, '총무').then(function (res) {
+    API.swapSlots({ month: a.month, day: a.day, j: a.j, name: a.name }, b, '총무').then(function (res) {
       setStatus(res.ok ? a.name + ' 님과 ' + b.name + ' 님의 당번을 바꿨어요. 공지 문구를 복사해 카톡에 올려 주세요.' : '그 사이 당번이 바뀌어서 처리하지 못했어요. 다시 시도해 주세요.');
     }).catch(function () { setStatus('반영하지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
     renderCal();
@@ -274,7 +286,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           } else if (d) {
             [0, 1].forEach(function (j) {
               if (!d[j]) return;
-              var on = sel && sel.day === day && sel.j === j;
+              var on = sel && sel.month === cur && sel.day === day && sel.j === j;
               var b = el('button', 'chip' + (on ? ' sel' : ''), d[j]); b.type = 'button';
               b.setAttribute('aria-pressed', on ? 'true' : 'false');
               b.setAttribute('aria-label', m + '월 ' + day + '일 ' + d[j]);
@@ -290,7 +302,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
 
   function renderLog() {
     var box = $('logList'); box.textContent = '';
-    var list = logs.filter(function (l) { return l.month === cur && l.kind === 'swap'; });
+    var list = logs.filter(function (l) { return (l.month === cur || l.month2 === cur) && l.kind === 'swap'; });
     if (!list.length) { box.appendChild(el('div', 'cap', '아직 교환 내역이 없어요.')); return; }
     list.slice(0, 12).forEach(function (l) {
       var item = el('div', 'item');
@@ -332,8 +344,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       return Promise.all(ks.map(function (k) { return API.setMonth(k, d.months[k].duties || {}); }));
     }).catch(function () { $('setupMsg').textContent = '시작 데이터를 올리지 못했어요. 잠시 뒤 다시 눌러 주세요.'; });
   });
-  $('prev').addEventListener('click', function () { var i = keys.indexOf(cur); if (i > 0) { cur = keys[i - 1]; sel = null; renderAll(); } });
-  $('next').addEventListener('click', function () { var i = keys.indexOf(cur); if (i < keys.length - 1) { cur = keys[i + 1]; sel = null; renderAll(); } });
+  $('prev').addEventListener('click', function () { var i = keys.indexOf(cur); if (i > 0) { cur = keys[i - 1]; renderAll(); } });
+  $('next').addEventListener('click', function () { var i = keys.indexOf(cur); if (i < keys.length - 1) { cur = keys[i + 1]; renderAll(); } });
   $('newMonth').addEventListener('click', function () {
     var nk = nextKey(keys[keys.length - 1]);
     API.setMonth(nk, {}).then(function () { cur = nk; mode = 'input'; syncMode(); setStatus('새 달을 만들었어요. 이름을 입력하거나, 공지를 붙여넣어 불러오세요.'); }).catch(function () { setStatus('만들지 못했어요.'); });
@@ -371,17 +383,18 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     if (r.status !== 'pending') return r.status;
     if (C.expired(r.month, r.fromDay)) return 'expired';
     if (r.type !== 'open') {
-      var ds = (months[r.month] && months[r.month].duties) || {};
-      if (!C.swapDuties(ds, { day: r.fromDay, j: r.fromJ, name: r.fromName }, { day: r.toDay, j: r.toJ, name: r.toName }).ok || C.expired(r.month, r.toDay)) return 'stale';
+      var tm = r.toMonth || r.month, dm = {};
+      Object.keys(months).forEach(function (k) { dm[k] = months[k].duties || {}; });
+      if (!C.swapX(dm, { month: r.month, day: r.fromDay, j: r.fromJ, name: r.fromName }, { month: tm, day: r.toDay, j: r.toJ, name: r.toName }).ok || C.expired(tm, r.toDay)) return 'stale';
     }
     return 'pending';
   }
   function reqDesc(r) {
     if (r.type === 'open') {
       var base = '[공개] ' + r.fromName + ' · ' + C.label(r.month, r.fromDay) + ' 내놓음 · ' + C.condText(r.cond);
-      return r.status === 'accepted' && r.toName ? base + ' → ' + r.toName + ' 님이 ' + C.label(r.month, r.toDay) + '로 수락' : base;
+      return r.status === 'accepted' && r.toName ? base + ' → ' + r.toName + ' 님이 ' + C.label(r.toMonth || r.month, r.toDay) + '로 수락' : base;
     }
-    return '[개인] ' + r.fromName + ' ' + C.label(r.month, r.fromDay) + ' ↔ ' + r.toName + ' ' + C.label(r.month, r.toDay);
+    return '[개인] ' + r.fromName + ' ' + C.label(r.month, r.fromDay) + ' ↔ ' + r.toName + ' ' + C.label(r.toMonth || r.month, r.toDay);
   }
   function renderReqs() {
     var box = $('reqList'); box.textContent = '';
@@ -424,6 +437,57 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   });
   $('rfPending').addEventListener('click', function () { reqFilter = 'pending'; renderReqs(); });
   $('rfAll').addEventListener('click', function () { reqFilter = 'all'; renderReqs(); });
+
+
+  /* ===== 카톡용 당번표 이미지 ===== */
+  var imgBlob = null, imgUrl = null, imgName = '당번표.png';
+  function changedDays() {
+    var o = {};
+    logs.forEach(function (l) {
+      if (l.kind !== 'swap' || l.undone) return;
+      var am = (l.a && l.a.month) || l.month, bm = (l.b && l.b.month) || l.month2 || l.month;
+      if (am === cur) o[l.a.day] = true;
+      if (bm === cur) o[l.b.day] = true;
+    });
+    return o;
+  }
+  function imgMsg(t) { $('imgMsg').textContent = t; }
+  function makeImage() {
+    var p = ym(), c = document.createElement('canvas');
+    var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+    ready.then(function () {
+      window.NoticeImg.draw(c, { year: p[0], month: p[1], duties: duties(), lines: noticeLines(), stamp: today(), changed: changedDays(),
+        footer: '교환은 당번표 앱에서 요청 · zelong2-star.github.io/jwadongclub/duty/' });
+      c.toBlob(function (blob) {
+        if (!blob) { setStatus('이미지를 만들지 못했어요.'); return; }
+        if (imgUrl) URL.revokeObjectURL(imgUrl);
+        imgBlob = blob; imgUrl = URL.createObjectURL(blob); imgName = '당번표-' + cur + '.png';
+        $('noticeImg').src = imgUrl; $('imgCard').classList.remove('hide');
+        $('imgShare').classList.toggle('hide', !(navigator.canShare && navigator.share));
+        imgMsg('이미지를 복사한 뒤 카톡 대화창에 붙여넣거나(Ctrl+V), 저장해서 올리세요.');
+      }, 'image/png');
+    });
+  }
+  $('mkImg').addEventListener('click', makeImage);
+  $('imgClose').addEventListener('click', function () { $('imgCard').classList.add('hide'); });
+  $('imgCopy').addEventListener('click', function () {
+    if (!imgBlob) return;
+    try {
+      navigator.clipboard.write([new ClipboardItem({ 'image/png': imgBlob })]).then(function () { imgMsg('복사했어요. 카톡 대화창에서 붙여넣기(Ctrl+V) 하세요.'); },
+        function () { imgMsg('복사 권한이 없어요. "이미지 저장"을 눌러 파일로 올려 주세요.'); });
+    } catch (e) { imgMsg('이 브라우저는 이미지 복사를 지원하지 않아요. "이미지 저장"을 눌러 주세요.'); }
+  });
+  $('imgSave').addEventListener('click', function () {
+    if (!imgUrl) return;
+    var a = document.createElement('a'); a.href = imgUrl; a.download = imgName; document.body.appendChild(a); a.click(); a.remove();
+    imgMsg('저장했어요. 카톡에서 사진으로 올려 주세요.');
+  });
+  $('imgShare').addEventListener('click', function () {
+    if (!imgBlob) return;
+    var f = new File([imgBlob], imgName, { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [f] })) navigator.share({ files: [f] }).catch(function () {});
+    else imgMsg('이 기기는 공유를 지원하지 않아요. 저장해서 올려 주세요.');
+  });
 
   /* ===== 이미지로 당번표 올리기 (브라우저 안에서 글자 읽기) ===== */
   var TESS_URL = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';

@@ -74,6 +74,9 @@ nav.bar button{flex:1;border:0;background:transparent;display:flex;flex-directio
 nav.bar button[aria-current="page"]{color:var(--blue);font-weight:800}
 .dotb{position:absolute;top:8px;left:calc(50% + 6px);min-width:20px;height:20px;border-radius:10px;background:var(--red);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px}
 #toast{position:fixed;left:16px;right:16px;bottom:88px;z-index:40;max-width:448px;margin:0 auto;background:#191F28;color:#fff;border-radius:14px;padding:14px 18px;font-size:15px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+#adm{position:fixed;inset:0;z-index:35;background:var(--bg);display:flex;flex-direction:column}
+#adm .top{display:flex;align-items:center;padding:6px 12px;background:#fff;border-bottom:1px solid var(--gray)}
+#adm iframe{flex:1;border:0;width:100%}
 #flow{position:fixed;inset:0;z-index:30;background:var(--bg);overflow:auto}
 #flow .wrap{padding-bottom:40px}
 .back{align-self:flex-start;min-height:44px;border:0;background:transparent;font-size:16px;font-weight:600;color:var(--sub);padding:0;display:flex;align-items:center;gap:4px}
@@ -134,6 +137,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   <main class="wrap" id="main"></main>
   <nav class="bar" aria-label="메뉴"><div class="in" id="navin"></div></nav>
   <div id="flow" class="hide" role="dialog" aria-modal="true" aria-label="당번 교환"></div>
+  <div id="adm" class="hide" role="dialog" aria-modal="true" aria-label="총무 화면"></div>
   <div id="toast" role="status" aria-live="polite" class="hide"></div>
 </section>
 <script>
@@ -142,7 +146,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   var C = window.DutyCore, DOW = C.DOW;
   var API = null, pin = null, me = null;
   var months = {}, requests = [], logs = [], acks = [], keys = [], cur = null;
-  var roster = null, notices = [], tab = 'home', sv = 'cal', selDay = null, exTab = 'in', flow = null;
+  var roster = null, adminDoc = null, admPrompt = false, notices = [], tab = 'home', sv = 'cal', selDay = null, exTab = 'in', flow = null;
   var unsubs = [], connected = false, toastT = 0;
   var PIN_KEY = 'jwadong-pin-v1', ME_KEY = 'jwadong-me-v1', VIEW_KEY = 'jwadong-view-v2';
   var URL_APP = 'https://zelong2-star.github.io/jwadongclub/duty/';
@@ -269,6 +273,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           unsubs.push(API.subscribeRequests(function (rs) { requests = rs; if (connected) renderAll(); }, onErr));
           unsubs.push(API.subscribeLog(function (ls) { logs = ls; if (connected) renderAll(); }, onErr));
           if (API.subscribeNotices) unsubs.push(API.subscribeNotices(function (ns) { notices = ns; if (connected) renderAll(); }, function () {}));
+          if (API.subscribeAdmin) unsubs.push(API.subscribeAdmin(function (a) { adminDoc = a; if (connected) renderAll(); }, function () {}));
           if (API.subscribeRoster) unsubs.push(API.subscribeRoster(function (r) { roster = r; if (connected) { renderAll(); if (!$('picker').classList.contains('hide')) renderNames($('search').value || ''); } }, function () {}));
           if (API.subscribeAcks) unsubs.push(API.subscribeAcks(function (as) { acks = as; if (connected) renderAll(); }, function () {}));
           if (me && allNames().indexOf(me) >= 0) enterApp(); else showPicker();
@@ -600,6 +605,37 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     c.appendChild(l); m.appendChild(c);
   }
 
+  // ---------- 총무 화면 (총무로 지정된 회원만, 총무 전용 암호 확인 후) ----------
+  var ADM_KEY = 'jwadong-admin-ok-v1';
+  function isAdminMe() { return !!(adminDoc && Array.isArray(adminDoc.admins) && adminDoc.admins.indexOf(me) >= 0); }
+  function admOk() { try { return !!adminDoc && !!adminDoc.hash && sessionStorage.getItem(ADM_KEY) === adminDoc.hash; } catch (e) { return false; } }
+  function openAdmin() {
+    var box = $('adm'); box.textContent = ''; box.classList.remove('hide'); document.body.style.overflow = 'hidden';
+    var top = el('div', 'top'); var bk = btn('back', '', closeAdmin); bk.appendChild(icon(I.l)); bk.appendChild(document.createTextNode('회원 화면으로')); top.appendChild(bk); box.appendChild(top);
+    var fr = document.createElement('iframe'); fr.src = 'admin.html?embed=1'; fr.setAttribute('title', '총무 화면'); box.appendChild(fr);
+  }
+  function closeAdmin() { var box = $('adm'); box.textContent = ''; box.classList.add('hide'); document.body.style.overflow = ''; renderAll(); }
+  function adminCard(m) {
+    var c = el('div', 'card'); c.style.display = 'flex'; c.style.flexDirection = 'column'; c.style.gap = '10px';
+    c.appendChild(el('div', 'lead', '총무'));
+    if (!adminDoc.hash) { c.appendChild(el('div', 'cap', '총무 전용 암호가 아직 정해지지 않았어요. 총무 화면에서 먼저 암호를 정해 주세요.')); m.appendChild(c); return; }
+    if (admOk()) { c.appendChild(btn('btn pri', '총무 화면 열기', openAdmin)); m.appendChild(c); return; }
+    if (!admPrompt) { c.appendChild(btn('btn pri', '총무 화면 열기', function () { admPrompt = true; renderAll(); })); m.appendChild(c); return; }
+    var inp = el('input', 'field'); inp.type = 'password'; inp.placeholder = '총무 전용 암호'; inp.autocomplete = 'off'; inp.setAttribute('aria-label', '총무 전용 암호');
+    var msg = el('div', 'err'); msg.setAttribute('role', 'alert');
+    var go = btn('btn pri', '확인', function () {
+      if (!inp.value) { msg.textContent = '암호를 입력해 주세요.'; return; }
+      go.disabled = true; msg.textContent = '';
+      C.adminHash(inp.value, adminDoc.salt).then(function (h) {
+        if (h === adminDoc.hash) { try { sessionStorage.setItem(ADM_KEY, h); } catch (e) {} admPrompt = false; renderAll(); openAdmin(); }
+        else { go.disabled = false; msg.textContent = '암호가 맞지 않아요.'; }
+      }).catch(function () { go.disabled = false; msg.textContent = '확인하지 못했어요. 다시 시도해 주세요.'; });
+    });
+    inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') go.click(); });
+    c.appendChild(inp); c.appendChild(msg); c.appendChild(go); m.appendChild(c);
+    setTimeout(function () { try { inp.focus(); } catch (e) {} }, 0);
+  }
+
   // ---------- 설정 ----------
   function setView(m) {
     m.appendChild(el('h1', '', '설정'));
@@ -607,6 +643,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     c.appendChild(el('div', 'cap', '내 이름')); c.appendChild(el('div', 'lead', me + ' 님'));
     c.appendChild(btn('btn', '이름 바꾸기', showPicker));
     m.appendChild(c);
+    if (isAdminMe()) adminCard(m);
     var c2 = el('div', 'card'); c2.style.display = 'flex'; c2.style.flexDirection = 'column'; c2.style.gap = '6px';
     c2.appendChild(el('div', 'lead', '안내'));
     c2.appendChild(el('div', 'cap', '당번은 하루 전까지 바꿀 수 있어요. 마감된 달은 총무에게 문의해 주세요.'));

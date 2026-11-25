@@ -137,7 +137,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
 </head>
 <body>
 <div class="wrap">
-  <div>
+  <div id="hdr">
     <h1>좌동클럽 총무</h1>
     <p class="sub">당번표 · 교환 · 회원 명단을 관리해요.</p>
   </div>
@@ -151,6 +151,15 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     <input class="field" id="pin" type="password" autocomplete="off">
     <div class="err" id="gateMsg" role="alert"></div>
     <button class="btn primary" id="enter" style="margin-top:8px;width:100%">들어가기</button>
+  </section>
+
+  <section id="apw" class="card hide">
+    <div class="hello">총무 전용 암호</div>
+    <div class="cap">총무로 지정된 분만 아는 암호예요. 클럽 암호와 달라요.</div>
+    <label class="cap" for="apwIn" style="display:block;margin-top:8px">총무 전용 암호</label>
+    <input class="field" id="apwIn" type="password" autocomplete="off">
+    <div class="err" id="apwMsg" role="alert"></div>
+    <button class="btn primary" id="apwGo" style="margin-top:8px;width:100%">확인</button>
   </section>
 
   <section id="setup" class="card hide">
@@ -269,6 +278,17 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <div id="impBody"></div>
       </div>
       <div class="card" id="memCard"><div id="memList"></div></div>
+      <div class="card" id="admCard">
+        <div class="hello">총무 전용 암호</div>
+        <div class="cap" id="admState" style="margin-top:4px"></div>
+        <label class="cap" for="admPw1" style="display:block;margin-top:10px">새 암호 (6자 이상)</label>
+        <input class="field" id="admPw1" type="password" autocomplete="new-password" style="margin:4px 0 0">
+        <label class="cap" for="admPw2" style="display:block;margin-top:10px">한 번 더</label>
+        <input class="field" id="admPw2" type="password" autocomplete="new-password" style="margin:4px 0 0">
+        <div class="err" id="admMsg" role="alert" style="margin-top:6px"></div>
+        <button class="btn primary" id="admSet" style="width:100%;margin-top:6px">암호 정하기</button>
+        <div class="cap" style="margin-top:10px">아래 명단에서 &quot;총무 지정&quot;을 누른 분은 회원 앱 설정에서 총무 화면을 열 수 있어요.</div>
+      </div>
       <div class="note">명단에 있는 분이 회원 앱의 이름 선택 화면에 나와요. 이름을 바꾸면 모든 달의 당번표 이름도 같이 바뀌고, 그 이름으로 걸린 대기 중 교환 요청은 자동으로 정리돼요. &quot;쉼&quot;으로 해 둔 분은 자동 배정에서 빠지지만 앱에서는 그대로 쓸 수 있어요.</div>
     </div>
 
@@ -312,15 +332,16 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
 (function () {
   'use strict';
   var C = window.DutyCore, DOW = C.DOW;
-  var notices = [], rosterDoc = null, tab = 'cal', memEdit = null, memArm = null, memArmT = 0, proxy = { from: '', slot: '', target: '', msg: '', nudge: '' };
+  var EMBED = /[?&]embed=1/.test(location.search), adminDoc = null, adminDecided = false, notices = [], rosterDoc = null, tab = 'cal', memEdit = null, memArm = null, memArmT = 0, proxy = { from: '', slot: '', target: '', msg: '', nudge: '' };
   var API = null, pin = null, months = {}, logs = [], requests = [], acks = [], reqFilter = 'pending', keys = [], cur = null;
   var mode = 'swap', sel = null, unsubs = [], connected = false, armed = {};
   var PIN_KEY = 'jwadong-admin-pin-v1';
-  try { pin = localStorage.getItem(PIN_KEY); } catch (e) {}
+  try { pin = localStorage.getItem(PIN_KEY); if (!pin && EMBED) pin = localStorage.getItem('jwadong-pin-v1'); } catch (e) {}
+  if (EMBED) { var st0 = document.createElement('style'); st0.textContent = '#hdr{display:none}.wrap{padding-top:14px}'; document.head.appendChild(st0); }
 
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
-  function show(id) { ['wait', 'gate', 'setup', 'app', 'err'].forEach(function (s) { $(s).classList.toggle('hide', s !== id); }); $('tabs').classList.toggle('hide', id !== 'app'); }
+  function show(id) { ['wait', 'gate', 'apw', 'setup', 'app', 'err'].forEach(function (s) { $(s).classList.toggle('hide', s !== id); }); $('tabs').classList.toggle('hide', id !== 'app'); }
   function setStatus(t) { $('status').textContent = t; }
   function ym() { return C.parseKey(cur); }
   function duties() { var m = months[cur]; return (m && m.duties) || {}; }
@@ -352,7 +373,10 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           if (API.subscribeAcks) unsubs.push(API.subscribeAcks(function (as) { acks = as; if (connected) renderAll(); }, function () {}));
           if (API.subscribeNotices) unsubs.push(API.subscribeNotices(function (ns) { notices = ns; if (connected) renderAll(); }, function () {}));
           if (API.subscribeRoster) unsubs.push(API.subscribeRoster(function (r) { rosterDoc = r; if (connected) renderAll(); }, function () {}));
-          show('app'); setStatus(defStatus()); renderAll();
+          adminDecided = false;
+          var decide = function () { if (adminDecided) return; adminDecided = true; if (needAdminPw()) { show('apw'); } else { show('app'); setStatus(defStatus()); renderAll(); } };
+          if (API.subscribeAdmin) unsubs.push(API.subscribeAdmin(function (a) { adminDoc = a; if (!adminDecided) decide(); else if (connected) renderAll(); }, function () { adminDoc = null; decide(); })); else decide();
+          setTimeout(decide, 3000);
         } else {
           if (keys.indexOf(cur) < 0) cur = keys[keys.length - 1];
           renderAll();
@@ -458,7 +482,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var ae = document.activeElement;
     var typing = mode === 'input' && ae && ae.classList && ae.classList.contains('in');
     if (!typing) renderCal();
-    renderLog(); renderReqs(); syncLock(); renderAcks(); renderMembers(); renderNotices(); renderToday(); renderTabs(); if ($('autoBox').open) renderAuto();
+    renderLog(); renderReqs(); syncLock(); renderAcks(); renderMembers(); renderAdminCard(); renderNotices(); renderToday(); renderTabs(); if ($('autoBox').open) renderAuto();
   }
 
   function nextKey(k) { var p = C.parseKey(k), y = p[0], m = p[1] + 1; if (m > 12) { m = 1; y++; } return y + '-' + C.pad(m); }
@@ -585,6 +609,40 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     $('monthBar').classList.toggle('hide', tab !== 'cal' && tab !== 'ex');
   }
 
+
+  // ---------- 총무 전용 암호 / 총무 지정 ----------
+  var ADM_KEY = 'jwadong-admin-ok-v1';
+  function admOk() { try { return sessionStorage.getItem(ADM_KEY) === (adminDoc && adminDoc.hash); } catch (e) { return false; } }
+  function needAdminPw() { return !!(adminDoc && adminDoc.hash) && !admOk(); }
+  $('apwGo').addEventListener('click', function () {
+    var v = $('apwIn').value; if (!v) { $('apwMsg').textContent = '암호를 입력해 주세요.'; return; }
+    $('apwGo').disabled = true; $('apwMsg').textContent = '';
+    C.adminHash(v, adminDoc.salt).then(function (h) {
+      $('apwGo').disabled = false;
+      if (h === adminDoc.hash) { try { sessionStorage.setItem(ADM_KEY, h); } catch (e) {} $('apwIn').value = ''; show('app'); setStatus(defStatus()); renderAll(); }
+      else $('apwMsg').textContent = '암호가 맞지 않아요.';
+    }).catch(function () { $('apwGo').disabled = false; $('apwMsg').textContent = '확인하지 못했어요. 다시 시도해 주세요.'; });
+  });
+  $('apwIn').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('apwGo').click(); });
+  function adminList() { return (adminDoc && Array.isArray(adminDoc.admins)) ? adminDoc.admins : []; }
+  function saveAdmin(admins, salt, hash) { return API.setAdmin({ admins: admins, salt: salt !== undefined ? salt : (adminDoc && adminDoc.salt) || '', hash: hash !== undefined ? hash : (adminDoc && adminDoc.hash) || '' }); }
+  function admMsg(t) { $('admMsg').textContent = t || ''; }
+  function renderAdminCard() {
+    var has = !!(adminDoc && adminDoc.hash);
+    $('admState').textContent = has ? '총무 전용 암호가 정해져 있어요. 총무 화면에 들어갈 때 이 암호를 물어요.' : '아직 총무 전용 암호를 정하지 않았어요. 정하면 총무 화면이 이 암호로 보호돼요.';
+    $('admSet').textContent = has ? '암호 바꾸기' : '암호 정하기';
+  }
+  $('admSet').addEventListener('click', function () {
+    var a = $('admPw1').value, b = $('admPw2').value;
+    if (a.length < 6) { admMsg('암호는 6자 이상으로 정해 주세요.'); return; }
+    if (a !== b) { admMsg('두 칸이 서로 달라요.'); return; }
+    $('admSet').disabled = true; admMsg('');
+    var salt = C.newSalt();
+    C.adminHash(a, salt).then(function (h) { return saveAdmin(adminList(), salt, h).then(function () { try { sessionStorage.setItem(ADM_KEY, h); } catch (e) {} return h; }); })
+      .then(function () { $('admPw1').value = ''; $('admPw2').value = ''; $('admSet').disabled = false; admMsg(''); setStatus('총무 전용 암호를 저장했어요. 총무로 지정한 분께만 알려 주세요.'); })
+      .catch(function () { $('admSet').disabled = false; admMsg('저장하지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
+  });
+
   // ---------- 회원 명단 ----------
   function nameOk(n) { return /^[가-힣A-Za-z0-9]{1,10}$/.test(n); }
   function upcomingOf(n) {
@@ -616,7 +674,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var names = roster().map(function (n) { return n === oldN ? newN : n; }), paused = pausedList().map(function (n) { return n === oldN ? newN : n; });
     var chain = Promise.resolve();
     jobs.forEach(function (j) { chain = chain.then(function () { return API.setMonth(j[0], j[1]); }); });
-    chain.then(function () { return saveRoster(names, paused); }).then(function () {
+    chain.then(function () { return saveRoster(names, paused); }).then(function () { var l = adminList(); return l.indexOf(oldN) >= 0 ? saveAdmin(l.map(function (x) { return x === oldN ? newN : x; })) : null; }).then(function () {
       var i = auto.excl.indexOf(oldN); if (i >= 0) auto.excl[i] = newN;
       memEdit = null; memMsg(''); setStatus(oldN + ' → ' + newN + ' 이름을 바꿨어요(당번표 ' + jobs.length + '개 달).'); renderAll();
     }).catch(memFail);
@@ -646,7 +704,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') ok.click(); });
         row.appendChild(ok); row.appendChild(no); box.appendChild(row); return;
       }
-      var nm = el('div', 'nm', n); if (isP) { nm.appendChild(document.createTextNode(' ')); nm.appendChild(el('span', 'tag p', '쉼')); }
+      var isA = adminList().indexOf(n) >= 0;
+      var nm = el('div', 'nm', n); if (isP) { nm.appendChild(document.createTextNode(' ')); nm.appendChild(el('span', 'tag p', '쉼')); } if (isA) { nm.appendChild(document.createTextNode(' ')); nm.appendChild(el('span', 'tag ok', '총무')); }
       nm.appendChild(el('small', '', up.length ? '앞으로 당번 ' + up.length + '건 · 다음 ' + C.label(up[0].k, up[0].d) : '앞으로 당번 없음'));
       row.appendChild(nm);
       var acts = el('div', 'acts');
@@ -660,7 +719,9 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         clearTimeout(memArmT); memArm = null;
         saveRoster(roster().filter(function (x) { return x !== n; }), paused).then(function () { memMsg(''); setStatus(n + ' 님을 명단에서 뺐어요. 당번표에 남은 당번은 그대로예요.'); }).catch(memFail);
       });
-      acts.appendChild(b1); acts.appendChild(b2); acts.appendChild(b3); row.appendChild(acts); box.appendChild(row);
+      var bA = el('button', 'btn sm', isA ? '총무 해제' : '총무 지정'); bA.type = 'button';
+      bA.addEventListener('click', function () { bA.disabled = true; var l = adminList(), nl = isA ? l.filter(function (x) { return x !== n; }) : l.concat([n]); saveAdmin(nl).then(function () { memMsg(''); }).catch(function () { bA.disabled = false; memFail(); }); });
+      acts.appendChild(b1); acts.appendChild(b2); acts.appendChild(bA); acts.appendChild(b3); row.appendChild(acts); box.appendChild(row);
     });
   }
   $('memAdd').addEventListener('click', function () {

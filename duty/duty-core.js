@@ -58,6 +58,15 @@
       return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('').slice(0, 40);
     });
   }
+  // ---- 총무 전용 암호 (PBKDF2-SHA256, 느린 해시) ----
+  function hex(buf) { return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
+  function newSalt() { var a = new Uint8Array(16); crypto.getRandomValues(a); return hex(a); }
+  function adminHash(pw, saltHex) {
+    var enc = new TextEncoder();
+    return crypto.subtle.importKey('raw', enc.encode(String(pw)), 'PBKDF2', false, ['deriveBits']).then(function (k) {
+      return crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: enc.encode('jwadong-admin:' + saltHex), iterations: 150000 }, k, 256);
+    }).then(hex);
+  }
   // ---- 자동 배정 (가나다순 순환) ----
   // opts: { month:'YYYY-MM', dows:[0..6 (월=0)], per:2, off:[휴관일(일)], pool:[이름들], start:'직전 마지막 당번 이름' }
   // 반환: { ok, duties:{일:[이름,...]}, count:{이름:횟수}, last:'마지막 이름' } 또는 { ok:false, reason }
@@ -151,6 +160,6 @@
     return out;
   }
   g.DutyCore = { DOW: DOW, pad: pad, parseKey: parseKey, dowOf: dowOf, label: label, md: md, isPast: isPast,
-    swapDuties: swapDuties, noticeText: noticeText, parseNotice: parseNotice, hashPin: hashPin,
+    swapDuties: swapDuties, noticeText: noticeText, parseNotice: parseNotice, hashPin: hashPin, adminHash: adminHash, newSalt: newSalt,
     expired: expired, dkey: dkey, condOk: condOk, condText: condText, canAcceptOpen: canAcceptOpen, autoAssign: autoAssign, myOptions: myOptions, swapX: swapX };
 })(window);

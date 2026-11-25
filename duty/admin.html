@@ -134,12 +134,12 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 <script>(function(){function u(){var f=window.DutyFx;if(!f)return;var g=f.get();var s=document.getElementById('fxS'),h=document.getElementById('fxH');if(!s)return;s.textContent='효과음 '+(g.sound?'켬':'끔');h.textContent='진동 '+(g.haptic?'켬':'끔');}
 document.addEventListener('DOMContentLoaded',function(){u();document.getElementById('fxS').onclick=function(){DutyFx.set({sound:!DutyFx.get().sound});u();DutyFx.ok();};document.getElementById('fxH').onclick=function(){DutyFx.set({haptic:!DutyFx.get().haptic});u();DutyFx.ok();};});})();</script>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125o"></script>
-<script src="cal-ocr.js?v=20261125o"></script>
-<script src="fx.js?v=20261125o"></script>
-<script src="notice-img.js?v=20261125o"></script>
+<script src="duty-core.js?v=20261125p"></script>
+<script src="cal-ocr.js?v=20261125p"></script>
+<script src="fx.js?v=20261125p"></script>
+<script src="notice-img.js?v=20261125p"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125o';
+import { makeApi } from './common.js?v=20261125p';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -527,6 +527,14 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         });
         item.appendChild(u);
       }
+      var dl = el('button', 'btn', '내역 삭제'); dl.type = 'button';
+      dl.addEventListener('click', function () {
+        askModal({ title: '이 내역을 삭제할까요?', body: l.text + (l.undone ? '' : '\n\n되돌리기가 끝난 내역이 아니에요.\n삭제하면 이 교환은 되돌릴 수 없고\n카톡 이미지의 노란색 표시도 사라져요.') + '\n\n삭제하면 복구할 수 없어요.', yes: '삭제', no: '취소' }, function (ok) {
+          if (!ok) return; dl.disabled = true;
+          API.deleteLog(l.id).then(function () { setStatus('변경 내역을 삭제했어요.'); }).catch(function () { dl.disabled = false; setStatus('삭제하지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
+        });
+      });
+      item.appendChild(dl);
       box.appendChild(item);
     });
   }
@@ -1466,6 +1474,15 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           API.setRequestStatus(r.id, 'cancelled').then(function () { setStatus('요청을 취소했어요.'); }).catch(function () { b.disabled = false; setStatus('취소하지 못했어요.'); });
         });
         item.appendChild(b);
+      } else {
+        var dr = el('button', 'btn', '요청 삭제'); dr.type = 'button';
+        dr.addEventListener('click', function () {
+          askModal({ title: '이 요청을 삭제할까요?', body: reqDesc(r) + '\n\n삭제하면 복구할 수 없어요.', yes: '삭제', no: '취소' }, function (ok) {
+            if (!ok) return; dr.disabled = true;
+            API.deleteRequest(r.id).then(function () { setStatus('요청을 삭제했어요.'); }).catch(function () { dr.disabled = false; setStatus('삭제하지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
+          });
+        });
+        item.appendChild(dr);
       }
       box.appendChild(item);
     });

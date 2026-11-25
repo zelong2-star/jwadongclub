@@ -82,6 +82,48 @@ nav.tabs button[aria-current="page"]{color:var(--blue);font-weight:800}
 .dotb{position:absolute;top:8px;left:calc(50% + 6px);min-width:20px;height:20px;border-radius:10px;background:var(--red);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px}
 .btn:focus-visible,.chip:focus-visible,.in:focus-visible,.seg button:focus-visible,summary:focus-visible,textarea:focus-visible,.field:focus-visible,nav.tabs button:focus-visible,.mnav button:focus-visible,.drop:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
 @media (max-width:520px){.chip{font-size:13px}.cell{min-height:96px;padding:3px 2px}.wrap{padding:20px 14px 120px}}
+
+#toast{position:fixed;left:16px;right:16px;bottom:88px;z-index:40;max-width:448px;margin:0 auto;background:#191F28;color:#fff;border-radius:14px;padding:14px 18px;font-size:15px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+#flow{position:fixed;inset:0;z-index:30;background:var(--bg);overflow:auto}
+#flow .wrap{max-width:480px;padding-bottom:40px}
+#flow .row>*{flex:1}
+#flow .btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;font-size:17px}
+#flow .btn.pri{background:var(--blue);color:#fff}
+#flow .btn.out{background:#fff;border:1.5px solid var(--line)}
+#flow .btn.sm{width:auto;min-height:44px;padding:0 16px;font-size:15px}
+#flow .lead{font-size:17px;font-weight:700}
+.back{align-self:flex-start;min-height:44px;border:0;background:transparent;font-size:16px;font-weight:600;color:var(--sub);padding:0;display:flex;align-items:center;gap:4px}
+.opt{width:100%;text-align:left;border:0;border-radius:20px;background:#fff;padding:20px;display:flex;flex-direction:column;gap:4px}
+.opt b{font-size:18px;font-weight:800}.opt span{font-size:15px;color:var(--sub)}
+.tog{min-height:52px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:16px;font-weight:600;padding:0 4px}
+.tog[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:800}
+.tog:disabled{opacity:.4}
+.dowrow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.dates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#flow .mnav{display:flex;align-items:center;justify-content:space-between}
+#flow .mnav .t{font-size:20px;font-weight:800}
+#flow .mnav button{width:48px;height:48px;min-width:48px;border:0;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center}
+#flow .mnav button:disabled{opacity:.35}
+.fcal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.fcal .h{text-align:center;font-size:14px;font-weight:700;color:var(--sub);padding:4px 0}.fcal .h.we{color:var(--red)}
+.fcal .c{min-height:46px;border:0;border-radius:10px;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:6px 1px 4px;gap:2px;font-size:16px;font-weight:600}
+.fcal .c.has{background:var(--gray);min-height:78px}.fcal .c.mine{background:var(--blue-soft);color:var(--blue);font-weight:800}
+.fcal .c.on{outline:2px solid var(--blue)}.fcal .c.we{color:var(--red)}.fcal .c.mine.we{color:var(--blue)}
+.fcal .c .dn{font-size:14px;font-weight:700}
+.fcal .c .nn{font-size:12px;font-weight:600;line-height:1.25;color:var(--ink);max-width:100%;overflow:hidden;white-space:nowrap}
+.fcal .c.mine .nn{color:var(--blue);font-weight:800}.fcal .c:disabled{opacity:.35}
+#flow .list>.it{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}
+#flow .list>.it:last-child{border-bottom:0;padding-bottom:0}#flow .list>.it:first-child{padding-top:0}
+#flow .it .d{font-size:17px;font-weight:700}#flow .it .n{font-size:15px;color:var(--sub)}
+.cmp{display:flex;flex-direction:column;gap:8px}
+.cmp .blk{border-radius:16px;padding:14px 16px}
+.cmp .now{background:var(--gray)}.cmp .after{background:var(--blue-soft)}
+.cmp .k{font-size:14px;font-weight:700;color:var(--sub);margin-bottom:6px}.cmp .after .k{color:var(--blue)}
+.cmp .ln{display:flex;justify-content:space-between;gap:10px;font-size:16px;padding:2px 0}.cmp .ln b{font-weight:800}
+pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-family:inherit;font-size:15px;line-height:1.7;white-space:pre-wrap;user-select:text}
+.chip.mine{background:var(--blue-soft);color:var(--blue)}
+.seg.two{flex-wrap:wrap}.seg.two button{flex:1 1 45%}
+.back:focus-visible,.opt:focus-visible,.tog:focus-visible,.fcal .c:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
 <script src="duty-core.js"></script>
@@ -129,7 +171,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       </div>
       <div class="row">
         <button class="btn sm" id="newMonth">새 달 만들기</button>
-        <button class="btn sm" id="lock" aria-pressed="false">이 달 교환 마감</button>
+        <button class="btn sm lockon hide" id="lock" aria-pressed="true">이 달은 마감 상태예요 (풀기)</button>
       </div>
     </div>
 
@@ -139,13 +181,18 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <button id="modeInput" aria-pressed="false">입력</button>
       </div>
       <div class="status" id="status" role="status"></div>
+      <div class="card hide" id="selCard">
+        <div class="lead" id="selTitle"></div>
+        <div class="cap" id="selHint" style="margin-top:4px"></div>
+        <div class="row" style="margin-top:12px">
+          <button class="btn primary" id="selReq">이 회원 대신 교환 요청 보내기</button>
+          <button class="btn" id="selCancel">선택 취소</button>
+        </div>
+      </div>
       <section class="cal" aria-label="당번 달력">
         <div class="title" id="calTitle"></div>
         <div class="grid" id="grid"></div>
       </section>
-      <div class="row">
-        <button class="btn" id="cancel">선택 취소</button>
-      </div>
       <button class="btn primary" id="mkImg" style="width:100%">카톡용 당번표 이미지 만들기</button>
       <div class="card hide" id="imgCard">
         <div class="cap" id="imgMsg" role="status">이미지를 복사한 뒤 카톡 대화창에 붙여넣거나(Ctrl+V), 저장해서 올리세요.</div>
@@ -160,11 +207,6 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     </div>
 
     <div id="panel-ex" class="panel hide">
-      <div class="card" id="proxyCard">
-        <div class="hello">회원 대신 교환 요청 보내기</div>
-        <div class="cap" style="margin-top:4px">회원을 고르고, 바꿀 당번과 상대를 고르면 그 회원 이름으로 요청이 올라가요. 상대가 앱에서 수락하면 바로 바뀌어요.</div>
-        <div id="proxyBody"></div>
-      </div>
       <details class="card" id="reqBox" open>
         <summary id="reqSummary">교환 요청 현황</summary>
         <div class="seg" role="group" aria-label="요청 보기" style="margin-top:8px">
@@ -194,6 +236,12 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           <button class="btn primary" id="memAdd">추가</button>
         </div>
         <div class="err" id="memMsg" role="alert" style="margin-top:6px"></div>
+      </div>
+      <div class="card" id="impCard">
+        <div class="hello">게임현황판에서 명단 가져오기</div>
+        <div class="cap" style="margin-top:4px">좌동클럽 게임현황판의 회원 명단과 비교해서 한 번에 맞춰요.</div>
+        <button class="btn" id="impLoad" style="width:100%;margin-top:10px">불러와서 비교하기</button>
+        <div id="impBody"></div>
       </div>
       <div class="card" id="memCard"><div id="memList"></div></div>
       <div class="note">명단에 있는 분이 회원 앱의 이름 선택 화면에 나와요. 이름을 바꾸면 모든 달의 당번표 이름도 같이 바뀌고, 그 이름으로 걸린 대기 중 교환 요청은 자동으로 정리돼요. &quot;쉼&quot;으로 해 둔 분은 자동 배정에서 빠지지만 앱에서는 그대로 쓸 수 있어요.</div>
@@ -239,6 +287,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
 
   <div class="card hide" id="err">연결하지 못했어요. 인터넷 연결을 확인하고 새로고침해 주세요.</div>
 </div>
+<div id="flow" class="hide" role="dialog" aria-modal="true" aria-label="교환 요청"></div>
+<div id="toast" role="status" aria-live="polite" class="hide"></div>
 <nav class="tabs hide" id="tabs" aria-label="메뉴"><div class="in" id="tabin"></div></nav>
 <script>
 (function () {
@@ -362,6 +412,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         grid.appendChild(cell);
       })(k);
     }
+    renderSel();
   }
 
   function renderLog() {
@@ -389,7 +440,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var ae = document.activeElement;
     var typing = mode === 'input' && ae && ae.classList && ae.classList.contains('in');
     if (!typing) renderCal();
-    renderLog(); renderReqs(); syncLock(); renderAcks(); renderMembers(); renderProxy(); renderNotices(); renderTabs(); if ($('autoBox').open) renderAuto();
+    renderLog(); renderReqs(); syncLock(); renderAcks(); renderMembers(); renderNotices(); renderTabs(); if ($('autoBox').open) renderAuto();
   }
 
   function nextKey(k) { var p = C.parseKey(k), y = p[0], m = p[1] + 1; if (m > 12) { m = 1; y++; } return y + '-' + C.pad(m); }
@@ -421,7 +472,17 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   }
   $('modeSwap').addEventListener('click', function () { mode = 'swap'; syncMode(); setStatus(defStatus()); });
   $('modeInput').addEventListener('click', function () { mode = 'input'; syncMode(); setStatus(defStatus()); });
-  $('cancel').addEventListener('click', function () { sel = null; setStatus(defStatus()); renderCal(); });
+  function renderSel() {
+    var c = $('selCard');
+    if (!sel || mode !== 'swap') { c.classList.add('hide'); return; }
+    c.classList.remove('hide');
+    $('selTitle').textContent = sel.name + ' 님 · ' + C.label(sel.month, sel.day) + ' 선택됨';
+    var past = C.isPast(sel.month, sel.day);
+    $('selHint').textContent = past ? '이미 지난 당번이라 요청은 보낼 수 없어요.' : '바로 바꾸려면 달력에서 바꿀 상대를 누르세요. 상대가 수락해야 하는 요청은 아래 버튼으로 보내요.';
+    $('selReq').disabled = past;
+  }
+  $('selReq').addEventListener('click', function () { if (sel && window.__openAdminFlow) window.__openAdminFlow(sel); });
+  $('selCancel').addEventListener('click', function () { sel = null; setStatus(defStatus()); renderCal(); });
   arm('load', '불러오기', '이 달 내용을 덮어씁니다. 한 번 더 누르세요', function () {
     var r = C.parseNotice($('paste').value || '', ym()[0]);
     if (!r.found) { setStatus('당번 줄을 찾지 못했어요. "12/1(화) 이름·이름" 형식인지 확인해 주세요.'); return; }
@@ -498,6 +559,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     keys.forEach(function (k) { Object.keys(duties2(k)).map(Number).sort(function (a, b) { return a - b; }).forEach(function (d) { if (duties2(k)[d].indexOf(n) >= 0 && !C.isPast(k, d)) out.push({ k: k, d: d }); }); });
     return out;
   }
+  function isLocked(k) { return !!(months[k] && months[k].locked); }
+  function dmAll() { var o = {}; keys.forEach(function (k) { o[k] = duties2(k); }); return o; }
   function duties2(k) { return (months[k] && months[k].duties) || {}; }
   function memMsg(t) { $('memMsg').textContent = t || ''; }
   function saveRoster(names, paused) {
@@ -577,6 +640,50 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   $('memNew').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('memAdd').click(); });
 
 
+
+  // ---------- 게임현황판 명단 가져오기 ----------
+  var imp = null;
+  function sim(a, b) { // 글자 수가 같고 한 글자만 다르면 비슷한 이름
+    if (a.length !== b.length) return false; var d = 0; for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) d++; return d === 1;
+  }
+  function renderImp() {
+    var box = $('impBody'); box.textContent = '';
+    if (!imp) return;
+    var cur0 = roster(), act = imp.active;
+    var toAdd = act.filter(function (n) { return cur0.indexOf(n) < 0; });
+    var extra = cur0.filter(function (n) { return act.indexOf(n) < 0; });
+    var n1 = el('div', 'note'); n1.style.marginTop = '12px';
+    n1.textContent = '게임현황판 회원 ' + act.length + '명 · 지금 앱 명단 ' + cur0.length + '명 → 새로 들어올 분 ' + toAdd.length + '명' + (extra.length ? ' · 게임현황판에 없는 이름 ' + extra.length + '명' : '');
+    box.appendChild(n1);
+    if (extra.length) {
+      box.appendChild(el('div', 'cap', '아래 이름은 게임현황판에 없어요. 오타일 수 있으니 확인해 주세요.')).style.marginTop = '10px';
+      extra.forEach(function (n) {
+        var row = el('div', 'mem'); row.appendChild(el('div', 'nm', n));
+        var cand = act.filter(function (x) { return sim(n, x) && cur0.indexOf(x) < 0; });
+        var acts = el('div', 'acts');
+        cand.forEach(function (x) {
+          var b = el('button', 'btn sm primary', x + '(으)로 바꾸기'); b.type = 'button';
+          b.addEventListener('click', function () { b.disabled = true; renameMember(n, x); setTimeout(renderImp, 400); });
+          acts.appendChild(b);
+        });
+        if (!cand.length) acts.appendChild(el('span', 'cap', '비슷한 이름 없음 · 그대로 둠'));
+        row.appendChild(acts); box.appendChild(row);
+      });
+    }
+    var ap = el('button', 'btn primary', toAdd.length ? '새로 들어올 ' + toAdd.length + '명 추가하기' : '추가할 회원이 없어요'); ap.type = 'button'; ap.style.cssText = 'width:100%;margin-top:12px'; ap.disabled = !toAdd.length;
+    ap.addEventListener('click', function () {
+      ap.disabled = true;
+      saveRoster(cur0.concat(toAdd), pausedList()).then(function () { setStatus('게임현황판 명단에서 ' + toAdd.length + '명을 추가했어요.'); imp = null; renderImp(); }).catch(function () { ap.disabled = false; memFail(); });
+    });
+    box.appendChild(ap);
+  }
+  $('impLoad').addEventListener('click', function () {
+    var b = $('impLoad'); b.disabled = true; memMsg('');
+    fetch('board-members.json?t=' + Date.now()).then(function (r) { if (!r.ok) throw new Error('x'); return r.json(); }).then(function (d) {
+      imp = { active: (d.active || []).filter(nameOk) }; b.disabled = false; renderImp();
+    }).catch(function () { b.disabled = false; memMsg('게임현황판 명단을 불러오지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
+  });
+
   // ---------- 클럽 공지 ----------
   function ntMsg(t) { $('ntMsg').textContent = t || ''; }
   function ntDate(t) { var d = new Date(t); return d.getFullYear() + '.' + (d.getMonth() + 1) + '.' + d.getDate(); }
@@ -610,74 +717,287 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     }).catch(function () { $('ntSend').disabled = false; ntMsg('올리지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
   });
 
-  // ---------- 회원 대신 교환 요청 ----------
-  var APP_URL = 'https://zelong2-star.github.io/jwadongclub/duty/';
-  function isLocked(k) { return !!(months[k] && months[k].locked); }
-  function dmAll() { var o = {}; keys.forEach(function (k) { o[k] = duties2(k); }); return o; }
-  function slotKey(k, d, j) { return k + '|' + d + '|' + j; }
-  function parseSlot(v) { if (!v) return null; var q = v.split('|'); var k = q[0], d = parseInt(q[1], 10), j = parseInt(q[2], 10); return { month: k, day: d, j: j, name: (duties2(k)[d] || [])[j] }; }
-  function proxyOk(from, t) {
-    if (!from || !t || !t.name || !from.name || t.name === from.name) return false;
-    if (C.isPast(t.month, t.day) || C.isPast(from.month, from.day) || isLocked(t.month) || isLocked(from.month)) return false;
+  // ---------- 회원 앱과 같은 교환 요청 흐름 (선택한 회원 이름으로 요청) ----------
+  (function () {
+    var me = null, flow = null, toastT = 0;
+    var URL_APP = 'https://zelong2-star.github.io/jwadongclub/duty/';
+    var KAKAO_KEY = 'dc69bf31ed2b2b673a737561a98602c4', KAKAO_SDK = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js';
+    var I = { swap: 'M7 7h12l-3-3M17 17H5l3 3', l: 'M15 6l-6 6 6 6', r: 'M9 6l6 6-6 6' };
+    function btn(cls, text, fn) { var b = el('button', cls, text); b.type = 'button'; if (fn) b.addEventListener('click', fn); return b; }
+    function toast(t) { var n = $('toast'); n.textContent = t; n.classList.remove('hide'); clearTimeout(toastT); toastT = setTimeout(function () { n.classList.add('hide'); }, 4500); }
+    function toggle(arr, v) { var i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); else arr.push(v); }
+    function duties(k) { var mm = months[k]; return (mm && mm.duties) || {}; }
+  function lab(k, d) { return C.label(k, d); }
+  function longLab(k, d) { var p = C.parseKey(k); return p[1] + '월 ' + d + '일 ' + C.dowOf(p[0], p[1], d) + '요일'; }
+  function sortedDays(k) { return Object.keys(duties(k)).map(Number).sort(function (a, b) { return a - b; }); }
+  function slotOf(k, d, j) { return { month: k, day: d, j: j, name: (duties(k)[d] || [])[j] }; }
+  function others(k, d) { return (duties(k)[d] || []).filter(function (n) { return n && n !== me; }); }
+  function namesOf(k, d) { return (duties(k)[d] || []).filter(Boolean); }
+  function sameSlots(a, b) { return a.month === b.month && (a.toMonth || a.month) === (b.toMonth || b.month) && a.fromDay === b.fromDay && a.fromJ === b.fromJ && a.toDay === b.toDay && a.toJ === b.toJ; }
+  function canPair(from, t) {
+    if (!t.name || t.name === me) return false;
+    if (C.isPast(t.month, t.day) || isLocked(t.month) || isLocked(from.month)) return false;
     if (t.month === from.month && t.day === from.day) return false;
-    if ((duties2(t.month)[t.day] || []).indexOf(from.name) >= 0) return false;
-    if ((duties2(from.month)[from.day] || []).indexOf(t.name) >= 0) return false;
+    if (namesOf(t.month, t.day).indexOf(me) >= 0) return false;
+    if (namesOf(from.month, from.day).indexOf(t.name) >= 0) return false;
     return C.swapX(dmAll(), from, t).ok;
   }
-  function renderProxy() {
-    var ae = document.activeElement; if (ae && ae.closest && ae.closest('#proxyCard') && ae.tagName === 'SELECT') return;
-    var box = $('proxyBody'); box.textContent = '';
-    function sel(id, label, opts, val, onchg) {
-      var lab0 = el('label', 'cap', label); lab0.setAttribute('for', id); lab0.style.display = 'block'; lab0.style.marginTop = '10px';
-      var s0 = el('select', 'field'); s0.id = id; s0.style.margin = '4px 0 0';
-      opts.forEach(function (o) { var op = el('option', '', o[1]); op.value = o[0]; if (o[0] === val) op.selected = true; s0.appendChild(op); });
-      s0.addEventListener('change', function () { onchg(s0.value); });
-      box.appendChild(lab0); box.appendChild(s0);
-    }
-    var names = roster();
-    sel('pxFrom', '1. 요청하는 회원', [['', '회원을 고르세요']].concat(names.map(function (n) { return [n, n]; })), proxy.from, function (v) { proxy.from = v; proxy.slot = ''; proxy.target = ''; proxy.msg = ''; proxy.nudge = ''; renderProxy(); });
-    if (proxy.from) {
-      var mine = upcomingOf(proxy.from).filter(function (x) { return !isLocked(x.k); });
-      var mineOpts = [['', mine.length ? '바꿀 당번을 고르세요' : '바꿀 수 있는 당번이 없어요']];
-      mine.forEach(function (x) { var j = duties2(x.k)[x.d].indexOf(proxy.from); mineOpts.push([slotKey(x.k, x.d, j), C.label(x.k, x.d)]); });
-      sel('pxSlot', '2. ' + proxy.from + ' 님이 넘길 당번', mineOpts, proxy.slot, function (v) { proxy.slot = v; proxy.target = ''; proxy.msg = ''; proxy.nudge = ''; renderProxy(); });
-    }
-    var from = parseSlot(proxy.slot);
-    if (from) {
-      var tOpts = [['', '상대 당번을 고르세요']];
-      C_days2().forEach(function (x) {
-        (duties2(x.k)[x.d] || []).forEach(function (nm, j) { var t = { month: x.k, day: x.d, j: j, name: nm }; if (nm && proxyOk(from, t)) tOpts.push([slotKey(x.k, x.d, j), C.label(x.k, x.d) + '  ' + nm]); });
-      });
-      if (tOpts.length === 1) tOpts[0][1] = '바꿀 수 있는 상대 당번이 없어요';
-      sel('pxTarget', '3. 바꿀 상대의 당번', tOpts, proxy.target, function (v) { proxy.target = v; proxy.msg = ''; proxy.nudge = ''; renderProxy(); });
-    }
-    var tg = parseSlot(proxy.target);
-    if (from && tg) {
-      var pv = el('div', 'note'); pv.style.marginTop = '12px';
-      pv.textContent = from.name + ' ' + C.label(from.month, from.day) + ' ↔ ' + tg.name + ' ' + C.label(tg.month, tg.day) + ' · ' + tg.name + ' 님이 앱에서 수락하면 바뀌어요.';
-      box.appendChild(pv);
-      var go = el('button', 'btn primary', '요청 보내기'); go.type = 'button'; go.style.width = '100%'; go.style.marginTop = '10px';
-      go.addEventListener('click', function () {
-        var r = { month: from.month, toMonth: tg.month, fromDay: from.day, fromJ: from.j, fromName: from.name, toDay: tg.day, toJ: tg.j, toName: tg.name };
-        var dup = requests.some(function (x) { return x.status === 'pending' && x.type !== 'open' && x.fromName === r.fromName && x.month === r.month && (x.toMonth || x.month) === r.toMonth && x.fromDay === r.fromDay && x.fromJ === r.fromJ && x.toDay === r.toDay && x.toJ === r.toJ; });
-        if (dup) { proxy.msg = '같은 요청이 이미 대기 중이에요.'; renderProxy(); return; }
-        go.disabled = true;
-        API.createRequest(r).then(function () {
-          proxy.msg = from.name + ' 님 이름으로 ' + tg.name + ' 님께 요청을 보냈어요.';
-          proxy.nudge = '[교환요청] ' + tg.name + '님, ' + C.label(r.month, r.fromDay) + ' ' + from.name + ' ↔ ' + C.label(r.toMonth, r.toDay) + ' ' + tg.name + ' 교환을 요청했어요. 당번표 앱의 "교환" 메뉴에서 수락해 주세요.\n' + APP_URL;
-          proxy.slot = ''; proxy.target = ''; renderProxy(); setStatus(proxy.msg);
-        }).catch(function () { go.disabled = false; proxy.msg = '요청을 보내지 못했어요. 잠시 뒤 다시 눌러 주세요.'; renderProxy(); });
-      });
-      box.appendChild(go);
-    }
-    if (proxy.msg) { var m0 = el('div', 'note', proxy.msg); m0.style.marginTop = '10px'; box.appendChild(m0); }
-    if (proxy.nudge) {
-      var cp = el('button', 'btn', '받는 분께 보낼 카톡 문구 복사'); cp.type = 'button'; cp.style.width = '100%'; cp.style.marginTop = '8px';
-      cp.addEventListener('click', function () { try { navigator.clipboard.writeText(proxy.nudge).then(function () { setStatus('문구를 복사했어요. 카톡에 붙여넣어 주세요.'); }, function () { setStatus('복사 권한이 없어요.'); }); } catch (e) { setStatus('복사 권한이 없어요.'); } });
-      box.appendChild(cp);
-    }
+  // 같은 당번으로 내가 올린 대기 요청 (openOnly면 공개 요청만)
+  function myPendingOn(f, openOnly) {
+    return requests.filter(function (x) { return x.status === 'pending' && x.fromName === me && x.month === f.month && x.fromDay === f.day && x.fromJ === f.j && (!openOnly || x.type === 'open'); });
   }
-  function C_days2() { var out = []; keys.forEach(function (k) { Object.keys(duties2(k)).map(Number).sort(function (a, b) { return a - b; }).forEach(function (d) { if (!C.isPast(k, d)) out.push({ k: k, d: d }); }); }); return out; }
+  function cancelAll(list) { return Promise.all(list.map(function (x) { return API.setRequestStatus(x.id, 'cancelled').catch(function () {}); })); }
+  function nudgeFor(kind, r) {
+    if (kind === 'open') return '[교환요청(공개)] ' + me + '님이 ' + lab(r.month, r.fromDay) + ' 당번을 바꿀 분을 찾아요. 조건: ' + C.condText(r.cond) + '\n당번표 앱의 "교환" 메뉴에서 수락해 주세요.\n' + URL_APP;
+    return '[교환요청] ' + r.toName + '님, ' + lab(r.month, r.fromDay) + ' ' + me + ' ↔ ' + lab(r.toMonth, r.toDay) + ' ' + r.toName + ' 교환을 요청했어요. 당번표 앱의 "교환" 메뉴에서 수락해 주세요.\n' + URL_APP;
+  }
+  function copyText(t) {
+    function fb() { toast('복사 권한이 없어요. 글을 길게 눌러 직접 복사해 주세요.'); }
+    try { navigator.clipboard.writeText(t).then(function () { toast('복사했어요. 카톡에 붙여넣어 주세요.'); }, fb); } catch (e) { fb(); }
+  }
+
+  // 카카오톡 공유: 실패하면 공유 시트 → 문구 복사 순서로 대신해요
+  function loadKakao() {
+    return new Promise(function (res, rej) {
+      if (window.Kakao) return res(window.Kakao);
+      var s = document.createElement('script'); s.src = KAKAO_SDK; s.async = true;
+      s.onload = function () { window.Kakao ? res(window.Kakao) : rej(new Error('nokakao')); };
+      s.onerror = function () { rej(new Error('load')); };
+      document.head.appendChild(s);
+      setTimeout(function () { rej(new Error('timeout')); }, 6000);
+    });
+  }
+  function shareKakao(text) {
+    function fallback() {
+      if (navigator.share) { navigator.share({ text: text }).catch(function () { copyText(text); }); toast('카톡 연결이 안 돼서 공유 창을 열었어요.'); }
+      else { copyText(text); }
+    }
+    loadKakao().then(function (K) {
+      if (!K.isInitialized()) K.init(KAKAO_KEY);
+      var link = { mobileWebUrl: URL_APP, webUrl: URL_APP };
+      K.Share.sendDefault({ objectType: 'text', text: text.replace(/\n?https?:\/\/\S+/g, '').slice(0, 200), link: link, buttonTitle: '수락하러 가기' });
+    }).catch(fallback);
+  }
+
+  function cmpBlock(kind, rows) {
+    var b = el('div', 'blk ' + (kind === 'now' ? 'now' : 'after')); b.appendChild(el('div', 'k', kind === 'now' ? '지금' : '바뀐 뒤'));
+    rows.forEach(function (r) { var l = el('div', 'ln'); l.appendChild(el('span', '', r[0])); l.appendChild(el('b', '', r[1])); b.appendChild(l); });
+    return b;
+  }
+  function openFlow(from) {
+    flow = { from: from || null, fixed: !!from, step: from ? 'how' : 'pick', target: null, tm: from ? from.month : cur, oc: { mode: 'dow', dows: [], dates: [] }, busy: false, result: null };
+    renderFlow();
+  }
+  function closeFlow() { flow = null; renderFlow(); renderAll(); }
+  function renderFlow() {
+    var box = $('flow');
+    if (!flow) { box.classList.add('hide'); box.textContent = ''; document.body.style.overflow = ''; return; }
+    box.classList.remove('hide'); box.textContent = ''; document.body.style.overflow = 'hidden';
+    var w = el('div', 'wrap');
+    var top = el('div', 'row'); top.style.justifyContent = 'space-between'; top.style.alignItems = 'center';
+    var prev = { how: flow.fixed ? null : 'pick', who: 'how', cond: 'how', confirm: 'who' }[flow.step] || null;
+    var bk = btn('back', '', function () { if (prev) { flow.step = prev; if (prev === 'pick') flow.from = null; renderFlow(); } else closeFlow(); });
+    bk.appendChild(icon(I.l)); bk.appendChild(document.createTextNode(prev ? '이전' : '닫기'));
+    top.appendChild(bk);
+    if (prev) { var cl = btn('back', '닫기', closeFlow); cl.style.flex = 'none'; top.appendChild(cl); }
+    w.appendChild(top);
+    ({ pick: flowPick, how: flowHow, who: flowWho, cond: flowCond, confirm: flowConfirm, done: flowDone })[flow.step](w);
+    box.appendChild(w); box.scrollTop = 0;
+  }
+  function flowPick(w) {
+    w.appendChild(el('h2', '', '어떤 당번을 바꿀까요?'));
+    var up = myUpcoming().filter(function (s) { return !isLocked(s.month); });
+    if (!up.length) { w.appendChild(el('div', 'card cap', '지금 바꿀 수 있는 내 당번이 없어요.')); return; }
+    up.forEach(function (s) {
+      var b = btn('opt', '', function () { flow.from = s; flow.step = 'how'; flow.tm = s.month; renderFlow(); });
+      b.appendChild(el('b', '', longLab(s.month, s.day))); b.appendChild(el('span', '', '함께하는 당번  ' + (others(s.month, s.day).join(', ') || '없음')));
+      w.appendChild(b);
+    });
+  }
+  function flowHow(w) {
+    var f = flow.from;
+    w.appendChild(el('h2', '', '어떻게 바꿀까요?'));
+    w.appendChild(el('div', 'cap', '바꾸려는 당번: ' + longLab(f.month, f.day)));
+    var a = btn('opt', '', function () { flow.step = 'who'; flow.tm = f.month; renderFlow(); });
+    a.appendChild(el('b', '', '특정 회원에게 요청')); a.appendChild(el('span', '', '바꾸고 싶은 분을 직접 골라 요청해요'));
+    var b = btn('opt', '', function () { flow.step = 'cond'; renderFlow(); });
+    b.appendChild(el('b', '', '교환 가능한 회원 찾기')); b.appendChild(el('span', '', '내가 가능한 날을 알려 주면, 맞는 분이 수락해요'));
+    w.appendChild(a); w.appendChild(b);
+  }
+  function flowWho(w) {
+    var f = flow.from;
+    w.appendChild(el('h2', '', '누구와 바꿀까요?'));
+    w.appendChild(el('div', 'cap', longLab(f.month, f.day) + ' 당번을 넘기고, 고른 분의 당번을 받아요.'));
+    var i = keys.indexOf(flow.tm), p = C.parseKey(flow.tm);
+    var n = el('div', 'mnav');
+    var pb = btn('', '', function () { flow.tm = keys[i - 1]; flow.wd = null; renderFlow(); }); pb.appendChild(icon(I.l)); pb.disabled = i <= 0; pb.setAttribute('aria-label', '이전 달');
+    var nb = btn('', '', function () { flow.tm = keys[i + 1]; flow.wd = null; renderFlow(); }); nb.appendChild(icon(I.r)); nb.disabled = i >= keys.length - 1; nb.setAttribute('aria-label', '다음 달');
+    n.appendChild(pb); n.appendChild(el('div', 't', p[1] + '월')); n.appendChild(nb); w.appendChild(n);
+    if (isLocked(flow.tm)) { w.appendChild(el('div', 'card cap', '이 달은 교환이 마감됐어요.')); return; }
+    var wv = flow.wv || 'cal';
+    var sg = el('div', 'seg'); sg.setAttribute('role', 'group'); sg.setAttribute('aria-label', '보기 방식');
+    [['cal', '달력으로 보기'], ['list', '목록으로 보기']].forEach(function (x) { var b = btn('', x[1], function () { flow.wv = x[0]; renderFlow(); }); b.setAttribute('aria-pressed', wv === x[0] ? 'true' : 'false'); sg.appendChild(b); });
+    w.appendChild(sg);
+    if (wv === 'cal') {
+      var okDay = function (d) {
+        if (C.isPast(flow.tm, d) || (flow.tm === f.month && d === f.day)) return false;
+        var ds0 = duties(flow.tm)[d] || [];
+        return ds0.some(function (nm, j) { return nm && nm !== me && canPair(f, slotOf(flow.tm, d, j)); });
+      };
+      var cc = el('div', 'card');
+      cc.appendChild(calGrid(flow.tm, { sel: flow.wd, enabled: okDay, pick: function (d) { flow.wd = flow.wd === d ? null : d; renderFlow(); } }));
+      w.appendChild(cc);
+      var pc = el('div', 'card');
+      if (flow.wd && okDay(flow.wd)) {
+        pc.appendChild(el('div', 'lead', longLab(flow.tm, flow.wd) + ' · 누구와 바꿀까요?'));
+        var rw = el('div', 'row'); rw.style.flexWrap = 'wrap'; rw.style.marginTop = '10px';
+        (duties(flow.tm)[flow.wd] || []).forEach(function (name, j) {
+          if (!name || name === me) return;
+          var t = slotOf(flow.tm, flow.wd, j), ok = canPair(f, t);
+          var b = btn('tog', name, function () { flow.target = t; flow.step = 'confirm'; renderFlow(); });
+          b.style.flex = '1 1 40%'; b.disabled = !ok; b.setAttribute('aria-label', lab(flow.tm, flow.wd) + ' ' + name + ' 님과 교환'); rw.appendChild(b);
+        });
+        pc.appendChild(rw);
+      } else pc.appendChild(el('div', 'cap', '진하게 보이는 날짜를 누르면 그날 당번을 고를 수 있어요. 흐린 날은 바꿀 수 없는 날이에요.'));
+      w.appendChild(pc);
+      return;
+    }
+    var card = el('div', 'card'), list = el('div', 'list'), cnt = 0;
+    sortedDays(flow.tm).forEach(function (d) {
+      if (C.isPast(flow.tm, d)) return;
+      var ds = duties(flow.tm)[d] || [];
+      if (flow.tm === f.month && d === f.day) return;
+      var it = el('div', 'it'); it.style.flexDirection = 'column'; it.style.alignItems = 'stretch';
+      var hasMe = ds.indexOf(me) >= 0;
+      it.appendChild(el('div', 'd', lab(flow.tm, d)));
+      var row = el('div', 'row'); row.style.flexWrap = 'wrap';
+      ds.forEach(function (name, j) {
+        if (!name || name === me) return;
+        var t = slotOf(flow.tm, d, j), ok = canPair(f, t);
+        var b = btn('tog', name, function () { flow.target = t; flow.step = 'confirm'; renderFlow(); });
+        b.style.flex = '1 1 40%'; b.disabled = !ok; b.setAttribute('aria-label', lab(flow.tm, d) + ' ' + name + ' 님과 교환');
+        if (ok) cnt++; row.appendChild(b);
+      });
+      if (hasMe) it.appendChild(el('div', 'cap', '내가 이미 당번인 날이에요.')); else if (row.children.length) it.appendChild(row); else return;
+      list.appendChild(it);
+    });
+    if (!list.children.length) list.appendChild(el('div', 'cap', '이 달에는 바꿀 수 있는 당번이 없어요. 다른 달을 눌러 보세요.'));
+    card.appendChild(list); w.appendChild(card);
+  }
+  function dIdx(y, m, d) { return (new Date(y, m - 1, d).getDay() + 6) % 7; }
+  function ocCond() { var o = flow.oc, wd = o.mode === 'dow' || o.mode === 'both'; return { mode: o.mode, dows: wd ? o.dows.slice().sort() : [], dates: o.mode === 'dow' ? [] : o.dates.slice().sort() }; }
+  function ocReady() { var o = flow.oc; return o.mode === 'except' || (o.mode === 'dow' ? o.dows.length > 0 : o.mode === 'both' ? (o.dows.length > 0 && o.dates.length > 0) : o.dates.length > 0); }
+  function flowCond(w) {
+    var f = flow.from, o = flow.oc;
+    w.appendChild(el('h2', '', '언제 당번을 서면 괜찮으세요?'));
+    w.appendChild(el('div', 'cap', longLab(f.month, f.day) + ' 당번을 넘기고, 아래 조건의 날과 바꿔요.'));
+    var sg = el('div', 'seg'); sg.setAttribute('role', 'group'); sg.setAttribute('aria-label', '조건 방식'); sg.style.flexWrap = 'wrap'; sg.className = 'seg two';
+    [['dow', '요일로'], ['dates', '날짜로'], ['both', '요일+날짜'], ['except', '이 날만 빼고']].forEach(function (x) { var b = btn('', x[1], function () { o.mode = x[0]; renderFlow(); }); b.setAttribute('aria-pressed', o.mode === x[0] ? 'true' : 'false'); sg.appendChild(b); });
+    w.appendChild(sg);
+    var card = el('div', 'card'); card.style.display = 'flex'; card.style.flexDirection = 'column'; card.style.gap = '12px';
+    var wdOn = o.mode === 'dow' || o.mode === 'both';
+    if (wdOn) {
+      card.appendChild(el('div', 'lead', o.mode === 'both' ? '1) 가능한 요일 (여러 개 선택)' : '가능한 요일 (여러 개 선택)'));
+      var dr = el('div', 'dowrow');
+      DOW.forEach(function (nm, i) { var b = btn('tog', nm, function () { toggle(o.dows, i); if (o.mode === 'both') o.dates = o.dates.filter(function (key) { var q = key.split('-'); return o.dows.indexOf(dIdx(parseInt(q[0], 10), parseInt(q[1], 10), parseInt(q[2], 10))) >= 0; }); renderFlow(); }); b.setAttribute('aria-pressed', o.dows.indexOf(i) >= 0 ? 'true' : 'false'); dr.appendChild(b); });
+      card.appendChild(dr);
+    }
+    if (o.mode !== 'dow') {
+      card.appendChild(el('div', 'lead', o.mode === 'dates' ? '가능한 날짜 (여러 개 선택)' : o.mode === 'both' ? '2) 그 요일 중 가능한 날짜 (여러 개 선택)' : '안 되는 날짜 (여러 개 선택)'));
+      var dd = el('div', 'dates');
+      C_days().forEach(function (x) {
+        if (x.k === f.month && x.d === f.day) return;
+        if (o.mode === 'both' && o.dows.indexOf(dIdx.apply(null, C.parseKey(x.k).slice(0, 2).concat([x.d]))) < 0) return;
+        var key = C.dkey(x.k, x.d), b = btn('tog', lab(x.k, x.d), function () { toggle(o.dates, key); renderFlow(); });
+        b.setAttribute('aria-pressed', o.dates.indexOf(key) >= 0 ? 'true' : 'false'); dd.appendChild(b);
+      });
+      if (!dd.children.length) dd.appendChild(el('div', 'cap', o.mode === 'both' ? '먼저 위에서 요일을 골라 주세요.' : '선택할 수 있는 날짜가 없어요.'));
+      card.appendChild(dd);
+    }
+    w.appendChild(card);
+    var pp = myPendingOn(f, false).length;
+    if (pp) w.appendChild(el('div', 'card cap', '이 당번으로 보낸 기존 요청 ' + pp + '건은 새로 올리면 취소돼요.'));
+    var sm = el('div', 'card cap', ocReady() ? '조건: ' + C.condText(ocCond()) + ' · 맞는 분이 앱에서 수락하면 바로 바뀌어요.' : '위에서 조건을 골라 주세요.'); w.appendChild(sm);
+    var go = btn('btn pri', '교환 가능한 회원 찾기', sendOpen); go.disabled = !ocReady() || isLocked(f.month) || flow.busy; w.appendChild(go);
+  }
+  function C_days() { var out = []; keys.forEach(function (k) { sortedDays(k).forEach(function (d) { if (!C.expired(k, d)) out.push({ k: k, d: d }); }); }); return out; }
+  function flowConfirm(w) {
+    var f = flow.from, t = flow.target;
+    w.appendChild(el('h2', '', t.name + ' 님께 이렇게 요청할까요?'));
+    var cmp = el('div', 'cmp');
+    var fn = namesOf(f.month, f.day), tn = namesOf(t.month, t.day);
+    var swapN = function (arr, a, b) { return arr.map(function (x) { return x === a ? b : x; }); };
+    function nm(arr) { return arr.map(function (x) { return x === me ? '나' : x; }).join(' · '); }
+    cmp.appendChild(cmpBlock('now', [[lab(f.month, f.day), nm(fn)], [lab(t.month, t.day), nm(tn)]]));
+    cmp.appendChild(cmpBlock('after', [[lab(f.month, f.day), nm(swapN(fn, me, t.name))], [lab(t.month, t.day), nm(swapN(tn, t.name, me))]]));
+    w.appendChild(cmp);
+    w.appendChild(el('div', 'cap', '상대가 수락하기 전까지는 지금 당번이 그대로예요.'));
+    var oo = myPendingOn(f, true).length;
+    if (oo) w.appendChild(el('div', 'card cap', '이 당번으로 올린 공개 요청 ' + oo + '건은 이 요청을 보내면 취소돼요.'));
+    var row = el('div', 'row');
+    var go = btn('btn pri', '요청 보내기', sendPersonal); go.disabled = flow.busy || isLocked(f.month) || isLocked(t.month);
+    row.appendChild(btn('btn', '취소', closeFlow)); row.appendChild(go); w.appendChild(row);
+  }
+  function flowDone(w) {
+    var r = flow.result;
+    w.appendChild(el('h2', '', r.title));
+    w.appendChild(el('div', '', r.body));
+    w.appendChild(el('div', 'cap', '상대가 알아차리도록 카톡으로도 알려 주세요.'));
+    w.appendChild(el('pre', 'say', r.nudge));
+    w.appendChild(btn('btn pri', '카카오톡으로 보내기', function () { shareKakao(r.nudge); }));
+    w.appendChild(btn('btn', '문구만 복사', function () { copyText(r.nudge); }));
+    w.appendChild(btn('btn out', '확인', function () { closeFlow(); }));
+  }
+  function sendPersonal() {
+    var f = flow.from, t = flow.target;
+    if (isLocked(f.month) || isLocked(t.month)) { toast('마감된 달의 당번은 교환할 수 없어요.'); return; }
+    var r = { month: f.month, toMonth: t.month, fromDay: f.day, fromJ: f.j, fromName: me, toDay: t.day, toJ: t.j, toName: t.name };
+    if (requests.some(function (x) { return x.status === 'pending' && x.fromName === me && sameSlots(x, r); })) { toast('같은 요청이 이미 대기 중이에요.'); return; }
+    flow.busy = true; renderFlow();
+    var oldOpen = myPendingOn(f, true);
+    API.createRequest(r).then(function () { return cancelAll(oldOpen); }).then(function () {
+      flow.busy = false; flow.step = 'done';
+      flow.result = { title: '요청을 보냈어요', body: t.name + ' 님이 앱에서 수락하면 바로 바뀌어요.' + (oldOpen.length ? ' 이 당번의 공개 요청 ' + oldOpen.length + '건은 취소했어요.' : ''), nudge: nudgeFor('p', r) };
+      renderFlow();
+    }).catch(function () { flow.busy = false; renderFlow(); toast('요청을 보내지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
+  }
+  function sendOpen() {
+    var f = flow.from; if (!ocReady() || isLocked(f.month)) return;
+    var r = { month: f.month, fromDay: f.day, fromJ: f.j, fromName: me, cond: ocCond() };
+    flow.busy = true; renderFlow();
+    var oldAll = myPendingOn(f, false);
+    API.createOpenRequest(r).then(function () { return cancelAll(oldAll); }).then(function () {
+      flow.busy = false; flow.step = 'done';
+      flow.result = { title: '찾는 중이에요', body: '조건에 맞는 분이 앱에서 수락하면 바로 바뀌어요.' + (oldAll.length ? ' 이 당번의 기존 요청 ' + oldAll.length + '건은 취소했어요.' : ''), nudge: nudgeFor('open', r) };
+      renderFlow();
+    }).catch(function () { flow.busy = false; renderFlow(); toast('올리지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
+  }
+
+  function calGrid(k, o) {
+    var p = C.parseKey(k), ds = duties(k), g = el('div', 'fcal nm');
+    DOW.forEach(function (n, i) { g.appendChild(el('div', 'h' + (i >= 5 ? ' we' : ''), n)); });
+    var dim = new Date(p[0], p[1], 0).getDate(), off = (new Date(p[0], p[1] - 1, 1).getDay() + 6) % 7, total = Math.ceil((off + dim) / 7) * 7;
+    for (var q = 0; q < total; q++) {
+      var day = q - off + 1;
+      if (day < 1 || day > dim) { g.appendChild(el('div')); continue; }
+      (function (day, q) {
+        var has = !!ds[day], mine = has && ds[day].indexOf(me) >= 0, names = has ? namesOf(k, day) : [];
+        var c = btn('c' + (has ? ' has' : '') + (mine ? ' mine' : '') + ((q % 7) >= 5 ? ' we' : '') + (o.sel === day ? ' on' : ''), '', function () { o.pick(day); });
+        c.appendChild(el('span', 'dn', String(day)));
+        names.forEach(function (n) { c.appendChild(el('span', 'nn', n)); });
+        c.setAttribute('aria-label', p[1] + '월 ' + day + '일' + (has ? ' 당번 ' + names.join(', ') : ' 당번 없음'));
+        if (o.enabled && !o.enabled(day)) c.disabled = true;
+        g.appendChild(c);
+      })(day, q);
+    }
+    return g;
+  }
+  function dIdx(y, m, d) { return (new Date(y, m - 1, d).getDay() + 6) % 7; }
+  function ocCond() { var o = flow.oc, wd = o.mode === 'dow' || o.mode === 'both'; return { mode: o.mode, dows: wd ? o.dows.slice().sort() : [], dates: o.mode === 'dow' ? [] : o.dates.slice().sort() }; }
+  function ocReady() { var o = flow.oc; return o.mode === 'except' || (o.mode === 'dow' ? o.dows.length > 0 : o.mode === 'both' ? (o.dows.length > 0 && o.dates.length > 0) : o.dates.length > 0); }
+  function C_days() { var out = []; keys.forEach(function (k) { sortedDays(k).forEach(function (d) { if (!C.expired(k, d)) out.push({ k: k, d: d }); }); }); return out; }
+    window.__openAdminFlow = function (s) { me = s.name; openFlow({ month: s.month, day: s.day, j: s.j, name: s.name }); };
+  })();
 
   // ---------- 자동 배정 ----------
   var AUTO_KEY = 'jwadong-auto-v1', BK_KEY = 'jwadong-auto-backup-v1';
@@ -832,8 +1152,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function syncLock() {
     var on = !!(months[cur] && months[cur].locked), b = $('lock');
     b.setAttribute('aria-pressed', on ? 'true' : 'false');
-    b.classList.toggle('lockon', on);
-    b.textContent = on ? '🔒 교환 마감됨 (풀기)' : '이 달 교환 마감';
+    b.classList.toggle('hide', !on);
   }
   $('lock').addEventListener('click', function () {
     var on = !!(months[cur] && months[cur].locked), k = cur, b = $('lock'); b.disabled = true;

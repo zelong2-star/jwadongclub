@@ -93,10 +93,10 @@
     return { ok: true, duties: duties, count: count, last: last };
   }
   // ---- 공개 교환 요청 ----
-  // 당번일 "하루 전까지"만 유효: 당번 당일부터는 만료
+  // 당번 당일까지 유효: 당번일이 지난 다음 날부터 만료
   function expired(k, d) {
     var p = parseKey(k), n = new Date();
-    return new Date(p[0], p[1] - 1, d) <= new Date(n.getFullYear(), n.getMonth(), n.getDate());
+    return new Date(p[0], p[1] - 1, d) < new Date(n.getFullYear(), n.getMonth(), n.getDate());
   }
   function dkey(k, d) { var p = parseKey(k); return p[0] + '-' + pad(p[1]) + '-' + pad(d); }
   // cond: {mode:'dow'|'dates'|'except', dows:[0..6(월=0)], dates:['YYYY-MM-DD']}

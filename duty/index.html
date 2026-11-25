@@ -152,7 +152,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   var PIN_KEY = 'jwadong-pin-v1', ME_KEY = 'jwadong-me-v1', VIEW_KEY = 'jwadong-view-v2';
   var URL_APP = 'https://zelong2-star.github.io/jwadongclub/duty/';
   var KAKAO_KEY = 'dc69bf31ed2b2b673a737561a98602c4', KAKAO_SDK = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js';
-  var REASON = { locked: '이 달은 교환이 마감됐어요.', expired: '당번 하루 전까지만 가능한 요청이에요. 이미 지났어요.', past: '이미 지난 날짜는 바꿀 수 없어요.', self: '내가 올린 요청이에요.', cond: '조건에 맞지 않는 날이에요.', stale: '그 사이 당번이 바뀌어서 처리하지 못했어요.', dup: '이미 같은 날 당번이라 바꿀 수 없어요.', done: '이미 다른 분이 수락했거나 취소된 요청이에요.', gone: '요청이 사라졌어요.' };
+  var REASON = { locked: '이 달은 교환이 마감됐어요.', expired: '이미 지난 날짜의 요청이에요.', past: '이미 지난 날짜는 바꿀 수 없어요.', self: '내가 올린 요청이에요.', cond: '조건에 맞지 않는 날이에요.', stale: '그 사이 당번이 바뀌어서 처리하지 못했어요.', dup: '이미 같은 날 당번이라 바꿀 수 없어요.', done: '이미 다른 분이 수락했거나 취소된 요청이에요.', gone: '요청이 사라졌어요.' };
   var STATUS_KO = { pending: '답을 기다리는 중', accepted: '수락됨 (반영 완료)', declined: '거절됨', cancelled: '취소함', stale: '당번이 바뀌어 처리되지 않음' };
   try { var hm = /[#&]p=([^&]+)/.exec(location.hash || ''); if (hm) { localStorage.setItem(PIN_KEY, decodeURIComponent(hm[1])); history.replaceState(null, '', location.pathname + location.search); } } catch (e) {}
   try { pin = localStorage.getItem(PIN_KEY); me = localStorage.getItem(ME_KEY); var v = localStorage.getItem(VIEW_KEY); if (v === 'cal' || v === 'list') sv = v; } catch (e) {}
@@ -373,7 +373,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   }
   // ---------- 홈 ----------
   function homeView(m) {
-    var head = el('div'); head.appendChild(el('div', 'cap', '좌동클럽 당번')); head.appendChild(el('h1', '', '안녕하세요, ' + me + '님')); m.appendChild(head);
+    var head = el('div'); head.appendChild(el('h1', '', '안녕하세요, ' + me + '님')); m.appendChild(head);
     var up = myUpcoming(), nx = up[0];
     var hero = el('div', 'hero');
     if (nx) {
@@ -626,10 +626,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     m.appendChild(c);
     if (isAdminMe()) adminCard(m);
     var c2 = el('div', 'card'); c2.style.display = 'flex'; c2.style.flexDirection = 'column'; c2.style.gap = '6px';
-    c2.appendChild(el('div', 'lead', '안내'));
-    c2.appendChild(el('div', 'cap', '당번은 하루 전까지 바꿀 수 있어요. 마감된 달은 총무에게 문의해 주세요.'));
     c2.appendChild(el('div', 'cap', '요청을 보낸 뒤에는 카톡으로도 한 번 알려 주세요.'));
-    c2.appendChild(el('div', 'cap', '당번이 교환으로 바뀌면 "내 당번 캘린더에 넣기"를 다시 받아 주세요. 같은 날짜는 갱신되고, 빠진 날짜는 캘린더에서 직접 지워야 해요.'));
     m.appendChild(c2);
   }
 

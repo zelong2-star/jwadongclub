@@ -118,6 +118,17 @@
     if (cond.mode === 'except') return (cond.dates && cond.dates.length) ? dl(cond.dates) + ' 빼고 언제든' : '언제든';
     return '';
   }
+  // 카톡 카드용 짧은 조건: "수, 목, 토 중 11/26 외 4일 가능"
+  function condShort(cond) {
+    if (!cond) return '';
+    function dws(a) { return (a || []).slice().sort(function (x, y) { return x - y; }).map(function (i) { return DOW[i]; }).join(', '); }
+    function dl(arr) { var l = (arr || []).slice().sort().map(function (s) { var q = s.split('-'); return parseInt(q[1], 10) + '/' + parseInt(q[2], 10); }); return l.length > 1 ? l[0] + ' 외 ' + (l.length - 1) + '일' : l[0] || ''; }
+    if (cond.mode === 'dow') return dws(cond.dows) + ' 가능';
+    if (cond.mode === 'dates') return dl(cond.dates) + ' 가능';
+    if (cond.mode === 'both') return dws(cond.dows) + ' 중 ' + dl(cond.dates) + ' 가능';
+    if (cond.mode === 'except') { var ex = cond.dates || []; return ex.length ? (ex.length <= 3 ? ex.slice().sort().map(function (s) { var q = s.split('-'); return parseInt(q[1], 10) + '/' + parseInt(q[2], 10); }).join(', ') : dl(ex)) + ' 빼고 언제든' : '언제든'; }
+    return '';
+  }
   // ---- 달을 넘나드는 교환 ----
   // dm: {월키: duties}, a/b: {month,day,j,name}. 두 자리의 이름이 지금도 그대로일 때만 맞바꾼다.
   function swapX(dm, a, b) {
@@ -161,5 +172,5 @@
   }
   g.DutyCore = { DOW: DOW, pad: pad, parseKey: parseKey, dowOf: dowOf, label: label, md: md, isPast: isPast,
     swapDuties: swapDuties, noticeText: noticeText, parseNotice: parseNotice, hashPin: hashPin, adminHash: adminHash, newSalt: newSalt,
-    expired: expired, dkey: dkey, condOk: condOk, condText: condText, canAcceptOpen: canAcceptOpen, autoAssign: autoAssign, myOptions: myOptions, swapX: swapX };
+    expired: expired, dkey: dkey, condOk: condOk, condText: condText, condShort: condShort, canAcceptOpen: canAcceptOpen, autoAssign: autoAssign, myOptions: myOptions, swapX: swapX };
 })(window);

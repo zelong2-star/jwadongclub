@@ -221,6 +221,10 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     if (kind === 'open') return '[교환요청(공개)] ' + me + '님이 ' + lab(r.month, r.fromDay) + ' 당번을 바꿀 분을 찾아요. 조건: ' + C.condText(r.cond) + '\n당번표 앱의 "교환" 메뉴에서 수락해 주세요.\n' + URL_APP;
     return '[교환요청] ' + r.toName + '님, ' + lab(r.month, r.fromDay) + ' ' + me + ' ↔ ' + lab(r.toMonth, r.toDay) + ' ' + r.toName + ' 교환을 요청했어요. 당번표 앱의 "교환" 메뉴에서 수락해 주세요.\n' + URL_APP;
   }
+  function cardFor(kind, r) {
+    if (kind === 'open') return { banner: 'swap', title: me + '님이 ' + lab(r.month, r.fromDay) + ' 당번 교환을 요청했어요', desc: C.condShort(r.cond), button: '수락하러 가기' };
+    return { banner: 'swap', title: r.toName + '님, ' + me + '님이 당번 교환을 요청했어요', desc: lab(r.month, r.fromDay) + ' ' + me + ' ↔ ' + lab(r.toMonth, r.toDay) + ' ' + r.toName, button: '수락하러 가기' };
+  }
   function copyText(t) {
     function fb() { toast('복사 권한이 없어요. 글을 길게 눌러 직접 복사해 주세요.'); }
     try { navigator.clipboard.writeText(t).then(function () { toast('복사했어요. 카톡에 붙여넣어 주세요.'); }, fb); } catch (e) { fb(); }
@@ -237,7 +241,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       setTimeout(function () { rej(new Error('timeout')); }, 6000);
     });
   }
-  function shareKakao(text) {
+  function shareKakao(text, card) {
     function fallback() {
       if (navigator.share) { navigator.share({ text: text }).catch(function () { copyText(text); }); toast('카톡 연결이 안 돼서 공유 창을 열었어요.'); }
       else { copyText(text); }
@@ -245,7 +249,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     loadKakao().then(function (K) {
       if (!K.isInitialized()) K.init(KAKAO_KEY);
       var link = { mobileWebUrl: URL_APP, webUrl: URL_APP };
-      K.Share.sendDefault({ objectType: 'text', text: text.replace(/\n?https?:\/\/\S+/g, '').slice(0, 200), link: link, buttonTitle: '수락하러 가기' });
+      if (card) K.Share.sendDefault({ objectType: 'feed', content: { title: card.title, description: card.desc || '', imageUrl: URL_APP + 'kakao-' + card.banner + '.png', imageWidth: 800, imageHeight: 400, link: link }, buttons: [{ title: card.button || '수락하러 가기', link: link }] });
+      else K.Share.sendDefault({ objectType: 'text', text: text.replace(/\n?https?:\/\/\S+/g, '').slice(0, 200), link: link, buttonTitle: '수락하러 가기' });
     }).catch(fallback);
   }
 
@@ -567,7 +572,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         c.appendChild(el('div', 'lead', lab(r.month, r.fromDay) + ' ↔ ' + lab(r.toMonth || r.month, r.toDay) + ' ' + r.toName + ' 님'));
       }
       var tg = el('span', 'tag ' + (r.status === 'accepted' ? 'green' : r.status === 'pending' ? 'blue' : ''), stt); var w = el('div'); w.appendChild(tg); c.appendChild(w);
-      if (r.status === 'pending') { var kb = btn('btn pri', '카카오톡으로 다시 알리기', function () { shareKakao(nudgeFor(r.type === 'open' ? 'open' : 'p', r)); }); c.appendChild(kb); var cb = btn('btn out', '요청 취소하기', function () { cb.disabled = true; API.setRequestStatus(r.id, 'cancelled').then(function () { toast('요청을 취소했어요.'); }).catch(function () { cb.disabled = false; toast('취소하지 못했어요.'); }); }); c.appendChild(cb); }
+      if (r.status === 'pending') { var kb = btn('btn pri', '카카오톡으로 다시 알리기', function () { shareKakao(nudgeFor(r.type === 'open' ? 'open' : 'p', r), cardFor(r.type === 'open' ? 'open' : 'p', r)); }); c.appendChild(kb); var cb = btn('btn out', '요청 취소하기', function () { cb.disabled = true; API.setRequestStatus(r.id, 'cancelled').then(function () { toast('요청을 취소했어요.'); }).catch(function () { cb.disabled = false; toast('취소하지 못했어요.'); }); }); c.appendChild(cb); }
       m.appendChild(c);
     });
   }
@@ -787,7 +792,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     w.appendChild(el('div', '', r.body));
     w.appendChild(el('div', 'cap', '상대가 알아차리도록 카톡으로도 알려 주세요.'));
     w.appendChild(el('pre', 'say', r.nudge));
-    w.appendChild(btn('btn pri', '카카오톡으로 보내기', function () { shareKakao(r.nudge); }));
+    w.appendChild(btn('btn pri', '카카오톡으로 보내기', function () { shareKakao(r.nudge, r.card); }));
     w.appendChild(btn('btn', '문구만 복사', function () { copyText(r.nudge); }));
     w.appendChild(btn('btn out', '확인', function () { tab = 'swap'; exTab = 'out'; closeFlow(); }));
   }
@@ -800,7 +805,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var oldOpen = myPendingOn(f, true);
     API.createRequest(r).then(function () { return cancelAll(oldOpen); }).then(function () {
       flow.busy = false; flow.step = 'done';
-      flow.result = { title: '요청을 보냈어요', body: t.name + ' 님이 앱에서 수락하면 바로 바뀌어요.' + (oldOpen.length ? ' 이 당번의 공개 요청 ' + oldOpen.length + '건은 취소했어요.' : ''), nudge: nudgeFor('p', r) };
+      flow.result = { title: '요청을 보냈어요', body: t.name + ' 님이 앱에서 수락하면 바로 바뀌어요.' + (oldOpen.length ? ' 이 당번의 공개 요청 ' + oldOpen.length + '건은 취소했어요.' : ''), nudge: nudgeFor('p', r), card: cardFor('p', r) };
       renderFlow();
     }).catch(function () { flow.busy = false; renderFlow(); toast('요청을 보내지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
   }
@@ -811,7 +816,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var oldAll = myPendingOn(f, false);
     API.createOpenRequest(r).then(function () { return cancelAll(oldAll); }).then(function () {
       flow.busy = false; flow.step = 'done';
-      flow.result = { title: '찾는 중이에요', body: '조건에 맞는 분이 앱에서 수락하면 바로 바뀌어요.' + (oldAll.length ? ' 이 당번의 기존 요청 ' + oldAll.length + '건은 취소했어요.' : ''), nudge: nudgeFor('open', r) };
+      flow.result = { title: '찾는 중이에요', body: '조건에 맞는 분이 앱에서 수락하면 바로 바뀌어요.' + (oldAll.length ? ' 이 당번의 기존 요청 ' + oldAll.length + '건은 취소했어요.' : ''), nudge: nudgeFor('open', r), card: cardFor('open', r) };
       renderFlow();
     }).catch(function () { flow.busy = false; renderFlow(); toast('올리지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
   }

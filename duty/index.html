@@ -134,7 +134,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   'use strict';
   var C = window.DutyCore, DOW = C.DOW;
   var API = null, pin = null, me = null;
-  var months = {}, requests = [], logs = [], keys = [], cur = null;
+  var months = {}, requests = [], logs = [], acks = [], keys = [], cur = null;
   var tab = 'home', sv = 'list', selDay = null, exTab = 'in', flow = null;
   var unsubs = [], connected = false, toastT = 0;
   var PIN_KEY = 'jwadong-pin-v1', ME_KEY = 'jwadong-me-v1', VIEW_KEY = 'jwadong-view-v1';
@@ -260,6 +260,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           connected = true;
           unsubs.push(API.subscribeRequests(function (rs) { requests = rs; if (connected) renderAll(); }, onErr));
           unsubs.push(API.subscribeLog(function (ls) { logs = ls; if (connected) renderAll(); }, onErr));
+          if (API.subscribeAcks) unsubs.push(API.subscribeAcks(function (as) { acks = as; if (connected) renderAll(); }, function () {}));
           if (me && allNames().indexOf(me) >= 0) enterApp(); else showPicker();
         } else if (connected) {
           if (keys.indexOf(cur) < 0) cur = keys[keys.length - 1];
@@ -338,6 +339,20 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var c = btn('stat', '', function () { tab = 'swap'; exTab = 'in'; renderAll(); window.scrollTo(0, 0); });
     c.appendChild(el('span', 'cap', '바꿀 수 있는 당번')); c.appendChild(el('b', '', openList().length + '건'));
     st.appendChild(a); st.appendChild(c); m.appendChild(st);
+    if (nx && API && API.setAck) {
+      var done = acks.some(function (a) { return a.month === nx.month && a.day === nx.day && a.name === me; });
+      var ac = el('div', 'card'); ac.style.display = 'flex'; ac.style.flexDirection = 'column'; ac.style.gap = '12px';
+      ac.appendChild(el('div', 'lead', lab(nx.month, nx.day) + ' 당번, 확인하셨나요?'));
+      ac.appendChild(el('div', 'cap', done ? '확인했어요. 총무님께 알려졌어요.' : '확인하면 총무님께 알려져요.'));
+      if (!done) {
+        var ab = btn('btn', '', function () {
+          ab.disabled = true;
+          API.setAck(nx.month, nx.day, me).then(function () { toast('확인했어요. 총무님께 알렸어요.'); }).catch(function () { ab.disabled = false; toast('확인을 저장하지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
+        });
+        ab.appendChild(icon('M5 12l5 5 9-10')); ab.appendChild(document.createTextNode('확인했어요')); ac.appendChild(ab);
+      } else { var dn = el('div', 'tag green', '확인 완료'); dn.style.alignSelf = 'flex-start'; ac.appendChild(dn); }
+      m.appendChild(ac);
+    }
     var card = el('div', 'card'); card.appendChild(el('div', 'lead', '앞으로 내 당번')); card.lastChild.style.marginBottom = '12px';
     var list = el('div', 'list');
     if (!up.length) list.appendChild(el('div', 'cap', '예정된 당번이 없어요.'));

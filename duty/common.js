@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
-import { getFirestore, collection, doc, onSnapshot, runTransaction, addDoc, updateDoc, query, orderBy, limit, where, getDocs }
+import { getFirestore, collection, doc, onSnapshot, runTransaction, addDoc, setDoc, updateDoc, query, orderBy, limit, where, getDocs }
   from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -76,6 +76,11 @@ export function makeApi() {
       const o = []; s.forEach((d) => { const v = d.data(); v.id = d.id; o.push(v); }); cb(o);
     }, err),
     subscribeLog: (cb, err) => onSnapshot(query(col('log'), orderBy('at', 'desc'), limit(200)), (s) => {
+      const o = []; s.forEach((d) => { const v = d.data(); v.id = d.id; o.push(v); }); cb(o);
+    }, err),
+    // 당번 확인 기록 (새 컬렉션 acks, 기존 데이터는 건드리지 않음)
+    setAck: (month, day, name) => setDoc(ref('acks', month + '_' + day + '_' + name), { month: month, day: Number(day), name: name, at: Date.now() }),
+    subscribeAcks: (cb, err) => onSnapshot(query(col('acks'), orderBy('at', 'desc'), limit(400)), (s) => {
       const o = []; s.forEach((d) => { const v = d.data(); v.id = d.id; o.push(v); }); cb(o);
     }, err),
     createRequest: (r) => addDoc(col('requests'), Object.assign({}, r, { status: 'pending', at: Date.now() })),

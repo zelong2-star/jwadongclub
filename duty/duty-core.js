@@ -58,6 +58,31 @@
       return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('').slice(0, 40);
     });
   }
+  // ---- 자동 배정 (가나다순 순환) ----
+  // opts: { month:'YYYY-MM', dows:[0..6 (월=0)], per:2, off:[휴관일(일)], pool:[이름들], start:'직전 마지막 당번 이름' }
+  // 반환: { ok, duties:{일:[이름,...]}, count:{이름:횟수}, last:'마지막 이름' } 또는 { ok:false, reason }
+  function autoAssign(o) {
+    var pool = (o.pool || []).slice().sort(function (a, b) { return a.localeCompare(b, 'ko'); });
+    var per = o.per || 2, n = pool.length;
+    if (n < per) return { ok: false, reason: 'pool' };
+    var p = parseKey(o.month), dim = new Date(p[0], p[1], 0).getDate();
+    var ptr = 0;
+    if (o.start) {
+      var i = pool.indexOf(o.start);
+      if (i >= 0) ptr = (i + 1) % n;
+      else { ptr = pool.findIndex(function (x) { return x.localeCompare(o.start, 'ko') > 0; }); if (ptr < 0) ptr = 0; }
+    }
+    var duties = {}, count = {}, last = null;
+    pool.forEach(function (x) { count[x] = 0; });
+    for (var d = 1; d <= dim; d++) {
+      var dow = (new Date(p[0], p[1] - 1, d).getDay() + 6) % 7;
+      if ((o.dows || []).indexOf(dow) < 0 || (o.off || []).indexOf(d) >= 0) continue;
+      var names = [];
+      for (var k = 0; k < per; k++) { names.push(pool[ptr]); count[pool[ptr]]++; last = pool[ptr]; ptr = (ptr + 1) % n; }
+      duties[d] = names;
+    }
+    return { ok: true, duties: duties, count: count, last: last };
+  }
   // ---- 공개 교환 요청 ----
   // 당번일 "하루 전까지"만 유효: 당번 당일부터는 만료
   function expired(k, d) {
@@ -125,5 +150,5 @@
   }
   g.DutyCore = { DOW: DOW, pad: pad, parseKey: parseKey, dowOf: dowOf, label: label, md: md, isPast: isPast,
     swapDuties: swapDuties, noticeText: noticeText, parseNotice: parseNotice, hashPin: hashPin,
-    expired: expired, dkey: dkey, condOk: condOk, condText: condText, canAcceptOpen: canAcceptOpen, myOptions: myOptions, swapX: swapX };
+    expired: expired, dkey: dkey, condOk: condOk, condText: condText, canAcceptOpen: canAcceptOpen, autoAssign: autoAssign, myOptions: myOptions, swapX: swapX };
 })(window);

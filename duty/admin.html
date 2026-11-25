@@ -131,6 +131,11 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       <div class="cap" id="ocrMsg" role="status">당번표 달력 캡처(월~일 7칸, 칸마다 날짜+이름 두 줄)를 읽어서 아래에 보여드려요. 확인하고 고친 뒤 &quot;저장&quot;을 누르면 반영됩니다.</div>
       <div id="ocrOut"></div>
     </details>
+    <details id="autoBox">
+      <summary>🗓 자동 배정 (가나다순 순환)</summary>
+      <div class="cap" style="margin-top:8px">운영 요일에 가나다순으로 돌아가며 당번을 만들어요. 미리 본 뒤에 적용하고, 적용 전 당번표는 백업돼서 되돌릴 수 있어요.</div>
+      <div id="autoBody"></div>
+    </details>
     <div class="main">
       <section class="cal" aria-label="당번 달력">
         <div class="title" id="calTitle"></div>
@@ -152,6 +157,12 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
             <button class="btn" id="imgClose">닫기</button>
           </div>
         </div>
+        <details class="card" id="ackBox" open>
+          <summary id="ackSummary">당번 확인 현황</summary>
+          <div class="cap" style="margin-top:6px">앞으로 2주 안의 당번을 회원이 앱에서 &quot;확인했어요&quot;로 눌렀는지 보여 줘요.</div>
+          <div id="ackList"></div>
+          <button class="btn" id="ackCopy" style="margin-top:8px;width:100%">미확인 안내 문구 복사</button>
+        </details>
         <details class="card" id="reqBox" open>
           <summary id="reqSummary">교환 요청 현황</summary>
           <div class="seg" role="group" aria-label="요청 보기" style="margin-top:8px">
@@ -183,7 +194,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
 (function () {
   'use strict';
   var C = window.DutyCore, DOW = C.DOW;
-  var API = null, pin = null, months = {}, logs = [], requests = [], reqFilter = 'pending', keys = [], cur = null;
+  var API = null, pin = null, months = {}, logs = [], requests = [], acks = [], reqFilter = 'pending', keys = [], cur = null;
   var mode = 'swap', sel = null, unsubs = [], connected = false, armed = {};
   var PIN_KEY = 'jwadong-admin-pin-v1';
   try { pin = localStorage.getItem(PIN_KEY); } catch (e) {}
@@ -219,6 +230,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           cur = keys.indexOf(nk) >= 0 ? nk : keys[keys.length - 1];
           unsubs.push(API.subscribeLog(function (ls) { logs = ls; if (connected) renderAll(); }, onErr));
           unsubs.push(API.subscribeRequests(function (rs) { requests = rs; if (connected) renderAll(); }, onErr));
+          if (API.subscribeAcks) unsubs.push(API.subscribeAcks(function (as) { acks = as; if (connected) renderAll(); }, function () {}));
           show('app'); setStatus(defStatus()); renderAll();
         } else {
           if (keys.indexOf(cur) < 0) cur = keys[keys.length - 1];
@@ -325,7 +337,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var ae = document.activeElement;
     var typing = mode === 'input' && ae && ae.classList && ae.classList.contains('in');
     if (!typing) renderCal();
-    renderNotice(); renderLog(); renderReqs(); syncLock();
+    renderNotice(); renderLog(); renderReqs(); syncLock(); renderAcks(); if ($('autoBox').open) renderAuto();
   }
 
   function nextKey(k) { var p = C.parseKey(k), y = p[0], m = p[1] + 1; if (m > 12) { m = 1; y++; } return y + '-' + C.pad(m); }
@@ -374,6 +386,137 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     API.setMonth(k, r.duties).then(function () { cur = k; setStatus(r.m + '월 당번 ' + r.found + '일 치를 불러왔어요.'); }).catch(function () { setStatus('불러오지 못했어요.'); });
   });
 
+
+  // ---------- 당번 확인 현황 ----------
+  function dayDiff(k, d) { var p = C.parseKey(k), n = new Date(), t = new Date(n.getFullYear(), n.getMonth(), n.getDate()); return Math.round((new Date(p[0], p[1] - 1, d) - t) / 864e5); }
+  function ackedOf(k, d, n) { return acks.some(function (a) { return a.month === k && a.day === d && a.name === n; }); }
+  function ackRows() {
+    var rows = [];
+    keys.forEach(function (k) {
+      Object.keys((months[k] && months[k].duties) || {}).map(Number).sort(function (a, b) { return a - b; }).forEach(function (d) {
+        if (C.isPast(k, d) && dayDiff(k, d) < 0) return;
+        if (dayDiff(k, d) > 14) return;
+        rows.push({ k: k, d: d, names: ((months[k].duties[d]) || []).filter(Boolean) });
+      });
+    });
+    return rows;
+  }
+  function renderAcks() {
+    var box = $('ackList'); box.textContent = '';
+    var rows = ackRows(), miss = 0;
+    rows.forEach(function (r) {
+      var item = el('div', 'item');
+      item.appendChild(el('div', '', C.label(r.k, r.d)));
+      var line = el('div', '');
+      r.names.forEach(function (n, i) { var ok = ackedOf(r.k, r.d, n); if (!ok) miss++; if (i) line.appendChild(document.createTextNode('  ')); line.appendChild(el('span', 'tag' + (ok ? ' ok' : ' p'), (ok ? '✓ ' : '미확인 ') + n)); });
+      item.appendChild(line); box.appendChild(item);
+    });
+    if (!rows.length) box.appendChild(el('div', 'cap', '앞으로 2주 안에 당번이 없어요.'));
+    $('ackSummary').textContent = '당번 확인 현황 · 미확인 ' + miss + '명';
+    $('ackCopy').disabled = !miss;
+  }
+  $('ackCopy').addEventListener('click', function () {
+    var lines = [];
+    ackRows().forEach(function (r) { var miss = r.names.filter(function (n) { return !ackedOf(r.k, r.d, n); }); if (miss.length) lines.push(C.label(r.k, r.d) + ' ' + miss.join(', ')); });
+    if (!lines.length) return;
+    var t = '[당번 확인] 아래 당번이신 분은 당번표 앱 홈에서 "확인했어요"를 눌러 주세요.\n' + lines.join('\n') + '\nhttps://zelong2-star.github.io/jwadongclub/duty/';
+    try { navigator.clipboard.writeText(t).then(function () { setStatus('미확인 안내 문구를 복사했어요. 카톡에 붙여넣어 주세요.'); }, function () { setStatus('복사 권한이 없어요.'); }); } catch (e) { setStatus('복사 권한이 없어요.'); }
+  });
+
+  // ---------- 자동 배정 ----------
+  var AUTO_KEY = 'jwadong-auto-v1', BK_KEY = 'jwadong-auto-backup-v1';
+  var auto = { month: null, dows: [1, 2, 3, 5, 6], per: 2, off: [], excl: [], start: 'cont', preview: null };
+  try { var sv = JSON.parse(localStorage.getItem(AUTO_KEY)); if (sv) { if (Array.isArray(sv.dows)) auto.dows = sv.dows; if (sv.per) auto.per = sv.per; if (Array.isArray(sv.excl)) auto.excl = sv.excl; } } catch (e) {}
+  function autoSave() { save(AUTO_KEY, JSON.stringify({ dows: auto.dows, per: auto.per, excl: auto.excl })); }
+  function prevKey(k) { var p = C.parseKey(k), y = p[0], m = p[1] - 1; if (m < 1) { m = 12; y--; } return y + '-' + C.pad(m); }
+  function roster() {
+    var set = {};
+    keys.forEach(function (k) { var ds = (months[k] && months[k].duties) || {}; Object.keys(ds).forEach(function (d) { (ds[d] || []).forEach(function (n) { if (n) set[n] = 1; }); }); });
+    return Object.keys(set).sort(function (a, b) { return a.localeCompare(b, 'ko'); });
+  }
+  function prevLast(month) {
+    var ds = (months[prevKey(month)] && months[prevKey(month)].duties) || {};
+    var days = Object.keys(ds).map(Number).sort(function (a, b) { return a - b; });
+    for (var i = days.length - 1; i >= 0; i--) { var ns = (ds[days[i]] || []).filter(Boolean); if (ns.length) return ns[ns.length - 1]; }
+    return null;
+  }
+  function autoOpts() {
+    var pool = roster().filter(function (n) { return auto.excl.indexOf(n) < 0; });
+    return { month: auto.month, dows: auto.dows, per: auto.per, off: auto.off, pool: pool, start: auto.start === 'cont' ? prevLast(auto.month) : null };
+  }
+  function tgl(arr, v) { var i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); else arr.push(v); }
+  function togBtn(text, on, fn) { var b = el('button', 'btn', text); b.type = 'button'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); if (on) { b.style.background = '#1F4E79'; b.style.color = '#fff'; b.style.borderColor = '#1F4E79'; } b.addEventListener('click', fn); return b; }
+  function renderAuto() {
+    var box = $('autoBody'); box.textContent = '';
+    if (!keys.length) return;
+    var opts = keys.slice(); var nk = nextKey(keys[keys.length - 1]); if (opts.indexOf(nk) < 0) opts.push(nk);
+    if (!auto.month || opts.indexOf(auto.month) < 0) auto.month = nk;
+    function sect(t) { var d = el('div', 'cap', t); d.style.marginTop = '12px'; d.style.fontWeight = '700'; box.appendChild(d); }
+    sect('배정할 달');
+    var sel = el('select', 'field'); sel.id = 'autoMonth'; sel.setAttribute('aria-label', '배정할 달');
+    opts.forEach(function (k) { var p = C.parseKey(k); var o = el('option', '', p[0] + '년 ' + p[1] + '월' + (months[k] ? ' (이미 있음)' : ' (새 달)')); o.value = k; if (k === auto.month) o.selected = true; sel.appendChild(o); });
+    sel.addEventListener('change', function () { auto.month = sel.value; auto.off = []; auto.preview = null; renderAuto(); });
+    box.appendChild(sel);
+    sect('운영 요일');
+    var r1 = el('div', 'row'); DOW.forEach(function (n, i) { r1.appendChild(togBtn(n, auto.dows.indexOf(i) >= 0, function () { tgl(auto.dows, i); auto.off = []; auto.preview = null; autoSave(); renderAuto(); })); }); box.appendChild(r1);
+    sect('하루 인원');
+    var r2 = el('div', 'row'); [1, 2, 3].forEach(function (n) { r2.appendChild(togBtn(n + '명', auto.per === n, function () { auto.per = n; auto.preview = null; autoSave(); renderAuto(); })); }); box.appendChild(r2);
+    sect('휴관일 (눌러서 표시)');
+    var p = C.parseKey(auto.month), dim = new Date(p[0], p[1], 0).getDate(), r3 = el('div', 'row');
+    for (var d = 1; d <= dim; d++) {
+      (function (d) {
+        var dow = (new Date(p[0], p[1] - 1, d).getDay() + 6) % 7; if (auto.dows.indexOf(dow) < 0) return;
+        r3.appendChild(togBtn(C.label(auto.month, d), auto.off.indexOf(d) >= 0, function () { tgl(auto.off, d); auto.preview = null; renderAuto(); }));
+      })(d);
+    }
+    if (!r3.children.length) r3.appendChild(el('div', 'cap', '운영 요일을 먼저 골라 주세요.'));
+    box.appendChild(r3);
+    sect('이번 달 제외 회원 (눌러서 표시)');
+    var r4 = el('div', 'row'); roster().forEach(function (n) { r4.appendChild(togBtn(n, auto.excl.indexOf(n) >= 0, function () { tgl(auto.excl, n); auto.preview = null; autoSave(); renderAuto(); })); }); box.appendChild(r4);
+    sect('시작 순서');
+    var pl = prevLast(auto.month), r5 = el('div', 'row');
+    r5.appendChild(togBtn(pl ? '이어서 (' + pl + ' 다음 사람부터)' : '이어서 (직전 달 기록 없음)', auto.start === 'cont', function () { auto.start = 'cont'; auto.preview = null; renderAuto(); }));
+    r5.appendChild(togBtn('가나다순 처음부터', auto.start === 'first', function () { auto.start = 'first'; auto.preview = null; renderAuto(); }));
+    box.appendChild(r5);
+    var pv = el('button', 'btn primary', '미리보기'); pv.type = 'button'; pv.style.cssText = 'width:100%;margin-top:14px';
+    pv.addEventListener('click', function () {
+      var res = C.autoAssign(autoOpts());
+      if (!res.ok) { auto.preview = { err: '배정할 회원이 ' + auto.per + '명보다 적어요. 제외 회원을 줄여 주세요.' }; } else auto.preview = res;
+      renderAuto();
+    });
+    box.appendChild(pv);
+    if (auto.preview) {
+      var pr = auto.preview, card = el('div', 'card'); card.style.marginTop = '12px'; card.id = 'autoPreview';
+      if (pr.err) { card.appendChild(el('div', 'err', pr.err)); box.appendChild(card); }
+      else {
+        var days = Object.keys(pr.duties).map(Number).sort(function (a, b) { return a - b; });
+        card.appendChild(el('div', 'hello', C.parseKey(auto.month)[1] + '월 미리보기 · ' + days.length + '일'));
+        days.forEach(function (dd) { card.appendChild(el('div', 'item', C.label(auto.month, dd) + '  ' + pr.duties[dd].join(' · '))); });
+        var cnt = Object.keys(pr.count).filter(function (n) { return pr.count[n] > 0; }).sort(function (a, b) { return a.localeCompare(b, 'ko'); }).map(function (n) { return n + ' ' + pr.count[n]; }).join(', ');
+        card.appendChild(el('div', 'note', '회원별 횟수: ' + cnt));
+        var ex = months[auto.month] && Object.keys(months[auto.month].duties || {}).length;
+        if (ex) card.appendChild(el('div', 'wbox', '⚠ 이 달에는 이미 ' + ex + '일치 당번이 있어요. 적용하면 덮어써요(적용 전 당번표는 백업돼요). 이 달의 대기 중 교환 요청은 무효 처리돼요.'));
+        var ap = el('button', 'btn primary', '이대로 적용'); ap.type = 'button'; ap.id = 'autoApply'; ap.style.cssText = 'width:100%;margin-top:10px';
+        var armedA = 0;
+        ap.addEventListener('click', function () {
+          if (!armedA) { ap.textContent = '정말 적용할까요? 한 번 더'; armedA = setTimeout(function () { armedA = 0; ap.textContent = '이대로 적용'; }, 4000); return; }
+          clearTimeout(armedA); ap.disabled = true;
+          var k = auto.month, old = months[k] && months[k].duties;
+          if (old && Object.keys(old).length) save(BK_KEY, JSON.stringify({ month: k, duties: old, at: Date.now() }));
+          API.setMonth(k, pr.duties).then(function () { cur = k; auto.preview = null; setStatus(C.parseKey(k)[1] + '월 당번을 자동 배정했어요.' + (old && Object.keys(old).length ? ' 되돌리려면 자동 배정 칸의 "직전 당번표로 되돌리기"를 누르세요.' : '')); renderAll(); }).catch(function () { ap.disabled = false; setStatus('적용하지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
+        });
+        card.appendChild(ap); box.appendChild(card);
+      }
+    }
+    var bk = null; try { bk = JSON.parse(localStorage.getItem(BK_KEY)); } catch (e) {}
+    if (bk && bk.month && bk.duties) {
+      var ub = el('button', 'btn', '직전 당번표로 되돌리기 (' + C.parseKey(bk.month)[1] + '월)'); ub.type = 'button'; ub.id = 'autoUndo'; ub.style.cssText = 'width:100%;margin-top:10px';
+      ub.addEventListener('click', function () { ub.disabled = true; API.setMonth(bk.month, bk.duties).then(function () { save(BK_KEY, ''); setStatus('이전 당번표로 되돌렸어요.'); renderAll(); }).catch(function () { ub.disabled = false; setStatus('되돌리지 못했어요.'); }); });
+      box.appendChild(ub);
+    }
+  }
+  $('autoBox').addEventListener('toggle', function () { if ($('autoBox').open) renderAuto(); });
+
   var started = false;
 
 
@@ -400,6 +543,9 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var box = $('reqList'); box.textContent = '';
     var pendingN = requests.filter(function (r) { return reqState(r) === 'pending'; }).length;
     $('reqSummary').textContent = '교환 요청 현황 · 대기 ' + pendingN + '건';
+    var sc = { pending: 0, accepted: 0, off: 0, cancelled: 0 };
+    requests.forEach(function (r) { var st = reqState(r); if (st === 'pending') sc.pending++; else if (st === 'accepted') sc.accepted++; else if (st === 'cancelled' || st === 'declined') sc.cancelled++; else sc.off++; });
+    box.appendChild(el('div', 'note', '최근 ' + requests.length + '건 중 · 대기 ' + sc.pending + ' · 성사 ' + sc.accepted + ' · 취소/거절 ' + sc.cancelled + ' · 만료/무효 ' + sc.off));
     $('rfPending').setAttribute('aria-pressed', reqFilter === 'pending' ? 'true' : 'false');
     $('rfAll').setAttribute('aria-pressed', reqFilter === 'all' ? 'true' : 'false');
     var list = requests.filter(function (r) { return reqFilter === 'all' || reqState(r) === 'pending'; }).slice(0, 60);

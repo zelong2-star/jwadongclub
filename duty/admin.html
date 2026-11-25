@@ -125,13 +125,21 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 .seg.two{flex-wrap:wrap}
 #inCard .opt{background:var(--gray)}#inCard details{background:var(--gray);padding:14px 16px}.seg.two button{flex:1 1 45%}
 .back:focus-visible,.opt:focus-visible,.tog:focus-visible,.fcal .c:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
+.amback{position:fixed;inset:0;z-index:100;background:rgba(25,31,40,.5);display:flex;align-items:center;justify-content:center;padding:20px}
+.ambox{background:#fff;border-radius:22px;padding:24px 20px 16px;width:100%;max-width:340px}
+.amt{font-size:19px;font-weight:800;text-align:center}.amb{margin:12px 0 18px;text-align:center;color:var(--sub);white-space:pre-line;line-height:1.6;font-size:15px}
+.amr{display:flex;gap:8px}.amr button{flex:1;min-height:52px;border:0;border-radius:14px;font-size:16px;font-weight:800}
+.amno{background:var(--gray);color:#333D4B}.amyes{background:var(--blue);color:#fff}
 </style>
+<script>(function(){function u(){var f=window.DutyFx;if(!f)return;var g=f.get();var s=document.getElementById('fxS'),h=document.getElementById('fxH');if(!s)return;s.textContent='효과음 '+(g.sound?'켬':'끔');h.textContent='진동 '+(g.haptic?'켬':'끔');}
+document.addEventListener('DOMContentLoaded',function(){u();document.getElementById('fxS').onclick=function(){DutyFx.set({sound:!DutyFx.get().sound});u();DutyFx.ok();};document.getElementById('fxH').onclick=function(){DutyFx.set({haptic:!DutyFx.get().haptic});u();DutyFx.ok();};});})();</script>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125n"></script>
-<script src="cal-ocr.js?v=20261125n"></script>
-<script src="notice-img.js?v=20261125n"></script>
+<script src="duty-core.js?v=20261125o"></script>
+<script src="cal-ocr.js?v=20261125o"></script>
+<script src="fx.js?v=20261125o"></script>
+<script src="notice-img.js?v=20261125o"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125n';
+import { makeApi } from './common.js?v=20261125o';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -312,6 +320,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     </div>
 
     <div id="panel-tool" class="panel hide">
+      <div class="card" id="fxCard"><div class="hello">터치 소리·진동</div><div class="row" style="margin-top:10px"><button class="btn" id="fxS" type="button"></button><button class="btn" id="fxH" type="button"></button></div><div class="cap" style="margin-top:8px">아이폰은 진동을 지원하지 않아요.</div></div>
       <details id="autoBox">
         <summary>자동 배정 (가나다순 순환)</summary>
         <div class="cap" style="margin-top:8px">운영 요일에 가나다순으로 돌아가며 당번을 만들어요. 미리 본 뒤에 적용하고, 적용 전 당번표는 백업돼서 되돌릴 수 있어요.</div>
@@ -414,11 +423,41 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     if (!sel) { sel = { month: cur, day: day, j: j, name: d[day][j] }; setStatus(sel.name + ' 님(' + C.label(cur, day) + ') 선택됨. 바꿀 상대를 누르세요. 다른 달 당번과도 바꿀 수 있어요(달을 넘겨서 선택).'); renderCal(); return; }
     if (sel.month === cur && sel.day === day) { sel = (sel.j === j) ? null : { month: cur, day: day, j: j, name: d[day][j] }; setStatus(sel ? sel.name + ' 님 선택됨. 바꿀 상대를 누르세요.' : defStatus()); renderCal(); return; }
     var a = sel, b = { month: cur, day: day, j: j, name: d[day][j] };
-    sel = null; setStatus('반영하는 중이에요…');
-    API.swapSlots({ month: a.month, day: a.day, j: a.j, name: a.name }, b, '총무').then(function (res) {
-      setStatus(res.ok ? a.name + ' 님과 ' + b.name + ' 님의 당번을 바꿨어요. 당번표 이미지를 만들어 카톡에 올려 주세요.' : '그 사이 당번이 바뀌어서 처리하지 못했어요. 다시 시도해 주세요.');
-    }).catch(function () { setStatus('반영하지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
-    renderCal();
+    var fx = window.DutyFx || { ok: function () {}, warn: function () {} };
+    sel = null; renderCal();
+    askModal({
+      title: '당번을 바꿀까요?',
+      body: a.name + ' 님 (' + C.label(a.month, a.day) + ')\n⇅\n' + b.name + ' 님 (' + C.label(b.month, b.day) + ')',
+      yes: '바꾸기', no: '취소'
+    }, function (ok) {
+      if (!ok) { setStatus(defStatus()); return; }
+      setStatus('반영하는 중이에요…');
+      API.swapSlots({ month: a.month, day: a.day, j: a.j, name: a.name }, b, '총무').then(function (res) {
+        if (res.ok) {
+          fx.ok(); setStatus(a.name + ' 님과 ' + b.name + ' 님의 당번을 바꿨어요. 당번표 이미지를 만들어 카톡에 올려 주세요.');
+          askModal({ title: '저장했어요', body: a.name + ' 님 ↔ ' + b.name + ' 님\n당번을 바꿨어요.\n이미지를 만들어 카톡에 올려 주세요.', yes: '확인' }, function () {});
+        } else {
+          fx.warn(); setStatus('그 사이 당번이 바뀌어서 처리하지 못했어요. 다시 시도해 주세요.');
+          askModal({ title: '처리하지 못했어요', body: '그 사이 당번이 바뀌었어요.\n다시 시도해 주세요.', yes: '확인' }, function () {});
+        }
+      }).catch(function () { fx.warn(); setStatus('반영하지 못했어요. 잠시 뒤 다시 시도해 주세요.'); askModal({ title: '저장하지 못했어요', body: '잠시 뒤 다시 시도해 주세요.', yes: '확인' }, function () {}); });
+    });
+  }
+
+  // 확인 팝업 (no가 없으면 확인 버튼만)
+  function askModal(o, cb) {
+    var old = document.getElementById('askModal'); if (old) old.remove();
+    var back = document.createElement('div'); back.id = 'askModal'; back.className = 'amback';
+    var box = document.createElement('div'); box.className = 'ambox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-labelledby', 'amT');
+    var h = document.createElement('div'); h.id = 'amT'; h.className = 'amt'; h.textContent = o.title;
+    var p = document.createElement('div'); p.className = 'amb'; p.textContent = o.body;
+    var r = document.createElement('div'); r.className = 'amr';
+    function done(v) { document.removeEventListener('keydown', onKey); back.remove(); cb(v); }
+    function onKey(e) { if (e.key === 'Escape') done(false); }
+    if (o.no) { var n = document.createElement('button'); n.type = 'button'; n.className = 'amno'; n.textContent = o.no; n.onclick = function () { done(false); }; r.appendChild(n); }
+    var y = document.createElement('button'); y.type = 'button'; y.className = 'amyes'; y.textContent = o.yes; y.onclick = function () { done(true); }; r.appendChild(y);
+    box.appendChild(h); box.appendChild(p); box.appendChild(r); back.appendChild(box); document.body.appendChild(back);
+    document.addEventListener('keydown', onKey); y.focus();
   }
 
   function renderCal() {

@@ -99,9 +99,10 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 @media (prefers-reduced-motion:no-preference){.btn,.tog,.opt,.stat{transition:transform .1s}.btn:active:not(:disabled),.opt:active,.stat:active{transform:scale(.98)}}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125n"></script>
+<script src="fx.js?v=20261125o"></script>
+<script src="duty-core.js?v=20261125o"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125n';
+import { makeApi } from './common.js?v=20261125o';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -624,6 +625,16 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     c.appendChild(btn('btn', '이름 바꾸기', showPicker));
     m.appendChild(c);
     if (isAdminMe()) adminCard(m);
+    var cf = el('div', 'card'); cf.style.display = 'flex'; cf.style.flexDirection = 'column'; cf.style.gap = '10px';
+    cf.appendChild(el('div', 'cap', '터치 소리·진동'));
+    var fxs = (window.DutyFx ? DutyFx.get() : { sound: false, haptic: false });
+    var rowF = el('div', 'row');
+    var bS = btn('btn', '', function () { fxs.sound = !fxs.sound; DutyFx.set({ sound: fxs.sound }); upd(); if (fxs.sound) DutyFx.ok(); });
+    var bH = btn('btn', '', function () { fxs.haptic = !fxs.haptic; DutyFx.set({ haptic: fxs.haptic }); upd(); if (fxs.haptic) DutyFx.ok(); });
+    function upd() { bS.textContent = '효과음 ' + (fxs.sound ? '켬' : '끔'); bH.textContent = '진동 ' + (fxs.haptic ? '켬' : '끔'); bS.setAttribute('aria-pressed', fxs.sound); bH.setAttribute('aria-pressed', fxs.haptic); }
+    upd(); rowF.appendChild(bS); rowF.appendChild(bH); cf.appendChild(rowF);
+    if (window.DutyFx && !DutyFx.canVibrate()) cf.appendChild(el('div', 'cap', '아이폰은 진동을 지원하지 않아요. 안드로이드에서만 진동이 와요.'));
+    m.appendChild(cf);
     var c2 = el('div', 'card'); c2.style.display = 'flex'; c2.style.flexDirection = 'column'; c2.style.gap = '6px';
     c2.appendChild(el('div', 'cap', '요청을 보낸 뒤에는 카톡으로도 한 번 알려 주세요.'));
     m.appendChild(c2);
@@ -803,7 +814,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var oldOpen = myPendingOn(f, true);
     API.createRequest(r).then(function () { return cancelAll(oldOpen); }).then(function () {
       flow.busy = false; flow.step = 'done';
-      flow.result = { title: '요청을 보냈어요', body: t.name + ' 님이 앱에서 수락하면 바로 바뀌어요.' + (oldOpen.length ? ' 이 당번의 공개 요청 ' + oldOpen.length + '건은 취소했어요.' : ''), nudge: nudgeFor('p', r), card: cardFor('p', r) };
+      if (window.DutyFx) DutyFx.ok(); flow.result = { title: '요청을 보냈어요', body: t.name + ' 님이 앱에서 수락하면 바로 바뀌어요.' + (oldOpen.length ? ' 이 당번의 공개 요청 ' + oldOpen.length + '건은 취소했어요.' : ''), nudge: nudgeFor('p', r), card: cardFor('p', r) };
       renderFlow();
     }).catch(function () { flow.busy = false; renderFlow(); toast('요청을 보내지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
   }

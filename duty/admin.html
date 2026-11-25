@@ -803,8 +803,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     return lead + ' ' + C.label(x.k, x.d) + ' ' + x.names.join(' · ') + ' 님, ' + when + ' 당번이에요. 못 나오면 당번표 앱에서 교환 요청해 주세요.\n' + APP_URL2;
   }
   function todayKakao(x, off) {
-    var when = off === 0 ? '오늘' : off === 1 ? '내일' : C.label(x.k, x.d);
-    return { banner: 'duty', title: x.names.join(' · ') + ' 님, ' + when + ' 당번이에요', desc: C.label(x.k, x.d) + ' · 못 나오면 앱에서 교환 요청해 주세요', buttons: ['당번표 열기', '교환 요청하기'] };
+    var when = off === 0 ? '오늘(' + C.parseKey(x.k)[1] + '/' + x.d + ')' : off === 1 ? '내일(' + C.parseKey(x.k)[1] + '/' + x.d + ')' : C.label(x.k, x.d);
+    return { banner: 'duty', stamp: C.label(x.k, x.d) + ' 당번 안내', title: x.names.join(' · ') + ' 님, ' + when + ' 당번이에요', desc: '바닥 청소 및 전원 관리(냉·난방기, 조명) 신경 써 주세요.', buttons: ['당번표 열기', '교환 요청하기'] };
   }
   function renderToday() {
     var card = $('todayCard'), box = $('todayList'); box.textContent = '';
@@ -912,6 +912,28 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       setTimeout(function () { rej(new Error('timeout')); }, 6000);
     });
   }
+  // 날짜가 들어간 얇은 파란 띠 그림을 만들어 카카오에 올리고 주소를 돌려줘요(실패하면 null)
+  function bannerUrl(K, text) {
+    return new Promise(function (res) {
+      var done = false; function end(v) { if (!done) { done = true; res(v); } }
+      setTimeout(function () { end(null); }, 5000);
+      try {
+        var cv = document.createElement('canvas'); cv.width = 2000; cv.height = 400; var g = cv.getContext('2d');
+        g.fillStyle = '#3182F6'; g.fillRect(0, 0, 2000, 400);
+        g.fillStyle = '#fff'; g.beginPath(); g.arc(190, 200, 100, 0, 6.2832); g.fill();
+        g.strokeStyle = '#3182F6'; g.lineWidth = 14; g.lineCap = 'round';
+        g.strokeRect(140, 158, 100, 92); g.beginPath(); g.moveTo(140, 192); g.lineTo(240, 192); g.moveTo(166, 138); g.lineTo(166, 172); g.moveTo(214, 138); g.lineTo(214, 172); g.stroke();
+        g.fillStyle = '#fff'; g.textBaseline = 'middle'; g.font = '700 150px Pretendard, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif'; g.fillText(text, 350, 206);
+        cv.toBlob(function (b) {
+          if (!b) return end(null);
+          try {
+            var f = new File([b], 'banner.png', { type: 'image/png' }), dt = new DataTransfer(); dt.items.add(f);
+            K.Share.uploadImage({ file: dt.files }).then(function (r) { end(r && r.infos && r.infos.original && r.infos.original.url || null); }, function () { end(null); });
+          } catch (e) { end(null); }
+        }, 'image/png');
+      } catch (e) { end(null); }
+    });
+  }
   function shareKakao(text, card) {
     function fallback() {
       if (navigator.share) { navigator.share({ text: text }).catch(function () { copyText(text); }); toast('카톡 연결이 안 돼서 공유 창을 열었어요.'); }
@@ -920,8 +942,13 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     loadKakao().then(function (K) {
       if (!K.isInitialized()) K.init(KAKAO_KEY);
       var link = { mobileWebUrl: URL_APP, webUrl: URL_APP };
-      if (card) K.Share.sendDefault({ objectType: 'feed', content: { title: card.title, description: card.desc || '', imageUrl: URL_APP + 'kakao-' + card.banner + '.png', imageWidth: 800, imageHeight: 400, link: link }, buttons: (card.buttons || ['요청 확인하기']).map(function (t) { return { title: t, link: link }; }) });
-      else K.Share.sendDefault({ objectType: 'text', text: text.replace(/\n?https?:\/\/\S+/g, '').slice(0, 200), link: link, buttonTitle: '수락하러 가기' });
+      if (card) {
+        return (card.stamp ? bannerUrl(K, card.stamp) : Promise.resolve(null)).then(function (u) {
+          var wide = card.banner === 'duty';
+          K.Share.sendDefault({ objectType: 'feed', content: { title: card.title, description: card.desc || '', imageUrl: u || URL_APP + 'kakao-' + card.banner + '.png', imageWidth: wide ? 2000 : 800, imageHeight: wide ? 400 : 400, link: link }, buttons: (card.buttons || ['요청 확인하기']).map(function (t) { return { title: t, link: link }; }) });
+        });
+      }
+      K.Share.sendDefault({ objectType: 'text', text: text.replace(/\n?https?:\/\/\S+/g, '').slice(0, 200), link: link, buttonTitle: '수락하러 가기' });
     }).catch(fallback);
   }
 

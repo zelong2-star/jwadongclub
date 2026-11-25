@@ -127,11 +127,11 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 .back:focus-visible,.opt:focus-visible,.tog:focus-visible,.fcal .c:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125g"></script>
-<script src="cal-ocr.js?v=20261125g"></script>
-<script src="notice-img.js?v=20261125g"></script>
+<script src="duty-core.js?v=20261125h"></script>
+<script src="cal-ocr.js?v=20261125h"></script>
+<script src="notice-img.js?v=20261125h"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125g';
+import { makeApi } from './common.js?v=20261125h';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -278,8 +278,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <div id="impBody"></div>
       </div>
       <div class="card" id="memCard">
-        <label class="srch" for="memSearch" style="display:flex;align-items:center;gap:6px;font-weight:800;font-size:15px;margin-bottom:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3182F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-4.3-4.3"/></svg><span>이름 검색</span></label>
-        <input class="field" id="memSearch" type="text" autocomplete="off" placeholder="이름 또는 초성 (예: ㄱㅎㄹ)" style="margin:0 0 6px">
+        <div style="position:relative;margin:0 0 6px"><svg style="position:absolute;left:16px;top:50%;transform:translateY(-50%);pointer-events:none" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3182F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-4.3-4.3"/></svg><input class="field" id="memSearch" type="text" autocomplete="off" placeholder="이름 또는 초성 (예: ㄱㅎㄹ)" style="margin:0;padding-left:46px" aria-label="이름 검색"></div>
         <div id="memList"></div>
       </div>
       <div class="card" id="admCard">

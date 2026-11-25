@@ -31,7 +31,7 @@ h2{margin:0;font-size:20px;font-weight:800;line-height:1.35}
 .row{display:flex;gap:10px}.row>*{flex:1}
 .field{width:100%;min-height:54px;padding:0 16px;border:1.5px solid var(--line);border-radius:14px;font-size:17px;background:#fff}
 .field:focus{border-color:var(--blue);outline:0}
-.srch{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--ink)}.srch svg{width:20px;height:20px;color:var(--blue)}
+.sbox{position:relative}.sbox .sico{position:absolute;left:16px;top:50%;transform:translateY(-50%);pointer-events:none}.sbox .field{padding-left:46px}
 .names{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .names .btn{font-size:16px;padding:0 4px}
 .hero{background:var(--blue);color:#fff;border-radius:24px;padding:24px 22px;display:flex;flex-direction:column;gap:14px}
@@ -99,9 +99,9 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 @media (prefers-reduced-motion:no-preference){.btn,.tog,.opt,.stat{transition:transform .1s}.btn:active:not(:disabled),.opt:active,.stat:active{transform:scale(.98)}}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125g"></script>
+<script src="duty-core.js?v=20261125h"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125g';
+import { makeApi } from './common.js?v=20261125h';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -125,8 +125,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     <div class="card" style="display:flex;flex-direction:column;gap:12px">
       <h1>내 이름을 골라 주세요</h1>
       <div class="cap">한 번만 고르면 이 폰에 기억돼요. 설정에서 언제든 바꿀 수 있어요.</div>
-      <label class="cap srch" id="searchLab" for="search"><span>이름 검색</span></label>
-      <input class="field" id="search" type="text" autocomplete="off" placeholder="이름 또는 초성 (예: ㄱㅎㄹ)">
+      <div class="sbox"><svg class="sico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3182F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-4.3-4.3"/></svg><input class="field" id="search" type="text" autocomplete="off" placeholder="이름 또는 초성 (예: ㄱㅎㄹ)" aria-label="이름 검색"></div>
       <div class="names" id="names"></div>
     </div>
   </section>
@@ -827,7 +826,6 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     $('gateMsg').textContent = ''; connect(v);
   });
   $('pin').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('enter').click(); });
-  $('searchLab').insertBefore(icon('M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-4.3-4.3'), $('searchLab').firstChild);
   $('search').addEventListener('input', function () { renderNames($('search').value.trim()); });
 
   var started = false;

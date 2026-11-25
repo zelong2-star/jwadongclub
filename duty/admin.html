@@ -150,12 +150,12 @@ nav.tabs button[aria-current="page"]{color:var(--amb)}
 <script>(function(){function u(){var f=window.DutyFx;if(!f)return;var g=f.get();var s=document.getElementById('fxS'),h=document.getElementById('fxH');if(!s)return;s.textContent='효과음 '+(g.sound?'켬':'끔');h.textContent='진동 '+(g.haptic?'켬':'끔');}
 document.addEventListener('DOMContentLoaded',function(){u();document.getElementById('fxS').onclick=function(){DutyFx.set({sound:!DutyFx.get().sound});u();DutyFx.ok();};document.getElementById('fxH').onclick=function(){DutyFx.set({haptic:!DutyFx.get().haptic});u();DutyFx.ok();};});})();</script>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125za"></script>
-<script src="cal-ocr.js?v=20261125za"></script>
-<script src="fx.js?v=20261125za"></script>
-<script src="notice-img.js?v=20261125za"></script>
+<script src="duty-core.js?v=20261125zb"></script>
+<script src="cal-ocr.js?v=20261125zb"></script>
+<script src="fx.js?v=20261125zb"></script>
+<script src="notice-img.js?v=20261125zb"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125za';
+import { makeApi } from './common.js?v=20261125zb';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -1137,6 +1137,13 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       } catch (e) { end(null); }
     });
   }
+  // 카톡 카드: 글자 헤더(제목 앞 아이콘) + 안내 두 줄 + 버튼. 문제가 생기면 예전 이미지 카드로 보내요
+  function listCard(K, card, link) {
+    var duty = card.banner === 'duty', ic = URL_APP + (duty ? 'kakao-duty-icon.png' : 'kakao-swap-icon.png');
+    return { objectType: 'list', headerTitle: (duty ? '📅 ' + (card.stamp || '당번 안내') : '🔄 당번 교환 요청'), headerLink: link,
+      contents: [{ title: card.title, description: '', imageUrl: ic, imageWidth: 240, imageHeight: 240, link: link }, { title: card.desc || '자세히 보기', description: '', imageUrl: ic, imageWidth: 240, imageHeight: 240, link: link }],
+      buttons: (card.buttons || ['요청 확인하기']).map(function (t) { return { title: t, link: link }; }) };
+  }
   function shareKakao(text, card) {
     function fallback() {
       if (navigator.share) { navigator.share({ text: text }).catch(function () { copyText(text); }); toast('카톡 연결이 안 돼서 공유 창을 열었어요.'); }
@@ -1148,6 +1155,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       if (card) {
         return (card.stamp ? bannerUrl(K, card.stamp) : Promise.resolve(null)).then(function (u) {
           var wide = card.banner === 'duty';
+          try { K.Share.sendDefault(listCard(K, card, link)); return; } catch (e) {}
           K.Share.sendDefault({ objectType: 'feed', content: { title: card.title, description: card.desc || '', imageUrl: u || URL_APP + 'kakao-' + card.banner + '.png', imageWidth: wide ? 1000 : 800, imageHeight: wide ? 500 : 400, link: link }, buttons: (card.buttons || ['요청 확인하기']).map(function (t) { return { title: t, link: link }; }) });
         });
       }

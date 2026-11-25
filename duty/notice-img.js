@@ -10,8 +10,8 @@
   // opt: {year, month, duties:{day:[a,b]}, stamp:'11/25 16시20분', changed:{day:[이름,...]}}
   function draw(canvas, opt) {
     var y = opt.year, m = opt.month, ds = opt.duties || {}, changed = opt.changed || {};
-    var W = 1080, pad = 28, gap = 8, cw = (W - pad * 2 - gap * 6) / 7, ch = 150;
-    var titleH = 120, headH = 56;
+    var W = 1080, pad = 8, gap = 6, cw = (W - pad * 2 - gap * 6) / 7, ch = 190;
+    var titleH = 112, headH = 60;
     var dim = new Date(y, m, 0).getDate(), off = (new Date(y, m - 1, 1).getDay() + 6) % 7;
     var rows = Math.ceil((off + dim) / 7);
     var gridH = rows * (ch + gap);
@@ -23,13 +23,13 @@
     var g = canvas.getContext('2d');
     g.fillStyle = '#ffffff'; g.fillRect(0, 0, W, H);
     // 제목 (왼쪽) + 수정 시각 (오른쪽)
-    g.textBaseline = 'alphabetic'; g.textAlign = 'left'; g.fillStyle = INK; g.font = '800 54px ' + FONT;
-    g.fillText(m + '월 당번표', pad + 6, 84);
-    if (opt.stamp) { g.textAlign = 'right'; g.fillStyle = SUB; g.font = '500 27px ' + FONT; g.fillText(opt.stamp + ' 기준', W - pad - 6, 84); }
+    g.textBaseline = 'alphabetic'; g.textAlign = 'left'; g.fillStyle = INK; g.font = '800 58px ' + FONT;
+    g.fillText(m + '월 당번표', pad + 22, 80);
+    if (opt.stamp) { g.textAlign = 'right'; g.fillStyle = SUB; g.font = '500 28px ' + FONT; g.fillText(opt.stamp + ' 기준', W - pad - 22, 80); }
     // 요일
     g.textBaseline = 'middle'; g.textAlign = 'center';
     for (var c = 0; c < 7; c++) {
-      g.fillStyle = c === 5 ? BLUE : c === 6 ? RED : SUB; g.font = '700 27px ' + FONT;
+      g.fillStyle = c === 5 ? BLUE : c === 6 ? RED : SUB; g.font = '700 32px ' + FONT;
       g.fillText(DOW[c], pad + c * (cw + gap) + cw / 2, titleH + headH / 2);
     }
     // 칸
@@ -38,28 +38,28 @@
       var day = r * 7 + cc - off + 1;
       if (day < 1 || day > dim) continue;
       var x0 = pad + cc * (cw + gap), y0 = top + r * (ch + gap);
-      g.fillStyle = GRAY; rr(g, x0, y0, cw, ch, 20); g.fill();
+      g.fillStyle = GRAY; rr(g, x0, y0, cw, ch, 18); g.fill();
       g.textAlign = 'left'; g.textBaseline = 'top';
-      g.fillStyle = cc === 5 ? BLUE : cc === 6 ? RED : INK; g.font = '700 24px ' + FONT;
+      g.fillStyle = cc === 5 ? BLUE : cc === 6 ? RED : INK; g.font = '700 28px ' + FONT;
       g.fillText(String(day), x0 + 12, y0 + 10);
       var names = (ds[day] || []).filter(function (n) { return n && String(n).trim(); });
       var ch0 = changed[day];
       names.forEach(function (n, i) {
         var hit = ch0 === true || (ch0 && ch0.indexOf(n) >= 0);
-        var size = 31; g.font = (hit ? '800 ' : '600 ') + size + 'px ' + FONT;
-        while (g.measureText(n).width > cw - 20 && size > 16) { size--; g.font = (hit ? '800 ' : '600 ') + size + 'px ' + FONT; }
-        var tw = g.measureText(n).width, cy = y0 + 62 + i * 44;
-        if (hit) { g.fillStyle = YEL; rr(g, x0 + cw / 2 - tw / 2 - 8, cy - 4, tw + 16, size + 12, 10); g.fill(); }
+        var size = 40; g.font = (hit ? '800 ' : '600 ') + size + 'px ' + FONT;
+        while (g.measureText(n).width > cw - 14 && size > 18) { size--; g.font = (hit ? '800 ' : '600 ') + size + 'px ' + FONT; }
+        var tw = g.measureText(n).width, cy = y0 + 70 + i * 58;
+        if (hit) { g.fillStyle = YEL; rr(g, x0 + cw / 2 - tw / 2 - 7, cy - 5, tw + 14, size + 14, 10); g.fill(); }
         g.fillStyle = hit ? YTX : INK; g.textAlign = 'center'; g.fillText(n, x0 + cw / 2, cy + 2); g.textAlign = 'left';
       });
     }
     var y1 = top + gridH + 14;
     if (anyChanged) {
-      g.fillStyle = YEL; rr(g, pad + 6, y1 + 8, 30, 22, 8); g.fill();
+      g.fillStyle = YEL; rr(g, pad + 22, y1 + 8, 30, 22, 8); g.fill();
       g.fillStyle = INK; g.font = '500 24px ' + FONT; g.textAlign = 'left'; g.textBaseline = 'middle';
-      g.fillText('노란 이름은 교환으로 바뀐 당번이에요', pad + 48, y1 + 20);
+      g.fillText('노란 이름은 교환으로 바뀐 당번이에요', pad + 64, y1 + 20);
     }
-    if (opt.footer) { g.fillStyle = SUB; g.font = '500 22px ' + FONT; g.textAlign = 'left'; g.textBaseline = 'alphabetic'; g.fillText(opt.footer, pad + 6, H - 10); }
+    if (opt.footer) { g.fillStyle = SUB; g.font = '500 22px ' + FONT; g.textAlign = 'left'; g.textBaseline = 'alphabetic'; g.fillText(opt.footer, pad + 22, H - 10); }
     return canvas;
   }
   var api = { draw: draw };

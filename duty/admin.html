@@ -127,11 +127,11 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 .back:focus-visible,.opt:focus-visible,.tog:focus-visible,.fcal .c:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125k"></script>
-<script src="cal-ocr.js?v=20261125k"></script>
-<script src="notice-img.js?v=20261125k"></script>
+<script src="duty-core.js?v=20261125l"></script>
+<script src="cal-ocr.js?v=20261125l"></script>
+<script src="notice-img.js?v=20261125l"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125k';
+import { makeApi } from './common.js?v=20261125l';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -232,7 +232,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <div class="cap" id="imgMsg" role="status">이미지를 복사한 뒤 카톡 대화창에 붙여넣거나(Ctrl+V), 저장해서 올리세요.</div>
         <img id="noticeImg" alt="당번표 이미지" style="width:100%;border:1px solid var(--line);border-radius:12px;margin-top:8px">
         <div class="row" style="margin-top:8px">
-          <button class="btn primary sm" id="imgCopy">이미지 복사</button>
+          <button class="btn primary sm" id="imgKakao">카톡으로 보내기</button>
+          <button class="btn sm" id="imgCopy">이미지 복사</button>
           <button class="btn sm" id="imgSave">이미지 저장</button>
           <button class="btn sm" id="imgShare">공유</button>
           <button class="btn sm" id="imgClose">닫기</button>
@@ -1006,6 +1007,25 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     }).catch(fallback);
   }
 
+  // 당번표 이미지를 카톡 카드로 보내기: 이미지 + 버튼 2개(문구 없음). 안 되면 공유 시트로 대신해요
+  function shareImageKakao(blob, w, h, name, fb) {
+    loadKakao().then(function (K) {
+      if (!K.isInitialized()) K.init(KAKAO_KEY);
+      var up = new Promise(function (res, rej) {
+        setTimeout(function () { rej(new Error('timeout')); }, 12000);
+        var dt = new DataTransfer(); dt.items.add(new File([blob], 'duty.png', { type: 'image/png' }));
+        K.Share.uploadImage({ file: dt.files }).then(function (r) { var u = r && r.infos && r.infos.original && r.infos.original.url; u ? res(u) : rej(new Error('nourl')); }, rej);
+      });
+      return up.then(function (u) {
+        var link = { mobileWebUrl: URL_APP, webUrl: URL_APP };
+        var base = { objectType: 'feed', content: { imageUrl: u, imageWidth: w, imageHeight: h, link: link }, buttons: [{ title: '교환 요청 바로가기', link: link }, { title: '당번표 열기', link: link }] };
+        try { base.content.title = ''; K.Share.sendDefault(base); }
+        catch (e) { base.content.title = name; K.Share.sendDefault(base); }
+      });
+    }).catch(function () { if (fb) fb(); });
+  }
+  window.__shareKakaoImage = shareImageKakao;
+
   function cmpBlock(kind, rows) {
     var b = el('div', 'blk ' + (kind === 'now' ? 'now' : 'after')); b.appendChild(el('div', 'k', kind === 'now' ? '지금' : '바뀐 뒤'));
     rows.forEach(function (r) { var l = el('div', 'ln'); l.appendChild(el('span', '', r[0])); l.appendChild(el('b', '', r[1])); b.appendChild(l); });
@@ -1426,31 +1446,32 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
 
 
   /* ===== 카톡용 당번표 이미지 ===== */
-  var imgBlob = null, imgUrl = null, imgName = '당번표.png';
+  var imgBlob = null, imgUrl = null, imgName = '당번표.png', imgDim = [1080, 900], imgTitle = '당번표';
   function changedDays() {
     var o = {};
+    function add(d, n) { if (!n) return; (o[d] = o[d] || []).indexOf(n) < 0 && o[d].push(n); }
     logs.forEach(function (l) {
-      if (l.kind !== 'swap' || l.undone) return;
-      var am = (l.a && l.a.month) || l.month, bm = (l.b && l.b.month) || l.month2 || l.month;
-      if (am === cur) o[l.a.day] = true;
-      if (bm === cur) o[l.b.day] = true;
+      if (l.kind !== 'swap' || l.undone || !l.a || !l.b) return;
+      var am = l.a.month || l.month, bm = l.b.month || l.month2 || l.month;
+      if (am === cur) add(l.a.day, l.b.name);
+      if (bm === cur) add(l.b.day, l.a.name);
     });
     return o;
   }
+  function stampNow() { var n = new Date(); return (n.getMonth() + 1) + '/' + n.getDate() + ' ' + C.pad(n.getHours()) + '시' + C.pad(n.getMinutes()) + '분'; }
   function imgMsg(t) { $('imgMsg').textContent = t; }
   function makeImage() {
     var p = ym(), c = document.createElement('canvas');
     var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
     ready.then(function () {
-      window.NoticeImg.draw(c, { year: p[0], month: p[1], duties: duties(), lines: [], stamp: today(), changed: changedDays(),
-        footer: '교환은 당번표 앱에서 요청 · zelong2-star.github.io/jwadongclub/duty/' });
+      window.NoticeImg.draw(c, { year: p[0], month: p[1], duties: duties(), stamp: stampNow(), changed: changedDays() });
       c.toBlob(function (blob) {
         if (!blob) { setStatus('이미지를 만들지 못했어요.'); return; }
         if (imgUrl) URL.revokeObjectURL(imgUrl);
-        imgBlob = blob; imgUrl = URL.createObjectURL(blob); imgName = '당번표-' + cur + '.png';
+        imgBlob = blob; imgUrl = URL.createObjectURL(blob); imgName = '당번표-' + cur + '.png'; imgDim = [c.width, c.height]; imgTitle = p[1] + '월 당번표';
         $('noticeImg').src = imgUrl; $('imgCard').classList.remove('hide');
         $('imgShare').classList.toggle('hide', !(navigator.canShare && navigator.share));
-        imgMsg('이미지를 복사한 뒤 카톡 대화창에 붙여넣거나(Ctrl+V), 저장해서 올리세요.');
+        imgMsg('"카톡으로 보내기"를 누르면 이미지와 버튼이 함께 가요. 이미지만 올리려면 복사·저장을 쓰세요.');
       }, 'image/png');
     });
   }
@@ -1467,6 +1488,12 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     if (!imgUrl) return;
     var a = document.createElement('a'); a.href = imgUrl; a.download = imgName; document.body.appendChild(a); a.click(); a.remove();
     imgMsg('저장했어요. 카톡에서 사진으로 올려 주세요.');
+  });
+  $('imgKakao').addEventListener('click', function () {
+    if (!imgBlob) return;
+    if (!window.__shareKakaoImage) { imgMsg('잠시 뒤 다시 눌러 주세요.'); return; }
+    imgMsg('카톡으로 보낼 준비를 하고 있어요…');
+    window.__shareKakaoImage(imgBlob, imgDim[0], imgDim[1], imgTitle, function () { imgMsg('카톡 연결이 안 돼요. "이미지 복사"나 "공유"로 올려 주세요.'); });
   });
   $('imgShare').addEventListener('click', function () {
     if (!imgBlob) return;

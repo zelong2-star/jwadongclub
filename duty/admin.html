@@ -66,6 +66,9 @@ summary{min-height:32px;font-size:15px;font-weight:700;cursor:pointer}
 .ocrrow .d.we{color:#B3261E}
 .wbox{padding:8px 12px;border-radius:10px;background:#FEF3E2;color:#7a3a05;font-size:13px}
 .addrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lockon{background:#B3261E;border-color:#B3261E;color:#fff;font-weight:700}
+.tag{display:inline-block;padding:0 8px;border-radius:10px;font-size:12px;font-weight:700;background:#EAF2F9;color:#1F4E79}
+.tag.p{background:#FEF3E2;color:#7a3a05}.tag.ok{background:#E6F4EC;color:#1E7D4F}
 .btn:focus-visible,.chip:focus-visible,.in:focus-visible,.seg button:focus-visible,summary:focus-visible,textarea:focus-visible,.field:focus-visible{outline:3px solid #E8710A;outline-offset:2px}
 @media (max-width:520px){.chip{font-size:13px}.cell{min-height:112px;padding:3px}h1{font-size:22px}}
 </style>
@@ -112,6 +115,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <div class="label" id="monthLabel" aria-live="polite"></div>
         <button class="btn" id="next" aria-label="다음 달">다음 달</button>
         <button class="btn" id="newMonth">새 달 만들기</button>
+        <button class="btn" id="lock" aria-pressed="false">이 달 교환 마감</button>
       </div>
       <div class="seg" role="group" aria-label="작업 모드">
         <button id="modeSwap" aria-pressed="true">교환</button>
@@ -136,6 +140,14 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           <button class="btn primary" id="copy">공지 문구 복사</button>
           <button class="btn" id="cancel">선택 취소</button>
         </div>
+        <details class="card" id="reqBox" open>
+          <summary id="reqSummary">교환 요청 현황</summary>
+          <div class="seg" role="group" aria-label="요청 보기" style="margin-top:8px">
+            <button id="rfPending" aria-pressed="true">대기 중</button>
+            <button id="rfAll" aria-pressed="false">전체</button>
+          </div>
+          <div id="reqList"></div>
+        </details>
         <div class="cap">카톡 공지 미리보기</div>
         <pre id="notice"></pre>
         <div class="card">
@@ -159,7 +171,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
 (function () {
   'use strict';
   var C = window.DutyCore, DOW = C.DOW;
-  var API = null, pin = null, months = {}, logs = [], keys = [], cur = null;
+  var API = null, pin = null, months = {}, logs = [], requests = [], reqFilter = 'pending', keys = [], cur = null;
   var mode = 'swap', sel = null, unsubs = [], connected = false, armed = {};
   var PIN_KEY = 'jwadong-admin-pin-v1';
   try { pin = localStorage.getItem(PIN_KEY); } catch (e) {}
@@ -194,6 +206,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           var n = new Date(), nk = n.getFullYear() + '-' + C.pad(n.getMonth() + 1);
           cur = keys.indexOf(nk) >= 0 ? nk : keys[keys.length - 1];
           unsubs.push(API.subscribeLog(function (ls) { logs = ls; if (connected) renderAll(); }, onErr));
+          unsubs.push(API.subscribeRequests(function (rs) { requests = rs; if (connected) renderAll(); }, onErr));
           show('app'); setStatus(defStatus()); renderAll();
         } else {
           if (keys.indexOf(cur) < 0) cur = keys[keys.length - 1];
@@ -300,7 +313,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var ae = document.activeElement;
     var typing = mode === 'input' && ae && ae.classList && ae.classList.contains('in');
     if (!typing) renderCal();
-    renderNotice(); renderLog();
+    renderNotice(); renderLog(); renderReqs(); syncLock();
   }
 
   function nextKey(k) { var p = C.parseKey(k), y = p[0], m = p[1] + 1; if (m > 12) { m = 1; y++; } return y + '-' + C.pad(m); }
@@ -350,6 +363,67 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   });
 
   var started = false;
+
+
+  /* ===== 교환 요청 현황 / 달별 마감 ===== */
+  var ST_KO = { pending: '대기', accepted: '성사', declined: '거절', cancelled: '취소', stale: '무효' };
+  function reqState(r) {
+    if (r.status !== 'pending') return r.status;
+    if (C.expired(r.month, r.fromDay)) return 'expired';
+    if (r.type !== 'open') {
+      var ds = (months[r.month] && months[r.month].duties) || {};
+      if (!C.swapDuties(ds, { day: r.fromDay, j: r.fromJ, name: r.fromName }, { day: r.toDay, j: r.toJ, name: r.toName }).ok || C.expired(r.month, r.toDay)) return 'stale';
+    }
+    return 'pending';
+  }
+  function reqDesc(r) {
+    if (r.type === 'open') {
+      var base = '[공개] ' + r.fromName + ' · ' + C.label(r.month, r.fromDay) + ' 내놓음 · ' + C.condText(r.cond);
+      return r.status === 'accepted' && r.toName ? base + ' → ' + r.toName + ' 님이 ' + C.label(r.month, r.toDay) + '로 수락' : base;
+    }
+    return '[개인] ' + r.fromName + ' ' + C.label(r.month, r.fromDay) + ' ↔ ' + r.toName + ' ' + C.label(r.month, r.toDay);
+  }
+  function renderReqs() {
+    var box = $('reqList'); box.textContent = '';
+    var pendingN = requests.filter(function (r) { return reqState(r) === 'pending'; }).length;
+    $('reqSummary').textContent = '교환 요청 현황 · 대기 ' + pendingN + '건';
+    $('rfPending').setAttribute('aria-pressed', reqFilter === 'pending' ? 'true' : 'false');
+    $('rfAll').setAttribute('aria-pressed', reqFilter === 'all' ? 'true' : 'false');
+    var list = requests.filter(function (r) { return reqFilter === 'all' || reqState(r) === 'pending'; }).slice(0, 60);
+    if (!list.length) { box.appendChild(el('div', 'cap', reqFilter === 'all' ? '요청이 없어요.' : '대기 중인 요청이 없어요.')); return; }
+    list.forEach(function (r) {
+      var st = reqState(r), item = el('div', 'item');
+      var top = el('div', '');
+      var tag = el('span', 'tag' + (st === 'pending' ? ' p' : st === 'accepted' ? ' ok' : ''), st === 'expired' ? '만료' : (ST_KO[st] || st));
+      top.appendChild(tag); top.appendChild(document.createTextNode(' ' + reqDesc(r)));
+      item.appendChild(top);
+      item.appendChild(el('div', 'cap', C.md(r.at) + ' 요청'));
+      if (st === 'pending') {
+        var b = el('button', 'btn', '이 요청 취소'); b.type = 'button';
+        var armedR = 0;
+        b.addEventListener('click', function () {
+          if (!armedR) { b.textContent = '정말 취소할까요? 한 번 더'; armedR = setTimeout(function () { armedR = 0; b.textContent = '이 요청 취소'; }, 4000); return; }
+          clearTimeout(armedR); b.disabled = true;
+          API.setRequestStatus(r.id, 'cancelled').then(function () { setStatus('요청을 취소했어요.'); }).catch(function () { b.disabled = false; setStatus('취소하지 못했어요.'); });
+        });
+        item.appendChild(b);
+      }
+      box.appendChild(item);
+    });
+  }
+  function syncLock() {
+    var on = !!(months[cur] && months[cur].locked), b = $('lock');
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.classList.toggle('lockon', on);
+    b.textContent = on ? '🔒 교환 마감됨 (풀기)' : '이 달 교환 마감';
+  }
+  $('lock').addEventListener('click', function () {
+    var on = !!(months[cur] && months[cur].locked), k = cur, b = $('lock'); b.disabled = true;
+    API.setLock(k, !on).then(function () { b.disabled = false; setStatus(C.parseKey(k)[1] + '월 교환을 ' + (!on ? '마감했어요. 회원은 이 달 요청을 수락할 수 없어요(총무는 계속 수정 가능).' : '다시 열었어요.')); })
+      .catch(function () { b.disabled = false; setStatus('바꾸지 못했어요.'); });
+  });
+  $('rfPending').addEventListener('click', function () { reqFilter = 'pending'; renderReqs(); });
+  $('rfAll').addEventListener('click', function () { reqFilter = 'all'; renderReqs(); });
 
   /* ===== 이미지로 당번표 올리기 (브라우저 안에서 글자 읽기) ===== */
   var TESS_URL = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';

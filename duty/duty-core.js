@@ -58,6 +58,52 @@
       return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('').slice(0, 40);
     });
   }
+  // ---- 공개 교환 요청 ----
+  // 당번일 "하루 전까지"만 유효: 당번 당일부터는 만료
+  function expired(k, d) {
+    var p = parseKey(k), n = new Date();
+    return new Date(p[0], p[1] - 1, d) <= new Date(n.getFullYear(), n.getMonth(), n.getDate());
+  }
+  function dkey(k, d) { var p = parseKey(k); return p[0] + '-' + pad(p[1]) + '-' + pad(d); }
+  // cond: {mode:'dow'|'dates'|'except', dows:[0..6(월=0)], dates:['YYYY-MM-DD']}
+  function condOk(cond, k, d) {
+    if (!cond) return false;
+    var p = parseKey(k), idx = (new Date(p[0], p[1] - 1, d).getDay() + 6) % 7, key = dkey(k, d);
+    if (cond.mode === 'dow') return (cond.dows || []).indexOf(idx) >= 0;
+    if (cond.mode === 'dates') return (cond.dates || []).indexOf(key) >= 0;
+    if (cond.mode === 'except') return (cond.dates || []).indexOf(key) < 0;
+    return false;
+  }
+  function condText(cond) {
+    if (!cond) return '';
+    function dl(arr) { return arr.slice().sort().map(function (s) { var q = s.split('-'); return parseInt(q[1], 10) + '/' + parseInt(q[2], 10); }).join(', '); }
+    if (cond.mode === 'dow') return (cond.dows || []).slice().sort(function (a, b) { return a - b; }).map(function (i) { return DOW[i]; }).join('·') + '요일 가능';
+    if (cond.mode === 'dates') return dl(cond.dates || []) + ' 가능';
+    if (cond.mode === 'except') return (cond.dates && cond.dates.length) ? dl(cond.dates) + ' 빼고 언제든' : '언제든';
+    return '';
+  }
+  // 수락 가능 여부. acc: {day,j,name}. 순수 함수(저장소 트랜잭션과 화면에서 같이 사용)
+  function canAcceptOpen(duties, r, acc, locked) {
+    if (locked) return { ok: false, reason: 'locked' };
+    if (expired(r.month, r.fromDay)) return { ok: false, reason: 'expired' };
+    if (expired(r.month, acc.day)) return { ok: false, reason: 'past' };
+    if (acc.name === r.fromName) return { ok: false, reason: 'self' };
+    if (!condOk(r.cond, r.month, acc.day)) return { ok: false, reason: 'cond' };
+    var df = duties[r.fromDay] || [], da = duties[acc.day] || [];
+    if (df[r.fromJ] !== r.fromName || da[acc.j] !== acc.name) return { ok: false, reason: 'stale' };
+    if (df.indexOf(acc.name) >= 0 || da.indexOf(r.fromName) >= 0) return { ok: false, reason: 'dup' };
+    return swapDuties(duties, { day: r.fromDay, j: r.fromJ, name: r.fromName }, acc);
+  }
+  // 내가 이 요청을 수락할 수 있는 내 당번일 목록
+  function myOptions(duties, r, me, locked) {
+    var out = [];
+    Object.keys(duties).map(Number).sort(function (a, b) { return a - b; }).forEach(function (d) {
+      var a = duties[d] || [];
+      a.forEach(function (n, j) { if (n === me && canAcceptOpen(duties, r, { day: d, j: j, name: me }, locked).ok) out.push({ day: d, j: j, name: me }); });
+    });
+    return out;
+  }
   g.DutyCore = { DOW: DOW, pad: pad, parseKey: parseKey, dowOf: dowOf, label: label, md: md, isPast: isPast,
-    swapDuties: swapDuties, noticeText: noticeText, parseNotice: parseNotice, hashPin: hashPin };
+    swapDuties: swapDuties, noticeText: noticeText, parseNotice: parseNotice, hashPin: hashPin,
+    expired: expired, dkey: dkey, condOk: condOk, condText: condText, canAcceptOpen: canAcceptOpen, myOptions: myOptions };
 })(window);

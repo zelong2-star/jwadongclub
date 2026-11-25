@@ -53,6 +53,8 @@ pre{margin:0;padding:14px;border-radius:12px;background:#EAF2F9;font-family:inhe
 .tog[aria-pressed="true"]{background:#1E7D4F;border-color:#1E7D4F;color:#fff;font-weight:700}
 summary{min-height:32px;font-size:15px;font-weight:700;cursor:pointer}
 .badge{display:inline-block;min-width:22px;padding:0 7px;border-radius:11px;background:#B3261E;color:#fff;font-size:13px;font-weight:700;text-align:center}
+.tog3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}
+.tog3 .tog{min-height:48px;font-size:13px}
 .btn:focus-visible,.chip:focus-visible,.field:focus-visible,.tog:focus-visible,summary:focus-visible{outline:3px solid #E8710A;outline-offset:2px}
 @media (max-width:520px){.chip{font-size:12px}.cell{min-height:100px}}
 </style>
@@ -100,6 +102,12 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       <div id="inbox"></div>
     </div>
 
+    <div class="card" id="openListCard" style="margin-top:12px">
+      <div class="hello">나와 바꿀 수 있는 공개 요청 <span class="badge hide" id="openCount">0</span></div>
+      <div class="cap">조건이 내 당번과 맞는 요청만 보여요.</div>
+      <div id="openList"></div>
+    </div>
+
     <div class="nav" style="margin-top:12px">
       <button class="btn" id="prev" aria-label="이전 달">이전 달</button>
       <div class="label" id="monthLabel" aria-live="polite"></div>
@@ -130,6 +138,20 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <button class="btn" id="reset">처음부터 다시</button>
       </div>
     </div>
+
+    <details class="card" id="openCard" style="margin-top:12px" hidden>
+      <summary>또는 &quot;공개 요청&quot;으로 올리기 (조건만 정하면 누구든 수락)</summary>
+      <div class="cap" id="openFor" style="margin-top:8px"></div>
+      <div class="tog3" role="group" aria-label="교환 조건 방식">
+        <button class="tog" type="button" id="omDow">요일로 정하기</button>
+        <button class="tog" type="button" id="omDates">날짜로 정하기</button>
+        <button class="tog" type="button" id="omExcept">이 날짜만 빼고 언제든</button>
+      </div>
+      <div class="dowrow" id="oDow"></div>
+      <div class="names" id="oDates" style="margin-top:8px"></div>
+      <pre id="oText" style="margin-top:10px"></pre>
+      <button class="btn primary" id="oSend" style="margin-top:10px;width:100%">공개 요청 올리기</button>
+    </details>
 
     <div class="card hide" id="nudgeCard" style="margin-top:12px">
       <div class="cap">상대가 알아차리도록 카톡으로도 알려 주세요</div>
@@ -162,6 +184,9 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   var unsubs = [], connected = false;
   var PIN_KEY = 'jwadong-pin-v1', ME_KEY = 'jwadong-me-v1', AV_KEY = 'jwadong-avail-v1';
   var avail = { dows: [], dates: [] };
+  var oc = { mode: 'dow', dows: [], dates: [] };
+  var REASON = { locked: '이 달은 교환이 마감됐어요.', expired: '당번 하루 전까지만 가능한 요청이에요. 이미 지났어요.', past: '이미 지난 날짜는 바꿀 수 없어요.', self: '내가 올린 요청이에요.', cond: '조건에 맞지 않는 날이에요.', stale: '그 사이 당번이 바뀌어서 처리하지 못했어요.', dup: '이미 같은 날 당번이라 바꿀 수 없어요.', done: '이미 다른 분이 수락했거나 취소된 요청이에요.', gone: '요청이 사라졌어요.' };
+  function isLocked(k) { return !!(months[k] && months[k].locked); }
   try {
     pin = localStorage.getItem(PIN_KEY); me = localStorage.getItem(ME_KEY);
     var av = JSON.parse(localStorage.getItem(AV_KEY));
@@ -277,7 +302,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       var d1 = duties()[target.day];
       if (!d1 || d1[target.j] !== target.name) target = null;
     }
-    renderCal(); renderInbox(); renderSent(); renderRecent();
+    renderCal(); renderInbox(); renderOpenList(); renderSent(); renderRecent();
   }
 
   function renderCal() {
@@ -307,7 +332,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
               var name = d[j];
               if (!name) return;
               var isMe = name === me, past = C.isPast(cur, day), enabled;
-              if (past) enabled = false;
+              if (past || isLocked(cur)) enabled = false;
               else if (!mySel) enabled = isMe;
               else enabled = isMe || (day !== mySel.day && matches(y, m, day));
               if (enabled && !isMe && mySel) cnt++;
@@ -333,9 +358,10 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     if (!mySel) setStatus('교환하고 싶은 내 당번(노란색 이름)을 누르세요.');
     else if (!target) setStatus(lab(cur, mySel.day) + ' 당번을 바꿀 상대의 이름을 누르세요.' + (hasFilter() ? (cnt ? ' (가능한 날 기준 ' + cnt + '명)' : ' 가능한 날에 맞는 상대가 이 달에는 없어요.') : ''));
     else setStatus('아래 내용으로 요청을 보낼까요?');
-    renderAvail();
+    if (isLocked(cur)) setStatus('이 달은 교환이 마감됐어요. 바꾸려면 총무에게 문의해 주세요.');
+    renderAvail(); renderOpenForm();
     var req = $('req');
-    if (mySel && target) {
+    if (mySel && target && !isLocked(cur)) {
       $('reqText').textContent = '내 당번: ' + lab(cur, mySel.day) + '\n상대 당번: ' + lab(cur, target.day) + ' ' + target.name + ' 님\n\n상대가 앱에서 수락하면 바로 바뀝니다.';
       req.hidden = false;
     } else req.hidden = true;
@@ -382,6 +408,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         yes.disabled = true; no.disabled = true;
         API.acceptRequest(r.id).then(function (res) {
           if (res.ok) setStatus('수락했어요. 당번표가 바뀌었습니다.');
+          else if (res.reason === 'locked') setStatus('이 달은 교환이 마감됐어요.');
           else if (res.reason === 'stale') setStatus('그 사이 당번이 바뀌어서 처리하지 못했어요.');
           else setStatus('이미 처리된 요청이에요.');
         }).catch(function () { yes.disabled = false; no.disabled = false; setStatus('처리하지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
@@ -400,11 +427,14 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   var STATUS_KO = { pending: '답을 기다리는 중', accepted: '수락됨 (반영 완료)', declined: '거절됨', cancelled: '취소함', stale: '당번이 바뀌어 처리되지 않음' };
   function renderSent() {
     var box = $('sent'); box.textContent = '';
-    var list = requests.filter(function (r) { return r.fromName === me; }).slice(0, 5);
+    var list = requests.filter(function (r) { return r.fromName === me; }).slice(0, 6);
     if (!list.length) { box.appendChild(el('div', 'cap', '보낸 요청이 없어요.')); return; }
     list.forEach(function (r) {
       var item = el('div', 'item');
-      item.appendChild(el('div', '', lab(r.month, r.fromDay) + ' ↔ ' + lab(r.month, r.toDay) + ' ' + r.toName + ' 님 · ' + (STATUS_KO[r.status] || r.status)));
+      var txt = r.type === 'open'
+        ? '공개 요청 ' + lab(r.month, r.fromDay) + ' · ' + C.condText(r.cond) + ' · ' + (r.status === 'accepted' && r.toName ? r.toName + ' 님이 ' + lab(r.month, r.toDay) + '로 수락' : (r.status === 'pending' && C.expired(r.month, r.fromDay) ? '기간 지남' : (STATUS_KO[r.status] || r.status)))
+        : lab(r.month, r.fromDay) + ' ↔ ' + lab(r.month, r.toDay) + ' ' + r.toName + ' 님 · ' + (STATUS_KO[r.status] || r.status);
+      item.appendChild(el('div', '', txt));
       if (r.status === 'pending') {
         var c = el('button', 'btn', '요청 취소'); c.type = 'button';
         c.addEventListener('click', function () { c.disabled = true; API.setRequestStatus(r.id, 'cancelled').catch(function () { c.disabled = false; }); });
@@ -420,7 +450,88 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     list.forEach(function (l) { var d = el('div', 'item', l.text); box.appendChild(d); });
   }
 
+  // ---------- 공개 요청 ----------
+  function omSync() {
+    [['omDow', 'dow'], ['omDates', 'dates'], ['omExcept', 'except']].forEach(function (p) { $(p[0]).setAttribute('aria-pressed', oc.mode === p[1] ? 'true' : 'false'); });
+  }
+  function ocCond() { return { mode: oc.mode, dows: oc.mode === 'dow' ? oc.dows.slice().sort() : [], dates: oc.mode === 'dow' ? [] : oc.dates.slice().sort() }; }
+  function ocReady() { return oc.mode === 'except' || (oc.mode === 'dow' ? oc.dows.length > 0 : oc.dates.length > 0); }
+  function renderOpenForm() {
+    var box = $('openCard');
+    box.hidden = !mySel;
+    if (!mySel) return;
+    var p = ym(), y = p[0], m = p[1], ds = duties();
+    $('openFor').textContent = lab(cur, mySel.day) + ' 당번을 내놓고, 아래 조건이 맞는 분과 바꿔요.';
+    omSync();
+    var dr = $('oDow'); dr.textContent = ''; dr.hidden = oc.mode !== 'dow';
+    DOW.forEach(function (n, i) {
+      var b = el('button', 'tog', n); b.type = 'button';
+      b.setAttribute('aria-pressed', oc.dows.indexOf(i) >= 0 ? 'true' : 'false');
+      b.addEventListener('click', function () { toggle(oc.dows, i); renderOpenForm(); });
+      dr.appendChild(b);
+    });
+    var dd = $('oDates'); dd.textContent = ''; dd.hidden = oc.mode === 'dow';
+    Object.keys(ds).map(Number).sort(function (a, b) { return a - b; }).forEach(function (d) {
+      if (C.expired(cur, d) || d === mySel.day) return;
+      var key = C.dkey(cur, d);
+      var b = el('button', 'tog', lab(cur, d)); b.type = 'button';
+      b.setAttribute('aria-pressed', oc.dates.indexOf(key) >= 0 ? 'true' : 'false');
+      b.addEventListener('click', function () { toggle(oc.dates, key); renderOpenForm(); });
+      dd.appendChild(b);
+    });
+    $('oText').textContent = '내놓는 당번: ' + lab(cur, mySel.day) + '\n조건: ' + (ocReady() ? C.condText(ocCond()) : '(위에서 고르세요)') + '\n\n조건에 맞는 분이 앱에서 수락하면 바로 바뀝니다.';
+    $('oSend').disabled = !ocReady() || isLocked(cur);
+  }
+  function renderOpenList() {
+    var box = $('openList'); box.textContent = '';
+    var shown = 0;
+    requests.filter(function (r) { return r.type === 'open' && r.status === 'pending' && r.fromName !== me && months[r.month] && !C.expired(r.month, r.fromDay); }).forEach(function (r) {
+      var opts = C.myOptions(duties(r.month), r, me, isLocked(r.month));
+      if (!opts.length) return;
+      shown++;
+      var item = el('div', 'item');
+      item.appendChild(el('div', '', r.fromName + ' 님이 ' + lab(r.month, r.fromDay) + ' 당번을 내놓았어요. 조건: ' + C.condText(r.cond)));
+      var p = C.parseKey(r.month);
+      if (hasFilter() && !matches(p[0], p[1], r.fromDay)) item.appendChild(el('div', 'cap', '※ 내가 고른 "가능한 날"에는 해당하지 않는 날이에요.'));
+      var row = el('div', 'row');
+      opts.forEach(function (o) {
+        var b = el('button', 'btn ok', '내 ' + lab(r.month, o.day) + '와 바꾸기'); b.type = 'button';
+        var armed = 0;
+        b.addEventListener('click', function () {
+          if (!armed) { b.textContent = '정말 바꿀까요? 한 번 더'; armed = setTimeout(function () { armed = 0; b.textContent = '내 ' + lab(r.month, o.day) + '와 바꾸기'; }, 4000); return; }
+          clearTimeout(armed); b.disabled = true;
+          API.acceptOpen(r.id, o).then(function (res) {
+            if (res.ok) setStatus('교환했어요. ' + lab(r.month, r.fromDay) + ' 당번이 내 당번이 되었어요.');
+            else { b.disabled = false; setStatus(REASON[res.reason] || '처리하지 못했어요.'); }
+          }).catch(function () { b.disabled = false; setStatus('처리하지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
+        });
+        row.appendChild(b);
+      });
+      item.appendChild(row);
+      box.appendChild(item);
+    });
+    var badge = $('openCount'); badge.textContent = String(shown); badge.classList.toggle('hide', !shown);
+    if (!shown) box.appendChild(el('div', 'cap', '지금 나와 바꿀 수 있는 공개 요청이 없어요.'));
+  }
+
   // ---------- 이벤트 ----------
+  $('omDow').addEventListener('click', function () { oc.mode = 'dow'; renderOpenForm(); });
+  $('omDates').addEventListener('click', function () { oc.mode = 'dates'; renderOpenForm(); });
+  $('omExcept').addEventListener('click', function () { oc.mode = 'except'; renderOpenForm(); });
+  $('oSend').addEventListener('click', function () {
+    if (!mySel || !ocReady() || isLocked(cur)) return;
+    var cond = ocCond();
+    var dup = requests.some(function (x) { return x.type === 'open' && x.status === 'pending' && x.fromName === me && x.month === cur && x.fromDay === mySel.day && x.fromJ === mySel.j; });
+    if (dup) { setStatus('이 당번의 공개 요청이 이미 올라가 있어요. 먼저 취소해 주세요.'); return; }
+    var btn = $('oSend'); btn.disabled = true;
+    var r = { month: cur, fromDay: mySel.day, fromJ: mySel.j, fromName: me, cond: cond };
+    API.createOpenRequest(r).then(function () {
+      nudge = '[교환요청(공개)] ' + me + '님이 ' + lab(cur, r.fromDay) + ' 당번을 바꿀 분을 찾아요. 조건: ' + C.condText(cond) + '\n당번표 앱의 "나와 바꿀 수 있는 공개 요청"에서 수락해 주세요.\nhttps://zelong2-star.github.io/jwadongclub/duty/';
+      $('nudgeText').textContent = nudge; $('nudgeCard').classList.remove('hide');
+      mySel = null; target = null; oc = { mode: oc.mode, dows: [], dates: [] }; renderCal();
+      setStatus('공개 요청을 올렸어요. 조건에 맞는 분이 수락하면 바로 바뀝니다. 카톡에도 알려 주세요.');
+    }).catch(function () { btn.disabled = false; setStatus('올리지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
+  });
   $('enter').addEventListener('click', function () {
     var v = $('pin').value.trim();
     if (!v) { $('gateMsg').textContent = '암호를 입력해 주세요.'; return; }
@@ -436,6 +547,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   $('copyNudge').addEventListener('click', function () { copyText(nudge, '문구를 복사했어요. 카톡에 붙여넣어 주세요.'); });
   $('send').addEventListener('click', function () {
     if (!mySel || !target) return;
+    if (isLocked(cur)) { setStatus('이 달은 교환이 마감됐어요.'); return; }
     var r = { month: cur, fromDay: mySel.day, fromJ: mySel.j, fromName: me, toDay: target.day, toJ: target.j, toName: target.name };
     var dup = requests.some(function (x) { return x.status === 'pending' && x.fromName === me && sameSlots(x, r); });
     if (dup) { setStatus('같은 요청이 이미 대기 중이에요.'); return; }

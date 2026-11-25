@@ -368,7 +368,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var hero = el('div', 'hero');
     if (nx) {
       var dd = dayDiff(nx.month, nx.day);
-      var top = el('div', 'top'); top.appendChild(el('span', '', '나의 다음 당번')); top.appendChild(el('span', 'dday', dd === 0 ? '오늘' : 'D-' + dd)); hero.appendChild(top);
+      var top = el('div', 'top'); top.appendChild(el('span', 'dday', dd === 0 ? '오늘' : 'D-' + dd)); hero.appendChild(top);
       hero.appendChild(el('div', 'big', longLab(nx.month, nx.day)));
       var ot = others(nx.month, nx.day);
       hero.appendChild(el('div', '', ot.length ? '함께하는 당번  ' + ot.join(', ') + ' 님' : '함께하는 당번이 아직 없어요'));

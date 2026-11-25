@@ -127,11 +127,11 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 .back:focus-visible,.opt:focus-visible,.tog:focus-visible,.fcal .c:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125e"></script>
-<script src="cal-ocr.js?v=20261125e"></script>
-<script src="notice-img.js?v=20261125e"></script>
+<script src="duty-core.js?v=20261125f"></script>
+<script src="cal-ocr.js?v=20261125f"></script>
+<script src="notice-img.js?v=20261125f"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125e';
+import { makeApi } from './common.js?v=20261125f';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -786,6 +786,17 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       saveRoster(cur0.concat(toAdd), pausedList()).then(function () { setStatus('게임현황판 명단에서 ' + toAdd.length + '명을 추가했어요.'); imp = null; renderImp(); }).catch(function () { ap.disabled = false; memFail(); });
     });
     box.appendChild(ap);
+    var same = cur0.length === act.length && !toAdd.length && !extra.length;
+    var rp = el('button', 'btn', same ? '이미 게임현황판 명단과 같아요' : '게임현황판 명단 그대로로 바꾸기'); rp.type = 'button'; rp.style.cssText = 'width:100%;margin-top:8px'; rp.disabled = same;
+    var rpT = 0, lbl = rp.textContent;
+    rp.addEventListener('click', function () {
+      if (!rpT) { rp.textContent = (extra.length ? '게임현황판에 없는 ' + extra.length + '명은 명단에서 빠져요. ' : '') + '한 번 더 누르면 바꿔요'; rpT = setTimeout(function () { rpT = 0; rp.textContent = lbl; }, 5000); return; }
+      clearTimeout(rpT); rp.disabled = true;
+      var keepPaused = pausedList().filter(function (n) { return act.indexOf(n) >= 0; });
+      saveRoster(act.slice(), keepPaused).then(function () { setStatus('명단을 게임현황판 ' + act.length + '명 그대로 바꿨어요.'); imp = null; renderImp(); }).catch(function () { rp.disabled = false; rp.textContent = lbl; rpT = 0; memFail(); });
+    });
+    box.appendChild(rp);
+    box.appendChild(el('div', 'cap', '바꿔도 당번표에 적힌 이름과 당번 기록은 그대로예요. 회원 앱 이름 선택 목록만 바뀌어요.')).style.marginTop = '6px';
   }
   $('impLoad').addEventListener('click', function () {
     var b = $('impLoad'); b.disabled = true; memMsg('');

@@ -99,10 +99,10 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 @media (prefers-reduced-motion:no-preference){.btn,.tog,.opt,.stat{transition:transform .1s}.btn:active:not(:disabled),.opt:active,.stat:active{transform:scale(.98)}}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="fx.js?v=20261125t"></script>
-<script src="duty-core.js?v=20261125t"></script>
+<script src="fx.js?v=20261125u"></script>
+<script src="duty-core.js?v=20261125u"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125t';
+import { makeApi } from './common.js?v=20261125u';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -343,6 +343,12 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function shownNotices() { return notices.filter(function (n) { return !n.hidden; }).sort(function (a, b) { return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || b.at - a.at; }); }
   function unreadN() { var s = seenAt(); return notices.filter(function (n) { return !n.hidden && n.at > s; }).length; }
   function noticeDate(t) { var d = new Date(t); return d.getFullYear() + '.' + (d.getMonth() + 1) + '.' + d.getDate(); }
+  function zoomImg(u) {
+    var o = document.createElement('div'); o.setAttribute('role', 'dialog'); o.setAttribute('aria-label', '사진 크게 보기');
+    o.style.cssText = 'position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:12px';
+    var im = document.createElement('img'); im.src = u; im.alt = '공지 사진'; im.style.cssText = 'max-width:100%;max-height:100%;border-radius:8px';
+    o.appendChild(im); o.addEventListener('click', function () { o.remove(); }); document.body.appendChild(o);
+  }
   function noticeView(m) {
     m.appendChild(el('h1', '', '클럽 공지'));
     var list = shownNotices();
@@ -354,6 +360,10 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       if (top.childNodes.length) c.appendChild(top);
       if (n.title) c.appendChild(el('div', 'lead', n.title));
       var body = el('div', '', n.body); body.style.whiteSpace = 'pre-wrap'; body.style.wordBreak = 'keep-all'; c.appendChild(body);
+      (n.imgs || []).forEach(function (u) {
+        var im = document.createElement('img'); im.src = u; im.alt = '공지 사진'; im.style.cssText = 'width:100%;border-radius:14px;display:block';
+        im.addEventListener('click', function () { zoomImg(u); }); c.appendChild(im);
+      });
       c.appendChild(el('div', 'cap', noticeDate(n.at)));
       m.appendChild(c);
     });

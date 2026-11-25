@@ -90,7 +90,7 @@ export function makeApi() {
     subscribeNotices: (cb, err) => onSnapshot(query(col('notices'), orderBy('at', 'desc'), limit(60)), (s) => {
       const o = []; s.forEach((d) => { const v = d.data(); v.id = d.id; o.push(v); }); cb(o);
     }, err),
-    addNotice: (n) => addDoc(col('notices'), { title: n.title || '', body: n.body, pinned: !!n.pinned, hidden: false, at: Date.now() }),
+    addNotice: (n) => addDoc(col('notices'), Object.assign({ title: n.title || '', body: n.body, pinned: !!n.pinned, hidden: false, at: Date.now() }, (n.imgs && n.imgs.length) ? { imgs: n.imgs.slice(0, 2) } : {})),
     updateNotice: (id, patch) => updateDoc(ref('notices', id), patch),
     deleteNotice: (id) => deleteDoc(ref('notices', id)),
     deleteRequest: (id) => deleteDoc(ref('requests', id)),

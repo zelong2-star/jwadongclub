@@ -138,12 +138,12 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 <script>(function(){function u(){var f=window.DutyFx;if(!f)return;var g=f.get();var s=document.getElementById('fxS'),h=document.getElementById('fxH');if(!s)return;s.textContent='효과음 '+(g.sound?'켬':'끔');h.textContent='진동 '+(g.haptic?'켬':'끔');}
 document.addEventListener('DOMContentLoaded',function(){u();document.getElementById('fxS').onclick=function(){DutyFx.set({sound:!DutyFx.get().sound});u();DutyFx.ok();};document.getElementById('fxH').onclick=function(){DutyFx.set({haptic:!DutyFx.get().haptic});u();DutyFx.ok();};});})();</script>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125t"></script>
-<script src="cal-ocr.js?v=20261125t"></script>
-<script src="fx.js?v=20261125t"></script>
-<script src="notice-img.js?v=20261125t"></script>
+<script src="duty-core.js?v=20261125u"></script>
+<script src="cal-ocr.js?v=20261125u"></script>
+<script src="fx.js?v=20261125u"></script>
+<script src="notice-img.js?v=20261125u"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125t';
+import { makeApi } from './common.js?v=20261125u';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -316,6 +316,10 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         <input class="field" id="ntTitle" maxlength="60" autocomplete="off" style="margin:4px 0 0">
         <label class="cap" for="ntBody" style="display:block;margin-top:10px">내용</label>
         <textarea id="ntBody" maxlength="1500" placeholder="예) 12월 29일부터 1월 2일까지는 휴관합니다."></textarea>
+        <div class="cap" style="margin-top:10px">사진 (최대 2장, 자동으로 줄여서 올려요)</div>
+        <div id="ntImgs" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"></div>
+        <input type="file" id="ntFile" accept="image/*" multiple hidden>
+        <button class="btn sm" id="ntAddImg" type="button" style="margin-top:6px">사진 추가</button>
         <label class="cap" style="display:flex;align-items:center;gap:8px;min-height:44px"><input type="checkbox" id="ntPin" style="width:22px;height:22px"> 맨 위에 고정</label>
         <div class="err" id="ntMsg" role="alert"></div>
         <button class="btn primary" id="ntSend" style="width:100%;margin-top:6px">공지 올리기</button>
@@ -921,6 +925,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       it.appendChild(top);
       if (n.title) it.appendChild(el('div', 'hello', n.title));
       var b0 = el('div', '', n.body); b0.style.whiteSpace = 'pre-wrap'; it.appendChild(b0);
+      (n.imgs || []).forEach(function (u) { var im = document.createElement('img'); im.src = u; im.alt = '공지 사진'; im.style.cssText = 'max-width:100%;max-height:220px;border-radius:12px;align-self:flex-start'; it.appendChild(im); });
       var r = el('div', 'row');
       var h = el('button', 'btn sm', n.hidden ? '다시 올리기' : '내리기'); h.type = 'button';
       h.addEventListener('click', function () { h.disabled = true; API.updateNotice(n.id, { hidden: !n.hidden }).catch(function () { h.disabled = false; ntMsg('바꾸지 못했어요. 잠시 뒤 다시 시도해 주세요.'); }); });
@@ -962,12 +967,48 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     f.appendChild(t); f.appendChild(b); f.appendChild(msg); f.appendChild(r);
     return f;
   }
+  // ---- 공지 사진: 줄여서(가로 900px, JPEG) 공지 문서 안에 함께 저장 ----
+  var ntPics = [];
+  function shrinkImage(file) {
+    return new Promise(function (res, rej) {
+      var url = URL.createObjectURL(file), im = new Image();
+      im.onload = function () {
+        var W = 900, s = Math.min(1, W / im.width), cv = document.createElement('canvas');
+        cv.width = Math.round(im.width * s); cv.height = Math.round(im.height * s);
+        var g = cv.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, cv.width, cv.height); g.drawImage(im, 0, 0, cv.width, cv.height);
+        URL.revokeObjectURL(url);
+        var q = 0.8, out = cv.toDataURL('image/jpeg', q);
+        while (out.length > 180000 && q > 0.35) { q -= 0.1; out = cv.toDataURL('image/jpeg', q); }
+        if (out.length > 300000) { rej(new Error('big')); return; }
+        res(out);
+      };
+      im.onerror = function () { URL.revokeObjectURL(url); rej(new Error('img')); };
+      im.src = url;
+    });
+  }
+  function renderNtPics() {
+    var box = $('ntImgs'); box.textContent = '';
+    ntPics.forEach(function (u, i) {
+      var w = el('div'); w.style.cssText = 'position:relative;width:88px;height:88px';
+      var im = document.createElement('img'); im.src = u; im.alt = '첨부 사진 ' + (i + 1); im.style.cssText = 'width:88px;height:88px;object-fit:cover;border-radius:12px';
+      var x = el('button', '', '✕'); x.type = 'button'; x.setAttribute('aria-label', '사진 빼기'); x.style.cssText = 'position:absolute;top:-6px;right:-6px;width:28px;height:28px;border-radius:14px;border:0;background:#191F28;color:#fff;font-size:13px';
+      x.addEventListener('click', function () { ntPics.splice(i, 1); renderNtPics(); });
+      w.appendChild(im); w.appendChild(x); box.appendChild(w);
+    });
+    $('ntAddImg').hidden = ntPics.length >= 2;
+  }
+  $('ntAddImg').addEventListener('click', function () { $('ntFile').click(); });
+  $('ntFile').addEventListener('change', function () {
+    var fs = Array.prototype.slice.call($('ntFile').files || [], 0, 2 - ntPics.length); $('ntFile').value = '';
+    if (!fs.length) return; ntMsg('');
+    fs.reduce(function (p, f) { return p.then(function () { return shrinkImage(f).then(function (u) { ntPics.push(u); }, function () { ntMsg('사진을 불러오지 못했어요. 다른 사진으로 해 보세요.'); }); }); }, Promise.resolve()).then(renderNtPics);
+  });
   $('ntSend').addEventListener('click', function () {
     var body = $('ntBody').value.trim(), title = $('ntTitle').value.trim();
     if (!body) { ntMsg('내용을 입력해 주세요.'); return; }
     $('ntSend').disabled = true; ntMsg('');
-    API.addNotice({ title: title, body: body, pinned: $('ntPin').checked }).then(function () {
-      $('ntBody').value = ''; $('ntTitle').value = ''; $('ntPin').checked = false; $('ntSend').disabled = false; setStatus('공지를 올렸어요. 회원 앱에 바로 보여요.');
+    API.addNotice({ title: title, body: body, pinned: $('ntPin').checked, imgs: ntPics.slice() }).then(function () {
+      ntPics = []; renderNtPics(); $('ntBody').value = ''; $('ntTitle').value = ''; $('ntPin').checked = false; $('ntSend').disabled = false; setStatus('공지를 올렸어요. 회원 앱에 바로 보여요.');
     }).catch(function () { $('ntSend').disabled = false; ntMsg('올리지 못했어요. 잠시 뒤 다시 시도해 주세요.'); });
   });
 

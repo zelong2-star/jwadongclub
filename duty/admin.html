@@ -138,12 +138,12 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 <script>(function(){function u(){var f=window.DutyFx;if(!f)return;var g=f.get();var s=document.getElementById('fxS'),h=document.getElementById('fxH');if(!s)return;s.textContent='효과음 '+(g.sound?'켬':'끔');h.textContent='진동 '+(g.haptic?'켬':'끔');}
 document.addEventListener('DOMContentLoaded',function(){u();document.getElementById('fxS').onclick=function(){DutyFx.set({sound:!DutyFx.get().sound});u();DutyFx.ok();};document.getElementById('fxH').onclick=function(){DutyFx.set({haptic:!DutyFx.get().haptic});u();DutyFx.ok();};});})();</script>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125u"></script>
-<script src="cal-ocr.js?v=20261125u"></script>
-<script src="fx.js?v=20261125u"></script>
-<script src="notice-img.js?v=20261125u"></script>
+<script src="duty-core.js?v=20261125v"></script>
+<script src="cal-ocr.js?v=20261125v"></script>
+<script src="fx.js?v=20261125v"></script>
+<script src="notice-img.js?v=20261125v"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125u';
+import { makeApi } from './common.js?v=20261125v';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -194,6 +194,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     </div>
     <div class="row" id="monthActs">
       <button class="btn sm primary" id="newMonth">당번 입력하기</button>
+      <button class="btn sm primary hide" id="exReq">교환 요청 보내기</button>
       <button class="btn sm lockon hide" id="lock" aria-pressed="true">이 달은 마감 상태예요 (풀기)</button>
     </div>
 
@@ -624,6 +625,25 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   $('selCancel').addEventListener('click', function () { sel = null; setStatus(defStatus()); renderCal(); });
 
 
+  // 교환 탭: 회원을 고른 뒤 그 회원 이름으로 교환 요청을 보내요
+  $('exReq').addEventListener('click', function () {
+    var old = document.getElementById('askModal'); if (old) old.remove();
+    var back = document.createElement('div'); back.id = 'askModal'; back.className = 'amback';
+    var box = document.createElement('div'); box.className = 'ambox'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-labelledby', 'amT');
+    var h = document.createElement('div'); h.id = 'amT'; h.className = 'amt'; h.textContent = '누구 대신 요청을 보낼까요?';
+    var p = document.createElement('div'); p.className = 'amb'; p.textContent = '고른 회원의 이름으로 교환 요청이 올라가요.';
+    var sl = document.createElement('select'); sl.className = 'field'; sl.setAttribute('aria-label', '회원 선택'); sl.style.margin = '0 0 14px';
+    roster().slice().sort(function (x, y) { return x.localeCompare(y, 'ko'); }).forEach(function (n) { var o = document.createElement('option'); o.value = n; o.textContent = n; sl.appendChild(o); });
+    var r = document.createElement('div'); r.className = 'amr';
+    function close() { document.removeEventListener('keydown', onKey); back.remove(); }
+    function onKey(e) { if (e.key === 'Escape') close(); }
+    var no = document.createElement('button'); no.type = 'button'; no.className = 'amno'; no.textContent = '취소'; no.onclick = close;
+    var yes = document.createElement('button'); yes.type = 'button'; yes.className = 'amyes'; yes.textContent = '다음';
+    yes.onclick = function () { var n = sl.value; close(); if (n && window.__openAdminFlowAs) window.__openAdminFlowAs(n); };
+    r.appendChild(no); r.appendChild(yes); box.appendChild(h); box.appendChild(p); box.appendChild(sl); box.appendChild(r); back.appendChild(box); document.body.appendChild(back);
+    document.addEventListener('keydown', onKey); sl.focus();
+  });
+
   // ---------- 당번 확인 현황 ----------
   function dayDiff(k, d) { var p = C.parseKey(k), n = new Date(), t = new Date(n.getFullYear(), n.getMonth(), n.getDate()); return Math.round((new Date(p[0], p[1] - 1, d) - t) / 864e5); }
   function ackedOf(k, d, n) { return acks.some(function (a) { return a.month === k && a.day === d && a.name === n; }); }
@@ -683,6 +703,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     });
     TABS.forEach(function (x) { $('panel-' + x[0]).classList.toggle('hide', x[0] !== tab); });
     $('monthBar').classList.toggle('hide', tab !== 'cal' && tab !== 'ex'); $('monthActs').classList.toggle('hide', tab !== 'cal' && tab !== 'ex');
+    $('newMonth').classList.toggle('hide', tab === 'ex'); $('exReq').classList.toggle('hide', tab !== 'ex');
   }
 
 
@@ -1343,6 +1364,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function ocReady() { var o = flow.oc; return o.mode === 'except' || (o.mode === 'dow' ? o.dows.length > 0 : o.mode === 'both' ? (o.dows.length > 0 && o.dates.length > 0) : o.dates.length > 0); }
   function C_days() { var out = []; keys.forEach(function (k) { sortedDays(k).forEach(function (d) { if (!C.expired(k, d)) out.push({ k: k, d: d }); }); }); return out; }
     window.__shareKakao = shareKakao;
+    function myUpcoming() { return upcomingOf(me).map(function (x) { return { month: x.k, day: x.d, j: (duties2(x.k)[x.d] || []).indexOf(me), name: me }; }); }
+    window.__openAdminFlowAs = function (name) { me = name; openFlow(null); };
     window.__openAdminFlow = function (s) { me = s.name; openFlow({ month: s.month, day: s.day, j: s.j, name: s.name }); };
   })();
 

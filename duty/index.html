@@ -37,9 +37,9 @@ h2{margin:0;font-size:20px;font-weight:800;line-height:1.35}
 .hero .top{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:600}
 .dday{background:#fff;color:var(--blue);font-weight:800;font-size:15px;padding:4px 12px;border-radius:999px}
 .big{font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1.25}
-.stats{display:flex;gap:12px}
-.stat{flex:1;border:0;text-align:left;background:#fff;border-radius:20px;padding:16px 18px}
-.stat b{display:block;font-size:26px;font-weight:800;margin-top:2px}
+.stats{display:flex;flex-direction:column;gap:10px}
+.stat{flex:1;border:0;text-align:left;background:#fff;border-radius:20px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.stat b{display:block;font-size:22px;font-weight:800;margin:0}
 .stat .cap{display:block}
 .list>.it{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}
 .list>.it:last-child{border-bottom:0;padding-bottom:0}.list>.it:first-child{padding-top:0}
@@ -357,7 +357,10 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var list = shownNotices(); if (!list.length) return;
     var n = list[0], un = unreadN();
     var b = btn('opt', '', function () { tab = 'notice'; renderAll(); window.scrollTo(0, 0); });
-    var t = el('b', '', (un ? '새 공지 · ' : '공지 · ') + (n.title || n.body.split('\n')[0].slice(0, 30)));
+    var t = el('b', ''); t.style.cssText = 'display:flex;align-items:center;gap:8px';
+    var ic = icon(I.bell); ic.setAttribute('width', '20'); ic.setAttribute('height', '20'); ic.style.cssText = 'flex:none;color:var(--blue)'; ic.setAttribute('aria-hidden', 'true'); t.appendChild(ic);
+    if (un) t.appendChild(el('span', 'tag red', '새'));
+    t.appendChild(el('span', '', n.title || n.body.split('\n')[0].slice(0, 30)));
     b.appendChild(t); b.appendChild(el('span', '', noticeDate(n.at) + (list.length > 1 ? ' · 공지 ' + list.length + '개 보기' : ' · 눌러서 보기')));
     m.appendChild(b);
   }

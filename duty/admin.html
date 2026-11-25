@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<meta name="theme-color" content="#14213D">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <title>좌동클럽 당번표 (총무용)</title>
@@ -74,7 +75,7 @@ summary{min-height:32px;font-size:17px;font-weight:800;cursor:pointer}
 .mem:last-child{border-bottom:0}
 .mem .nm{flex:1 1 120px;font-size:17px;font-weight:700;min-width:0}
 .mem .nm small{display:block;font-size:13px;font-weight:500;color:var(--sub)}
-.mem .acts{display:flex;gap:6px;flex-wrap:nowrap}.mem .acts .btn{flex:1 1 0;min-width:0;padding:0 4px;white-space:nowrap}.mem .acts .btn.star{flex:0 0 52px;font-size:22px;color:#B0B8C1}.mem .acts .btn.star.on{color:#F5A400;background:var(--amber)}
+.mem .acts{display:flex;gap:6px;flex-wrap:wrap}#panel-mem .mem .acts{flex-wrap:nowrap}#panel-mem .mem .acts .btn{flex:1 1 0;min-width:0;padding:0 4px;white-space:nowrap}#panel-mem .mem .acts .btn.star{flex:0 0 52px;font-size:22px;color:#B0B8C1}#panel-mem .mem .acts .btn.star.on{color:#F5A400;background:var(--amber)}#todayList .mem .acts .btn{white-space:nowrap;padding:0 12px}
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:#fff;border-top:1px solid var(--gray);padding-bottom:env(safe-area-inset-bottom)}
 nav.tabs .in{max-width:760px;margin:0 auto;display:flex;height:72px}
 nav.tabs button{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:13px;font-weight:500;color:#6B7684;position:relative}
@@ -134,16 +135,27 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 .swr{position:relative;overflow:hidden;border-radius:14px}
 .swa{position:absolute;right:0;top:0;bottom:0;width:84px;border:0;background:var(--red);color:#fff;font-size:16px;font-weight:800}
 .swr:last-child .item{border-bottom:0}.swi{position:relative;background:#fff;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+/* 총무 테마: 리넨 60 / 네이비 30 / 앰버 10 */
+:root{--navy:#14213D;--amb:#FFB020;--bg:#EFEAE0;--ink:#14213D;--sub:#6B6A63;--line:#DDD6C8;--gray:#E8E2D6}
+.card,.mnav button,#flow .mnav button,.seg button[aria-pressed="true"]{background:#FBF9F5}
+.btn.primary,#flow .btn.pri,.amyes{background:var(--amb);color:var(--navy)}
+.btn.primary:disabled,#flow .btn.pri:disabled{opacity:.5}
+.chip.sel,.tog[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+nav.tabs{background:var(--navy);border-top:0}
+nav.tabs button{color:#9FB0D0}
+nav.tabs button[aria-current="page"]{color:var(--amb)}
+.note{background:#E4DDCF;color:var(--navy)}
+.field:focus,.in:focus{border-color:var(--navy)}
 </style>
 <script>(function(){function u(){var f=window.DutyFx;if(!f)return;var g=f.get();var s=document.getElementById('fxS'),h=document.getElementById('fxH');if(!s)return;s.textContent='효과음 '+(g.sound?'켬':'끔');h.textContent='진동 '+(g.haptic?'켬':'끔');}
 document.addEventListener('DOMContentLoaded',function(){u();document.getElementById('fxS').onclick=function(){DutyFx.set({sound:!DutyFx.get().sound});u();DutyFx.ok();};document.getElementById('fxH').onclick=function(){DutyFx.set({haptic:!DutyFx.get().haptic});u();DutyFx.ok();};});})();</script>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125w"></script>
-<script src="cal-ocr.js?v=20261125w"></script>
-<script src="fx.js?v=20261125w"></script>
-<script src="notice-img.js?v=20261125w"></script>
+<script src="duty-core.js?v=20261125y"></script>
+<script src="cal-ocr.js?v=20261125y"></script>
+<script src="fx.js?v=20261125y"></script>
+<script src="notice-img.js?v=20261125y"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125w';
+import { makeApi } from './common.js?v=20261125y';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>

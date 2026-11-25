@@ -76,7 +76,7 @@ nav.bar button[aria-current="page"]{color:var(--blue);font-weight:800}
 .dotb{position:absolute;top:8px;left:calc(50% + 6px);min-width:20px;height:20px;border-radius:10px;background:var(--red);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px}
 #toast{position:fixed;left:16px;right:16px;bottom:88px;z-index:40;max-width:448px;margin:0 auto;background:#191F28;color:#fff;border-radius:14px;padding:14px 18px;font-size:15px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 #adm{position:fixed;inset:0;z-index:35;background:var(--bg);display:flex;flex-direction:column}
-#adm .top{display:flex;align-items:center;padding:6px 12px;background:#fff;border-bottom:1px solid var(--gray)}
+#adm .top{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;background:#14213D;border-bottom:0}#adm .back{color:#fff}#adm .top .atag{background:#FFB020;color:#3A2600;border-radius:8px;padding:3px 10px;font-size:13px;font-weight:800}
 #adm iframe{flex:1;border:0;width:100%}
 #flow{position:fixed;inset:0;z-index:30;background:var(--bg);overflow:auto}
 #flow .wrap{padding-bottom:40px}
@@ -99,10 +99,10 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 @media (prefers-reduced-motion:no-preference){.btn,.tog,.opt,.stat{transition:transform .1s}.btn:active:not(:disabled),.opt:active,.stat:active{transform:scale(.98)}}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="fx.js?v=20261125w"></script>
-<script src="duty-core.js?v=20261125w"></script>
+<script src="fx.js?v=20261125y"></script>
+<script src="duty-core.js?v=20261125y"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125w';
+import { makeApi } from './common.js?v=20261125y';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -602,7 +602,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function admOk() { try { return !!adminDoc && !!adminDoc.hash && localStorage.getItem(ADM_KEY) === adminDoc.hash; } catch (e) { return false; } }
   function openAdmin() {
     var box = $('adm'); box.textContent = ''; box.classList.remove('hide'); document.body.style.overflow = 'hidden';
-    var top = el('div', 'top'); var bk = btn('back', '', closeAdmin); bk.appendChild(icon(I.l)); bk.appendChild(document.createTextNode('회원 화면으로')); top.appendChild(bk); box.appendChild(top);
+    var top = el('div', 'top'); var bk = btn('back', '', closeAdmin); bk.appendChild(icon(I.l)); bk.appendChild(document.createTextNode('회원 화면으로')); top.appendChild(bk); top.appendChild(el('span', 'atag', '총무')); box.appendChild(top);
     var fr = document.createElement('iframe'); fr.src = 'admin.html?embed=1'; fr.setAttribute('title', '총무 화면'); box.appendChild(fr);
   }
   function closeAdmin() { var box = $('adm'); box.textContent = ''; box.classList.add('hide'); document.body.style.overflow = ''; renderAll(); }

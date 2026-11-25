@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
-import { getFirestore, collection, doc, onSnapshot, runTransaction, addDoc, setDoc, updateDoc, query, orderBy, limit, where, getDocs }
+import { getFirestore, collection, doc, onSnapshot, runTransaction, addDoc, setDoc, updateDoc, deleteDoc, query, orderBy, limit, where, getDocs }
   from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -92,6 +92,7 @@ export function makeApi() {
     }, err),
     addNotice: (n) => addDoc(col('notices'), { title: n.title || '', body: n.body, pinned: !!n.pinned, hidden: false, at: Date.now() }),
     updateNotice: (id, patch) => updateDoc(ref('notices', id), patch),
+    deleteNotice: (id) => deleteDoc(ref('notices', id)),
     // 총무 지정·전용 암호 확인값 (meta/admin). 암호 자체는 저장하지 않음
     subscribeAdmin: (cb, err) => onSnapshot(ref('meta', 'admin'), (s) => { cb(s.exists() ? s.data() : null); }, err),
     setAdmin: (o) => setDoc(ref('meta', 'admin'), { admins: o.admins || [], salt: o.salt || '', hash: o.hash || '', updated: Date.now() }),

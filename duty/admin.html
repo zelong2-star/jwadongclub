@@ -127,11 +127,11 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 .back:focus-visible,.opt:focus-visible,.tog:focus-visible,.fcal .c:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125d"></script>
-<script src="cal-ocr.js?v=20261125d"></script>
-<script src="notice-img.js?v=20261125d"></script>
+<script src="duty-core.js?v=20261125e"></script>
+<script src="cal-ocr.js?v=20261125e"></script>
+<script src="notice-img.js?v=20261125e"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125d';
+import { makeApi } from './common.js?v=20261125e';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -857,8 +857,41 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       h.addEventListener('click', function () { h.disabled = true; API.updateNotice(n.id, { hidden: !n.hidden }).catch(function () { h.disabled = false; ntMsg('바꾸지 못했어요. 잠시 뒤 다시 시도해 주세요.'); }); });
       var p = el('button', 'btn sm', n.pinned ? '고정 해제' : '맨 위에 고정'); p.type = 'button';
       p.addEventListener('click', function () { p.disabled = true; API.updateNotice(n.id, { pinned: !n.pinned }).catch(function () { p.disabled = false; ntMsg('바꾸지 못했어요. 잠시 뒤 다시 시도해 주세요.'); }); });
-      r.appendChild(h); r.appendChild(p); it.appendChild(r); box.appendChild(it);
+      r.appendChild(h); r.appendChild(p); it.appendChild(r);
+      var r2 = el('div', 'row');
+      var ed = el('button', 'btn sm', '수정'); ed.type = 'button';
+      ed.addEventListener('click', function () { ntEditing = n.id; renderNotices(); });
+      var dl = el('button', 'btn sm', '삭제'); dl.type = 'button';
+      var dlT = 0;
+      dl.addEventListener('click', function () {
+        if (!dlT) { dl.textContent = '삭제하면 되돌릴 수 없어요. 한 번 더'; dlT = setTimeout(function () { dlT = 0; dl.textContent = '삭제'; }, 4000); return; }
+        clearTimeout(dlT); dl.disabled = true;
+        if (!API.deleteNotice) { dl.disabled = false; ntMsg('삭제를 지원하지 않아요.'); return; }
+        API.deleteNotice(n.id).then(function () { setStatus('공지를 삭제했어요.'); }).catch(function () { dl.disabled = false; dl.textContent = '삭제'; dlT = 0; ntMsg('삭제하지 못했어요. 잠시 뒤 다시 시도하거나, 우선 "내리기"를 써 주세요.'); });
+      });
+      r2.appendChild(ed); r2.appendChild(dl); it.appendChild(r2);
+      if (ntEditing === n.id) { it.textContent = ''; it.appendChild(ntEditForm(n)); }
+      box.appendChild(it);
     });
+  }
+  var ntEditing = null;
+  function ntEditForm(n) {
+    var f = el('div');
+    f.appendChild(el('div', 'cap', '공지 수정'));
+    var t = document.createElement('input'); t.className = 'field'; t.maxLength = 60; t.value = n.title || ''; t.style.margin = '4px 0 0'; t.setAttribute('aria-label', '제목');
+    var b = document.createElement('textarea'); b.maxLength = 1500; b.value = n.body || ''; b.setAttribute('aria-label', '내용');
+    var r = el('div', 'row'), msg = el('div', 'err');
+    var ok = el('button', 'btn primary sm', '저장'); ok.type = 'button';
+    var no = el('button', 'btn sm', '취소'); no.type = 'button';
+    no.addEventListener('click', function () { ntEditing = null; renderNotices(); });
+    ok.addEventListener('click', function () {
+      var body = b.value.trim(); if (!body) { msg.textContent = '내용을 입력해 주세요.'; return; }
+      ok.disabled = true;
+      API.updateNotice(n.id, { title: t.value.trim(), body: body }).then(function () { ntEditing = null; setStatus('공지를 수정했어요.'); renderNotices(); }).catch(function () { ok.disabled = false; msg.textContent = '저장하지 못했어요. 잠시 뒤 다시 시도해 주세요.'; });
+    });
+    r.appendChild(ok); r.appendChild(no);
+    f.appendChild(t); f.appendChild(b); f.appendChild(msg); f.appendChild(r);
+    return f;
   }
   $('ntSend').addEventListener('click', function () {
     var body = $('ntBody').value.trim(), title = $('ntTitle').value.trim();

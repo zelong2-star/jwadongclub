@@ -127,11 +127,11 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 .back:focus-visible,.opt:focus-visible,.tog:focus-visible,.fcal .c:focus-visible{outline:3px solid #FF9F1C;outline-offset:2px}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125f"></script>
-<script src="cal-ocr.js?v=20261125f"></script>
-<script src="notice-img.js?v=20261125f"></script>
+<script src="duty-core.js?v=20261125g"></script>
+<script src="cal-ocr.js?v=20261125g"></script>
+<script src="notice-img.js?v=20261125g"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125f';
+import { makeApi } from './common.js?v=20261125g';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -603,7 +603,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function icon(d) { var sv = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); sv.setAttribute('width', '22'); sv.setAttribute('height', '22'); sv.setAttribute('viewBox', '0 0 24 24'); sv.setAttribute('fill', 'none'); sv.setAttribute('stroke', 'currentColor'); sv.setAttribute('stroke-width', '2'); sv.setAttribute('stroke-linecap', 'round'); sv.setAttribute('stroke-linejoin', 'round'); sv.setAttribute('aria-hidden', 'true'); var p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('d', d); sv.appendChild(p); return sv; }
   var IC = { cal: 'M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM8 3v4M16 3v4M4 10h16', swap: 'M7 7h12l-3-3M17 17H5l3 3', mem: 'M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 19c0-3 2.7-5 6-5s6 2 6 5M16 6a3 3 0 0 1 0 5M18 14c1.800.6 3 2.100 3 5', notice: 'M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 21h4', tool: 'M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1' };
   var TABS = [['cal', '당번표', IC.cal], ['ex', '교환', IC.swap], ['mem', '명단', IC.mem], ['notice', '공지', IC.notice], ['tool', '도구', IC.tool]];
-  function showTab(t) { tab = t; renderTabs(); window.scrollTo && window.scrollTo(0, 0); }
+  function showTab(t) { tab = t; renderTabs(); if (t === 'mem') { try { renderMembers(); } catch (e) {} } window.scrollTo && window.scrollTo(0, 0); }
   function renderTabs() {
     var box = $('tabin');
     if (!box.children.length) TABS.forEach(function (x) {

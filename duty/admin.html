@@ -46,6 +46,7 @@ h2{margin:0;font-size:20px;font-weight:800;line-height:1.35}
 .num{font-size:13px;font-weight:700;padding-left:2px}
 .cell.we .num{color:var(--red)}.cell.sat .num{color:var(--blue)}
 .chip,.in{width:100%;min-height:44px;border-radius:10px;border:0;background:#fff;font-size:14px;font-weight:600;padding:0 2px;text-align:center;min-width:0}
+.chip.chg{background:#FFE08A;color:#5C4300}
 .chip.sel{background:var(--blue);color:#fff;font-weight:800}
 .in{font-size:16px;border:1.5px solid var(--line)}.in:focus{border-color:var(--blue);outline:0}
 .panel{display:flex;flex-direction:column;gap:14px}
@@ -137,12 +138,12 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 <script>(function(){function u(){var f=window.DutyFx;if(!f)return;var g=f.get();var s=document.getElementById('fxS'),h=document.getElementById('fxH');if(!s)return;s.textContent='효과음 '+(g.sound?'켬':'끔');h.textContent='진동 '+(g.haptic?'켬':'끔');}
 document.addEventListener('DOMContentLoaded',function(){u();document.getElementById('fxS').onclick=function(){DutyFx.set({sound:!DutyFx.get().sound});u();DutyFx.ok();};document.getElementById('fxH').onclick=function(){DutyFx.set({haptic:!DutyFx.get().haptic});u();DutyFx.ok();};});})();</script>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="duty-core.js?v=20261125q"></script>
-<script src="cal-ocr.js?v=20261125q"></script>
-<script src="fx.js?v=20261125q"></script>
-<script src="notice-img.js?v=20261125q"></script>
+<script src="duty-core.js?v=20261125r"></script>
+<script src="cal-ocr.js?v=20261125r"></script>
+<script src="fx.js?v=20261125r"></script>
+<script src="notice-img.js?v=20261125r"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125q';
+import { makeApi } from './common.js?v=20261125r';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -496,10 +497,11 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
               cell.appendChild(inp);
             });
           } else if (d) {
+            var chg = changedSlots()[day] || {};
             [0, 1].forEach(function (j) {
               if (!d[j]) return;
               var on = sel && sel.month === cur && sel.day === day && sel.j === j;
-              var b = el('button', 'chip' + (on ? ' sel' : ''), d[j]); b.type = 'button';
+              var b = el('button', 'chip' + (on ? ' sel' : (chg[j] ? ' chg' : '')), d[j]); b.type = 'button';
               b.setAttribute('aria-pressed', on ? 'true' : 'false');
               b.setAttribute('aria-label', m + '월 ' + day + '일 ' + d[j]);
               b.addEventListener('click', function () { pick(day, j); });
@@ -1522,15 +1524,29 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
 
   /* ===== 카톡용 당번표 이미지 ===== */
   var imgBlob = null, imgUrl = null, imgName = '당번표.png', imgDim = [1080, 900], imgTitle = '당번표';
-  function changedDays() {
-    var o = {};
-    function add(d, n) { if (!n) return; (o[d] = o[d] || []).indexOf(n) < 0 && o[d].push(n); }
-    logs.forEach(function (l) {
-      if (l.kind !== 'swap' || l.undone || !l.a || !l.b) return;
-      var am = l.a.month || l.month, bm = l.b.month || l.month2 || l.month;
-      if (am === cur) add(l.a.day, l.b.name);
-      if (bm === cur) add(l.b.day, l.a.name);
+  // 교환으로 바뀐 칸: 로그를 시간순으로 따라가며, 현재 이름이 처음(원래) 이름과 다른 칸만 표시
+  function changedSlots() {
+    var orig = {}, mark = {}, out = {};
+    function key(m, d, j) { return m + '|' + d + '|' + j; }
+    logs.filter(function (l) { return l.kind === 'swap' && !l.undone && l.a && l.b; })
+      .slice().sort(function (x, y) { return x.at - y.at; }).forEach(function (l) {
+        var am = l.a.month || l.month, bm = l.b.month || l.month2 || l.month;
+        var ka = key(am, l.a.day, l.a.j), kb = key(bm, l.b.day, l.b.j);
+        if (!(ka in orig)) orig[ka] = l.a.name;
+        if (!(kb in orig)) orig[kb] = l.b.name;
+        mark[ka] = l.b.name; mark[kb] = l.a.name;
+      });
+    var ds = duties();
+    Object.keys(mark).forEach(function (k) {
+      var p = k.split('|'); if (p[0] !== cur) return;
+      var day = +p[1], j = +p[2], now = (ds[day] || [])[j];
+      if (now && now === mark[k] && now !== orig[k]) { (out[day] = out[day] || {})[j] = now; }
     });
+    return out;
+  }
+  function changedDays() {
+    var s = changedSlots(), o = {};
+    Object.keys(s).forEach(function (d) { o[d] = Object.keys(s[d]).map(function (j) { return s[d][j]; }); });
     return o;
   }
   function stampNow() { var n = new Date(); return (n.getMonth() + 1) + '/' + n.getDate() + ' ' + C.pad(n.getHours()) + '시' + C.pad(n.getMinutes()) + '분'; }

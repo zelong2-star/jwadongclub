@@ -112,10 +112,10 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 @media (prefers-reduced-motion:no-preference){.btn,.tog,.opt,.stat{transition:transform .1s}.btn:active:not(:disabled),.opt:active,.stat:active{transform:scale(.98)}}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="fx.js?v=20261125ze"></script>
-<script src="duty-core.js?v=20261125ze"></script>
+<script src="fx.js?v=20261125zf"></script>
+<script src="duty-core.js?v=20261125zf"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125ze';
+import { makeApi } from './common.js?v=20261125zf';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -546,6 +546,8 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         var jj = ds[selDay].indexOf(me);
         if (jj >= 0 && !C.isPast(cur, selDay)) { var bb = btn('btn pri', '이 당번 교환하기', function () { openFlow(slotOf(cur, selDay, jj)); }); bb.style.marginTop = '14px'; if (isLocked(cur)) { bb.disabled = true; bb.textContent = '교환 마감'; } dc.appendChild(bb); }
       } else dc.appendChild(el('div', 'cap', selDay ? '이 날은 당번이 없어요.' : '날짜를 누르면 그날 당번을 볼 수 있어요. 파란색이 내 당번이에요.'));
+      var lg = el('div', 'cap'); lg.style.marginTop = '10px'; lg.style.display = 'flex'; lg.style.alignItems = 'center'; lg.style.gap = '8px';
+      lg.appendChild(el('span', 'chgn', '노란색')); lg.appendChild(document.createTextNode('교환해서 바뀐 사람이에요.')); dc.appendChild(lg);
       m.appendChild(dc);
     }
   }

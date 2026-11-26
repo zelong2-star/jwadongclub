@@ -77,6 +77,9 @@ h2{margin:0;font-size:20px;font-weight:800;line-height:1.35}
 .cal.nm .c:not(.has){min-height:46px}
 .cal.nm .c.mine .nn{color:var(--blue);font-weight:800}
 .cal.nm .c:disabled{opacity:.35}
+.cal.nm .c .nn.chg,.chgn{background:#FFE08A;color:#5C4300;border-radius:6px;padding:0 4px;align-self:center}
+.cal.nm .c.mine .nn.chg{color:#5C4300}
+.swn{font-size:13px;color:#5C4300;display:flex;gap:6px;align-items:center;margin-top:3px}.swn i{width:6px;height:6px;border-radius:50%;background:#E8B400;flex:none}
 .cal .c.on{outline:2px solid var(--blue)}.cal .c.we{color:var(--red)}.cal .c.mine.we{color:var(--blue)}.cal .h.sat,.cal .c.sat{color:var(--blue)}
 .dots{display:flex;gap:3px;height:6px}.dots i{width:6px;height:6px;border-radius:50%;background:#B0B8C1}.dots i.m{background:var(--blue)}
 nav.bar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:#fff;border-top:1px solid var(--gray);padding-bottom:env(safe-area-inset-bottom)}
@@ -109,10 +112,10 @@ pre.say{margin:0;padding:14px;border-radius:14px;background:var(--gray);font-fam
 @media (prefers-reduced-motion:no-preference){.btn,.tog,.opt,.stat{transition:transform .1s}.btn:active:not(:disabled),.opt:active,.stat:active{transform:scale(.98)}}
 </style>
 <script>window.dutyApiReady=new Promise(function(r){window.__resolveApi=r;});</script>
-<script src="fx.js?v=20261125zd"></script>
-<script src="duty-core.js?v=20261125zd"></script>
+<script src="fx.js?v=20261125ze"></script>
+<script src="duty-core.js?v=20261125ze"></script>
 <script type="module">
-import { makeApi } from './common.js?v=20261125zd';
+import { makeApi } from './common.js?v=20261125ze';
 try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.reject(e)); }
 </script>
 </head>
@@ -464,8 +467,30 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     n.appendChild(pb); n.appendChild(t); n.appendChild(nb); m.appendChild(n);
     if (isLocked(cur)) { var l = el('div', 'cap'); l.appendChild(el('span', 'tag red', '교환 마감')); l.appendChild(document.createTextNode(' 이 달은 바꿀 수 없어요. 총무에게 문의해 주세요.')); m.appendChild(l); }
   }
+  // 교환으로 바뀐 칸: 로그를 시간순으로 따라가며 현재 이름이 원래 이름과 다른 칸만. 결과: { 일: { 이름: '○○ 님과 교환 · 원래날짜 ↔ 이날' } }
+  function swapMap(k) {
+    var orig = {}, mark = {}, info = {}, out = {};
+    function key(m, d, j) { return m + '|' + d + '|' + j; }
+    logs.filter(function (l) { return l.kind === 'swap' && !l.undone && l.a && l.b; })
+      .slice().sort(function (x, y) { return x.at - y.at; }).forEach(function (l) {
+        var am = l.a.month || l.month, bm = l.b.month || l.month2 || l.month;
+        var ka = key(am, l.a.day, l.a.j), kb = key(bm, l.b.day, l.b.j);
+        if (!(ka in orig)) orig[ka] = l.a.name;
+        if (!(kb in orig)) orig[kb] = l.b.name;
+        mark[ka] = l.b.name; mark[kb] = l.a.name;
+        info[ka] = l.a.name + ' 님과 교환 · ' + lab(bm, l.b.day) + ' ↔ ' + lab(am, l.a.day);
+        info[kb] = l.b.name + ' 님과 교환 · ' + lab(am, l.a.day) + ' ↔ ' + lab(bm, l.b.day);
+      });
+    var ds = duties(k);
+    Object.keys(mark).forEach(function (q) {
+      var pp = q.split('|'); if (pp[0] !== k) return;
+      var day = +pp[1], j = +pp[2], now = (ds[day] || [])[j];
+      if (now && now === mark[q] && now !== orig[q]) { (out[day] = out[day] || {})[now] = info[q]; }
+    });
+    return out;
+  }
   function calGrid(k, o) {
-    var p = C.parseKey(k), ds = duties(k), g = el('div', 'cal nm');
+    var p = C.parseKey(k), ds = duties(k), g = el('div', 'cal nm'), sm = swapMap(k);
     DOW.forEach(function (n, i) { g.appendChild(el('div', 'h' + (i >= 5 ? (i === 5 ? ' we sat' : ' we') : ''), n)); });
     var dim = new Date(p[0], p[1], 0).getDate(), off = (new Date(p[0], p[1] - 1, 1).getDay() + 6) % 7, total = Math.ceil((off + dim) / 7) * 7;
     for (var q = 0; q < total; q++) {
@@ -475,7 +500,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
         var has = !!ds[day], mine = has && ds[day].indexOf(me) >= 0, names = has ? namesOf(k, day) : [];
         var c = btn('c' + (has ? ' has' : '') + (mine ? ' mine' : '') + ((q % 7) >= 5 ? ((q % 7) === 5 ? ' we sat' : ' we') : '') + (o.sel === day ? ' on' : ''), '', function () { o.pick(day); });
         c.appendChild(el('span', 'dn', String(day)));
-        names.forEach(function (n) { c.appendChild(el('span', 'nn', n)); });
+        names.forEach(function (n) { c.appendChild(el('span', 'nn' + (sm[day] && sm[day][n] ? ' chg' : ''), n)); });
         c.setAttribute('aria-label', p[1] + '월 ' + day + '일' + (has ? ' 당번 ' + names.join(', ') : ' 당번 없음'));
         if (o.enabled && !o.enabled(day)) c.disabled = true;
         g.appendChild(c);
@@ -493,13 +518,15 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       var card = el('div', 'card'), list = el('div', 'list');
       var days = sortedDays(cur);
       if (!days.length) list.appendChild(el('div', 'cap', '이 달 당번이 없어요.'));
+      var smL = swapMap(cur);
       days.forEach(function (d) {
         var it = el('div', 'it'), l = el('div');
         var past = C.isPast(cur, d);
         l.appendChild(el('div', 'd', lab(cur, d).replace(/^\d+\//, '') ));
         var nm = el('div', 'n');
-        (ds[d] || []).forEach(function (n, k) { if (!n) return; if (k && nm.childNodes.length) nm.appendChild(document.createTextNode(' · ')); nm.appendChild(el('span', n === me ? 'me' : '', n === me ? n + '(나)' : n)); });
-        l.appendChild(nm); if (past) l.style.opacity = '.5';
+        (ds[d] || []).forEach(function (n, k) { if (!n) return; if (k && nm.childNodes.length) nm.appendChild(document.createTextNode(' · ')); nm.appendChild(el('span', (n === me ? 'me' : '') + (smL[d] && smL[d][n] ? ' chgn' : ''), n === me ? n + '(나)' : n)); });
+        l.appendChild(nm);
+        Object.keys(smL[d] || {}).forEach(function (n) { var sw = el('div', 'swn'); sw.appendChild(el('i')); sw.appendChild(document.createTextNode(smL[d][n])); l.appendChild(sw); }); if (past) l.style.opacity = '.5';
         it.appendChild(l);
         var j = (ds[d] || []).indexOf(me);
         if (j >= 0 && !past) { var b = btn('btn sm', '교환', function () { openFlow(slotOf(cur, d, j)); }); b.setAttribute('aria-label', lab(cur, d) + ' 당번 교환하기'); if (isLocked(cur)) { b.disabled = true; b.textContent = '마감'; } it.appendChild(b); }
@@ -512,9 +539,10 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       var dc = el('div', 'card');
       if (selDay && ds[selDay]) {
         dc.appendChild(el('div', 'lead', longLab(cur, selDay)));
-        var nn = el('div'); nn.style.margin = '6px 0 0';
-        namesOf(cur, selDay).forEach(function (n, i) { if (i) nn.appendChild(document.createTextNode(' · ')); nn.appendChild(el('b', n === me ? 'me' : '', n === me ? n + '(나)' : n)); nn.lastChild.style.color = n === me ? 'var(--blue)' : ''; });
+        var sd = swapMap(cur)[selDay] || {}; var nn = el('div'); nn.style.margin = '6px 0 0';
+        namesOf(cur, selDay).forEach(function (n, i) { if (i) nn.appendChild(document.createTextNode(' · ')); nn.appendChild(el('b', (n === me ? 'me' : '') + (sd[n] ? ' chgn' : ''), n === me ? n + '(나)' : n)); nn.lastChild.style.color = sd[n] ? '' : (n === me ? 'var(--blue)' : ''); });
         dc.appendChild(nn);
+        Object.keys(sd).forEach(function (n) { var sw = el('div', 'swn'); sw.appendChild(el('i')); sw.appendChild(document.createTextNode(sd[n])); dc.appendChild(sw); });
         var jj = ds[selDay].indexOf(me);
         if (jj >= 0 && !C.isPast(cur, selDay)) { var bb = btn('btn pri', '이 당번 교환하기', function () { openFlow(slotOf(cur, selDay, jj)); }); bb.style.marginTop = '14px'; if (isLocked(cur)) { bb.disabled = true; bb.textContent = '교환 마감'; } dc.appendChild(bb); }
       } else dc.appendChild(el('div', 'cap', selDay ? '이 날은 당번이 없어요.' : '날짜를 누르면 그날 당번을 볼 수 있어요. 파란색이 내 당번이에요.'));

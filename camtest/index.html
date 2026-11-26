@@ -1,0 +1,32 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>카메라 테스트</title>
+<style>
+body{margin:0;font-family:system-ui,sans-serif;background:#111;color:#fff;text-align:center}
+h1{font-size:18px;margin:14px 0 4px}p{margin:4px 12px;font-size:14px;color:#ccc}
+#v{width:92%;max-width:520px;aspect-ratio:3/4;object-fit:cover;background:#000;border-radius:16px;transform:scaleX(-1);margin-top:10px}
+button{font-size:18px;font-weight:700;padding:14px 20px;margin:10px 4px;border-radius:14px;border:0;background:#FEE500;color:#3C1E1E}
+#log{font-size:13px;color:#9fd;white-space:pre-wrap;margin:8px 14px;text-align:left}
+#out{max-width:92%;border-radius:12px;margin-top:10px}
+</style></head><body>
+<h1>📷 카메라 테스트 (좌동클럽)</h1>
+<p>① 카메라 켜기 → ② 찍기. 사진은 이 기기 밖으로 나가지 않아요.</p>
+<video id="v" autoplay playsinline muted></video><br>
+<button id="on">① 카메라 켜기</button><button id="snap" disabled>② 찍기</button><button id="flip" disabled>카메라 전환</button>
+<br><img id="out" alt=""><p id="tip" hidden>사진을 길게 눌러 저장해 보세요.</p>
+<div id="log"></div>
+<script>
+var $=function(i){return document.getElementById(i)},st=null,face='user';
+function log(t){$('log').textContent+=t+'\n'}
+log('주소: '+location.protocol+'//'+location.host+'\n카메라 API: '+(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia?'있음':'없음'));
+function start(){
+ if(st){st.getTracks().forEach(function(t){t.stop()})}
+ navigator.mediaDevices.getUserMedia({video:{facingMode:face},audio:false}).then(function(s){
+  st=s;$('v').srcObject=s;$('snap').disabled=false;$('flip').disabled=false;$('v').style.transform=face=='user'?'scaleX(-1)':'none';
+  log('성공: 카메라 켜짐 ('+(s.getVideoTracks()[0].label||'이름없음')+')')
+ }).catch(function(e){log('실패: '+e.name+' - '+e.message)})}
+$('on').onclick=start;
+$('flip').onclick=function(){face=face=='user'?'environment':'user';start()};
+$('snap').onclick=function(){var v=$('v'),c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;var g=c.getContext('2d');
+ if(face=='user'){g.translate(c.width,0);g.scale(-1,1)}g.drawImage(v,0,0);
+ $('out').src=c.toDataURL('image/jpeg',.9);$('tip').hidden=false;log('촬영 완료 '+c.width+'x'+c.height)};
+</script></body></html>

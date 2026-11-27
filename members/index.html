@@ -12,7 +12,7 @@ td select{padding:6px 8px}.msg{font-size:13px;min-height:18px;margin-top:8px;col
 @media(max-width:560px){th:nth-child(4),td:nth-child(4){display:none}}
 </style></head><body><div class="w">
 <h1>명단 관리</h1><p class="s">여기서 고친 명단은 태블릿·폰·다른 앱에 자동으로 반영돼요. 이름 변경은 태블릿에서 해 주세요(기록이 이어져야 해서요).</p>
-<div class="card" id="gate"><div class="row"><input type="text" id="code" placeholder="클럽 코드 (태블릿 링크 # 뒤 숫자)" inputmode="numeric" style="width:230px"><input type="password" id="pw" placeholder="관리자 비밀번호" style="width:190px"><button class="p" id="go">열기</button></div><div class="msg" id="gm"></div></div>
+<div class="card" id="gate"><div class="row"><input type="text" id="code" placeholder="클럽 코드 또는 태블릿 링크 붙여넣기" autocapitalize="off" spellcheck="false" style="width:230px"><input type="password" id="pw" placeholder="관리자 비밀번호" style="width:190px"><button class="p" id="go">열기</button></div><div class="msg" id="gm"></div></div>
 <div id="main" hidden>
 <div class="card"><div class="row"><input type="search" id="q" placeholder="이름 검색"><span class="cnt" id="cnt"></span></div>
 <div class="row" style="margin-top:10px"><input type="text" id="nn" placeholder="새 회원 이름" style="width:150px"><select id="ng"><option value="m">남</option><option value="f">여</option></select><select id="nl"><option value="">급수</option><option>S</option><option>A</option><option>B</option><option>C</option><option>D</option><option>초심</option></select><button class="p" id="add">추가</button></div>
@@ -28,7 +28,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const say=(id,t,c)=>{const e=$(id);e.textContent=t;e.className='msg '+(c||'')};
 try{$('code').value=localStorage.getItem('jwadong-pin-v1')||''}catch(e){}
 const ref=()=>doc(db,'c',H,'ros','members');
-$('go').onclick=async()=>{const code=$('code').value.trim(),pw=$('pw').value;if(!code||!pw)return say('gm','클럽 코드와 관리자 비밀번호를 넣어 주세요','er');say('gm','확인 중…');
+$('go').onclick=async()=>{let code=$('code').value.trim();const pw=$('pw').value,mm=/[#&?]v=([^&\s]+)/.exec(code);if(mm)code=decodeURIComponent(mm[1]);if(!code||!pw)return say('gm','클럽 코드와 관리자 비밀번호를 넣어 주세요','er');say('gm','확인 중…');
  try{H=await sha(code);const lv=await getDoc(doc(db,'c',H,'board','live'));let npw='';try{npw=lv.exists()?JSON.parse(lv.data().s).npw||'':''}catch(e){}
   if(!npw)return say('gm','태블릿에서 관리자 비밀번호를 먼저 정해 주세요','er');if(await sha('adm-'+pw)!==npw)return say('gm','관리자 비밀번호가 달라요','er');
   try{localStorage.setItem('jwadong-pin-v1',code)}catch(e){}$('gate').hidden=true;$('main').hidden=false;

@@ -4193,7 +4193,7 @@ document.documentElement.lang = 'ko';
     const inner = on ? `<div class="shd"><h3>서버 보관 켜짐</h3><p>${esc(me)}님 기록이 서버에 자동으로 저장돼요. 폰을 바꾸면 이름과 같은 번호를 넣어 주세요.</p><button class="shx" type="button" aria-label="닫기">×</button></div>
       <div class="sbody"><button class="btn primary" type="button" id="clNow">지금 동기화</button><button class="btn" type="button" id="clOff" style="margin-top:8px">이 폰에서 끄기</button>${me === '김재용' ? '<button class="btn" type="button" id="clAdm" style="margin-top:8px">회원 번호 초기화 (관리자)</button>' : ''}</div>`
       : `<div class="shd"><h3>서버에 보관하기</h3><p>${esc(me)}님 기록을 서버에 보관해요. 번호는 처음이면 새로 정하고, 이미 정했다면 그 번호를 넣어요.</p><button class="shx" type="button" aria-label="닫기">×</button></div>
-      <div class="sbody">${pin ? '' : '<input id="clCode" inputmode="numeric" placeholder="클럽 코드 (태블릿 링크의 숫자)" style="width:100%;margin-bottom:8px">'}
+      <div class="sbody">${pin ? '' : '<input id="clCode" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="클럽 코드 또는 태블릿 링크 붙여넣기" style="width:100%;margin-bottom:8px">'}
         <input id="clPin" type="tel" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="4자리 번호" style="width:100%;font-size:22px;letter-spacing:.4em;text-align:center">
         <p class="hint" id="clMsg"></p><button class="btn primary" type="button" id="clGo">보관 시작</button>${me === '김재용' ? '<button class="btn" type="button" id="clAdm" style="margin-top:8px">회원 번호 초기화 (관리자)</button>' : ''}</div>`;
     openSheet(inner, '', sh => {
@@ -4205,7 +4205,7 @@ document.documentElement.lang = 'ko';
       if (q('#clGo')) q('#clGo').onclick = async () => {
         const p = (q('#clPin').value || '').trim();
         if (!/^\d{4}$/.test(p)) { msg('숫자 4자리를 넣어 주세요'); return; }
-        const cc = q('#clCode'); if (cc) { const v = (cc.value || '').trim(); if (!v) { msg('클럽 코드를 넣어 주세요'); return; } try { localStorage.setItem('jwadong-pin-v1', v); } catch (e) {} }
+        const cc = q('#clCode'); if (cc) { let v = (cc.value || '').trim(); const mm = /[#&?]v=([^&\s]+)/.exec(v); if (mm) v = decodeURIComponent(mm[1]); if (!v) { msg('클럽 코드를 넣어 주세요'); return; } try { localStorage.setItem('jwadong-pin-v1', v); } catch (e) {} }
         msg('확인 중…'); const k = await sha('k:' + me + ':' + p);
         try {
           const ix = await tryIdx(me);

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FEE500">
+<title>좌동클럽 실시간 코트</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--bg:#FAF6EC;--card:#fff;--ink:#222;--mu:#8a8578;--ln:#ece6d6;--y:#FEE500;--yb:#FFF8D6;--m:#3b7be0;--f:#e0507f}
+@media (prefers-color-scheme:dark){:root{--bg:#1c1b18;--card:#272620;--ink:#f3efe3;--mu:#a29d8e;--ln:#37352c;--yb:#3b3510}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,system-ui,-apple-system,sans-serif;padding:0 max(16px,env(safe-area-inset-right)) 40px max(16px,env(safe-area-inset-left))}
+header{position:sticky;top:0;background:var(--bg);padding:max(14px,env(safe-area-inset-top)) 0 10px;display:flex;justify-content:space-between;align-items:flex-end;gap:8px;z-index:2}
+h1{font-size:20px;margin:0;font-weight:800}h1 small{display:block;font-size:12px;color:var(--mu);font-weight:600;margin-top:2px}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#bbb;margin-right:5px}.dot.on{background:#2fb344}
+.st{font-size:12px;color:var(--mu);white-space:nowrap}
+h2{font-size:14px;margin:18px 0 8px;font-weight:800;display:flex;justify-content:space-between}h2 span{color:var(--mu);font-weight:600}
+.me{background:var(--yb);border:1.5px solid var(--y);border-radius:14px;padding:12px 14px;font-weight:700;font-size:15px;margin-top:6px}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.c{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:12px}
+.c b{display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px}.c b i{font-style:normal;color:var(--mu);font-weight:600;font-size:12px}
+.c.e{opacity:.55}.c .em{color:var(--mu);font-size:14px;padding:6px 0}
+.p{display:flex;flex-wrap:wrap;gap:6px}
+.n{border:1px solid var(--ln);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:15px;font-weight:700}
+.n.mine{background:var(--y);border-color:var(--y);color:#222}
+.r{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:10px 12px;margin-bottom:8px}
+.r>b{min-width:44px;font-size:13px;color:var(--mu)}
+.msg{text-align:center;color:var(--mu);padding:48px 0;line-height:1.7}
+.tip{font-size:12px;color:var(--mu);margin-top:18px;text-align:center}
+</style></head><body>
+<header><h1>좌동클럽 실시간 코트<small id="day"></small></h1><div class="st"><span class="dot" id="dot"></span><span id="up">연결 중</span></div></header>
+<main id="app"><p class="msg">불러오는 중…</p></main>
+<script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+import {getFirestore,doc,onSnapshot} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+const FB={apiKey:"AIzaSyBPHoNYfDggb2G_HtwrcxnH7CrA0s2Z0QQ",authDomain:"jwadong-duty.firebaseapp.com",projectId:"jwadong-duty",storageBucket:"jwadong-duty.firebasestorage.app",messagingSenderId:"59680339687",appId:"1:59680339687:web:49b8826fb49329820e5442"};
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const PK='jwlive-pin',MK='jwlive-me';
+let pin=null,me='',D=null,off=false;
+try{const m=/[#&]p=([^&]+)/.exec(location.hash||'');if(m){localStorage.setItem(PK,decodeURIComponent(m[1]));history.replaceState(null,'',location.pathname)}pin=localStorage.getItem(PK);me=localStorage.getItem(MK)||''}catch(e){}
+const hash=p=>crypto.subtle.digest('SHA-256',new TextEncoder().encode('jwadong-duty:'+String(p).trim())).then(b=>[...new Uint8Array(b)].map(x=>('0'+x.toString(16)).slice(-2)).join('').slice(0,40));
+const hm=t=>{const d=new Date(t);return d.getHours()+':'+('0'+d.getMinutes()).slice(-2)};
+function nm(n){return `<button class="n${n===me?' mine':''}" data-n="${esc(n)}">${esc(n)}</button>`}
+function draw(){
+  const a=$('app');
+  if(!pin){a.innerHTML='<p class="msg">링크가 올바르지 않아요.<br>총무에게 현황판 공유 링크를 다시 받아 주세요.</p>';return}
+  if(!D){a.innerHTML='<p class="msg">아직 올라온 현황이 없어요.<br>현황판 태블릿에서 실시간 공유가 켜져 있는지 확인해 주세요.</p>';return}
+  $('day').textContent=D.day||'';
+  const now=Date.now(),stale=now-D.u>8*36e5;
+  const rows=(D.rows||[]).map((r,i)=>({i:i+1,p:r.filter(Boolean)})).filter(r=>r.p.length);
+  let h='';
+  if(stale)h+='<p class="msg" style="padding:12px 0">마지막 갱신이 오래됐어요. 오늘 현황이 아닐 수 있어요.</p>';
+  if(me){const pl=(D.courts||[]).findIndex(c=>c&&c.p.includes(me));const ri=rows.findIndex(r=>r.p.includes(me));
+    if(pl>=0)h+=`<div class="me">${esc(me)}님은 지금 ${pl+1}번 코트에서 게임 중이에요</div>`;
+    else if(ri>=0)h+=`<div class="me">${esc(me)}님은 예약 ${rows[ri].i}번이에요 · 앞에 ${ri}팀</div>`;}
+  h+=`<h2>코트 <span>오늘 출석 ${D.np||0}명</span></h2><div class="g">`+(D.courts||[]).map((c,i)=>c?`<div class="c"><b>${i+1}번 코트<i>${Math.max(0,Math.floor((now-c.t)/6e4))}분째</i></b><div class="p">${c.p.map(nm).join('')}</div></div>`:`<div class="c e"><b>${i+1}번 코트</b><div class="em">비어 있음</div></div>`).join('')+'</div>';
+  h+=`<h2>예약 <span>${rows.length}팀</span></h2>`+(rows.length?rows.map(r=>`<div class="r"><b>예약 ${r.i}</b><div class="p">${r.p.map(nm).join('')}</div></div>`).join(''):'<div class="c e"><div class="em">대기 중인 팀이 없어요</div></div>');
+  h+='<p class="tip">내 이름을 누르면 노란색으로 표시돼요. 한 번 더 누르면 해제돼요.</p>';
+  a.innerHTML=h;
+  $('up').textContent=off?'연결 끊김':'갱신 '+hm(D.u);$('dot').className='dot'+(off?'':' on')
+}
+document.addEventListener('click',e=>{const b=e.target.closest('.n');if(!b)return;const n=b.dataset.n;me=me===n?'':n;try{localStorage.setItem(MK,me)}catch(e){}draw()});
+if(pin){hash(pin).then(h=>{const db=getFirestore(initializeApp(FB));
+  onSnapshot(doc(db,'c',h,'board','live'),s=>{off=false;D=s.exists()?s.data():null;draw()},e=>{off=true;$('app').innerHTML='<p class="msg">불러오지 못했어요.<br>인터넷 연결을 확인하거나 총무에게 문의해 주세요.</p>';$('up').textContent='오류'})})}
+else draw();
+setInterval(()=>{if(D)draw()},30000);
+</script></body></html>

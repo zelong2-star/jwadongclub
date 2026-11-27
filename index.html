@@ -2734,10 +2734,22 @@ function openMePicker(first) {
   sh.addEventListener('click', e => {
     const b = e.target.closest('button.so'); if (!b) return;
     const n = (b.dataset.n || b.dataset.add || '').slice(0, 20); if (!n) return;
-    if (b.dataset.add && !extraPeople.find(p => p.n === n)) extraPeople.push({ n, g: '', gr: '', a: '' });
-    if (first) gcEvent('처음-이름선택'); me = n; unhide(n); 
-    closeSheet(); closeSheet(); render();
-    saveProfile().then(() => toast(first ? n + ' 님, 이제 경기를 기록해 보세요!' : '내 이름을 ' + n + '(으)로 바꿨어요'), () => toast('저장하지 못했어요. 다시 시도해 주세요.'));
+    const apply = () => {
+      if (b.dataset.add && !extraPeople.find(p => p.n === n)) extraPeople.push({ n, g: '', gr: '', a: '' });
+      if (first) gcEvent('처음-이름선택'); me = n; unhide(n);
+      closeSheet(); closeSheet(); render();
+      saveProfile().then(() => toast(first ? n + ' 님, 이제 경기를 기록해 보세요!' : '내 이름을 ' + n + '(으)로 바꿨어요'), () => toast('저장하지 못했어요. 다시 시도해 주세요.'));
+    };
+    // 서버 보관이 켜진 폰에서 이름을 바꾸면 한 번 물어봐요
+    if (!first && me && n !== me && window.__mglCloudOn && window.__mglCloudOn()) {
+      const q = openSheet(`<div class="shd"><h3>이름을 바꿀까요?</h3><p>지금 ${esc(me)}님 기록이 서버에 보관되고 있어요. ${esc(n)}님으로 바꾸면 이 폰의 서버 보관이 꺼져요. ${esc(n)}님으로 다시 켜려면 ${esc(n)}님의 4자리 번호가 필요해요.</p><button class="shx" type="button" aria-label="닫기">×</button></div>
+        <div class="sbody"><button class="btn primary" type="button" id="nmYes">${esc(n)}님으로 바꾸기</button><button class="btn" type="button" id="nmNo" style="margin-top:8px">그대로 두기</button></div>`, '', sh => {
+        sh.querySelector('#nmNo').onclick = () => closeSheet();
+        sh.querySelector('#nmYes').onclick = () => { closeSheet(); apply(); };
+      });
+      return;
+    }
+    apply();
   });
 }
 function backupText() { return JSON.stringify({ app: 'mygamelog', v: 1, at: today(), me, games: games.filter(x => !String(x.id).startsWith('demo')), people: extraPeople, edits, hidden: hiddenP, restored: restoredP }); }
@@ -4248,6 +4260,7 @@ document.documentElement.lang = 'ko';
     if (!clubPin()) return;
     try { await fb(); const sn = await F.s.getDoc(ref('members')); if (!sn.exists()) return; const o = JSON.parse(sn.data().j); jset(RK, o); if (applyRoster(o)) { try { render(); } catch (e) {} } } catch (e) {}
   }
+  window.__mglCloudOn = () => { const c = jget(CK, null); return !!(c && c.k && c.name === me); };
   window.__mglRoster = () => ({ n: ROSTER.length, has: n => ROSTER.some(r => r[0] === n), off: n => OFF.has(n), meta: n => META[n] });
   setTimeout(pullRoster, 800);
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') pullRoster(); });

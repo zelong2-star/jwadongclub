@@ -1,0 +1,39 @@
+{
+ "name": "좌동클럽",
+ "short_name": "좌동클럽",
+ "description": "좌동배드민턴클럽 종합앱 (현황·당번표·경기기록)",
+ "lang": "ko",
+ "id": "/jwadongclub/board/phone",
+ "start_url": "/jwadongclub/board/?phone=1",
+ "scope": "/jwadongclub/board/",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#f9f5e8",
+ "theme_color": "#FEE500",
+ "icons": [
+  {
+   "src": "icons/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icons/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icons/maskable-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "maskable"
+  },
+  {
+   "src": "icons/maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

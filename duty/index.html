@@ -282,7 +282,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function cardImage(K, card) {
     return new Promise(function (res) {
       var done = false; function end(v) { if (!done) { done = true; res(v); } }
-      setTimeout(function () { end(null); }, 5000);
+      setTimeout(function () { window.__ciWhy = window.__ciWhy || '시간 초과'; end(null); }, 9000);
       try {
         var duty = card.banner === 'duty', stamp = card.stamp || (duty ? '당번 안내' : '당번 교환 요청');
         var cv = document.createElement('canvas'); cv.width = 1000; cv.height = 500; var g = cv.getContext('2d');
@@ -313,10 +313,10 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           if (!b) return end(null);
           try {
             var dt = new DataTransfer(); dt.items.add(new File([b], 'card.png', { type: 'image/png' }));
-            K.Share.uploadImage({ file: dt.files }).then(function (r) { end(r && r.infos && r.infos.original && r.infos.original.url || null); }, function () { end(null); });
-          } catch (e) { end(null); }
+            K.Share.uploadImage({ file: dt.files }).then(function (r) { end(r && r.infos && r.infos.original && r.infos.original.url || null); }, function (e) { window.__ciWhy = '업로드 거절'; end(null); });
+          } catch (e) { window.__ciWhy = '업로드 오류'; end(null); }
         }, 'image/png');
-      } catch (e) { end(null); }
+      } catch (e) { window.__ciWhy = '그리기 오류'; end(null); }
     });
   }
   function shareKakao(text, card) {
@@ -335,7 +335,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
             var c = { imageUrl: u, imageWidth: 1000, imageHeight: 500, link: link };
             try { c.title = ''; K.Share.sendDefault({ objectType: 'feed', content: c, buttons: btns }); }
             catch (e) { c.title = card.title; K.Share.sendDefault({ objectType: 'feed', content: c, buttons: btns }); }
-          } else K.Share.sendDefault({ objectType: 'feed', content: { title: card.title, description: card.desc || '', imageUrl: URL_APP + (card.banner === 'duty' ? 'kakao-duty2.png' : 'kakao-swap2.png'), imageWidth: 800, imageHeight: 400, link: link }, buttons: btns });
+          } else { try { toast('카드 이미지를 못 만들어 예전 모양으로 보냈어요 (' + (window.__ciWhy || '올리기 실패') + ')'); } catch (e) {} K.Share.sendDefault({ objectType: 'feed', content: { title: card.title, description: card.desc || '', imageUrl: URL_APP + (card.banner === 'duty' ? 'kakao-duty2.png' : 'kakao-swap2.png'), imageWidth: 800, imageHeight: 400, link: link }, buttons: btns }); }
         });
       }
       else K.Share.sendDefault({ objectType: 'text', text: text.replace(/\n?https?:\/\/\S+/g, '').slice(0, 200), link: link, buttonTitle: '수락하러 가기' });

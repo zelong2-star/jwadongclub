@@ -1,5 +1,5 @@
 // PLAY. LOG. PLAY. 오프라인 캐시 (버전이 바뀌면 새 파일로 갈아끼움)
-const V = 'plp-202611271640';
+const V = 'plp-202611271730';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
@@ -7,7 +7,7 @@ self.addEventListener('fetch', e => {
   const req = e.request; if (req.method !== 'GET') return;
   const url = new URL(req.url);
   // 게임현황판(/board/)은 이 앱의 캐시와 섞이지 않게 건드리지 않아요
-  if (url.pathname.includes('/board/') || url.pathname.includes('/duty/')) return;
+  if (url.pathname.includes('/board/') || url.pathname.includes('/duty/') || url.pathname.includes('/members/')) return;
   // 공지 파일은 저장해 둔 옛것을 쓰지 않고 항상 새로 받아요
   if (url.pathname.endsWith('/notice.txt') || url.pathname.endsWith('/club.json')) return;
   // 사용 집계는 저장해 두지 않고 그대로 보내요

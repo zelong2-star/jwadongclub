@@ -84,6 +84,7 @@ export function makeApi() {
       const o = []; s.forEach((d) => { const v = d.data(); v.id = d.id; o.push(v); }); cb(o);
     }, err),
     // 회원 명단 (문서 하나: meta/roster). 없으면 앱이 당번표 이름으로 대신함
+    subscribeMembers: (cb, err) => onSnapshot(ref('ros', 'members'), (s) => { let o = null; try { o = s.exists() ? JSON.parse(s.data().j) : null; } catch (e) {} cb(o); }, err),
     subscribeRoster: (cb, err) => onSnapshot(ref('meta', 'roster'), (s) => { cb(s.exists() ? s.data() : null); }, err),
     setRoster: (names, paused) => setDoc(ref('meta', 'roster'), { names: names, paused: paused, updated: Date.now() }),
     // 클럽 공지 (삭제 없이 '내리기'로 숨김)

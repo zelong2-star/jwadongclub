@@ -161,6 +161,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   var C = window.DutyCore, DOW = C.DOW;
   var API = null, pin = null, me = null;
   var months = {}, requests = [], logs = [], acks = [], keys = [], cur = null;
+  var memNames = null;
   var roster = null, adminDoc = null, admPrompt = false, notices = [], tab = 'home', sv = 'cal', selDay = null, exTab = 'in', flow = null;
   var unsubs = [], connected = false, toastT = 0;
   var PIN_KEY = 'jwadong-pin-v1', ME_KEY = 'jwadong-me-v1', VIEW_KEY = 'jwadong-view-v2';
@@ -191,6 +192,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function others(k, d) { return (duties(k)[d] || []).filter(function (n) { return n && n !== me; }); }
   function namesOf(k, d) { return (duties(k)[d] || []).filter(Boolean); }
   function allNames() {
+    if (memNames && memNames.length) return memNames.slice().sort(function (a, b) { return a.localeCompare(b, 'ko'); });
     if (roster && Array.isArray(roster.names) && roster.names.length) return roster.names.slice().sort(function (a, b) { return a.localeCompare(b, 'ko'); });
     var set = {};
     keys.forEach(function (k) { var ds = duties(k); Object.keys(ds).forEach(function (d) { (ds[d] || []).forEach(function (n) { if (n) set[n] = 1; }); }); });
@@ -302,6 +304,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           unsubs.push(API.subscribeLog(function (ls) { logs = ls; if (connected) renderAll(); }, onErr));
           if (API.subscribeNotices) unsubs.push(API.subscribeNotices(function (ns) { notices = ns; if (connected) renderAll(); }, function () {}));
           if (API.subscribeAdmin) unsubs.push(API.subscribeAdmin(function (a) { adminDoc = a; if (connected) renderAll(); }, function () {}));
+          if (API.subscribeMembers) unsubs.push(API.subscribeMembers(function (o) { var m = o && o.m ? o.m : null; memNames = m ? Object.keys(m).filter(function (n) { return m[n].on !== 0 && m[n].t !== 'g'; }) : null; if (connected) { renderAll(); if (!$('picker').classList.contains('hide')) renderNames($('search').value || ''); } }, function () {}));
           if (API.subscribeRoster) unsubs.push(API.subscribeRoster(function (r) { roster = r; if (connected) { renderAll(); if (!$('picker').classList.contains('hide')) renderNames($('search').value || ''); } }, function () {}));
           if (API.subscribeAcks) unsubs.push(API.subscribeAcks(function (as) { acks = as; if (connected) renderAll(); }, function () {}));
           if (me && allNames().indexOf(me) >= 0) enterApp(); else showPicker();

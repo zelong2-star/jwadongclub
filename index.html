@@ -4230,6 +4230,27 @@ document.documentElement.lang = 'ko';
     b.textContent = c && c.k ? (c.ok === 0 ? '서버 보관 켜짐 · 연결 확인 필요' : '서버 보관 켜짐 ✓') : '서버에 자동 보관 (4자리 번호)';
     k.insertBefore(b, k.firstChild);
   }).observe(document.body, { childList: true, subtree: true });
+  // 서버 명단(ros/members)을 읽어 이 앱의 명단에 반영 — 태블릿·컴퓨터에서 고친 명단이 그대로 와요
+  const RK = 'mgl.roster';
+  function applyRoster(o) {
+    const m = o && o.m; if (!m) return false; let ch = false; const have = new Set(ROSTER.map(r => r[0]));
+    Object.keys(m).forEach(n => {
+      const x = m[n]; if (x.t === 'g') return;
+      if (!have.has(n)) { ROSTER.push([n, x.g === 'f' ? '여' : '남', x.lv || '', 40]); META[n] = { g: x.g === 'f' ? '여' : '남', gr: x.lv || '', a: 40 }; have.add(n); ch = true; }
+      else { const g = x.g === 'f' ? '여' : '남', mt = META[n]; if (mt && (mt.g !== g || (x.lv && mt.gr !== x.lv))) { mt.g = g; if (x.lv) mt.gr = x.lv; ch = true; } }
+      if (x.on === 0) { if (!OFF.has(n)) { OFF.add(n); ch = true; } } else if (OFF.has(n) && !restoredP.includes(n)) { OFF.delete(n); ch = true; }
+    });
+    ROSTER.forEach(r => { const n = r[0]; if (!m[n] && !OFF.has(n) && !(me === n)) { OFF.add(n); ch = true; } });
+    return ch;
+  }
+  async function pullRoster() {
+    try { const c = jget(RK, null); if (c && applyRoster(c)) { try { render(); } catch (e) {} } } catch (e) {}
+    if (!clubPin()) return;
+    try { await fb(); const sn = await F.s.getDoc(ref('members')); if (!sn.exists()) return; const o = JSON.parse(sn.data().j); jset(RK, o); if (applyRoster(o)) { try { render(); } catch (e) {} } } catch (e) {}
+  }
+  window.__mglRoster = () => ({ n: ROSTER.length, has: n => ROSTER.some(r => r[0] === n), off: n => OFF.has(n), meta: n => META[n] });
+  setTimeout(pullRoster, 800);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') pullRoster(); });
   setTimeout(() => sync(true), 2500);
 })();
 

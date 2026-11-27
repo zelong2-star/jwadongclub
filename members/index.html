@@ -1,0 +1,47 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>좌동클럽 명단 관리</title>
+<style>
+:root{--bg:#f4f1e8;--card:#fff;--ink:#222;--mut:#8a8472;--line:#e7e1cf;--y:#FEE500;--red:#F2462E;--grn:#1D9533}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 system-ui,-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif}
+.w{max-width:860px;margin:0 auto;padding:22px 16px 60px}h1{font-size:22px;margin:0 0 4px}p.s{color:var(--mut);margin:0 0 16px;font-size:13.5px}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 1px 0 var(--line)}
+input,select,button{font:inherit}input[type=text],input[type=password],input[type=search],select{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:#fff;color:var(--ink)}
+button{border:0;border-radius:10px;padding:9px 14px;background:#eee;cursor:pointer;font-weight:700}button.p{background:var(--y)}button.d{background:#fde7e3;color:#b3261e}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row>input[type=search]{flex:1;min-width:160px}
+table{width:100%;border-collapse:collapse;margin-top:10px}th{font-size:12px;color:var(--mut);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}td{padding:6px 8px;border-bottom:1px solid #f0ecdf}tr.off td{opacity:.5}
+td select{padding:6px 8px}.msg{font-size:13px;min-height:18px;margin-top:8px;color:var(--mut)}.msg.ok{color:var(--grn)}.msg.er{color:var(--red)}.cnt{font-size:13px;color:var(--mut)}
+@media(max-width:560px){th:nth-child(4),td:nth-child(4){display:none}}
+</style></head><body><div class="w">
+<h1>명단 관리</h1><p class="s">여기서 고친 명단은 태블릿·폰·다른 앱에 자동으로 반영돼요. 이름 변경은 태블릿에서 해 주세요(기록이 이어져야 해서요).</p>
+<div class="card" id="gate"><div class="row"><input type="text" id="code" placeholder="클럽 코드 (태블릿 링크 # 뒤 숫자)" inputmode="numeric" style="width:230px"><input type="password" id="pw" placeholder="관리자 비밀번호" style="width:190px"><button class="p" id="go">열기</button></div><div class="msg" id="gm"></div></div>
+<div id="main" hidden>
+<div class="card"><div class="row"><input type="search" id="q" placeholder="이름 검색"><span class="cnt" id="cnt"></span></div>
+<div class="row" style="margin-top:10px"><input type="text" id="nn" placeholder="새 회원 이름" style="width:150px"><select id="ng"><option value="m">남</option><option value="f">여</option></select><select id="nl"><option value="">급수</option><option>S</option><option>A</option><option>B</option><option>C</option><option>D</option><option>초심</option></select><button class="p" id="add">추가</button></div>
+<div class="msg" id="mm"></div>
+<table><thead><tr><th>이름</th><th>성별</th><th>급수</th><th>구분</th><th>활동</th><th></th></tr></thead><tbody id="tb"></tbody></table></div></div></div>
+<script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+import {getFirestore,doc,getDoc,setDoc,onSnapshot} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+const FBC={apiKey:"AIzaSyBPHoNYfDggb2G_HtwrcxnH7CrA0s2Z0QQ",authDomain:"jwadong-duty.firebaseapp.com",projectId:"jwadong-duty",storageBucket:"jwadong-duty.firebasestorage.app",messagingSenderId:"59680339687",appId:"1:59680339687:web:49b8826fb49329820e5442"};
+const $=id=>document.getElementById(id);const db=getFirestore(initializeApp(FBC,'jwmem'));let H='',D={m:{},x:{}},unsub=null;
+const sha=async s=>{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('jwadong-duty:'+s));return Array.from(new Uint8Array(b)).map(x=>('0'+x.toString(16)).slice(-2)).join('').slice(0,40)};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const say=(id,t,c)=>{const e=$(id);e.textContent=t;e.className='msg '+(c||'')};
+try{$('code').value=localStorage.getItem('jwadong-pin-v1')||''}catch(e){}
+const ref=()=>doc(db,'c',H,'ros','members');
+$('go').onclick=async()=>{const code=$('code').value.trim(),pw=$('pw').value;if(!code||!pw)return say('gm','클럽 코드와 관리자 비밀번호를 넣어 주세요','er');say('gm','확인 중…');
+ try{H=await sha(code);const lv=await getDoc(doc(db,'c',H,'board','live'));let npw='';try{npw=lv.exists()?JSON.parse(lv.data().s).npw||'':''}catch(e){}
+  if(!npw)return say('gm','태블릿에서 관리자 비밀번호를 먼저 정해 주세요','er');if(await sha('adm-'+pw)!==npw)return say('gm','관리자 비밀번호가 달라요','er');
+  try{localStorage.setItem('jwadong-pin-v1',code)}catch(e){}$('gate').hidden=true;$('main').hidden=false;
+  unsub=onSnapshot(ref(),sn=>{if(sn.exists()){try{const o=JSON.parse(sn.data().j);D={m:o.m||{},x:o.x||{}}}catch(e){}}else say('mm','서버에 명단이 아직 없어요. 태블릿 현황판을 켠 채 실시간 공유를 한 번 켜 주세요.','er');draw()},()=>say('mm','서버에 연결하지 못했어요','er'))}catch(e){say('gm','서버에 연결하지 못했어요','er')}};
+function draw(){const q=$('q').value.trim(),L=Object.keys(D.m).filter(n=>!q||n.includes(q)).sort((a,b)=>a.localeCompare(b,'ko'));
+ $('cnt').textContent='전체 '+Object.keys(D.m).length+'명 · 활동 '+Object.values(D.m).filter(x=>x.on!==0).length+'명';
+ $('tb').innerHTML=L.map(n=>{const m=D.m[n];return`<tr class="${m.on===0?'off':''}"><td><b>${esc(n)}</b></td><td><select data-n="${esc(n)}" data-k="g"><option value="m"${m.g!=='f'?' selected':''}>남</option><option value="f"${m.g==='f'?' selected':''}>여</option></select></td><td><select data-n="${esc(n)}" data-k="lv">${['','S','A','B','C','D','초심'].map(v=>`<option value="${v}"${(m.lv||'')===v?' selected':''}>${v||'-'}</option>`).join('')}</select></td><td><select data-n="${esc(n)}" data-k="t"><option value="">정회원</option><option value="g"${m.t==='g'?' selected':''}>게스트</option></select></td><td><input type="checkbox" data-n="${esc(n)}" data-k="on"${m.on===0?'':' checked'}></td><td><button class="d" data-n="${esc(n)}" data-k="del">삭제</button></td></tr>`}).join('')}
+async function save(fn){/* 서버 최신본을 읽어 그 위에 바꾼 것만 얹어 저장 */
+ try{const sn=await getDoc(ref());let o={m:{},x:{}};if(sn.exists()){try{o=JSON.parse(sn.data().j)}catch(e){}}o.m=o.m||{};o.x=o.x||{};fn(o);await setDoc(ref(),{d:'0members',j:JSON.stringify(o),v:''});D=o;draw();say('mm','저장했어요 · 태블릿과 폰에 몇 초 안에 반영돼요','ok')}catch(e){say('mm','저장하지 못했어요. 다시 해 주세요','er')}}
+$('q').oninput=draw;
+$('tb').addEventListener('change',e=>{const t=e.target,n=t.dataset.n,k=t.dataset.k;if(!n||!k)return;save(o=>{const m=o.m[n];if(!m)return;if(k==='on'){if(t.checked)delete m.on;else m.on=0}else if(t.value)m[k]=t.value;else delete m[k];m.u=Date.now()})});
+let armed='';$('tb').addEventListener('click',e=>{const b=e.target.closest('button[data-k=del]');if(!b)return;const n=b.dataset.n;if(armed!==n){armed=n;document.querySelectorAll('button[data-k=del]').forEach(x=>x.textContent='삭제');b.textContent='정말 삭제? 한 번 더';return}
+ armed='';save(o=>{delete o.m[n];o.x[n]=Date.now()})});
+$('add').onclick=()=>{const n=$('nn').value.trim();if(!n)return say('mm','이름을 넣어 주세요','er');if(/^손님\d+$/.test(n))return say('mm','손님 이름은 쓸 수 없어요','er');if(D.m[n])return say('mm','이미 있는 이름이에요','er');
+ save(o=>{const m={g:$('ng').value,u:Date.now()};if($('nl').value)m.lv=$('nl').value;o.m[n]=m;delete o.x[n]});$('nn').value=''};
+</script></body></html>

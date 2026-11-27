@@ -1297,6 +1297,9 @@ html body[data-lay][data-lay][data-lay][data-lay][data-lay][data-lay][data-lay][
 .vt svg{fill:currentColor!important;stroke:none!important}.vt svg .s{fill:currentColor}.vt svg .l{fill:currentColor;opacity:.28}.vt.on svg{stroke-width:0}
 .ico{width:20px;height:20px;flex:none;fill:#222;stroke:none}#vwp .vgo,#vwck,#vwsh h3.vri,.vri{display:inline-flex;align-items:center;gap:6px}#vwp .vgo,#vwck{justify-content:center}#vwp .vbn .vrow .vri,#vwp .vnh .vri{gap:7px}#vwp .vbn .vrow{align-items:center}
 .ico .l{opacity:.22}#vwp .be{display:inline-flex;align-items:center;vertical-align:middle}
+html body #vwp .vbn .be .ico,html body #vwp .vbn .be .ico path{transition:fill .35s,stroke .35s}
+html body #vwp .vbn .be.bg .ico{fill:#8F8B7F}html body #vwp .vbn .be.bg .ico .l{fill:#CFCABB;stroke:#8F8B7F;stroke-width:1;opacity:1}
+html body #vwp .vbn .be.am .ico{fill:#E08A00}html body #vwp .vbn .be.am .ico .l{fill:#FFB300;stroke:#C77700;stroke-width:1;opacity:1}
 #vwme .ico{margin-right:5px;vertical-align:-4px}
 html body #vwp .vgo .ico .l,html body #vwck .ico .l{fill:#FF6347;opacity:1}html body #vwp .vgo .ico path:not(.l),html body #vwck .ico path:not(.l){fill:#fff}
 .vwpay h3{font-size:18px!important;line-height:1.3}.vwpay .vwam{font-size:15px!important}.vwpay .vwam b{font-size:24px!important}.vwpay .vwac{font-size:13px!important}.vwpay .vwac b{font-size:18px!important}.vwpay .vwgo,.vwpay .vwb{font:800 16px/1 system-ui!important}.vwpay .vwgo{line-height:52px!important}.vwpay .vwm{font-size:13px!important}
@@ -3809,7 +3812,9 @@ function scan(){if(window.__VIEW)return;var cur=(S.present||[]).slice();if(P2===
 var R0=window.render;window.render=function(){var rv=R0.apply(this,arguments);try{scan()}catch(e){}return rv};
 function pump(){clearTimeout(PT);if(!PEND.length)return;if(document.getElementById('payq')||document.getElementById('vpop')||document.getElementById('vstg')){PT=setTimeout(pump,600);return}show(PEND.shift())}
 /* 폰: 내가 N번째 출석이면 축하 팝업 (태블릿이 정한 순번을 받아서) */
-if(window.__VIEW){setInterval(function(){try{var me=window.__raw.get('vw:me')||'';if(!me||!S||!S.day)return;var L=(window.__rosv||{})[S.day]||{},e=L[me];if(!e||!e.no)e=(S.__v||{})[me];if(!e||!e.no)return;var c=(window.__raw.get('vw:ci')||'').split('|');if(c[0]!=S.day||c[1]!=me||Date.now()-(+c[2]||0)>3600000)return;var k='vw:ev:'+S.day+':'+e.no;if(window.__raw.get(k))return;window.__raw.set(k,'1');PEND.push({n:me,no:e.no});pump()}catch(x){}},700)}
+if(window.__VIEW){setInterval(function(){try{if(!S||!S.day)return;var c=(window.__raw.get('vw:ci')||'').split('|');if(c[0]!=S.day||!c[1]||Date.now()-(+c[2]||0)>3600000)return;var me=c[1],L=(window.__rosv||{})[S.day]||{},e=L[me];if(!e||!e.no)e=(S.__v||{})[me];if(!e||!e.no)return;
+ var mt=/^(\d+):(\d+)$/.exec(e.t||'');if(mt){var d0=new Date(+c[2]),df=Math.abs((+mt[1]*60+ +mt[2])-(d0.getHours()*60+d0.getMinutes()));if(Math.min(df,1440-df)>10)return}
+ var k='vw:ev:'+S.day+':'+e.no+':'+me;if(window.__raw.get(k)===c[2])return;window.__raw.set(k,c[2]);PEND.push({n:me,no:e.no});pump()}catch(x){}},700)}
 /* 사운드: 팡파르 */
 var AC;function ac(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state=='suspended')AC.resume();return AC}catch(e){return null}}
 function tone(f,t,d,ty,v,gl){var a=ac();if(!a)return;var o=a.createOscillator(),g=a.createGain();o.type=ty;o.frequency.setValueAtTime(f,t);if(gl)o.frequency.exponentialRampToValueAtTime(gl,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.012);g.gain.exponentialRampToValueAtTime(.0008,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.05)}
@@ -4124,11 +4129,11 @@ function vp(){try{mkRK()}catch(e){}
  var m=mine(),rr=[],ix=[];(S.rows||[]).forEach(function(r,i){if(r.some(Boolean)){rr.push(r);ix.push(i)}});
  var bt,bs,bb='';
  if(!ME){bt='🔔 내 이름 지정';bs='내 차례가 가까워지면 알려 드려요';bb='<i>지정</i>'}
- else if(m&&m.c>=0){bt='🏸 '+esc(ME)+'님 · '+(m.c+1)+'번 코트';bs='게임 중이에요';bb='<i>알람 켜짐</i>'}
+ else if(m&&m.c>=0){bt='🔔 '+esc(ME)+'님 · '+(m.c+1)+'번 코트';bs='게임 중이에요';bb='<i>알람 켜짐</i>'}
  else if(m&&m.a!==null){bt='🔔 '+esc(ME)+'님 · 예약 '+(m.a+1)+'번';bs=(m.a==0?'다음 차례예요':'앞에 '+m.a+'팀')+' · '+eta(ix[m.a]);bb='<i>알람 켜짐</i>'}
  else if(present(ME)){bt='🔔 '+esc(ME)+'님';bs='예약에 들어가면 알려 드려요'}
- else{bt=esc(ME)+'님';bs='오늘 아직 출석 전이에요'}
- var ni='';if(/^(🔔|🏸) /.test(bt)){bt=bt.replace(/^(🔔|🏸) /,function(m,e){return'<span class="be">'+(e=='🔔'?'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path class="l" d="M12 3a6 6 0 00-6 6v4l-1.6 3.2A1 1 0 005.3 18h13.4a1 1 0 00.9-1.8L18 13V9a6 6 0 00-6-6z"/><path d="M9.5 19.5a2.5 2.5 0 005 0z"/></svg>':e)+'</span>'});ni=' class="vin"'}
+ else{bt='🔔 '+esc(ME)+'님';bs='오늘 아직 출석 전이에요'}
+ var ni='';var bon=!!(ME&&present(ME));if(/^(🔔|🏸) /.test(bt)){bt=bt.replace(/^(🔔|🏸) /,function(m,e){return'<span class="be '+(bon?'am':'bg')+'">'+(e=='🔔'?'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path class="l" d="M12 3a6 6 0 00-6 6v4l-1.6 3.2A1 1 0 005.3 18h13.4a1 1 0 00.9-1.8L18 13V9a6 6 0 00-6-6z"/><path d="M9.5 19.5a2.5 2.5 0 005 0z"/></svg>':e)+'</span>'});ni=' class="vin"'}
  var cv=STO&&Date.now()-STO.t<25000?STO.v:({'레슨중':'les','휴식중':'brk','운동끝':'out'})[STL(ME)]||'';
  h+='<div class="vbn bx"><div class="vtp"><button class="vbl" id="vwbn"><b>'+bt+'</b><small'+ni+'>'+bs+'</small></button>'+(ME&&present(ME)?'<span class="vok">출석 완료 ✓</span>':'<button class="vgo" id="vwgo"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle class="l" cx="12" cy="12" r="10"/><path d="M7.2 12.4l3.2 3.2 6.4-6.8-1.7-1.6-4.7 5-1.5-1.5z"/></svg>출석하기</button>')+'</div><button class="vrow" id="vwar2"><span class="vri"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1.8"/><path class="l" d="M4.5 10.5h15V18a3 3 0 01-3 3h-9a3 3 0 01-3-3z"/><rect x="9.5" y="13" width="5" height="1.9" rx=".9"/></svg>내 기록보관소</span><span>›</span></button></div>';
  if(ME)h+='<div class="vst"><span>내 상태</span>'+[['les','레슨중'],['brk','휴식중'],['out','운동끝']].map(function(x){return'<button class="vsb'+(cv==x[0]?' on':'')+'" data-v="'+x[0]+'">'+x[1]+'</button>'}).join('')+'</div>';

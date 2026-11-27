@@ -1,5 +1,5 @@
 // 좌동클럽 게임현황판 오프라인 캐시 (이 폴더 /board/ 안에서만 동작)
-const V = 'board-202611270355';
+const V = 'board-202611271240';
 const FC = 'board-face'; // 얼굴 인식 모델(약 8MB)과 글꼴(약 6MB)은 앱 버전이 바뀌어도 지우지 않는 별도 보관함에 둬요
 const FONTS = ['fonts/PretendardVariable.woff2', 'fonts/Giants-Regular.ttf', 'fonts/Giants-Bold.ttf', 'fonts/busanM.woff2', 'fonts/busanB.woff2', 'fonts/kk.woff2'];
 const PERSIST = p => p.includes('/face/') || p.includes('/fonts/');

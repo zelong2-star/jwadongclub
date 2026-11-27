@@ -1144,6 +1144,47 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       contents: [{ title: card.title, description: '', imageUrl: ic, imageWidth: 240, imageHeight: 240, link: link }, { title: card.desc || '자세히 보기', description: '', imageUrl: ic, imageWidth: 240, imageHeight: 240, link: link }],
       buttons: (card.buttons || ['요청 확인하기']).map(function (t) { return { title: t, link: link }; }) };
   }
+  /* 카톡 카드 이미지: 위에 얇은 파란 띠(아이콘+이름), 아래 흰 칸에 제목·날짜. 만들지 못하면 null(예전 이미지로 보내요) */
+  function cardImage(K, card) {
+    return new Promise(function (res) {
+      var done = false; function end(v) { if (!done) { done = true; res(v); } }
+      setTimeout(function () { end(null); }, 5000);
+      try {
+        var duty = card.banner === 'duty', stamp = card.stamp || (duty ? '당번 안내' : '당번 교환 요청');
+        var cv = document.createElement('canvas'); cv.width = 1000; cv.height = 500; var g = cv.getContext('2d');
+        var F = '"Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
+        g.fillStyle = '#fff'; g.fillRect(0, 0, 1000, 500);
+        g.fillStyle = '#3182F6'; g.fillRect(0, 0, 1000, 170);
+        var R = 50, cx = 70 + R, cy = 85; g.fillStyle = '#fff'; g.beginPath(); g.arc(cx, cy, R, 0, 6.2832); g.fill();
+        g.strokeStyle = '#3182F6'; g.lineWidth = 7; g.lineCap = 'round'; g.lineJoin = 'round';
+        if (duty) { g.strokeRect(cx - 24, cy - 14, 48, 42); g.beginPath(); g.moveTo(cx - 24, cy + 2); g.lineTo(cx + 24, cy + 2); g.moveTo(cx - 11, cy - 28); g.lineTo(cx - 11, cy - 10); g.moveTo(cx + 11, cy - 28); g.lineTo(cx + 11, cy - 10); g.stroke(); }
+        else { g.beginPath(); g.moveTo(cx - 24, cy - 12); g.lineTo(cx + 22, cy - 12); g.moveTo(cx + 10, cy - 24); g.lineTo(cx + 24, cy - 12); g.lineTo(cx + 10, cy); g.moveTo(cx + 24, cy + 14); g.lineTo(cx - 22, cy + 14); g.moveTo(cx - 10, cy + 2); g.lineTo(cx - 24, cy + 14); g.lineTo(cx - 10, cy + 26); g.stroke(); }
+        g.textBaseline = 'middle'; g.textAlign = 'left'; g.fillStyle = '#fff'; var sf = 70; do { g.font = '700 ' + sf + 'px ' + F; sf -= 4; } while (g.measureText(stamp).width > 1000 - (cx + R + 28) - 40 && sf > 36); g.fillText(stamp, cx + R + 28, cy + 4);
+        function wrap(t, font, maxW, maxL) {
+          g.font = font; var out = [], line = '';
+          String(t || '').split(' ').forEach(function (w) {
+            var tr = line ? line + ' ' + w : w;
+            if (g.measureText(tr).width <= maxW) { line = tr; return; }
+            if (line) { out.push(line); line = ''; }
+            if (g.measureText(w).width <= maxW) { line = w; return; }
+            w.split('').forEach(function (ch) { if (g.measureText(line + ch).width > maxW && line) { out.push(line); line = ch; } else line += ch; });
+          });
+          if (line) out.push(line); if (out.length > maxL) { out = out.slice(0, maxL); out[maxL - 1] = out[maxL - 1].slice(0, -1) + '…'; } return out;
+        }
+        var y = 235; g.textBaseline = 'alphabetic'; g.fillStyle = '#191F28';
+        wrap(card.title, '700 46px ' + F, 900, 2).forEach(function (l) { g.font = '700 46px ' + F; g.fillText(l, 60, y + 36); y += 62; });
+        y += 14; g.fillStyle = '#6B7684';
+        wrap(card.desc, '500 42px ' + F, 880, 2).forEach(function (l) { g.font = '500 42px ' + F; g.fillText(l, 60, y + 34); y += 56; });
+        cv.toBlob(function (b) {
+          if (!b) return end(null);
+          try {
+            var dt = new DataTransfer(); dt.items.add(new File([b], 'card.png', { type: 'image/png' }));
+            K.Share.uploadImage({ file: dt.files }).then(function (r) { end(r && r.infos && r.infos.original && r.infos.original.url || null); }, function () { end(null); });
+          } catch (e) { end(null); }
+        }, 'image/png');
+      } catch (e) { end(null); }
+    });
+  }
   function shareKakao(text, card) {
     function fallback() {
       if (navigator.share) { navigator.share({ text: text }).catch(function () { copyText(text); }); toast('카톡 연결이 안 돼서 공유 창을 열었어요.'); }
@@ -1153,9 +1194,13 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       if (!K.isInitialized()) K.init(KAKAO_KEY);
       var link = { mobileWebUrl: URL_APP, webUrl: URL_APP };
       if (card) {
-        return (card.stamp ? bannerUrl(K, card.stamp) : Promise.resolve(null)).then(function (u) {
-          var wide = card.banner === 'duty';
-          K.Share.sendDefault({ objectType: 'feed', content: { title: card.title, description: card.desc || '', imageUrl: u || URL_APP + (card.banner === 'duty' ? 'kakao-duty.png' : 'kakao-swap2.png'), imageWidth: wide ? 1000 : 2000, imageHeight: wide ? 500 : 260, link: link }, buttons: (card.buttons || ['요청 확인하기']).map(function (t) { return { title: t, link: link }; }) });
+        var btns = (card.buttons || ['요청 확인하기']).map(function (t) { return { title: t, link: link }; });
+        return cardImage(K, card).then(function (u) {
+          if (u) {
+            var c = { imageUrl: u, imageWidth: 1000, imageHeight: 500, link: link };
+            try { c.title = ''; K.Share.sendDefault({ objectType: 'feed', content: c, buttons: btns }); }
+            catch (e) { c.title = card.title; K.Share.sendDefault({ objectType: 'feed', content: c, buttons: btns }); }
+          } else K.Share.sendDefault({ objectType: 'feed', content: { title: card.title, description: card.desc || '', imageUrl: URL_APP + (card.banner === 'duty' ? 'kakao-duty2.png' : 'kakao-swap2.png'), imageWidth: 800, imageHeight: 400, link: link }, buttons: btns });
         });
       }
       K.Share.sendDefault({ objectType: 'text', text: text.replace(/\n?https?:\/\/\S+/g, '').slice(0, 200), link: link, buttonTitle: '수락하러 가기' });

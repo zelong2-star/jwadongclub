@@ -1781,6 +1781,7 @@ const ntKey = o => o.date + '|' + o.title;
 function ntDate(d) { const m = String(d).match(/(\d{4})-(\d{1,2})-(\d{1,2})/); return m ? `${+m[2]}.${+m[3]}` : esc(d); }
 function renderNotice() {
   const el = $('#notice'); if (!el) return;
+  if (window.top !== window.self) { el.innerHTML = ''; return; }   // 현황판 폰 화면 안(경기기록 탭)에서는 공지 카드를 숨김
   const n = notices[0];
   if (!n) { el.innerHTML = ''; return; }
   let seen = ''; try { seen = localStorage.getItem(NTSEEN) || ''; } catch (e) {}

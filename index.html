@@ -1120,6 +1120,7 @@ button.mp-row:active,label.mp-pick:active{background:var(--surface2)}
 .mp-stat.ok .mp-n{width:46px;height:46px;min-width:0;border-radius:50%;background:var(--court-soft);display:grid;place-items:center}
 .mp-n svg{width:24px;height:24px;fill:none;stroke:var(--court-txt);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 .mp-cta{width:100%;min-height:52px;border-radius:14px;font-size:16px}
+.mp-live{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line,#e3ddc9)}.mp-live .mp-t{min-width:0}.mp-live b{display:block;font-size:15px}.mp-live small{display:block;font-size:12px;color:var(--muted,#8a8472);line-height:1.4}.mp-sw{flex:none;position:relative;width:50px;height:30px;border-radius:99px;border:0;background:#d8d3c2;cursor:pointer;padding:0;transition:background .15s}.mp-sw::after{content:'';position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .15s}.mp-sw.on{background:#0C50A1}.mp-sw.on::after{left:23px}
 .mp-more{margin-top:8px;padding:14px;background:var(--surface);border-radius:18px;display:grid;gap:8px}
 .sbody.mp #bkPaste{margin-top:8px;padding:14px;background:var(--surface);border-radius:18px}
 .mp-lb{flex:none;width:44px;font:700 14px var(--body);color:var(--muted)}
@@ -2850,6 +2851,7 @@ async function loadClubView() {
     const t = await r.text(), o = JSON.parse(t);
     if (setClubView(o)) { try { localStorage.setItem('mgl.club', t); } catch (e) {} try { render(); } catch (e2) {} }
   } catch (e) {}
+  try { if (window.__liveMerge) window.__liveMerge(); } catch (e) {}
 }
 function clubExportText() { return JSON.stringify({ a: 'mgl-club', v: 1, at: today(), by: me || OWNER_NAME, recs: clubRecords() }); }
 let clubPeriod = 'all', rankPeriod = 'all';
@@ -4260,6 +4262,82 @@ document.documentElement.lang = 'ko';
     if (!clubPin()) return;
     try { await fb(); const sn = await F.s.getDoc(ref('members')); if (!sn.exists()) return; const o = JSON.parse(sn.data().j); jset(RK, o); if (applyRoster(o)) { try { render(); } catch (e) {} } } catch (e) {}
   }
+  // ===== 기록 공유: ON인 동안 기록한 경기만 서버에 올려 클럽기록실에 모아요 =====
+  const LK = 'mgl.live', LSN = 'mgl.liveSince', LAK = 'mgl.liveAck', LCK = 'mgl.liveC';
+  const liveOn = () => { try { return localStorage.getItem(LK) === '1'; } catch (e) { return false; } };
+  const gameRow = g => [g.date, g.mode, g.partner || '', (g.opp || [])[0] || '', (g.opp || [])[1] || '', +g.my || 0, +g.their || 0, g.res || '', g.id, +g.ts || 0];
+  let lbusy = false, lagain = false, ltimer = 0;
+  async function liveSync() {
+    if (!liveOn() || !me || !clubPin()) return;
+    if (lbusy) { lagain = true; return; }
+    lbusy = true;
+    try {
+      const since = +localStorage.getItem(LSN) || 0, k = 'sh' + await sha('s:' + me), old = await pull(k), m = new Map();
+      ((old && old.g) || []).forEach(r => { if (r && r[8]) m.set(r[8], r); });
+      const mine = games.filter(g => g && g.id && !String(g.id).startsWith('demo'));
+      m.forEach((r, id) => { if ((+r[9] || 0) >= since && !mine.some(g => g.id === id)) m.delete(id); });
+      mine.filter(g => (+g.ts || 0) >= since).forEach(g => m.set(g.id, gameRow(g)));
+      await push(k, { n: me, g: [...m.values()], at: Date.now() });
+      try { localStorage.removeItem(LCK); } catch (e) {}
+    } catch (e) { try { console.warn('liveSync', e && e.message); } catch (e2) {} }
+    lbusy = false; if (lagain) { lagain = false; liveSoon(); }
+  }
+  function liveSoon() { clearTimeout(ltimer); ltimer = setTimeout(liveSync, 3000); }
+  const lsSave1 = lsSave;
+  lsSave = function () { lsSave1(); if (liveOn()) liveSoon(); };
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') liveSync(); });
+  async function liveRecs() {
+    if (!clubPin()) return [];
+    const c = jget(LCK, null); if (c && Date.now() - c.at < 600000) return c.r;
+    const o = jget(RK, null), names = o && o.m ? Object.keys(o.m).filter(n => o.m[n].t !== 'g') : [];
+    const res = await Promise.all(names.map(async n => { try { const v = await pull('sh' + await sha('s:' + n)); return v && Array.isArray(v.g) && v.g.length ? { name: n, g: v.g.map(r => r.slice(0, 8)) } : null; } catch (e) { return null; } }));
+    const r = res.filter(Boolean); jset(LCK, { at: Date.now(), r }); return r;
+  }
+  window.__liveMerge = async () => {
+    try {
+      const r = await liveRecs(); if (!r.length) return;
+      const base = CLUB_VIEW ? CLUB_VIEW.recs.map(x => ({ name: x.name, g: x.g.slice() })) : [];
+      r.forEach(x => {
+        let t = base.find(b => b.name === x.name); if (!t) { t = { name: x.name, g: [] }; base.push(t); }
+        const seen = new Set(t.g.map(d => d.slice(0, 8).join('|')));
+        x.g.forEach(d => { const key = d.slice(0, 8).join('|'); if (!seen.has(key)) { seen.add(key); t.g.push(d); } });
+      });
+      CLUB_VIEW = { at: CLUB_VIEW ? CLUB_VIEW.at : '', by: CLUB_VIEW ? CLUB_VIEW.by : '', recs: base };
+      try { render(); } catch (e) {}
+    } catch (e) {}
+  };
+  function liveSheet() {
+    if (!me) { toast('먼저 이름을 골라 주세요'); return; }
+    const pin = clubPin();
+    openSheet(`<div class="shd"><h3>기록 공유 켜기</h3><p>내 이름과 경기 기록(날짜·파트너·상대·점수)이 클럽기록실에 모여서 다른 회원도 통계로 볼 수 있어요.</p><button class="shx" type="button" aria-label="닫기">×</button></div>
+      <div class="sbody"><p class="hint" style="margin:0 0 10px;text-align:left">· 켠 뒤에 기록한 경기만 올라가요.<br>· 끄면 그때부터 새 기록은 올라가지 않아요. 이미 올라간 기록은 그대로 남아요.<br>· 언제든 마이페이지에서 끌 수 있어요.</p>
+      ${pin ? '' : '<input id="lvCode" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="클럽 코드 또는 태블릿 링크 붙여넣기" style="width:100%;margin-bottom:8px">'}
+      <p class="hint" id="lvMsg"></p><button class="btn primary" type="button" id="lvGo">동의하고 켜기</button><button class="btn" type="button" id="lvNo" style="margin-top:8px">취소</button></div>`, '', sh => {
+      const q = x => sh.querySelector(x);
+      q('#lvNo').onclick = closeSheet;
+      q('#lvGo').onclick = () => {
+        const cc = q('#lvCode');
+        if (cc) { let v = (cc.value || '').trim(); const mm = /[#&?]v=([^&\s]+)/.exec(v); if (mm) v = decodeURIComponent(mm[1]); if (!v) { q('#lvMsg').textContent = '클럽 코드를 넣어 주세요'; return; } try { localStorage.setItem('jwadong-pin-v1', v); } catch (e) {} }
+        try { localStorage.setItem(LK, '1'); localStorage.setItem(LSN, String(Date.now())); localStorage.setItem(LAK, '1'); } catch (e) {}
+        closeSheet(); toast('기록 공유를 켰어요. 지금부터 기록한 경기가 모여요'); liveSync(); drawLive();
+      };
+    });
+  }
+  function drawLive() {
+    const k = document.querySelector('.mp-keep'); if (!k) return;
+    let r = k.querySelector('.mp-live');
+    if (!r) { r = document.createElement('div'); r.className = 'mp-live'; k.appendChild(r); }
+    const on = liveOn();
+    r.innerHTML = `<div class="mp-t"><b>기록 공유</b><small>${on ? '켜져 있는 동안 기록한 경기가 클럽기록실에 반영돼요' : '꺼져 있어요. 켜면 그때부터 기록한 경기가 클럽기록실에 모여요'}</small></div><button type="button" id="lvSw" class="mp-sw${on ? ' on' : ''}" role="switch" aria-checked="${on}" aria-label="기록 공유"></button>`;
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('#lvSw'); if (!b) return;
+    e.preventDefault();
+    if (liveOn()) { try { localStorage.setItem(LK, '0'); } catch (er) {} toast('기록 공유를 껐어요. 이미 모인 기록은 그대로예요'); drawLive(); }
+    else liveSheet();
+  }, true);
+  new MutationObserver(() => { const k = document.querySelector('.mp-keep'); if (k && !k.querySelector('.mp-live')) drawLive(); }).observe(document.body, { childList: true, subtree: true });
+  setTimeout(liveSync, 4000);
   window.__mglCloudOn = () => { const c = jget(CK, null); return !!(c && c.k && c.name === me); };
   window.__mglRoster = () => ({ n: ROSTER.length, has: n => ROSTER.some(r => r[0] === n), off: n => OFF.has(n), meta: n => META[n] });
   setTimeout(pullRoster, 800);

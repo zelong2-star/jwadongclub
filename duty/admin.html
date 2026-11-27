@@ -1171,7 +1171,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           });
           if (line) out.push(line); if (out.length > maxL) { out = out.slice(0, maxL); out[maxL - 1] = out[maxL - 1].slice(0, -1) + '…'; } return out;
         }
-        var ts = 54, ds = 48, tl, dl, hh;
+        var ts = 64, ds = 54, tl, dl, hh;
         do {
           tl = wrap(card.title, '700 ' + ts + 'px ' + F, 900, 2); dl = wrap(card.desc, '500 ' + ds + 'px ' + F, 900, 2);
           hh = 220 + tl.length * ts * 1.3 + 10 + dl.length * ds * 1.3; ts -= 3; ds -= 2;

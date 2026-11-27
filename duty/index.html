@@ -343,7 +343,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function renderNav() {
     var inN = inboxList().length + openList().length;
     var box = $('navin'); box.textContent = '';
-    [['home', '홈', I.home], ['sched', '당번표', I.cal], ['swap', '교환', I.swap], ['notice', '공지', I.bell], ['set', '설정', I.gear]].forEach(function (x) {
+    [['home', '홈', I.home], ['sched', '당번표', I.cal], ['swap', '교환', I.swap], ['set', '설정', I.gear]].forEach(function (x) {
       var b = btn('', '', function () { tab = x[0]; renderAll(); window.scrollTo(0, 0); });
       b.appendChild(icon(x[2])); b.appendChild(el('span', '', x[1]));
       if (tab === x[0]) b.setAttribute('aria-current', 'page');
@@ -420,7 +420,6 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       hero.appendChild(el('div', '', '새 당번표가 올라오면 여기에 보여요.'));
     }
     m.appendChild(hero);
-    noticeCard(m);
     var st = el('div', 'stats');
     var a = btn('stat', '', function () { tab = 'swap'; exTab = 'in'; renderAll(); window.scrollTo(0, 0); });
     a.appendChild(el('span', 'cap', '받은 교환 요청')); a.appendChild(el('b', '', inboxList().length + '건')); a.firstChild.nextSibling.style.color = 'var(--blue)';

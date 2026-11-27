@@ -287,7 +287,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     loadKakao().then(function (K) {
       if (!K.isInitialized()) K.init(KAKAO_KEY);
       var link = { mobileWebUrl: URL_APP, webUrl: URL_APP };
-      if (card) { K.Share.sendDefault({ objectType: 'feed', content: { title: card.title, description: card.desc || '', imageUrl: URL_APP + 'kakao-' + card.banner + '.png', imageWidth: 2000, imageHeight: card.banner === 'duty' ? 400 : 260, link: link }, buttons: (card.buttons || ['요청 확인하기']).map(function (t) { return { title: t, link: link }; }) }); }
+      if (card) { K.Share.sendDefault({ objectType: 'feed', content: { title: card.title, description: card.desc || '', imageUrl: URL_APP + (card.banner === 'duty' ? 'kakao-duty.png' : 'kakao-swap2.png'), imageWidth: 2000, imageHeight: card.banner === 'duty' ? 400 : 260, link: link }, buttons: (card.buttons || ['요청 확인하기']).map(function (t) { return { title: t, link: link }; }) }); }
       else K.Share.sendDefault({ objectType: 'text', text: text.replace(/\n?https?:\/\/\S+/g, '').slice(0, 200), link: link, buttonTitle: '수락하러 가기' });
     }).catch(fallback);
   }

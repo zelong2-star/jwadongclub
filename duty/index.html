@@ -160,6 +160,18 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   'use strict';
   var C = window.DutyCore, DOW = C.DOW;
   var API = null, pin = null, me = null;
+  /* 사용 집계(GoatCounter, 경기기록앱과 같은 방식): 횟수만 보내요. 당번·교환 내용은 보내지 않고, 이름은 '이름 공유'를 끄지 않은 경우에만 붙여요. github.io 에서만 동작 */
+  function gcD(n, t) {
+    try {
+      if (!/github\.io$/.test(location.hostname)) return;
+      var gc = window.goatcounter;
+      if (!gc || !gc.count) { if (!window.__gcLoad) { window.__gcLoad = 1; window.goatcounter = { no_onload: true }; var g = document.createElement('script'); g.async = true; g.setAttribute('data-goatcounter', 'https://jwadongclub.goatcounter.com/count'); g.src = 'https://gc.zgo.at/count.js'; document.head.appendChild(g); } if ((t || 0) < 6) setTimeout(function () { gcD(n, (t || 0) + 1); }, 1500); return; }
+      var sh = true; try { sh = localStorage.getItem('mgl.share') !== '0'; } catch (e) {}
+      var q = '당번표 · ' + (sh && me ? me + ' · ' : '') + n;
+      gc.count({ path: q, title: q, event: true });
+    } catch (e) {}
+  }
+
   var months = {}, requests = [], logs = [], acks = [], keys = [], cur = null;
   var memNames = null;
   var roster = null, adminDoc = null, admPrompt = false, notices = [], tab = 'home', sv = 'cal', selDay = null, exTab = 'in', flow = null;
@@ -267,6 +279,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       buttons: (card.buttons || ['요청 확인하기']).map(function (t) { return { title: t, link: link }; }) };
   }
   function shareKakao(text, card) {
+    gcD('카톡-보내기');
     function fallback() {
       if (navigator.share) { navigator.share({ text: text }).catch(function () { copyText(text); }); toast('카톡 연결이 안 돼서 공유 창을 열었어요.'); }
       else { copyText(text); }
@@ -331,6 +344,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
   function enterApp() {
     show('app');
     var up = myUpcoming(); if (up.length) cur = up[0].month;
+    gcD('앱-열기');
     renderAll();
   }
 
@@ -348,7 +362,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var inN = inboxList().length + openList().length;
     var box = $('navin'); box.textContent = '';
     [['home', '홈', I.home], ['sched', '당번표', I.cal], ['swap', '교환', I.swap], ['set', '설정', I.gear]].forEach(function (x) {
-      var b = btn('', '', function () { tab = x[0]; renderAll(); window.scrollTo(0, 0); });
+      var b = btn('', '', function () { gcD('탭-' + x[1]); tab = x[0]; renderAll(); window.scrollTo(0, 0); });
       b.appendChild(icon(x[2])); b.appendChild(el('span', '', x[1]));
       if (tab === x[0]) b.setAttribute('aria-current', 'page');
       if (x[0] === 'swap' && inN) b.appendChild(el('span', 'dotb', String(inN)));
@@ -438,6 +452,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       if (!done) {
         var ab = btn('btn', '', function () {
           ab.disabled = true;
+          gcD('당번-확인');
           API.setAck(nx.month, nx.day, me).then(function () { toast('확인했어요. 총무님께 알렸어요.'); }).catch(function () { ab.disabled = false; toast('확인을 저장하지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
         });
         ab.appendChild(icon('M5 12l5 5 9-10')); ab.appendChild(document.createTextNode('확인했어요')); ac.appendChild(ab);
@@ -584,7 +599,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
       var no = btn('btn', '거절'), yes = btn('btn pri', '수락하기');
       yes.addEventListener('click', function () {
         yes.disabled = true; no.disabled = true;
-        API.acceptRequest(r.id).then(function (res) {
+        gcD('교환-수락'); API.acceptRequest(r.id).then(function (res) {
           if (res.ok) openSwapped(doneInfo(me, lab(mk, r.toDay), lab(r.month, r.fromDay), r.fromName, lab(r.month, r.fromDay), lab(mk, r.toDay))); else { toast(REASON[res.reason] || '이미 처리된 요청이에요.'); }
         }).catch(function () { yes.disabled = false; no.disabled = false; toast('처리하지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
       });
@@ -610,7 +625,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
           b.addEventListener('click', function () {
             if (!armed) { b.textContent = '정말 바꿀까요? 한 번 더 눌러 주세요'; armed = setTimeout(function () { armed = 0; b.textContent = base + ' 바꾸기'; }, 4000); return; }
             clearTimeout(armed); b.disabled = true;
-            API.acceptOpen(r.id, o).then(function (res) {
+            gcD('교환-수락(열린)'); API.acceptOpen(r.id, o).then(function (res) {
               if (res.ok) openSwapped(doneInfo(me, lab(o.month, o.day), lab(r.month, r.fromDay), r.fromName, lab(r.month, r.fromDay), lab(o.month, o.day))); else { b.disabled = false; toast(REASON[res.reason] || '처리하지 못했어요.'); }
             }).catch(function () { b.disabled = false; toast('처리하지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
           });
@@ -897,6 +912,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     if (requests.some(function (x) { return x.status === 'pending' && x.fromName === me && sameSlots(x, r); })) { toast('같은 요청이 이미 대기 중이에요.'); return; }
     flow.busy = true; renderFlow();
     var oldOpen = myPendingOn(f, true);
+    gcD('교환-요청');
     API.createRequest(r).then(function () { return cancelAll(oldOpen); }).then(function () {
       flow.busy = false; flow.step = 'done';
       if (window.DutyFx) DutyFx.ok(); flow.result = { title: '요청을 보냈어요', body: t.name + ' 님이 앱에서 수락하면 바로 바뀌어요.' + (oldOpen.length ? ' 이 당번의 공개 요청 ' + oldOpen.length + '건은 취소했어요.' : ''), nudge: nudgeFor('p', r), card: cardFor('p', r) };
@@ -908,6 +924,7 @@ try { window.__resolveApi(makeApi()); } catch (e) { window.__resolveApi(Promise.
     var r = { month: f.month, fromDay: f.day, fromJ: f.j, fromName: me, cond: ocCond() };
     flow.busy = true; renderFlow();
     var oldAll = myPendingOn(f, false);
+    gcD('교환-열린요청');
     API.createOpenRequest(r).then(function () { return cancelAll(oldAll); }).then(function () {
       flow.busy = false; flow.step = 'done';
       flow.result = { title: '찾는 중이에요', body: '조건에 맞는 분이 앱에서 수락하면 바로 바뀌어요.' + (oldAll.length ? ' 이 당번의 기존 요청 ' + oldAll.length + '건은 취소했어요.' : ''), nudge: nudgeFor('open', r), card: cardFor('open', r) };

@@ -4159,9 +4159,9 @@ document.documentElement.lang = 'ko';
     const c = jget(CK, null); if (!c || !c.k || !me || c.name !== me || busy) { if (busy) again = true; return; }
     busy = true;
     try {
-      const sv = await pull(c.k); let ch = false; if (sv) ch = merge(sv);
+      const nk = await sha('d:' + c.name), sv = await pull(nk); let ch = false; if (sv) ch = merge(sv);
       lsSave0(); if (ch) { try { render(); } catch (e) {} }
-      await push(c.k, blob()); c.sync = Date.now(); c.ok = 1; jset(CK, c);
+      await push(nk, blob()); c.sync = Date.now(); c.ok = 1; jset(CK, c);
       if (!quiet) toast('서버에 보관했어요');
     } catch (e) { const c2 = jget(CK, {}); c2.ok = 0; jset(CK, c2); if (!quiet) toast(e.message === 'club' ? '클럽 코드가 필요해요' : '서버에 연결하지 못했어요. 잠시 뒤 다시 해 볼게요'); }
     busy = false; if (again) { again = false; soon(); }
@@ -4178,15 +4178,16 @@ document.documentElement.lang = 'ko';
     if (!me) { toast('먼저 이름을 골라 주세요'); return; }
     const on = c && c.k;
     const inner = on ? `<div class="shd"><h3>서버 보관 켜짐</h3><p>${esc(me)}님 기록이 서버에 자동으로 저장돼요. 폰을 바꾸면 이름과 같은 번호를 넣어 주세요.</p><button class="shx" type="button" aria-label="닫기">×</button></div>
-      <div class="sbody"><button class="btn primary" type="button" id="clNow">지금 동기화</button><button class="btn" type="button" id="clOff" style="margin-top:8px">이 폰에서 끄기</button></div>`
+      <div class="sbody"><button class="btn primary" type="button" id="clNow">지금 동기화</button><button class="btn" type="button" id="clOff" style="margin-top:8px">이 폰에서 끄기</button>${me === '김재용' ? '<button class="btn" type="button" id="clAdm" style="margin-top:8px">회원 번호 초기화 (관리자)</button>' : ''}</div>`
       : `<div class="shd"><h3>서버에 보관하기</h3><p>${esc(me)}님 기록을 서버에 보관해요. 번호는 처음이면 새로 정하고, 이미 정했다면 그 번호를 넣어요.</p><button class="shx" type="button" aria-label="닫기">×</button></div>
       <div class="sbody">${pin ? '' : '<input id="clCode" inputmode="numeric" placeholder="클럽 코드 (태블릿 링크의 숫자)" style="width:100%;margin-bottom:8px">'}
         <input id="clPin" type="tel" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="4자리 번호" style="width:100%;font-size:22px;letter-spacing:.4em;text-align:center">
-        <p class="hint" id="clMsg"></p><button class="btn primary" type="button" id="clGo">보관 시작</button></div>`;
+        <p class="hint" id="clMsg"></p><button class="btn primary" type="button" id="clGo">보관 시작</button>${me === '김재용' ? '<button class="btn" type="button" id="clAdm" style="margin-top:8px">회원 번호 초기화 (관리자)</button>' : ''}</div>`;
     openSheet(inner, '', sh => {
       const msg = t => { const m = sh.querySelector('#clMsg'); if (m) m.textContent = t; };
       const q = s => sh.querySelector(s);
       if (q('#clNow')) q('#clNow').onclick = async () => { await sync(false); closeSheet(); };
+      if (q('#clAdm')) q('#clAdm').onclick = admReset;
       if (q('#clOff')) q('#clOff').onclick = () => { try { localStorage.removeItem(CK); } catch (e) {} closeSheet(); toast('이 폰에서 서버 보관을 껐어요'); };
       if (q('#clGo')) q('#clGo').onclick = async () => {
         const p = (q('#clPin').value || '').trim();
@@ -4199,6 +4200,24 @@ document.documentElement.lang = 'ko';
           if (!ix) await setIdx(me, k);
           jset(CK, { name: me, k, sync: 0 }); closeSheet(); await sync(false); try { render(); } catch (e) {}
         } catch (e) { msg(e.message === 'club' ? '클럽 코드가 필요해요' : '서버에 연결하지 못했어요'); }
+      };
+    });
+  }
+  async function admReset() {
+    closeSheet();
+    openSheet(`<div class="shd"><h3>회원 번호 초기화</h3><p>번호를 잊은 회원의 이름과 새 번호(4자리)를 넣어요. 기록은 그대로 열려요.</p><button class="shx" type="button" aria-label="닫기">×</button></div>
+      <div class="sbody"><input id="arPw" type="password" placeholder="관리자 비밀번호" style="width:100%;margin-bottom:8px"><input id="arNm" placeholder="회원 이름" style="width:100%;margin-bottom:8px"><input id="arPin" type="tel" inputmode="numeric" maxlength="4" placeholder="새 4자리 번호" style="width:100%;margin-bottom:8px"><p class="hint" id="arMsg"></p><button class="btn primary" type="button" id="arGo">초기화</button></div>`, '', sh => {
+      const q = x => sh.querySelector(x), msg = t => { q('#arMsg').textContent = t; };
+      q('#arGo').onclick = async () => {
+        const pw = q('#arPw').value, nm = q('#arNm').value.trim(), p = q('#arPin').value.trim();
+        if (!pw || !nm || !/^\d{4}$/.test(p)) { msg('비밀번호, 이름, 숫자 4자리를 모두 넣어 주세요'); return; }
+        try {
+          await fb(); let lv = await F.s.getDoc(F.s.doc(F.db, 'c', F.h, 'board', 'live')), npw = ''; try { npw = lv.exists() ? JSON.parse(lv.data().s).npw || '' : ''; } catch (e2) {}
+          const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('jwadong-duty:adm-' + pw)), hh = Array.from(new Uint8Array(b)).map(x => ('0' + x.toString(16)).slice(-2)).join('').slice(0, 40);
+          if (!npw) { msg('태블릿에서 관리자 비밀번호를 먼저 정해 주세요'); return; }
+          if (hh !== npw) { msg('관리자 비밀번호가 달라요'); return; }
+          await setIdx(nm, await sha('k:' + nm + ':' + p)); closeSheet(); toast(nm + '님 번호를 ' + p + '로 바꿨어요');
+        } catch (e) { msg('서버에 연결하지 못했어요'); }
       };
     });
   }

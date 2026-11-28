@@ -2888,12 +2888,16 @@ function clubRecords() {
   if (me) out.push({ name: me, g: games.map(x => [x.date, x.mode, x.partner || '', (x.opp || [])[0] || '', (x.opp || [])[1] || '', +x.my || 0, +x.their || 0, x.res || '']) });
   return out;
 }
+const UNK = 'OOO회원';   // 기록을 남기지 않은(공유 OFF) 회원은 클럽기록실에서 이 이름으로 묶어요
+const isHid = n => isGuest(n) || n === UNK;
 function mergedGames() {
   const map = new Map(); let raw = 0;
-  clubRecords().forEach(({ name, g }) => g.forEach(d => {
+  const recs = clubRecords(), rec = new Set(recs.map(r => r.name));
+  const an = n => (MEMBER_APP && n && !isGuest(n) && !rec.has(n)) ? UNK : n;
+  recs.forEach(({ name, g }) => g.forEach(d => {
     raw++;
-    let A = [name, d[1] === 'd' ? d[2] : ''].filter(Boolean).sort(collator.compare);
-    let B = [d[3], d[1] === 'd' ? d[4] : ''].filter(Boolean).sort(collator.compare);
+    let A = [name, d[1] === 'd' ? an(d[2]) : ''].filter(Boolean).sort(collator.compare);
+    let B = [an(d[3]), d[1] === 'd' ? an(d[4]) : ''].filter(Boolean).sort(collator.compare);
     let sA = d[5], sB = d[6], rA = d[7] || '';
     if (A.join('+') > B.join('+')) { [A, B] = [B, A]; [sA, sB] = [sB, sA]; rA = rA === 'w' ? 'l' : rA === 'l' ? 'w' : ''; }
     const key = [d[0], A.join('+'), B.join('+'), sA, sB, rA].join('|');
@@ -2936,9 +2940,9 @@ function clubStats(list) {
     });
   });
   // 게스트는 상대 팀 세기 계산에만 쓰고, 순위·명콤비·천적·등장 선수에서는 뺀다
-  [...P.keys()].forEach(k => { if (isGuest(k)) P.delete(k); });
-  [...pairs.keys()].forEach(k => { if (k.split(' · ').some(isGuest)) pairs.delete(k); });
-  [...h2h.entries()].forEach(([k, o]) => { if (isGuest(o.a) || isGuest(o.b)) h2h.delete(k); });
+  [...P.keys()].forEach(k => { if (isHid(k)) P.delete(k); });
+  [...pairs.keys()].forEach(k => { if (k.split(' · ').some(isHid)) pairs.delete(k); });
+  [...h2h.entries()].forEach(([k, o]) => { if (isHid(o.a) || isHid(o.b)) h2h.delete(k); });
   const rate = o => (o.w + o.l ? Math.round(o.w / (o.w + o.l) * 100) : null);
   return { P, pairs, h2h, rate };
 }

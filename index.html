@@ -4311,7 +4311,7 @@ document.documentElement.lang = 'ko';
     if (!me) { toast('먼저 이름을 골라 주세요'); return; }
     const pin = clubPin();
     openSheet(`<div class="shd"><h3>기록 공유 켜기</h3><p>내 이름과 경기 기록(날짜·파트너·상대·점수)이 클럽기록실에 모여서 다른 회원도 통계로 볼 수 있어요.</p><button class="shx" type="button" aria-label="닫기">×</button></div>
-      <div class="sbody"><p class="hint" style="margin:0 0 10px;text-align:left">· 켠 뒤에 기록한 경기만 올라가요.<br>· 끄면 그때부터 새 기록은 올라가지 않아요. 이미 올라간 기록은 그대로 남아요.<br>· 언제든 마이페이지에서 끌 수 있어요.</p>
+      <div class="sbody"><p class="hint" style="margin:0 0 10px;text-align:left">· 켜면 지금까지 기록한 경기도 한꺼번에 올라가고, 앞으로 기록하는 경기도 자동으로 올라가요.<br>· 끄면 새 기록은 올라가지 않아요. 이미 올라간 기록은 그대로 남아요.<br>· 언제든 마이페이지에서 끌 수 있어요.</p>
       ${pin ? '' : '<input id="lvCode" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="클럽 코드 또는 태블릿 링크 붙여넣기" style="width:100%;margin-bottom:8px">'}
       <p class="hint" id="lvMsg"></p><button class="btn primary" type="button" id="lvGo">동의하고 켜기</button><button class="btn" type="button" id="lvNo" style="margin-top:8px">취소</button></div>`, '', sh => {
       const q = x => sh.querySelector(x);
@@ -4319,8 +4319,8 @@ document.documentElement.lang = 'ko';
       q('#lvGo').onclick = () => {
         const cc = q('#lvCode');
         if (cc) { let v = (cc.value || '').trim(); const mm = /[#&?]v=([^&\s]+)/.exec(v); if (mm) v = decodeURIComponent(mm[1]); if (!v) { q('#lvMsg').textContent = '클럽 코드를 넣어 주세요'; return; } try { localStorage.setItem('jwadong-pin-v1', v); } catch (e) {} }
-        try { localStorage.setItem(LK, '1'); localStorage.setItem(LSN, String(Date.now())); localStorage.setItem(LAK, '1'); } catch (e) {}
-        closeSheet(); toast('기록 공유를 켰어요. 지금부터 기록한 경기가 모여요'); liveSync(); drawLive();
+        try { localStorage.setItem(LK, '1'); localStorage.setItem(LSN, '0'); localStorage.setItem(LAK, '1'); } catch (e) {}
+        closeSheet(); toast('기록 공유를 켰어요. 지난 기록도 함께 올려요'); liveSync(); drawLive();
       };
     });
   }
@@ -4329,7 +4329,7 @@ document.documentElement.lang = 'ko';
     let r = k.querySelector('.mp-live');
     if (!r) { r = document.createElement('div'); r.className = 'mp-live'; k.appendChild(r); }
     const on = liveOn();
-    r.innerHTML = `<div class="mp-t"><b>기록 공유</b><small>${on ? '켜져 있는 동안 기록한 경기가 클럽기록실에 반영돼요' : '꺼져 있어요. 켜면 그때부터 기록한 경기가 클럽기록실에 모여요'}</small></div><button type="button" id="lvSw" class="mp-sw${on ? ' on' : ''}" role="switch" aria-checked="${on}" aria-label="기록 공유"></button>`;
+    r.innerHTML = `<div class="mp-t"><b>기록 공유</b><small>${on ? '기록한 경기가 클럽기록실에 반영돼요' : '꺼져 있어요. 켜면 지난 기록까지 클럽기록실에 올라가요'}</small></div><button type="button" id="lvSw" class="mp-sw${on ? ' on' : ''}" role="switch" aria-checked="${on}" aria-label="기록 공유"></button>`;
   }
   document.addEventListener('click', e => {
     const b = e.target.closest && e.target.closest('#lvSw'); if (!b) return;
